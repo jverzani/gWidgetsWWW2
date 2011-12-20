@@ -1,0 +1,478 @@
+##' @include array.R
+##' @include ext-misc.R
+##' @include BasicInterface.R
+##' @include gwidgets-toplevel.R
+NULL
+
+## Main class for object, include Ext stuff
+
+
+                         
+##' Base class for all Ext objects
+##'
+##' This adds ext methods to our gWidgets interface
+GComponent <- setRefClass("GComponent",
+                         contains="BasicToolkitInterface",
+                         fields=list(
+                           "toplevel"="ANY",            # toplevel instance
+                           "constructor" = "character", # for write_constructor
+                           "args"="ExtArgs",            # for write_constructor
+                           "prefix"="character",        # really just "o"
+                           "id" = "character",          # the actual id, e.g gWidget_ID2
+                           "transport_signal"="character", # if given, the signal to initiate transport
+                           "value"="ANY",                   # default property of the object
+                           "public_methods"="character",                # exposed to rpc call
+                           ##
+                           ".e"="environment",          # for stashing things (tag, tag<-)
+                           change_signal="character", # what signal is default change signal
+                           connected_signals="list",
+                           ..visible="logical",
+                           ..enabled="logical",
+                           ..index="ANY"
+                           ),
+                         methods=list(
+                           initialize=function(container=NULL, parent=NULL,...) {
+                             "Initialize widget. @param toplevel required or found"
+                             if(!is.null(toplevel) && is(toplevel, "GWidgetsTopLevel")) {
+                               toplevel <<- toplevel
+                             } else {
+                               if(is.null(container) & is.null(parent))
+                                 toplevel <<- NULL
+                               if(is.null(container) & !is.null(parent))
+                                 toplevel <<- parent$get_toplevel()
+                               if(!is.null(container))
+                                 toplevel <<- container$get_toplevel()
+                             }
+
+                             ## This invovles a hack for finding the
+                             ## toplevel when none is specified, which
+                             ## should only happen with the initial
+                             ## gwindow() call.
+                             
+                             args <<- ExtArgs$new() # append with add_args method
+                             .e <<- new.env()
+                             
+                             ## insert a toplevel thingy
+                             if(is.null(toplevel)) {
+                               ## this variable is created when a new session is and lives in the
+                               ## evaluation environment. See gwidgets-session
+                               if(exists(".gWidgets_toplevel", inherits=TRUE))
+                                  toplevel <<- get(".gWidgets_toplevel", inherits=TRUE)
+                               else
+                                 toplevel <<- GWidgetsTopLevel$new()
+                             } 
+                             ## work on id
+                             ## id is used for html DOM id, o+id is used for
+                             ## javascript variable and key within toplevel hash
+                             ## to refer to this object
+                             prefix <<- "o"
+                             id <<- sprintf("gWidget_ID%s", toplevel$get_object_id())
+                             args$extend(list(id=id))
+                             toplevel$add_object(.self, get_id())
+
+
+                             initFields(..visible=TRUE,
+                                        ..enabled=TRUE,
+                                        ..index=NULL,
+                                        public_methods=character(0)
+                                        )
+                             
+                             ## return
+                             callSuper()
+                           },
+                           init=function(...) {
+                             "Initialization of the widget. The initialize method takes care of the toplevel"
+                             
+                           },
+                           ## helpers
+                           has_slot=function(key) {
+                             exists(key, .self, inherits=FALSE)
+                           },
+                           ##
+                           add_args = function(new_args, overwrite=TRUE) {
+                             "add new arguments. Will overwrite. @param new_args is a list"
+                             args$extend(new_args, overwrite)
+                           },
+                           ## id of base object (ogWidgetID1) There
+                           ## are two ids: the object id returned here
+                           ## refers to the actual javascript object
+                           ## created. The other id (id) is the DOM id
+                           ## of the object. The object id is usually what we want.
+                           get_id = function() {
+                             "ID of object. There is DOM id store in id property and Ext object id returned by this"
+                             sprintf("%s%s", prefix, id)
+                           },
+                           get_toplevel=function() {
+                             if(!is.null(toplevel))
+                               return(toplevel)
+                             else if(is(.self, "GWidgetsTopLevel"))
+                               return(.self)
+                             else
+                               return(NULL)
+                           },
+                           ## interface with js queue in toplevel
+                           add_js_queue = function(cmd) {
+                             "Add command to JavaScript queue"
+                             toplevel$js_queue_push(cmd)
+                           },
+                           flush_js_queue = function() {
+                             "Flush commands in JavaScript queue"
+                             toplevel$js_queue_flush()
+                           },
+
+                           ## method to write out constructor
+                           write_constructor = function() {
+                             "Write out constructor."
+                             cmd <- sprintf("var %s = new %s(%s);",
+                                            get_id(),
+                                            constructor,
+                                            args$to_js_object()
+                                            )
+                             add_js_queue(cmd)
+                           },
+                           write_ext_object = function(cls, args) {
+                             "Write out an Ext object converting args"
+                             cmd <- sprintf("new %s(%s)", cls, toJSObject(args))
+                             String(cmd)
+                           },
+                           process_dot_args = function(...) {
+                             "Helper function"
+                             l <- list(...)
+                             out <- sapply(l, coerceToJSString)
+                             paste(out, collapse=", ")
+                           },
+                           ## call a method of ext object
+                           ## This converts its arguments to JavaScript strings through coerceToJSString
+                           call_Ext = function(meth, ...) {
+                             "Write JavaScript of ext method call for this object. The ... values will be coerced to JavaScript stings through coerceToJSString, allowing the call to be as 'R'-like as possible, e.g.: call_Ext('setValue', 'some value'). Here the string will be quoted through ourQuote. To avoid that wrap within the String function, as in call_Ext('setValue', String('some value'))."
+
+                             cmd <- sprintf("%s.%s(%s);",
+                                            get_id(),
+                                            meth,
+                                            process_dot_args(...))
+                             cmd
+                             add_js_queue(cmd)
+                           },
+                           ## Ext apply basically merges lists (objects). Where the default comes from is up to you to
+                           ## read about....
+                           ext_apply = function(value) {
+                             "Call ext apply with value a list containing config options. This is called after write-constructor, prior to that call use add_args or arg$append."
+                             if(is.null(value))
+                               return()
+                             cmd <- sprintf("Ext.apply(%s, %s);",
+                                            get_id(),
+                                            toJSObject(value))
+                             add_js_queue(cmd)
+                           },
+
+                           ## Transport. Many widgets transport a value from WWW -> R after
+                           ## minor changes through an AJAX call. This requires three things.
+                           ## 1. a signal that is listened to for an initiation of the transport
+                           ## 2. a function to define an object {value: ..., values: ..., others: ...} that
+                           ##    is converted to JSON and transported back to R through the param argument
+                           ## 3. a process_transport method that is passed the widget id and this param value. It
+                           ##    adjusts the state of the R widget and optionally other call, returning the javascript
+                           ##    queue when done
+                           transport_fun = function() {
+                             "javascript function for transport web -> R. Creates an object param.
+This is a string to be passed to the javascript queue withing the transport function call
+E.g. var param = {value: this.getText()}"
+                             ""         # no default
+                           },
+                           write_transport = function() {
+                             "Writes out JavaScript for transport function"
+                             ## param ? Ext.JSON.encode(param) : null
+                             cmd <- sprintf("%s.on('%s', function(%s) {%s; transportFun('%s', Ext.JSON.encode(param))}, null, {delay:100, buffer:100, single:false});",
+                                            get_id(),
+                                            transport_signal,
+                                            getWithDefault(.ext_callback_arguments[[transport_signal]], ""),
+                                            transport_fun(),
+                                            get_id()
+                                            )
+                             add_js_queue(cmd)
+                           },
+                           process_transport = function(value, ...) {
+                             "R Function to process the transport. Typically just sets 'value', but may do more. In the above example, where var param = {value: this.getText()} was from transport_fun we would get the text for value"
+                             value <<- value
+                           },
+                           ## Call back code
+                           ##
+                           prepare_for_handler=function(signal, params) {
+                             "Hook that can be called prior to observer call. Might be useful to set value without relying on transport call to arrive first"
+
+                           },
+                           is_handler=function(handler) {
+                             !missing(handler) && is.function(handler)
+                           },
+                           ## add a handler
+                           ## creates an observer arranges to connect to toolkit
+                           add_handler=function(signal, handler, action=NULL, decorator) {
+                             "Uses Observable framework for events. Adds observer, then call connect signal method. Override last if done elsewhere"
+                             if(is_handler(handler)) {
+                               if(!missing(decorator))
+                                 handler <- decorator(handler)
+                               o <- observer(.self, handler, action) # in gWidgets2 but not now
+                               add_observer(o, signal)
+                               connect_to_toolkit_signal(signal)
+                             }
+                           },
+                           invoke_handler=function(signal, ...) {
+                             "Invoke observers listening to signal"
+                             notify_observers(..., signal=signal)
+                           },
+                           handler_widget=function() {
+                             "Widget to assign handler to"
+                             .self
+                           },
+                           connect_to_toolkit_signal=function(
+                             signal # which signal
+                             ) {
+                             "Connect signal of toolkit to notify observer"
+                             ## only connect once
+                             if(is.null(connected_signals[[signal, exact=TRUE]]))
+                              add_R_callback(signal)
+                             connected_signals[[signal]] <<- TRUE
+                           },
+                           ## Various pieces to override
+                           param_defn=function(signal) {
+                             "Define different parameter definitions based on the signal"
+                             ## used with prepare_for_handler to pass in values before callback
+                             "var param = null" # nothing
+                           },
+                           cb_args=function(signal) {
+                             "Callback arguments, may be overridden in a subclass"
+                             getWithDefault(.ext_callback_arguments[[signal, exact=TRUE]], "")
+                           },
+                           get_callback_object = function() {
+                             "Return object for callback. Defaults to get_id(), but can be subclassed"
+                             get_id()
+                           },
+                           add_R_callback = function(signal) {
+                             "Add a callback into for the Ext signal. Return callback idas a list."
+
+                             ## XXX This needs a fixing. The callbacks are now stored in the objects and we
+                             ## notify through toplevel$call_handler(id, signal, params)
+                             ## The id is for lookup from toplevel, the signal to call the right observers
+                             ## the params passed back to pass information prior to the call.
+
+                             ## What to do with handlers?
+                             
+                             
+                             ## create JS handler code
+                             cmd <- sprintf("%s.on('%s', function(%s) {%s; callRhandler('%s', '%s', Ext.JSON.encode(param))}, null, {delay:100, buffer:100, single:false});",
+                                            get_id(),
+                                            signal,
+                                            cb_args(signal),
+                                            param_defn(signal),
+                                            get_callback_object(),
+                                            signal
+                                            )
+                             add_js_queue(cmd)
+
+                             ## what to return?
+                           },
+                           ## We have an issue: when a user initiates
+                           ## an action, the state of the widget is
+                           ## being transported via the transport
+                           ## mechanism, Some times the request (which
+                           ## is asynchronous) beats the transport and
+                           ## the wrong value is used. This allows us
+                           ## to bypass by signal. These defaults just
+                           ## use the transport mechanism and are
+                           ## meant to be overridden.
+                           param_defn=function(signal) {
+                             if(signal == change_signal) {
+                               transport_fun()
+                             } else {
+                               ""
+                             }
+                           },
+                           prepare_for_handler=function(signal, params) {
+                             if(signal == change_signal) {
+                               process_transport(params)
+                             }
+                           },
+                           ## block and unblock
+                           block_handlers=function() {
+                             "Block all handlers."
+                             ## default is to block the observers. 
+                             block_observers()
+                           },
+                           block_handler=function(ID) {
+                             "Block a handler by ID"
+                             block_observer(ID)
+                           },
+                           unblock_handlers=function() {
+                             "unblock blocked observer. May need to be called more than once to clear block"
+                             unblock_observers()
+                           },
+                           unblock_handler=function(ID) {
+                             "unblock a handler by ID"
+                             unblock_observer(ID)
+                           },
+                           remove_handlers=function() {
+                             "Remove all observers"
+                             remove_observers()
+                           }, 
+                           remove_handler=function(ID) {
+                             "remove a handler by ID"
+                             remove_observer(ID)
+                           },
+                           ## Used to add a javascript callback -- that is not call into R. Th
+                           add_js_callback = function(signal, callback, ...) {
+                             "Add a javascript callback. The value of 'this' refers to the object this is called from"
+                             cmd <- sprintf("%s.on('%s', %s);",
+                                            get_id(),
+                                            signal,
+                                            callback)
+                             add_js_queue(cmd)
+                           },
+                           ##
+                           ## basic callbacks? (ext-component.R) XXX
+                           ##
+                           add_handler_changed=function(handler, action=NULL, ...) {
+                             add_handler(change_signal, handler, action, ...)
+                           },
+                           invoke_change_handler=function(...) {
+                             "Generic change handler invoker."
+                             if(!is(change_signal, "uninitializedField") && length(change_signal))
+                               invoke_handler(signal=change_signal, ...)
+                           },
+                           ##
+                           ## rpc
+                           ##
+                           call_rpc = function(meth, val) {
+                             if(!is.list(value))
+                               val <- list(val)
+                             ## awkward way to call method by name avoiding cache
+                             if(exists(meth, .self, inherits=FALSE))
+                               f <- get(meth, .self)
+                             else
+                               f <- methods:::envRefInferField(.self, meth, getClass(class(.self)), .self)
+                             
+                             f(val)
+                           },
+                           add_public_method=function(x) {
+                             "Add a method name to the public methods"
+                             public_methods <<- c(public_methods, x)
+                           },
+                           ##
+                           ## Drag and Drop
+                           ##
+
+                           ##
+                           ## setup
+                           ##
+                           setup = function(container, handler, action=NULL, ext.args=NULL, ...) {
+                             "Set up widget"
+
+                             if(!is.null(ext.args))
+                               args$extend(ext.args)
+
+                             if(!is.null(container))
+                               container$add_dots(.self, ...)
+                             write_constructor()
+                             if(!is.null(container))
+                               container$add(.self, ...)
+
+                             if(length(nchar(transport_signal))) # character(0) or not?
+                               write_transport()
+                             
+                             if(!missing(handler)  & !is.null(handler))
+                               add_handler_changed(handler, action)
+                           },
+                           
+                           
+                           ## Basic methods for gWidgets
+                           get_length=function() 1,
+                           ## get/set value
+                           coerce_to = function(val, ...) {
+                             "if coerce_with property present, call function on value"
+                             if(is(coerce_with, "uninitializedField") || is.null(coerce_with))
+                               return(val)
+                             coerce_with(val)
+                           },
+                           get_value = function(...) {
+                             "Get main property, Can't query widget, so we store here"
+                             coerce_to(value)
+                           },
+                           set_value=function(value, ...) {
+                             "Set main property, invoke change handler on change"
+                             old_value <- value
+                             value <<- value
+                             if(!identical(old_value, value))
+                               invoke_change_handler()
+                           },
+                           get_index=function(drop=TRUE, ...) {
+                             ..index
+                           },
+                           set_index=function(value, ...) {
+                             old_index <- ..index
+                             ..index <<- value
+                             if(!identical(old_index, ..index))
+                               invoke_change_handler()
+                           },
+                           get_visible = function() ..visible,
+                           set_visible = function(value) {
+                             ..visible <<- as.logical(value)
+                             call_Ext("setVisible", list(visible=as.logical(value)))
+                           },
+                           get_enabled=function() {
+                             ..enabled
+                           },
+                           set_enabled = function(value) {
+                             "Disable/enable component"
+                             ..enabled <<- value
+                             if(value)
+                               call_Ext("enable")
+                             else
+                               call_Ext("disable")
+                           },
+                           set_tooltip = function(tip) {
+                             "Set tooltip for widget"
+                             call_Ext("setTooltip", tip)
+                           },
+                           set_focus = function(value) {
+                             "focus component"
+                             if(value)
+                               call_Ext("focus")
+                           },
+                           ## tag, tag<-
+                           get_attr = function(key) {
+                             "Persistent attribute. If key missing return names, else return value for key"
+                             if(missing(key))
+                               ls(.e)
+                             else
+                               attr(.e, key)
+                           },
+                           set_attr = function(key, value) {
+                             "Set persistent attribute"
+                             attr(.e, key) <<- value
+                           },
+                           set_size = function(val) {
+                             "Set size, specified as width or c(width, height)"
+                             if(is.list(val))
+                               val <- unlist(val)
+                             
+                             if(length(val) == 1)
+                               call_Ext("setWidth", val)
+                             else
+                               call_Ext("setSize", val[1], val[2])
+                           },
+                           destroy = function() {
+                             "destroy component"
+                             call_Ext("destroy")
+                           },
+                           update_widget=function(...) {
+                             "Update GUI, in this case recompute layout"
+                             call_Ext("doLayout")
+                           }
+                           
+
+                           
+
+
+
+                           ))
+
+

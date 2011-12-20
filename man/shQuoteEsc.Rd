@@ -1,0 +1,18 @@
+\name{shQuoteEsc}
+\alias{shQuoteEsc}
+\title{escaping strings}
+\usage{
+  shQuoteEsc(x)
+}
+\arguments{
+  \item{x}{character}
+}
+\value{
+  character has single quotes escaped
+}
+\description{
+  we use shQuote as a convenience for word -> 'word'
+  however, it doesn't escape values as we would like, hence
+  this one.
+}
+

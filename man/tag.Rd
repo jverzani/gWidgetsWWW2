@@ -1,0 +1,15 @@
+\name{tag}
+\alias{tag}
+\title{Retreive a persistent attribute for an object}
+\usage{
+  tag(x, key)
+}
+\arguments{
+  \item{x}{the object}
+
+  \item{key}{key holding attribute}
+}
+\description{
+  Retreive a persistent attribute for an object
+}
+

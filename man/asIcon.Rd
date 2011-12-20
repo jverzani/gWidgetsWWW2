@@ -1,0 +1,18 @@
+\name{asIcon}
+\alias{asIcon}
+\title{Mark a character as an Icon}
+\usage{
+  asIcon(x)
+}
+\arguments{
+  \item{x}{a character vector to mark with additional class
+  of "Icon"}
+}
+\value{
+  same object with new class
+}
+\description{
+  We use the class "Icon" to mark icons, which are css
+  classnames or URLs
+}
+

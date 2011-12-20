@@ -1,0 +1,21 @@
+\name{addHandlerChanged}
+\alias{addHandlerChanged}
+\title{Assign handler to default event}
+\usage{
+  addHandlerChanged(x, ...)
+}
+\arguments{
+  \item{x}{the object}
+
+  \item{...}{Used to pass through \code{handler}, and
+  \code{action} values. The handler is a function whose
+  first argument is a list that contains components
+  \code{obj} to return the object and \code{action},
+  holding the action value, and possibly others.}
+}
+\description{
+  The default event is specified in the definition of the
+  object. Using this function allows one to have a
+  "generic" name for adding a handler.
+}
+

@@ -1,0 +1,23 @@
+\name{addHandlerColumnDoubleClick}
+\alias{addHandlerColumnDoubleClick}
+\title{Assign handler to double click event for column (gdf, gtable)}
+\usage{
+  addHandlerColumnDoubleClick(x, ...)
+}
+\arguments{
+  \item{x}{the object}
+
+  \item{...}{Used to pass through \code{handler}, and
+  \code{action} values. The handler is a function whose
+  first argument is a list that contains components
+  \code{obj} to return the object and \code{action},
+  holding the action value, and possibly others.}
+}
+\value{
+  a callback id, used with \code{removeHandler}
+}
+\description{
+  Assign handler to double click event for column (gdf,
+  gtable)
+}
+

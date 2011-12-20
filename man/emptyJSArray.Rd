@@ -1,0 +1,13 @@
+\name{emptyJSArray}
+\alias{emptyJSArray}
+\title{An empty array}
+\usage{
+  emptyJSArray(doBrackets = TRUE)
+}
+\arguments{
+  \item{doBrackets}{logical}
+}
+\description{
+  Used by toJSArray as helper function
+}
+

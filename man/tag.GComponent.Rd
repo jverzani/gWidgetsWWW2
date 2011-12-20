@@ -1,0 +1,15 @@
+\name{tag.GComponent}
+\alias{tag.GComponent}
+\title{method for tag}
+\usage{
+  \method{tag}{GComponent} (x, key)
+}
+\arguments{
+  \item{x}{the object}
+
+  \item{key}{key holding attribute}
+}
+\description{
+  method for tag
+}
+

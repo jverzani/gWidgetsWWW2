@@ -1,0 +1,40 @@
+\name{gconfirm}
+\alias{gconfirm}
+\title{Confirmation dialog}
+\usage{
+  gconfirm(message, title = "Confirm", icon = NULL, parent
+  = NULL, handler = NULL, action = NULL, ...)
+}
+\arguments{
+  \item{message}{message}
+
+  \item{title}{title for dialog's window}
+
+  \item{icon}{icon}
+
+  \item{parent}{parent container (main window instance)}
+
+  \item{handler}{handler passed to dialog if confirmed}
+
+  \item{action}{passed to any handler}
+
+  \item{...}{ignored}
+}
+\value{
+  return value ignored, use handler for response
+}
+\description{
+  Calls handler when Yes button is clicked. Unlike other
+  gWidgets implementations, this one does block the R
+  process before returning a logical indicating the
+  selection. One must use a handler to have interactivity.
+}
+\examples{
+w <- gwindow()
+gbutton("click me for a message", cont=w, handler=function(h,...) {
+gconfirm("Do you like R", parent=w, handler=function(h,...) {
+galert("Glad you do", parent=w)
+})
+})
+}
+

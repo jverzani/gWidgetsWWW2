@@ -1,0 +1,28 @@
+\name{browse_df}
+\alias{browse_df}
+\title{Browse a data frame in the global environment using gtable}
+\usage{
+  browse_df(d, width = 800, height = 500, paging = nrow(d)
+  > 200, ...)
+}
+\arguments{
+  \item{d}{data frame}
+
+  \item{width}{width of display}
+
+  \item{height}{height of display}
+
+  \item{paging.}{Logical. Do we have paging to display
+  values. Should use if \code{nrow(d) > 200} or so}
+}
+\value{
+  creates webpage showing data frame
+}
+\description{
+  Browse a data frame in the global environment using
+  gtable
+}
+\examples{
+browse_df(mtcars)
+}
+

@@ -1,0 +1,71 @@
+Package: gWidgetsWWW2
+Maintainer: John Verzani <jverzani@gmail.com>
+License: GPL (>= 3)
+Title: Toolkit implementation of the gWidgets API for use
+    with web pages
+LazyLoad: TRUE
+Author: John Verzani
+Description: Port of the gWidgets API to program dynamic
+    websites with R code. This package uses Rook to enable
+    use under R's local web server (or through RApache to
+    publicly serve the pages powered by R in the future).
+    The Ext JavaScript libararies (www.extjs.com) are used
+    to create and manipulate the widgets dynamically.
+Version: 0.3-0
+URL: http://gwidgets.r-forge.r-project.org/
+Depends:
+    R (>= 2.13.0),
+    methods,
+    Rook,
+    brew,
+    RJSONIO,
+    canvas,
+    memoise
+Collate:
+    'gwidgets-package.R'
+    'array.R'
+    'gwidgets-toplevel.R'
+    'gwidgets-session.R'
+    'utils.R'
+    'ext-misc.R'
+    'gwidgets-app.R'
+    'BasicInterface.R'
+    'gcomponent.R'
+    'gwidget.R'
+    'gbutton.R'
+    'gcontainer.R'
+    'gwidget-proxy.R'
+    'gwidget-text.R'
+    'gwidgets-methods.R'
+    'gwindow.R'
+    'gcanvas.R'
+    'gradio.R'
+    'gstatusbar.R'
+    'ggroup.R'
+    'gslider.R'
+    'gdialogs.R'
+    'gaction.R'
+    'gcheckboxgroup.R'
+    'icons.R'
+    'gcombobox.R'
+    'gexpandgroup.R'
+    'gframe.R'
+    'gmenu.R'
+    'gtable.R'
+    'gcalendar.R'
+    'gedit.R'
+    'ghtml.R'
+    'glabel.R'
+    'gimage.R'
+    'glayout.R'
+    'gnotebook.R'
+    'gtext.R'
+    'ggooglemaps.R'
+    'gpanedgroup.R'
+    'gspinbutton.R'
+    'gdf.R'
+    'load.R'
+    'apps.R'
+    'gfile.R'
+    'gsvg.R'
+    'gtree.R'

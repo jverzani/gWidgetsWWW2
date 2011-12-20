@@ -1,0 +1,79 @@
+\name{ggooglemaps}
+\alias{ggooglemaps}
+\title{Google maps widget}
+\usage{
+  ggooglemaps(center = c(45, 45), zoom = 13, maptype =
+  "roadmap", container, ..., width = NULL, height = 400,
+  ext.args = NULL)
+}
+\arguments{
+  \item{center}{lat/lng pair where map should be centered}
+
+  \item{zoom}{zoom level for initial map}
+
+  \item{maptype}{Type of map}
+
+  \item{container}{parent container}
+
+  \item{...}{passed to parent container's \code{add}
+  method}
+
+  \item{width}{width in pixels}
+
+  \item{height}{height in pixels. Mandatory, else map will
+  have 0 height}
+
+  \item{ext.args}{extra arguments to pass to constructor}
+}
+\value{
+  an GWidget object
+}
+\description{
+  Google maps widget
+}
+\details{
+  Widget to display a google map and expose some of the
+  google maps API through R methods
+}
+\examples{
+w <- gwindow("hello", renderTo="replaceme")
+sb <- gstatusbar("Powered by gWidgetsWWW and Rook", cont=w)
+
+## Show map of central park
+central_park <- c(40.782686, -74.01) ## central park
+
+## make map
+gm <- ggooglemaps(cont=w, center=central_park, zoom=12, height=400)
+
+## Show how to click to add a polygon
+g1 <- ggroup(cont=w)
+glabel("Click some points, then click button to: ", cont=g1)
+x <- numeric(0); y <- numeric(0)
+b <- gbutton("add polygon", cont=g1, handler=function(h,...) {
+ggooglemaps_polygon(cbind(x, y), stroke=list(color="#FF00FF"), fill=list(color="#00FF00"), map=gm)
+})
+addHandlerClicked(gm, handler=function(h,...) {
+ggooglemaps_marker(position=c(h$lat, h$lng), title="", map=gm)
+x <<- c(x, h$lat); y <<- c(y, h$lng)
+})
+## How to add a marker with a callback to open an info window
+m <- ggooglemaps_marker(position=central_park, title="click me", map=gm)
+addHandlerClicked(m, handler=function(h,...) {
+ggooglemaps_infowindow(h$obj, content = "Hello world", map=gm)
+})
+
+
+## Buttons to toggle traffic and bicycle overlays
+g1 <- ggroup(cont=w)
+glabel("Change map type", cont=g1)
+gcombobox(c("roadmap", "satellite", "hybrid", "terrain"), cont=g1, handler=function(h,...) {
+gm$set_maptype(svalue(h$obj, index=FALSE))
+})
+gcheckbox("Traffic overlay", checked=FALSE, width=150, cont=g1, handler=function(h,...) {
+gm$add_trafficlayer(svalue(h$obj))
+})
+gcheckbox("Bicycle overlay", checked=FALSE, width=150, cont=g1, handler=function(h,...) {
+gm$add_bikelayer(svalue(h$obj))
+})
+}
+

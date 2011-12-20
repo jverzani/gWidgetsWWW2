@@ -1,0 +1,37 @@
+\name{addStockIcons}
+\alias{addStockIcons}
+\title{Add to the stock icons}
+\usage{
+  addStockIcons(iconNames, iconFiles, ..., parent)
+}
+\arguments{
+  \item{iconNames}{character vector of names. May be data
+  frame with first two columns being names, then urls}
+
+  \item{iconFiles}{character vector of icon urls (not
+  files, despite the name of the function)}
+
+  \item{...}{ignored}
+
+  \item{parent}{a \code{gwindow} instance. Needed with
+  gWidgetsWWW2.}
+}
+\value{
+  Modifies internal stock icon list, but has no useful
+  return value
+}
+\description{
+  A stock icon requires a name and url. The name can be
+  used to look up the css class used by the widgets using
+  the function \code{\link{getStockIconByName}}.
+}
+\note{
+  Although this function can be called more than once, some
+  browsers will balk if called more than 31 times.
+}
+\examples{
+w <- gwindow()
+addStockIcons("rlogo", "http://www.r-project.org/Rlogo.jpg", parent=w) ## add one
+getStockIconByName("rlogo")  ## check
+}
+

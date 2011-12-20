@@ -1,0 +1,16 @@
+\name{String}
+\alias{String}
+\title{String class -- does not get escaped in object literals}
+\usage{
+  String(x)
+}
+\arguments{
+  \item{x}{character vector to coerce to String class}
+}
+\value{
+  vector with new class addedd
+}
+\description{
+  Useful in the toJSObject method
+}
+

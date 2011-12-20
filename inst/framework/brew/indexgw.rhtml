@@ -1,0 +1,143 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta http-equiv='Content-Type' content='text/html; charset=UTF-8'/>
+
+    <link rel='stylesheet' type='text/css' href='/custom/gWidgetsWWW2/javascript/ext/resources/css/ext-all-gray.css' />
+    <link rel='stylesheet' type='text/css' href='/custom/gWidgetsWWW2/css/gWidgetsWWW2.css'    />
+    <!-- <link rel="stylesheet" type="text/css" href="/custom/gWidgetsWWW2/javascript/ext/resources/css/xtheme-blue.css"/> -->
+<!-- <link rel='stylesheet' type='text/css' href='/custom/gWidgetsWWW2/javascript/ext/examples/ux/css/ux-all.css' /> -->
+<!-- <link rel="shortcut icon" type="image/ico" href="/custom/gWidgetsWWW/images/favicon.ico" />  -->
+  <script type='text/javascript' src='/custom/gWidgetsWWW2/javascript/jquery-1.5.2.min.js'></script>
+  <script type='text/javascript'>
+var session_id = "script_global";
+var MyApp = "<%= app_name %>";
+var base_url = "/custom/" + MyApp + "/gwapp/";
+var handler_url = base_url + "runHandler";
+var comet_url = base_url + "runComet";
+var rpc_url = base_url + "runRpc";
+var transport_url = base_url + "runTransport";
+var proxy_url = base_url + "runProxy";
+var html_proxy_url = base_url + "runHtmlProxy";
+var file_url = base_url + "fileUploadProxy";
+var session_url = base_url + "newSessionId";
+var unload_url = base_url + "closeSession";
+
+callRhandler = function(id, signal, value) {
+  data = {id: id, signal:signal, value: value, session_id: session_id};
+  $.ajax(handler_url, {
+    dataType:'script',
+    data: data,
+    cache:false,
+    type:"GET"
+   })
+};
+
+transportFun = function(id, value) {
+   data = {id: id, param: value, session_id: session_id};
+   $.ajax(transport_url, {
+    dataType:'script',
+    data: data,
+    cache:false,
+    type:"GET"
+  })
+};
+
+
+
+jRpc = function(obj, meth, params, callback) {
+   data = {id: obj, session_id: session_id, meth:meth, value: Ext.JSON.encode(params)};
+   $.ajax(rpc_url, {
+    dataType:'script',
+    data: data,
+    cache:false,
+    type:"POST",
+    success:callback
+  })
+};
+
+
+
+listen = function() {
+    listening = false;
+    if (listening)
+        return;
+    
+    listening = true;
+    $.ajax({
+	data: {session_id: session_id},
+	dataType: 'script',
+        type: 'GET',
+        url: comet_url,
+        async: true,
+        cache: true,
+        timeout: 10000,
+        ifModified: true,
+        
+        success: function(data) {
+            listening = false;
+            setTimeout(listen, 1000);
+        },
+
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+            listening = false;
+            if (textStatus == 'timeout') {
+                listen()
+            } else {
+                setTimeout(listen, 10000);
+            }
+        },
+    });
+};
+
+$(window).unload(function() {
+  $.ajax({url: unload_url, data: {session_id: session_id}, timeout:1000});
+});
+
+$(document).ready(function() {
+
+$("#loading").hide();
+
+Ext.QuickTips.init();
+
+$.ajax(session_url, {
+  dataType: 'json',
+  cache: false,
+  success: function(data) {
+    session_id = data.id;
+    $.ajax(base_url,{
+      dataType:'script',
+      data: {session_id: session_id},
+      cache: false,
+      type: "GET"
+    })
+  }
+});
+
+
+})
+  </script>
+</head>
+<body>
+  <div id='loading'>
+    <div class='loading-indicator'>
+    <span id='loading-msg'>Loading ExtJS...</span>
+    </div>
+  </div>
+  <!-- <script type="text/javascript" src="/custom/gWidgetsWWW2/javascript/ext/adapter/ext/ext-base.js"></script> -->
+  <script type="text/javascript" src="/custom/gWidgetsWWW2/javascript/ext/ext-all.js"></script>
+  <script type="text/javascript" src="/custom/gWidgetsWWW2/javascript/gw-gtable.js"></script>
+  <script type="text/javascript" src="/custom/gWidgetsWWW2/javascript/ext.ux.canvas.js"></script>
+  <script type="text/javascript" src="/custom/gWidgetsWWW2/javascript/ext.ux.example.js"></script>
+  <script type="text/javascript" src="/custom/gWidgetsWWW2/javascript/ext.ux.CheckColumn.js"></script>
+  <script type="text/javascript" src="/custom/gWidgetsWWW2/javascript/GMapPanel3.js"></script>
+
+  <%= extra_html_code %>
+
+  <style type="text/css">
+    <%= paste(make_stock_icons(), collapse="\n") %>
+  </style>
+
+  <%= if(file.exists(brew_template)) brew(brew_template) %>
+
+</body>

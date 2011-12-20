@@ -1,0 +1,17 @@
+2011-06-09  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gradio.R (gradio): fix bug in columns (wrong logic)
+
+2011-04-29  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/glayout.R (in.range): implemented [ method to return widgets
+	in layout
+
+2011-04-28  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gedit.R (gedit): implement coerce.with
+
+2011-04-22  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/ext-base.R: implented block/unblock/remove of handlers
+

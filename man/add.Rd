@@ -1,0 +1,22 @@
+\name{add}
+\alias{add}
+\title{Add child component to parent container}
+\usage{
+  add(x, child, ...)
+}
+\arguments{
+  \item{x}{object}
+
+  \item{child}{child object}
+
+  \item{...}{Not implemented. For values like
+  \code{expand}, \code{fill} and \code{anchor}}
+}
+\value{
+  nothing
+}
+\description{
+  Usually called internally by specifying
+  \code{container=parent} to the constructor.
+}
+

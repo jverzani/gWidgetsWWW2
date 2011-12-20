@@ -1,0 +1,17 @@
+\name{asURL}
+\alias{asURL}
+\title{Add URL to class of object if not already}
+\usage{
+  asURL(x)
+}
+\arguments{
+  \item{x}{object to add class to. Should be length 1
+  character}
+}
+\value{
+  returns object
+}
+\description{
+  Add URL to class of object if not already
+}
+

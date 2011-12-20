@@ -1,0 +1,84 @@
+* Update roxygen documentation
+
+* update vignette
+
+* nginx integration; think through load_app  improvements
+
+* group sizing -- odd
+
+* checkboxgroup/checkbox svalue inconsistency?
+
+* fonts
+
+* is gedit change signal change or "activate"
+
+* gcalendar -- way off.
+
+* codemirror editor? Some code eidtor (gcodeeidtor)
+
+* ggooglevis in a panel?
+
+* app structure: Name
+- R file
+- R/filename.R
+- brew/brewname.R
+- images/...
+- css/...
+- javascript/...
+
+* gbutton: actions, icons
+
+* gradio: all of it
+
+* gslider: working, needs tidying of param, transport
+
+* gstatusbar: better? no css
+
+* galert: no css
+
+* gcanvas: working, needs documenting
+
+
+* Why do we have to use indexgw.html! Uggh
+
+* rename router
+
+* gtable: checkbox selection; grouping variables (add), means to limit which fields are shown
+
+* gdf: We can add and edit, but can't delete. WOuld like to use Rest proxy, but isn't working iwth Rook, as the request is denied -- not even parsable
+
+
+
+
+
+* Why is this causing loadMethods error:
+
+##' @import methods
+NA
+
+##' A class.
+A <- setRefClass("A",
+                 methods=list(
+                   initialize = function(...) {
+                     callSuper(...)
+#                     initFields(... )
+                   }
+                   ))
+
+
+##' B class
+B <- setRefClass("B",
+                 fields=list(
+                   "test"="A"
+                   ),
+                 methods=list(
+                   initialize=function(...) {
+                     test <<- A$new()
+                     callSuper(...)
+                   }
+                   ))
+
+
+
+
+* DONE [ method for glayout

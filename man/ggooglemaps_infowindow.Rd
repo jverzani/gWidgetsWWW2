@@ -1,0 +1,22 @@
+\name{ggooglemaps_infowindow}
+\alias{ggooglemaps_infowindow}
+\title{Add an infowindow -- a popup cartoon -- to the map}
+\usage{
+  ggooglemaps_infowindow(position, content, map)
+}
+\arguments{
+  \item{position}{Either a \code{ggooglemaps_marker} object
+  or position as lat/lng pair}
+
+  \item{content}{HTML fragment to display in window}
+
+  \item{map}{a \code{ggooglemaps} object}
+}
+\value{
+  a GGoogleMapsInfoWindow object
+}
+\description{
+  An info window allows one to display HTML code in a popup
+  window
+}
+
