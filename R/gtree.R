@@ -37,13 +37,7 @@ NULL
 ##' 
 ##' @param multiple logical do we allow multiple selection. NOT IMPLEMENTED
 ##'
-##' @param handler called on change of selection
-##' @param action passed to handler
-##' @param container container object
-##' @param ... passed to containers add method
-##' @param width width in pixels
-##' @param height height in pixels
-##' @param ext.args extra configuration arguments passed to Ext constructor
+##' @inheritParams gwidget
 ##' @note  TODO: implement multiple slection
 ##' @export
 ##' @examples

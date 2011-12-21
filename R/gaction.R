@@ -14,7 +14,7 @@
 ##      along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ##' @include gwidget.R
-NA
+NULL
 
 ##' gaction implementation
 ##'
@@ -27,11 +27,10 @@ NA
 ##' @param label Text for action
 ##' @param tooltip tooltip. Ignored for this toolkit
 ##' @param icon action icon class
-##' @param handler handler called when action activated
 ##' @param parent toplevel window of action (where it can be
 ##' called). Required here
 ##' @param ... ignored
-##' @return an \code{ExtWidget} object
+##' @return a \code{GWidget} object
 ##' @export
 ##' @examples
 ##' w <- gwindow()

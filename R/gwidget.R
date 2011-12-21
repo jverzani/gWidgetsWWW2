@@ -1,7 +1,63 @@
 ##' @include gcomponent.R
 NULL
 
-##' GWidget is the Base class for widget objects
+##' Stub for roxygen2 documentation of common arguments for gWidgets contructors
+##' 
+##' @param handler optional means (to \code{\link{addHandlerChanged}}
+##' to specify a handler for the default signal. A handler is a
+##' function with signature \code{(h,...)} where \code{h} is a list
+##' with components \code{obj} referring to the object emitting the
+##' signal, \code{action} containing values passed to the
+##' \code{action} argument, and possible other values.
+##' @param action Passed to handler to parameterize a call
+##' @param container A parent container. In \pkg{gWidgetsWWW2} a
+##' parent container is not optional (though it can be substituted
+##' with the \code{parent} argument in some circumstances). The parent
+##' specifies the widget heirarchy and the \code{...} argument is used
+##' to pass along arguments to layout the child component in the
+##' parent container. Typically, these are passed to the \code{add}
+##' method of the parent container.
+##' @param ... Used to pass along argument to the parent container's
+##'ode{add} method and possible other arguments to the underlying
+##'ference class constructors.
+##' @param width width in pixels of component. Sizing in
+##' \pkg{gWidgetsWWW2} is sometimes necessary as the arguments
+##' \code{expand} and \code{fill} are not well implemented.
+##' @param height height in pixels of the component.
+##' @param ext.args The gWidgets' constructors ultimately call an Ext
+##' constructor. The options passed to the Ext constructor may be
+##' added to or overridden by use of this argument. Values are passed
+##' in a named list components and conversions to JavaScript objects
+##' @param expand Logical or numeric. Does the child component expand
+##' to fill the allotted space? If so a \code{flex} value can be
+##' specified (as a positive integer) that gives weights to all
+##' children of the parent container when they expand.
+##' @param fill Logical or character. When \code{expand=TRUE}, the
+##' space allotted to the component grows, but the widget itself may
+##' not. The \code{fill} argument is a logical value or character
+##' string from "both", "x", or "y", where "both" is the same as
+##' \code{TRUE}. These refer to expansion directions. The widget's may
+##' have defaults for \code{expand} and \code{fill}. Typically, when
+##' packing into box containers, child components expand in the
+##' orthogonal direction (horizontal boxes have vertical, \code{y},
+##' fill values).
+##' @param anchor 
+#' \code{action} argument, and possible other values.
+#' method of the parent container.
+#' reference class constructors.
+#' \code{expand} and \code{fill} are not well implemented.
+#' are handled by \code{\link{toJSObject}}.
+gwidget <- function(handler, action=NULL, container=NULL, ...,
+                    width=NULL, height=NULL, ext.args=NULL,
+                    expand=NULL, fill=NULL, anchor=NULL
+                    ) {
+  ## A documentation stub only
+}
+
+
+##' GWidget is the Base class for widget objects. See
+##' \code{gcontainer} for the base class for container objects. Both
+##' derive from the \code{GComponent} class.
 GWidget <- setRefClass("GWidget",
                        contains="GComponent",
                        fields=list(
@@ -25,7 +81,7 @@ GWidget <- setRefClass("GWidget",
                          )
                        )
                        
-                       ## Needs subclasses:
-                       ## GWidgetWithItems (gradio, ...)
+## Needs subclasses:
+## GWidgetWithItems (gradio, ...)
 ## GWidgetWithProxy (ghtml, gtable, gdf, ...)
 ## GWidgetText      (gtext)

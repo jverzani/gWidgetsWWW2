@@ -1,7 +1,6 @@
 ##' @include gcomponent.R
 NULL
 
-
 GContainer <- setRefClass("GContainer",
                           contains="GComponent",
                           fields=list(
