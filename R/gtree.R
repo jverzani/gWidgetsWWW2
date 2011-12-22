@@ -42,6 +42,7 @@ NULL
 ##' @export
 ##' @examples
 ##' # galton watson
+##' \dontrun{
 ##' offspring <- function(path, ...) {
 ##'   x <- rbinom(2, 1, p=1/2)
 ##'   icons <- c("dismiss","ok")[2-x]
@@ -53,13 +54,13 @@ NULL
 ##' g <- ggroup(cont=w, horizontal=FALSE)
 ##' ghtml("A node in a Galton-Watson tree has 0 or 2 offspring.<br /> In this case each has equal chance.", cont=g)
 ##' gseparator(cont=g)
-##' tr <- gtree(offspring=offspring, icon.FUN=TRUE, cont=g)
+##' tr <- gtree(offspring=offspring,  cont=g)
 ##' size(tr) <- c(300,300)
 ##' b <- gbutton("Try again", cont=g, handler=function(h,...) tr$update())
 ##' visible(w) <- TRUE
+##' }
 gtree <- function(offspring = NULL,
                   offspring.data = NULL,
-                  icon.FUN = NULL,
                   multiple = FALSE, 
                   handler = NULL, action = NULL,
                   container = NULL,
@@ -70,7 +71,7 @@ gtree <- function(offspring = NULL,
                   ) {
 
   tr <- GTree$new(container)
-  tr$init(offspring, offspring.data, icon.FUN, 
+  tr$init(offspring, offspring.data, 
           multiple, handler, action, container, ...,
           width=width, height=height, ext.args=ext.args)
   tr
@@ -85,7 +86,7 @@ GTree <- setRefClass("GTree",
                        cur_record="ANY"
                        ),
                      methods=list(
-                       init=function(offspring, offspring.data, icon.FUN,
+                       init=function(offspring, offspring.data, 
                          multiple, handler, action, container, ...,
                          width=NULL, height=NULL, ext.args=NULL) {
 

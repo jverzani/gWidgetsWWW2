@@ -1,13 +1,48 @@
 \name{mapTypes}
 \alias{mapTypes}
+\alias{mapTypes.date}
+\alias{mapTypes.default}
+\alias{mapTypes.factor}
+\alias{mapTypes.integer}
+\alias{mapTypes.logical}
+\alias{mapTypes.numeric}
+\alias{mapTypes.String}
 \title{Map a type}
 \usage{
   mapTypes(x)
+
+  \method{"mapTypes"}{default} (x)
+
+  \method{"mapTypes"}{String} (x)
+
+  \method{"mapTypes"}{integer} (x)
+
+  \method{"mapTypes"}{numeric} (x)
+
+  \method{"mapTypes"}{logical} (x)
+
+  \method{"mapTypes"}{factor} (x)
+
+  \method{"mapTypes"}{date} (x)
 }
 \arguments{
   \item{x}{object}
 }
 \description{
   Map a type
+
+  mapTypes method
+
+  mapTypes method
+
+  mapTypes method
+
+  mapTypes method
+
+  mapTypes method
+
+  mapTypes method
+
+  mapTypes method
 }
 

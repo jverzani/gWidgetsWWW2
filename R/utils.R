@@ -38,38 +38,47 @@ String <- function(x) {
 ##' @param x object to coerce
 ##' @return returns object sometimes quoted
 ##' @export
-##' @rdname gWidgetsWWW2-generics
 coerceToJSString <- function(x) UseMethod("coerceToJSString")
 
 ##' S3 method for coerceToString
-##' @param x object to coerce
 ##' @method "coerceToJSString" default
 ##' @S3method "coerceToJSString" default
+##' @rdname coerceToJSString
 coerceToJSString.default <- function(x) x # no quote
+
 ##' S3 method for coerceToString
-##' @param x object to coerce
+##' 
 ##' @method "coerceToJSString" character
 ##' @S3method "coerceToJSString" character
+##' @rdname coerceToJSString
 coerceToJSString.character <- function(x) ourQuote(x)
+
 ##' S3 method for coerceToString
-##' @param x object to coerce
+##'
 ##' @method "coerceToJSString" factor
 ##' @S3method "coerceToJSString" factor
+##' @rdname coerceToJSString
 coerceToJSString.factor <- function(x) ourQuote(as.character(x))
+
 ##' S3 method for coerceToString
-##' @param x object to coerce
+##' 
 ##' @method "coerceToJSString" logical
 ##' @S3method "coerceToJSString" logical
+##' @rdname coerceToJSString
 coerceToJSString.logical <- function(x) tolower(as.character(x))
+
 ##' S3 method for coerceToString
-##' @param x object to coerce
+##' 
 ##' @method "coerceToJSString" String
 ##' @S3method "coerceToJSString" String
+##' @rdname coerceToJSString
 coerceToJSString.String <- function(x) x # to avoid quoting
+
 ##' S3 method for coerceToString
-##' @param x object to coerce
+##' 
 ##' @method "coerceToJSString" list
 ##' @S3method "coerceToJSString" list
+##' @rdname coerceToJSString
 coerceToJSString.list <- function(x) toJSObject(x)
 
 ##' map an R list object into a string containing javascript code representation of an object
@@ -129,17 +138,17 @@ emptyJSArray <- function(doBrackets=TRUE)  ifelse(doBrackets, "[]", "")
 toJSArray <- function(x, doBrackets=TRUE) UseMethod("toJSArray")
 
 ##' ToJSArray method
-##' @param x R object to make into an array
-##' @param doBrackets logical Use brackets in ouput []
+##' 
 ##' @method "toJSArray" default
 ##' @S3method "toJSArray" default
+##' @rdname toJSArray
 toJSArray.default <- function(x, doBrackets=TRUE) stop("no default method")
 
 ##' ToJSArray method
-##' @param x R object to make into an array
-##' @param doBrackets logical Use brackets in ouput []
+##' 
 ##' @method "toJSArray" numeric
 ##' @S3method "toJSArray" numeric
+##' @rdname toJSArray
 toJSArray.numeric <- function(x, doBrackets=TRUE) {
   if(!length(x)) return(emptyJSArray(doBrackets))
   x <- as.character(x)
@@ -151,11 +160,10 @@ toJSArray.numeric <- function(x, doBrackets=TRUE) {
 }
 
 ##' ToJSArray method
-##' @param x R object to make into an array
-##' @param doBrackets logical Use brackets in ouput
-##' 
+##'  
 ##' @method "toJSArray" String
 ##' @S3method "toJSArray" String
+##' @rdname toJSArray
 toJSArray.String <- function(x, doBrackets=TRUE) {
   if(!length(x)) return(emptyJSArray(doBrackets))  
   x <- gsub("\\n", " ", x)              # \n messes up JS parsing
@@ -165,10 +173,10 @@ toJSArray.String <- function(x, doBrackets=TRUE) {
 }
 
 ##' ToJSArray method
-##' @param x R object to make into an array
-##' @param doBrackets logical Use brackets in ouput []
+##' 
 ##' @method "toJSArray" logical
 ##' @S3method "toJSArray" logical
+##' @rdname toJSArray
 toJSArray.logical <- function(x,doBrackets=TRUE) {
   if(!length(x)) return(emptyJSArray(doBrackets))
   x <- tolower(as.character(x))
@@ -177,10 +185,10 @@ toJSArray.logical <- function(x,doBrackets=TRUE) {
 }
 
 ##' ToJSArray method
-##' @param x R object to make into an array
-##' @param doBrackets logical Use brackets in ouput []
+##' 
 ##' @method "toJSArray" character
 ##' @S3method "toJSArray" character
+##' @rdname toJSArray
 toJSArray.character <- function(x, doBrackets=TRUE) {
   if(!length(x)) return(emptyJSArray(doBrackets))  
   x <- sprintf("%s", ourQuote(x))
@@ -188,17 +196,17 @@ toJSArray.character <- function(x, doBrackets=TRUE) {
 }
 
 ##' ToJSArray method
-##' @param x R object to make into an array
-##' @param doBrackets logical Use brackets in ouput []
+##' 
 ##' @method "toJSArray" factor
 ##' @S3method "toJSArray" factor
+##' @rdname toJSArray
 toJSArray.factor <- toJSArray.character
 
 ##' ToJSArray method
-##' @param x R object to make into an array
-##' @param doBrackets logical Use brackets in ouput []
+##' 
 ##' @method "toJSArray" matrix
 ##' @S3method "toJSArray" matrix
+##' @rdname toJSArray
 toJSArray.matrix <- function(x, doBrackets=TRUE) {
   out <- paste(apply(x,1,toJSArray), collapse=",")
   if(doBrackets) out <- paste("[", out, "]", sep="")
@@ -207,20 +215,20 @@ toJSArray.matrix <- function(x, doBrackets=TRUE) {
 
 
 ##' ToJSArray method  
-##' @param x R object to make into an array
-##' @param doBrackets logical Use brackets in ouput []
+##' 
 ##' @method "toJSArray" list
 ##' @S3method "toJSArray" list
+##' @rdname toJSArray
 toJSArray.list <- function(x, doBrackets=TRUE) {
   sapply(x, function(i) toJSArray(i,doBrackets))
 }
        
 ## This needs work
 ##' ToJSArray method
-##' @param x R object to make into an array
-##' @param doBrackets logical Use brackets in ouput []
+##' 
 ##' @method "toJSArray" data.frame
 ##' @S3method "toJSArray" data.frame
+##' @rdname toJSArray
 toJSArray.data.frame <- function(x,doBrackets=TRUE) {
   if(nrow(x) == 0) {
     n <- ncol(x)

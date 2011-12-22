@@ -644,46 +644,53 @@ GWidgetArrayStore <- setRefClass("GWidgetArrayStore",
 mapTypes <- function(x) UseMethod("mapTypes")
 
 ##' mapTypes method
-##' @param x object
+##' 
 ##' @method "mapTypes" default
 ##' @S3method "mapTypes" default
+##' @rdname mapTypes
 mapTypes.default <- function(x) list()
 
 
 ##' mapTypes method
-##' @param x object
+##' 
 ##' @method "mapTypes" String
 ##' @S3method "mapTypes" String
+##' @rdname mapTypes
 mapTypes.String <- function(x) list(type="string")
 
 ##' mapTypes method
-##' @param x object
+##' 
 ##' @method "mapTypes" integer
 ##' @S3method "mapTypes" integer
+##' @rdname mapTypes
 mapTypes.integer <- function(x) list(type="int")
 
 ##' mapTypes method
-##' @param x object
+##' 
 ##' @method "mapTypes" numeric
 ##' @S3method "mapTypes" numeric
+##' @rdname mapTypes
 mapTypes.numeric <- function(x) list(type="numeric")
 
 ##' mapTypes method
-##' @param x object
+##' 
 ##' @method "mapTypes" logical
 ##' @S3method "mapTypes" logical
+##' @rdname mapTypes
 mapTypes.logical <- function(x) list(type='bool')
 
 ##' mapTypes method
-##' @param x object
+##' 
 ##' @method "mapTypes" factor
 ##' @S3method "mapTypes" factor
+##' @rdname mapTypes
 mapTypes.factor <- function(x) list()
 
 ##' mapTypes method
-##' @param x object
+##' 
 ##' @method "mapTypes" date
 ##' @S3method "mapTypes" date
+##' @rdname mapTypes
 mapTypes.date <- function(x) list()
 
 ##' helper function to write field names for Ext constructor

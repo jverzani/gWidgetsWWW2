@@ -25,14 +25,6 @@
   reference class objects just those exposed methods which
   must be called as reference methods are mentioned.
 
-  The \code{GWindow} class is used for windows and
-  subwindows. Windows in \pkg{gWidgetsWWW2} are rendered to
-  parts of the web page. In the simplest case, they are
-  rendered to the document body and are the only thing the
-  user sees. However, one can render to parts of a window
-  as well. This is why we have a \code{renderTo} argument
-  in the constructor.
-
   The \code{gcanvas} widget provides a canvas for drawing
   on or for displaying graphics produced by the
   \pkg{canvas} device. The drawing is supported through a
@@ -45,13 +37,21 @@
   back event information through the \code{h} object. The
   method \code{get_event_params} provides the mapping.
 
+  For the \code{GEdit} class, the change signal is
+  "change". Use \code{add_handler_enter} for enter key
+  press and \code{add_handler_blur} for focus out events
+
   For \code{GGroup} and its subclasses, boxes are
   different. For vertical boxes they need to have a height
   set. We use a default of 200.
 
-  For the \code{GEdit} class, the change signal is
-  "change". Use \code{add_handler_enter} for enter key
-  press and \code{add_handler_blur} for focus out events
+  The \code{GWindow} class is used for windows and
+  subwindows. Windows in \pkg{gWidgetsWWW2} are rendered to
+  parts of the web page. In the simplest case, they are
+  rendered to the document body and are the only thing the
+  user sees. However, one can render to parts of a window
+  as well. This is why we have a \code{renderTo} argument
+  in the constructor.
 }
 \details{
   The basic interface is meant to be implemented by all
@@ -100,21 +100,6 @@
   \code{transport_fun}, \code{process_transport},
   \code{param_defn}, \code{prepare_for_handler}
 
-  One of the instances on a page contains the "toplevel"
-  object, which routes handler requests and gives web page
-  responses.
-
-  Subwindows are floating windows that appear on top of the
-  web page, like a dialog box.
-
-  The method \code{start_comet} will launch a long-poll
-  process, whereby the browser repeatedly queries the
-  server for any changes. This can be useful if one expects
-  to launch a long-running process and the handler that
-  initiates this will time out before the process is done.
-  One needs only to add the javascript commands to the
-  queue.
-
   The standard expand, fill, anchor arugments are not
   implemented as they are in RGtk2, say.
 
@@ -139,6 +124,21 @@
   When expand and fill are not used, anchoring should be
   possible. The CSS class needs to be set up properly
   though.
+
+  One of the instances on a page contains the "toplevel"
+  object, which routes handler requests and gives web page
+  responses.
+
+  Subwindows are floating windows that appear on top of the
+  web page, like a dialog box.
+
+  The method \code{start_comet} will launch a long-poll
+  process, whereby the browser repeatedly queries the
+  server for any changes. This can be useful if one expects
+  to launch a long-running process and the handler that
+  initiates this will time out before the process is done.
+  One needs only to add the javascript commands to the
+  queue.
 }
 \author{
   John Verzani \email{jverzani@gmail.com}
