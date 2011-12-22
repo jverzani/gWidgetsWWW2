@@ -84,8 +84,28 @@ gwindow <- function(title="",
 }
 
 ##' base class for top-level windows and subwindows
-##' @name gwindow-class
-##' Method \code{start_comet} will launch long-poll process
+##'
+##' The \code{GWindow} class is used for windows and
+##' subwindows. Windows in \pkg{gWidgetsWWW2} are rendered to parts of
+##' the web page. In the simplest case, they are rendered to the
+##' document body and are the only thing the user sees. However, one
+##' can render to parts of a window as well. This is why we have a
+##' \code{renderTo} argument in the constructor.
+##'
+##' One of the instances on a page contains the "toplevel" object,
+##' which routes handler requests and gives web page responses.
+##'
+##' Subwindows are floating windows that appear on top of the web
+##' page, like a dialog box.
+##'
+##' 
+##' The method \code{start_comet} will launch a long-poll process,
+##' whereby the browser repeatedly queries the server for any
+##' changes. This can be useful if one expects to launch a
+##' long-running process and the handler that initiates this will time
+##' out before the process is done. One needs only to add the
+##' javascript commands to the queue.
+##' @rdname gWidgetsWWW2-package
 GWindow <- setRefClass("GWindow",
                        contains="GContainer",
                        fields=list(
@@ -208,6 +228,14 @@ GWindow <- setRefClass("GWindow",
                            call_Ext("show")
                            
                          },
+                         add = function (child, expand, anchor, fill, ...) {
+                           ## We override the sizing here
+                           if(is(child, "GGroup") && getWithDefault(expand, TRUE)) {
+                              cmd <- paste(child$get_id(),".setSize({width:'100%', height:'100%'});",sep="")
+                              add_js_queue(cmd)
+                           }
+                           callSuper(child, expand, anchor, fill, ...)
+                         },
                          set_visible = function(bool) {
                            "For gwindow, call doLayout if TRUE"
                             do_layout()
@@ -241,17 +269,9 @@ GWindow <- setRefClass("GWindow",
                            "Display js_queue for debugging"
                            toplevel$js_queue$core()
                          },
-                         ## XXX This all needs changing
-                         add_handler_changed = function(handler, action=NULL) {
-                           add_R_handler("onunload", handler, action)
-                         },
                          add_handler_destroy = function(handler, action=NULL) {
                            "When window is destroyed, this is called"
-                           cbid <- toplevel$add_R_handler(.self, handler, action=action)
-                           cmd <- sprintf("window.onunload = function() {callRhandler(%s)};",
-                                          cbid)
-                           add_js_queue(cmd)
-                           cbid
+                           add_handler("destroy", handler, action)
                          }
                          )
                        )

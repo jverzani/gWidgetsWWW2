@@ -21,15 +21,9 @@ NA
 ##' Use \code{svalue<-} to adjust the title. The \code{visible<-}
 ##' method is used to programatically change display
 ##' @param text label text
-##' @param horizontal logical. Indicates direction children are added
-##' @param spacing between component spacing
 ##' @param handler  Called when expanded or closed
 ##' @param action passed to handler
-##' @param container parent container
-##' @param ... passed to add method of parent
-##' @param width width in pixels
-##' @param height height in pixels
-##' @param ext.args passed to constructor
+##' @inheritParams ggroup
 ##' @seealso \code{\link{ggroup}}, \code{\link{gframe}}
 ##' @export
 ##' @examples
@@ -67,8 +61,6 @@ gexpandgroup <- function(text = "", horizontal = TRUE,
   eg
 }
 
-##' base class for gexpandgroup
-##' @name gexpandgroup-class
 GExpandgroup <- setRefClass("GExpandgroup",
                             contains="GGroup",
                             fields=list(

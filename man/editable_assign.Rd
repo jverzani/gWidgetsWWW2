@@ -1,9 +1,7 @@
 \name{editable<-}
 \alias{editable<-}
+\alias{editable<-.GComponent}
 \title{Toggle editability of the object, if supported}
-\usage{
-  editable(x, ...) <- value
-}
 \arguments{
   \item{x}{object. Calls objects \code{set_editable}
   method}
@@ -14,5 +12,7 @@
 }
 \description{
   Toggle editability of the object, if supported
+
+  assignment method for tag
 }
 

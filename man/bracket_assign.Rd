@@ -1,0 +1,18 @@
+\name{[<-.GComponent}
+\alias{[<-.GComponent}
+\title{assignment method for "["}
+\arguments{
+  \item{x}{objecct}
+
+  \item{i}{row}
+
+  \item{j}{column}
+
+  \item{...}{passed to \code{set_items}}
+
+  \item{value}{passed to \code{set_items}}
+}
+\description{
+  assignment method for "["
+}
+

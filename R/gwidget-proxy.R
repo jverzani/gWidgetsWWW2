@@ -278,7 +278,7 @@ GWidgetArrayProxy <- setRefClass("GWidgetArrayProxy",
                                  params <- list(...)
                                  
                                  df <- cbind("id"=seq_len(nrow(value)), value)
-                                 df <- df[visible,]
+                                 df <- df[..visible,]
                                  ## do we have paging type request? We do if params$start is not null
                                  if(!is.null(params$start)) {
                                    start <- as.numeric(params$start)
@@ -647,7 +647,6 @@ mapTypes <- function(x) UseMethod("mapTypes")
 ##' @param x object
 ##' @method "mapTypes" default
 ##' @S3method "mapTypes" default
-##' @nord
 mapTypes.default <- function(x) list()
 
 
@@ -655,47 +654,40 @@ mapTypes.default <- function(x) list()
 ##' @param x object
 ##' @method "mapTypes" String
 ##' @S3method "mapTypes" String
-##' @nord
 mapTypes.String <- function(x) list(type="string")
 
 ##' mapTypes method
 ##' @param x object
 ##' @method "mapTypes" integer
 ##' @S3method "mapTypes" integer
-##' @nord
 mapTypes.integer <- function(x) list(type="int")
 
 ##' mapTypes method
 ##' @param x object
 ##' @method "mapTypes" numeric
 ##' @S3method "mapTypes" numeric
-##' @nord
 mapTypes.numeric <- function(x) list(type="numeric")
 
 ##' mapTypes method
 ##' @param x object
 ##' @method "mapTypes" logical
 ##' @S3method "mapTypes" logical
-##' @nord
 mapTypes.logical <- function(x) list(type='bool')
 
 ##' mapTypes method
 ##' @param x object
 ##' @method "mapTypes" factor
 ##' @S3method "mapTypes" factor
-##' @nord
 mapTypes.factor <- function(x) list()
 
 ##' mapTypes method
 ##' @param x object
 ##' @method "mapTypes" date
 ##' @S3method "mapTypes" date
-##' @nord
 mapTypes.date <- function(x) list()
 
 ##' helper function to write field names for Ext constructor
 ##' @param df data frame
-##' @nord
 makeFields <- function(df) {
   ##
   ## return something like this with name, type

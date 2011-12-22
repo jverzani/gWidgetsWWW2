@@ -22,6 +22,9 @@
   \item{show.log}{If TRUE, logged information is written to
   the console}
 
+  \item{port}{Initial port for Rhttpd server, provided it
+  hasn't already started.}
+
   \item{...}{passed to \code{brew} call of
   \code{brew_template}}
 }
@@ -29,6 +32,7 @@
   load a web app defined by a gWidgetsWWW2 script
 }
 \examples{
+\dontrun{
 ## open an app that takes the entire page
 gw_script <-  system.file("examples/hello-world.R", package="gWidgetsWWW2")
 load_app(gw_script, "HelloApp",  use.google=FALSE)
@@ -38,5 +42,6 @@ load_app(system.file("examples/ggooglemaps.R", package="gWidgetsWWW2"),  "Google
 gw_script <- system.file("examples/ex-multiple-gwindow.R", package="gWidgetsWWW2")
 brew_template <- system.file("framework/brew/custom.rhtml", package="gWidgetsWWW2")
 load_app(gw_script, "MultipleApp",  brew_template)
+}
 }
 

@@ -297,18 +297,6 @@ getFromDots <- function(key, ..., default=NULL) {
     val
 }
 
-##' Get an object using default if otherwise not defined
-##'
-##' if val is null etc, return default, else val
-##' @param val value to get
-##' @param default default to use if null, NA or 0 length
-getWithDefault <- function(val, default) {
-  if(is.null(val) || is.na(val) || length(val) == 0)
-    default
-  else
-    val
-}
-
 ##' merge two lists
 ##' 
 ##' @param x a list

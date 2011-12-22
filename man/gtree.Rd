@@ -1,7 +1,90 @@
-\name{GTree}
-\alias{GTree}
-\title{base class for gtree}
+\name{gtree}
+\alias{gtree}
+\title{gtree widget}
+\usage{
+  gtree(offspring = NULL, offspring.data = NULL, icon.FUN =
+  NULL, multiple = FALSE, handler = NULL, action = NULL,
+  container = NULL, ..., width = NULL, height = NULL,
+  ext.args = NULL)
+}
+\arguments{
+  \item{offspring}{function with signature (path, data).
+  Returns a data frame with columns: key (which creates the
+  path), offspring (a logical indicating if the node has
+  children), icon (a character vector of stock icons names
+  or ""), and any other values to display in subsequent
+  columns. The column names are mapped to header names. A
+  column named \code{qtip} will be rendered as a tooltip,
+  not as another column. The order of the columns is used,
+  so make sure it goes key, offspring, icon, any other}
+
+  \item{offspring.data}{passed to offspring call so that
+  the offspring function can be parameterized if desired.}
+
+  \item{multiple}{logical do we allow multiple selection.
+  NOT IMPLEMENTED}
+
+  \item{handler}{optional means (to
+  \code{\link{addHandlerChanged}} to specify a handler for
+  the default signal. A handler is a function with
+  signature \code{(h,...)} where \code{h} is a list with
+  components \code{obj} referring to the object emitting
+  the signal, \code{action} containing values passed to the
+  \code{action} argument, and possible other values.}
+
+  \item{action}{Passed to handler to parameterize a call}
+
+  \item{container}{A parent container. In
+  \pkg{gWidgetsWWW2} a parent container is not optional
+  (though it can be substituted with the \code{parent}
+  argument in some circumstances). The parent specifies the
+  widget heirarchy and the \code{...} argument is used to
+  pass along arguments to layout the child component in the
+  parent container. Typically, these are passed to the
+  \code{add} method of the parent container.}
+
+  \item{...}{Used to pass along argument to the parent
+  container's ode{add} method and possible other arguments
+  to the underlying ference class constructors.}
+
+  \item{width}{width in pixels of component. Sizing in
+  \pkg{gWidgetsWWW2} is sometimes necessary as the
+  arguments \code{expand} and \code{fill} are not well
+  implemented.}
+
+  \item{height}{height in pixels of the component.}
+
+  \item{ext.args}{The gWidgets' constructors ultimately
+  call an Ext constructor. The options passed to the Ext
+  constructor may be added to or overridden by use of this
+  argument. Values are passed in a named list components
+  and conversions to JavaScript objects}
+}
 \description{
-  base class for gtree
+  Widget to display heirarchical data. The data is
+  described by a function which returns the offspring for
+  agiven node in a specific format. This implementation can
+  only show one column's worth of data and an icon.
+}
+\note{
+  TODO: implement multiple slection
+}
+\examples{
+# galton watson
+offspring <- function(path, ...) {
+x <- rbinom(2, 1, p=1/2)
+icons <- c("dismiss","ok")[2-x]
+nms <- c("branch","leaf")[x+1]
+ttip <- paste("This is a ", nms)
+data.frame(id=letters[1:2], hasoffspring=as.logical(x), icons=icons, value=nms, qtip=ttip, stringsAsFactors=FALSE)
+}
+w <- gwindow("Galton Watson tree")
+g <- ggroup(cont=w, horizontal=FALSE)
+ghtml("A node in a Galton-Watson tree has 0 or 2 offspring.<br /> In this case each has equal chance.", cont=g)
+gseparator(cont=g)
+tr <- gtree(offspring=offspring, icon.FUN=TRUE, cont=g)
+size(tr) <- c(300,300)
+b <- gbutton("Try again", cont=g, handler=function(h,...) tr$update())
+visible(w) <- TRUE
 }
 

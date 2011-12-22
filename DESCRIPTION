@@ -3,7 +3,6 @@ Maintainer: John Verzani <jverzani@gmail.com>
 License: GPL (>= 3)
 Title: Toolkit implementation of the gWidgets API for use
     with web pages
-LazyLoad: TRUE
 Author: John Verzani
 Description: Port of the gWidgets API to program dynamic
     websites with R code. This package uses Rook to enable
@@ -20,7 +19,8 @@ Depends:
     brew,
     RJSONIO,
     canvas,
-    memoise
+    memoise,
+    whisker
 Collate:
     'gwidgets-package.R'
     'array.R'

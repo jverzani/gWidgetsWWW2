@@ -22,15 +22,8 @@ NULL
 ##' @param to to
 ##' @param by by. From to by are same as seq() usage
 ##' @param value initial value
-##' @param handler handler for when change is made
-##' @param action passed to the handler, if given
-##' @param container parent container
-##' @param ... passed to \code{add} method of container
-##' @param width width, ignored
-##' @param height height, ignored
-##' @param ext.args list. Can pass in other configuration arguments to Ext widget
-##' @return an ExtWidget instance
-##' @note Buggy! For some reason both trigger icons don't show! Just the down arrow!
+##' @inheritParams gwidget
+##' @return an GSpinbutton reference class instance
 ##' @export
 ##' @examples
 ##' w <- gwindow()
@@ -47,8 +40,7 @@ gspinbutton <- function(from = 0, to = 100, by = 1, value = from,
   sp
 }
 
-##' base class for gspinbutton
-##' @name gspinbutton-class
+## base class for gspinbutton
 GSpinbutton <- setRefClass("GSpinbutton", 
                        contains="GWidget",
                        fields=list(
@@ -81,7 +73,6 @@ GSpinbutton <- setRefClass("GSpinbutton",
                            .self
 
                          },
-                         get_value = function(...) value,
                          set_value = function(value, ...) {
                            value <<- value                           
 
@@ -97,19 +88,6 @@ GSpinbutton <- setRefClass("GSpinbutton",
                          },
                          process_transport = function(value) {
                            value <<- as.numeric(value)
-                         },
-                         ## XXX factor out into gcomponent with check on change_signal, and something else
-                         param_defn=function(signal) {
-                           if(signal == change_signal) {
-                             transport_fun()
-                           } else {
-                             ""
-                           }
-                         },
-                         prepare_for_handler=function(signal, params) {
-                           if(signal == change_signal) {
-                             process_transport(params)
-                           }
                          }
                          )
                        )

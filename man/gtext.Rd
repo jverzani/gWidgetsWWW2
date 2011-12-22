@@ -18,19 +18,37 @@
 
   \item{wrap}{Ignored Do we wrap the tet}
 
-  \item{handler}{handler}
-
-  \item{action}{action}
-
-  \item{container}{parent container}
-
-  \item{...}{passed to add method of parent container}
-
-  \item{ext.args}{Extra arguments to pass to Ext
-  constructor}
-
   \item{resizable}{Ignored. (Should area be resizable on
   the page)}
+
+  \item{handler}{optional means (to
+  \code{\link{addHandlerChanged}} to specify a handler for
+  the default signal. A handler is a function with
+  signature \code{(h,...)} where \code{h} is a list with
+  components \code{obj} referring to the object emitting
+  the signal, \code{action} containing values passed to the
+  \code{action} argument, and possible other values.}
+
+  \item{action}{Passed to handler to parameterize a call}
+
+  \item{container}{A parent container. In
+  \pkg{gWidgetsWWW2} a parent container is not optional
+  (though it can be substituted with the \code{parent}
+  argument in some circumstances). The parent specifies the
+  widget heirarchy and the \code{...} argument is used to
+  pass along arguments to layout the child component in the
+  parent container. Typically, these are passed to the
+  \code{add} method of the parent container.}
+
+  \item{...}{Used to pass along argument to the parent
+  container's ode{add} method and possible other arguments
+  to the underlying ference class constructors.}
+
+  \item{ext.args}{The gWidgets' constructors ultimately
+  call an Ext constructor. The options passed to the Ext
+  constructor may be added to or overridden by use of this
+  argument. Values are passed in a named list components
+  and conversions to JavaScript objects}
 }
 \value{
   an ExtWidget instance

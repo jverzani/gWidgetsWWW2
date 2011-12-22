@@ -3,22 +3,18 @@
 \title{A simple message dialog.}
 \usage{
   gmessage(message, title = "message", icon = NULL, parent
-  = NULL, handler = NULL, action = NULL, ...)
+  = NULL, ...)
 }
 \arguments{
   \item{message}{main message.}
 
   \item{title}{Title for dialog's window}
 
-  \item{icon}{icon to decorate dialog}
+  \item{icon}{icon to decorate dialog. One of
+  \code{c("info", "warning", "error", "question")}.}
 
   \item{parent}{parent container (the main window
   instance)}
-
-  \item{handler}{Ignored. handler passed to dialog when
-  confirmed}
-
-  \item{action}{Ignored. action passed to handler}
 
   \item{...}{ignored}
 }

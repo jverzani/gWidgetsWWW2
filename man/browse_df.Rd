@@ -12,8 +12,10 @@
 
   \item{height}{height of display}
 
-  \item{paging.}{Logical. Do we have paging to display
+  \item{paging}{Logical. Do we have paging to display
   values. Should use if \code{nrow(d) > 200} or so}
+
+  \item{...}{ignored}
 }
 \value{
   creates webpage showing data frame
@@ -23,6 +25,8 @@
   gtable
 }
 \examples{
+\dontrun{
 browse_df(mtcars)
+}
 }
 

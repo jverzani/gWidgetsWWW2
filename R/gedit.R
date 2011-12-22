@@ -24,12 +24,9 @@ NULL
 ##' @param width width in characters. Converted to pixels by multiplying by 8.
 ##' @param coerce.with Function to call for coercion from text. If no
 ##' coercion be careful when using the values, as the user can potentiall type in malicious things.
-##' @param handler Change handler. Change is a "blur" event (when widget loses focus) and when key is activated.
-##' @param action passed to handler
-##' @param container parent container
-##' @param ... passed to add method of parent container
-##' @param ext.args extra arguments to pass to constructor
-##' @return an ExtWidget object
+##' @param initial.msg initial message to user, in greyed out text
+##' @inheritParams gwidget
+##' @return a \code{GEdit} referece class object
 ##' @export
 ##' @examples
 ##' w <- gwindow()
@@ -50,10 +47,11 @@ gedit <- function (text = "", width = 25, coerce.with = NULL, initial.msg="",
 
 
 ##' base class for gedit
-##' @name gedit-class
-##' change signal is any change
-##' \code{add_handler_enter} for enter key
-##' \code{add_handler_blur} for focus out
+##' 
+##' For the \code{GEdit} class, the change signal is  "change". Use
+##' \code{add_handler_enter} for enter key press and
+##' \code{add_handler_blur} for focus out events
+##' @rdname gWidgetsWWW2-package
 GEdit <- setRefClass("GEdit",
                      contains="GWidgetText",
                      fields=list(

@@ -1,9 +1,7 @@
 \name{svalue<-}
 \alias{svalue<-}
+\alias{svalue<-.GComponent}
 \title{Set main value associated with a widget}
-\usage{
-  svalue(x, ...) <- value
-}
 \arguments{
   \item{x}{object}
 
@@ -14,5 +12,7 @@
 }
 \description{
   Set main value associated with a widget
+
+  assignment method for svalue
 }
 

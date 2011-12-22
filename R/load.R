@@ -13,9 +13,11 @@ NULL
 ##' brew template to hold these place holders and other HTML code.
 ##' @param use.googlemap If using \code{ggooglemaps} include this so that the JavaScript files are downloaded.
 ##' @param show.log If TRUE, logged information is written to the console
+##' @param port Initial port for Rhttpd server, provided it hasn't already started.
 ##' @param ... passed to \code{brew} call of \code{brew_template}
 ##' @export
 ##' @examples
+##' \dontrun{
 ##' ## open an app that takes the entire page
 ##' gw_script <-  system.file("examples/hello-world.R", package="gWidgetsWWW2")
 ##' load_app(gw_script, "HelloApp",  use.google=FALSE)
@@ -25,11 +27,11 @@ NULL
 ##' gw_script <- system.file("examples/ex-multiple-gwindow.R", package="gWidgetsWWW2")
 ##' brew_template <- system.file("framework/brew/custom.rhtml", package="gWidgetsWWW2")
 ##' load_app(gw_script, "MultipleApp",  brew_template)
+##' }
 load_app <- function(script_name,
                      app_name="test",
                      brew_template = "",
                      use.googlemap = FALSE,
-##                     use.googleVis=TRUE,
                      show.log=FALSE,
                      port=9000,
                      ...

@@ -14,22 +14,17 @@
 ##      along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ##' @include gcontainer.R
-NA
+NULL
 
 
 ##'  Group, or box, container
 ##'
 ##' A box container. Can pack in left to right or top to bottom.
-##' The expand, fill, anchor arguments are not (yet?) implemented
-##' @param horizontal left or right, or top to bottom (FALSE)
+##' @param horizontal left or right (default), or top to bottom (\code{horizontal=FALSE})
 ##' @param spacing body spacing
-##' @param use.scrollwindow ignored
-##' @param container parent container
-##' @param ... passed to add method of parent container
-##' @param width optional width in pixels
-##' @param height optional height in pixels
-##' @param ext.args extra arguments to pass to Ext constructor
-##' @return an ExtContainer object
+##' @param use.scrollwindow logical. If given, scrollbars will appear
+##' @inheritParams gwidget
+##' @return a \code{GGroup} reference class  object
 ##' @export
 ##' @examples
 ##' w <- gwindow()
@@ -66,11 +61,12 @@ ggroup <- function(
 
 ##' base class for ggroup
 ##'
-##' Boxes are different. For horizontal boxes they need to have a
-##' width set, for vertical boxes they need to have a height set. We
-##' use a default of 200.
+##' For \code{GGroup}  and its subclasses, boxes are different. For
+##' vertical boxes they need to have a height set. We use a default of
+##' 200.
 ##' 
-##' The standard expand, fill, anchor arugments are not implemented as they are in RGtk2, say.
+##' The standard expand, fill, anchor arugments are not implemented as
+##' they are in RGtk2, say.
 ##'
 ##' The expand maps to flex which is a weight for stretching the
 ##' object in the packing direction. That is for a hbox, it will
@@ -79,7 +75,7 @@ ggroup <- function(
 ##' The fill corresponds to the align argument for the container --
 ##' not the component. There is no way to fill just one. The fill
 ##' value of "stretch" will stretch the component in the orthogonal
-##' directin to filling. Passing the value "stretchmax" should stretch
+##' direction to filling. Passing the value "stretchmax" should stretch
 ##' to the largest child size, but not the max.
 ##'
 ##' So expand=TRUE, fill=TRUE will will stretch in both
@@ -91,6 +87,7 @@ ggroup <- function(
 ##'
 ##' When expand and fill are not used, anchoring should be
 ##' possible. The CSS class needs to be set up properly though.
+##' @rdname gWidgetsWWW2-package
 GGroup <- setRefClass("GGroup",
                        contains="GContainer",
                        fields=list(
@@ -112,8 +109,8 @@ GGroup <- setRefClass("GGroup",
                            spacing <<- spacing
                            horizontal <<- horizontal
 
-                           width <-  getWithDefault(width, default=if(horizontal) 200 else NULL)
-                           height <- getWithDefault(height, default=if(!horizontal) 200 else NULL)
+                           ## give a default height if horizontal=FALSE
+                           ## height <- getWithDefault(height, default=if(!horizontal) 200 else NULL)
 
                            
                            ## spacing goes around inner margins of the box

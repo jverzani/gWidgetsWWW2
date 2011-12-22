@@ -1,5 +1,6 @@
 \name{gcombobox}
 \alias{gcombobox}
+\alias{gdroplist}
 \title{combobox implementation}
 \usage{
   gcombobox(items, selected = 1, editable = FALSE,
@@ -22,28 +23,50 @@
   \code{0L} for none.}
 
   \item{editable}{logical. Does combobox allow editing. A
-  bug (of package writer's limiations) in extjs do not
+  bug (or package writer's limiations) in extjs do not
   allow one to set the value if it is a potential index. Go
   figure. Use 4.0, not 5 ...}
 
   \item{coerce.with}{Function. If given, called on value
   before returning}
 
-  \item{handler}{handler}
-
-  \item{action}{action}
-
-  \item{container}{parent container}
-
-  \item{...}{passed to \code{add} method of parent}
-
-  \item{width}{width}
-
-  \item{height}{height}
-
-  \item{ext.args}{extra arguments to pass to constructor}
-
   \item{tpl}{a template for the item (Not working!)}
+
+  \item{handler}{optional means (to
+  \code{\link{addHandlerChanged}} to specify a handler for
+  the default signal. A handler is a function with
+  signature \code{(h,...)} where \code{h} is a list with
+  components \code{obj} referring to the object emitting
+  the signal, \code{action} containing values passed to the
+  \code{action} argument, and possible other values.}
+
+  \item{action}{Passed to handler to parameterize a call}
+
+  \item{container}{A parent container. In
+  \pkg{gWidgetsWWW2} a parent container is not optional
+  (though it can be substituted with the \code{parent}
+  argument in some circumstances). The parent specifies the
+  widget heirarchy and the \code{...} argument is used to
+  pass along arguments to layout the child component in the
+  parent container. Typically, these are passed to the
+  \code{add} method of the parent container.}
+
+  \item{...}{Used to pass along argument to the parent
+  container's ode{add} method and possible other arguments
+  to the underlying ference class constructors.}
+
+  \item{width}{width in pixels of component. Sizing in
+  \pkg{gWidgetsWWW2} is sometimes necessary as the
+  arguments \code{expand} and \code{fill} are not well
+  implemented.}
+
+  \item{height}{height in pixels of the component.}
+
+  \item{ext.args}{The gWidgets' constructors ultimately
+  call an Ext constructor. The options passed to the Ext
+  constructor may be added to or overridden by use of this
+  argument. Values are passed in a named list components
+  and conversions to JavaScript objects}
 }
 \value{
   an ExtWidget instance

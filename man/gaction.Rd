@@ -12,7 +12,7 @@
 
   \item{icon}{action icon class}
 
-  \item{handler}{handler called when action activated}
+  \item{handler}{function called when action is invoked}
 
   \item{parent}{toplevel window of action (where it can be
   called). Required here}
@@ -20,7 +20,7 @@
   \item{...}{ignored}
 }
 \value{
-  an \code{ExtWidget} object
+  a \code{GWidget} object
 }
 \description{
   actions are reusable encapsulations of actions. The

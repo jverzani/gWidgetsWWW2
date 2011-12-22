@@ -19,8 +19,6 @@ NULL
 ## An array class.
 ##
 ## Like a list, but has some methods. Completely superflous, but makes copying some code algorithms easier
-##
-
 Array <- setRefClass("Array",
                     fields=list(
                       "l"="list",

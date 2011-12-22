@@ -22,14 +22,8 @@ NULL
 ##' svalue method refers to the date, which depends on the value of format.xf
 ##' @param text optional inital date as text.
 ##' @param format format of date. Default of Y-m-d.
-##' @param handler handler called when date changed
-##' @param action action passed to handler
-##' @param container parent container
-##' @param ... passed to \code{add} method of container
-##' @param width width of widget in pixels
-##' @param height height of widget in pixels
-##' @param ext.args extra arguments passed to Ext constructor
-##' @return a \code{ExtWidget} instance
+##' @inheritParams gwidget
+##' @return a \code{GCalendar} instance
 ##' @export
 ##' @examples
 ##' w <- gwindow("Calendar")
@@ -46,8 +40,7 @@ gcalendar <- function(text = "", format = NULL,
   cal
 }
 
-##' class for gcalendar
-##' @name gcalendar-class
+## Calendar class
 GCalendar <- setRefClass("GCalendar",
                          contains="GWidget",
                          fields=list(

@@ -1,3 +1,19 @@
+##      Copyright (C) 2011  John Verzani
+##  
+##      This program is free software: you can redistribute it and/or modify
+##      it under the terms of the GNU General Public License as published by
+##      the Free Software Foundation, either version 3 of the License, or
+##      (at your option) any later version.
+##  
+##      This program is distributed in the hope that it will be useful,
+##      but WITHOUT ANY WARRANTY; without even the implied warranty of
+##      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##      GNU General Public License for more details.
+##  
+##      You should have received a copy of the GNU General Public License
+##      along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
 ##' @include array.R
 ##' @include ext-misc.R
 ##' @include BasicInterface.R
@@ -10,7 +26,60 @@ NULL
                          
 ##' Base class for all Ext objects
 ##'
-##' This adds ext methods to our gWidgets interface
+##' The basic setup of gWidgetsWWW2 involves a set of constructors and
+##' S3 methods for manipulating the constructed objects. The
+##' constructors return a reference class object. The S3 methods then
+##' simply pass arguments along to the appropriate reference class
+##' method. Of course, these may be called directly, but for
+##' portability of gWidgets code to other toolkit this is not
+##' recommended. However, for methods that are only implemented in a
+##' given toolkit, such reference method calls becomes necessary and
+##' desirable. In documenting the reference class objects just those
+##' exposed methods which must be called as reference methods are
+##' mentioned.
+##'
+##' The basic interface is meant to be implemented by all gWidgets
+##' implementations. The forthcoming gWidgets2 will expect that. So
+##' gWidgets2WWW will use the basic interface, but for now
+##' gWidgetsWWW2 does only for the most part.
+##'
+##' The GComponent class is used to define methods common to most all
+##' the widgets. This class also includes methods for processing
+##' callbacks. This is different in gWidgetsWWW2. The basic idea is
+##' that JavaScript is used to make a callback into the session
+##' containing a session id (to find the correct evaluation
+##' environment), a object id (to find the signaling object), a signal
+##' (to look up the handlers assigned to that object for the given
+##' signal) and possibly some extra parameters. The latter are there
+##' to bypass the transport calls that are used to synchronize the
+##' widget state from the browser with the R session data. These calls
+##' are asynchronous so may not have been processed when the handler
+##' call is processed.
+##'
+##' The lookup used above requires each widget to be registered in a
+##' toplevel object which is unique to a page. This toplevel object is
+##' found from the session id, then looks up the object from the
+##' passed in object id. This toplevel object is passed into a widget
+##' via either the \code{container} argument or the \code{parent}
+##' argument. In addition to routing requests to handlers, the
+##' toplevel object also is used to send back JavaScript commands to
+##' the browser. The method \code{add_js_queue} is all that is needed
+##' for this. A convenience method \code{call_Ext} provides an
+##' alternative. For this method one specifies a method name and named
+##' arguments that are converted to a JavaScript object to
+##' parameterize the method call. Somewhat reverse to this is calling
+##' an R object from JavaScript. The method \code{call_rpc} is used
+##' for this, where in the JavaScript one uses \code{jRpc} to initiate
+##' the call and \code{add_public_method} to register that an object's
+##' method is available to be called in this manner.
+##' 
+##' Methods related to the handler code are \code{add_handler},
+##' \code{invoke_handler}, \code{handler_widget},
+##' \code{connect_to_toolkit},  \code{transport_fun},
+##' \code{process_transport}, \code{param_defn},
+##' \code{prepare_for_handler}
+##'
+##'  @rdname gWidgetsWWW2-package
 GComponent <- setRefClass("GComponent",
                          contains="BasicToolkitInterface",
                          fields=list(
@@ -177,7 +246,7 @@ GComponent <- setRefClass("GComponent",
                              "javascript function for transport web -> R. Creates an object param.
 This is a string to be passed to the javascript queue withing the transport function call
 E.g. var param = {value: this.getText()}"
-                             ""         # no default
+                             "var param = null;"         # no default
                            },
                            write_transport = function() {
                              "Writes out JavaScript for transport function"
@@ -233,12 +302,6 @@ E.g. var param = {value: this.getText()}"
                               add_R_callback(signal)
                              connected_signals[[signal]] <<- TRUE
                            },
-                           ## Various pieces to override
-                           param_defn=function(signal) {
-                             "Define different parameter definitions based on the signal"
-                             ## used with prepare_for_handler to pass in values before callback
-                             "var param = null" # nothing
-                           },
                            cb_args=function(signal) {
                              "Callback arguments, may be overridden in a subclass"
                              getWithDefault(.ext_callback_arguments[[signal, exact=TRUE]], "")
@@ -281,10 +344,11 @@ E.g. var param = {value: this.getText()}"
                            ## use the transport mechanism and are
                            ## meant to be overridden.
                            param_defn=function(signal) {
+                             "Define different parameter definitions based on the signal"
                              if(signal == change_signal) {
                                transport_fun()
                              } else {
-                               ""
+                               "var param = null"
                              }
                            },
                            prepare_for_handler=function(signal, params) {
@@ -337,6 +401,18 @@ E.g. var param = {value: this.getText()}"
                              "Generic change handler invoker."
                              if(!is(change_signal, "uninitializedField") && length(change_signal))
                                invoke_handler(signal=change_signal, ...)
+                           },
+                           add_handler_change=function(handler, action=NULL, ...) {
+                             add_handler("change", handler, action, ...)
+                           },
+                           add_handler_clicked=function(handler, action=NULL, ...) {
+                             add_handler("clicked", handler, action, ...)
+                           },
+                           add_handler_blur=function(handler, action=NULL, ...) {
+                             add_handler("blur", handler, action, ...)
+                           },
+                           add_handler_double_click=function(handler, action=NULL, ...) {
+                             add_handler("dblclick", handler, action, ...)
                            },
                            ##
                            ## rpc
@@ -451,13 +527,24 @@ E.g. var param = {value: this.getText()}"
                            },
                            set_size = function(val) {
                              "Set size, specified as width or c(width, height)"
+                             ## may use:
+                             ## A Number specifying the new width in the Element's Ext.Element.defaultUnits (by default, pixels).
+                             ## A String used to set the CSS width style.
                              if(is.list(val))
                                val <- unlist(val)
                              
                              if(length(val) == 1)
                                call_Ext("setWidth", val)
-                             else
-                               call_Ext("setSize", val[1], val[2])
+                             else {
+                               ## depends on class
+                               if(is.numeric(val)) {
+                                 call_Ext("setSize", val[1], val[2])
+                               } else {
+                                 ## This allows set_size("100%", "100%")
+                                 cmd <- sprintf("%s.setSize(width:'%s',height:'%s');", val[1], val[2])
+                                 add_js_queue(cmd)
+                               }
+                             }
                            },
                            destroy = function() {
                              "destroy component"

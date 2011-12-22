@@ -21,13 +21,7 @@ NULL
 ##' @param text text for label. Main property. Use \code{svalue<-} to change. 
 ##' @param markup logical. Ignored, but see example for \code{ext.args} usage
 ##' @param editable logical. Ignored
-##' @param handler ignored
-##' @param action ingnored
-##' @param container parent container
-##' @param ... passed to parent container's \code{add} method
-##' @param width ignored
-##' @param height ignored
-##' @param ext.args additional options passed to Ext constructor.
+##' @inheritParams gwidget
 ##' @return an ExtWidget object
 ##' @export
 ##' @examples
@@ -46,8 +40,7 @@ glabel <- function(text = "", markup = FALSE, editable = FALSE,
   l
 }
 
-##' base class for glabel
-##' @name glabel-class
+
 GLabel <- setRefClass("GLabel",
                       contains="GWidget",
                       method=list(

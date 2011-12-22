@@ -15,26 +15,47 @@
   \item{horizontal}{logical. Horizontal or vertical layout.
   (See also columns)}
 
-  \item{handler}{called when radio buttons change}
-
-  \item{action}{passed to handler}
-
-  \item{container}{parent container}
-
-  \item{...}{passed to add method of container}
-
-  \item{width}{width in pixels}
-
-  \item{height}{height in pixels}
-
-  \item{ext.args}{list. Can pass in additional ext
-  arguments, overriding defaults}
-
   \item{columns}{Can be used to override horizontal TRUE or
   FALSE}
+
+  \item{handler}{optional means (to
+  \code{\link{addHandlerChanged}} to specify a handler for
+  the default signal. A handler is a function with
+  signature \code{(h,...)} where \code{h} is a list with
+  components \code{obj} referring to the object emitting
+  the signal, \code{action} containing values passed to the
+  \code{action} argument, and possible other values.}
+
+  \item{action}{Passed to handler to parameterize a call}
+
+  \item{container}{A parent container. In
+  \pkg{gWidgetsWWW2} a parent container is not optional
+  (though it can be substituted with the \code{parent}
+  argument in some circumstances). The parent specifies the
+  widget heirarchy and the \code{...} argument is used to
+  pass along arguments to layout the child component in the
+  parent container. Typically, these are passed to the
+  \code{add} method of the parent container.}
+
+  \item{...}{Used to pass along argument to the parent
+  container's ode{add} method and possible other arguments
+  to the underlying ference class constructors.}
+
+  \item{width}{width in pixels of component. Sizing in
+  \pkg{gWidgetsWWW2} is sometimes necessary as the
+  arguments \code{expand} and \code{fill} are not well
+  implemented.}
+
+  \item{height}{height in pixels of the component.}
+
+  \item{ext.args}{The gWidgets' constructors ultimately
+  call an Ext constructor. The options passed to the Ext
+  constructor may be added to or overridden by use of this
+  argument. Values are passed in a named list components
+  and conversions to JavaScript objects}
 }
 \value{
-  an ExtWidget object
+  a \code{GRadio} reference class object
 }
 \description{
   A basic radio button group. Specify the labels through

@@ -19,19 +19,14 @@ NULL
 ##' File selection form
 ##'
 ##' This renders a file selection form within a small panel
-##' widget. There are two steps: select a file, then save the file to
-##' the server.
+##' widget. There are two steps needed to transfer a file: a) select a
+##' file through a dialog, b) save the file to the server by clicking
+##' the upload button.
 ##' @param text Instructional text. 
 ##' @param type only "open" implemented
 ##' @param filter ignored
-##' @param handler Called when file is succesfully uploaded
-##' @param action passed to handler when callled
-##' @param container parent container
-##' @param ... passed to add method of parent container
-##' @param width width in pixels
-##' @param height ignored
-##' @param ext.args extra args to pass to constructor
-##' @return an ExtWidget
+##' @inheritParams gwidget
+##' @return a \code{GFile} instance
 ##' @note the \code{svalue} method returns the temporary filename of
 ##' the uploaded file, or a value of \code{NA}. The property
 ##' \code{filename} holds the original filename.

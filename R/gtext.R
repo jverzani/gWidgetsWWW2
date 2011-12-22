@@ -23,11 +23,7 @@ NULL
 ##' @param height height in pixels
 ##' @param font.attr Ignored. Default font attributes
 ##' @param wrap Ignored Do we wrap the tet
-##' @param handler handler
-##' @param action action
-##' @param container parent container
-##' @param ... passed to add method of parent container
-##' @param ext.args Extra arguments to pass to Ext constructor
+##' @inheritParams gwidget
 ##' @param resizable Ignored. (Should area be resizable on the page)
 ##' @return an ExtWidget instance
 ##' @export

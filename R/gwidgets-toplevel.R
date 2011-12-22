@@ -19,8 +19,6 @@ NULL
 ## Need a toplevel gWidgetsApp to store session, ...
 ## called from GWindow
 
-##' Class for toplevel instances (one per script)
-##' @exportClass GWidgetsTopLevel
 GWidgetsTopLevel <- setRefClass("GWidgetsTopLevel",
                                 fields=list(
                                   "e" = "environment", # evaluation environment

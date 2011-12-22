@@ -1,9 +1,7 @@
 \name{font<-}
 \alias{font<-}
+\alias{font<-.GComponent}
 \title{Set font properties, if implemented}
-\usage{
-  font(x) <- value
-}
 \arguments{
   \item{x}{widget}
 
@@ -12,5 +10,7 @@
 }
 \description{
   Set font properties, if implemented
+
+  assignment method for font
 }
 

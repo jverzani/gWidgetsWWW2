@@ -34,9 +34,8 @@ asIcon <- function(x) {
 isIcon <- function(x) is(x,"Icon")
 
 
-##' basename without extension
-##' @param x file to extract basename from
-##' @nord
+## basename without extension
+## @param x file to extract basename from
 .our_basename <- function(x) {
   b <- basename(x)
   if(grepl("\\.", b)) {
@@ -46,11 +45,10 @@ isIcon <- function(x) is(x,"Icon")
   b
 }
 
-##' make an icon class helper
-##' @param f file
-##' @param url of icon
-##' @param prefix prefix of icon class name
-##' @nord
+## make an icon class helper
+## @param f file
+## @param url of icon
+## @param prefix prefix of icon class name
 .make_icon_class <- function(f, url=f, prefix="x-gw-icon") {
 ## f is filename, url is url of file
   b <- .our_basename(f)
@@ -60,8 +58,7 @@ isIcon <- function(x) is(x,"Icon")
        )
 }
 
-##' internal array of stock icons
-##' @nord
+## internal array of stock icons
 .gWidgets_stock_icons <- Array$new()         # list of stock icons classes and urls
 
 ## populate stock icons array. Return icons for inclusion into style sheet

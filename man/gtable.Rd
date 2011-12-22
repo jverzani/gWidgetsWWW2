@@ -43,11 +43,6 @@
   \item{ext.args}{additional configuration values to pass
   to constructor}
 
-  \item{paging.}{Logical. If \code{TRUE}, then data will be
-  loaded in chunks -- not all at once. The default page
-  size is 200. This can be adjusted by setting
-  \code{gtable_object$page_size <- 50}, say.}
-
   \item{paging}{Either a logical variable or integer. If
   \code{TRUE} then paging will be used which allows only
   chunks of the data to be sent to the browser at a time

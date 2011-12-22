@@ -22,11 +22,7 @@ NULL
 ##' allocate space between them. Simply use as a parent container
 ##' twice. Unlike other gWidgets implementations, \code{svalue<-} is not implemented.
 ##' @param horizontal logical. Side by side (or top/bottom) layout
-##' @param container parent container
-##' @param ... passed to parent container's add method
-##' @param width width of container in pixels
-##' @param height height of container in pixels
-##' @param ext.args list. Passed to Ext constructor
+##' @inheritParams gwidget
 ##' @param collapsible logical. If TRUE, one child wil have a button so that it can be collapsed
 ##' @param default.size Integer pixel size of right or bottom
 ##' container when drawn. Defaults to half of height or width, or 200
@@ -50,9 +46,6 @@ gpanedgroup <- function(horizontal=TRUE, container=NULL, ...,
   pg
 }
 
-
-##' base class for gpanedgroup
-##' @name gpanedgroup-class
 GPanedGroup <- setRefClass("GPanedGroup",
                            contains="GContainer",
                            fields=list(
@@ -60,7 +53,7 @@ GPanedGroup <- setRefClass("GPanedGroup",
                              horizontal="logical"
                              ),
                            method=list(
-                             init=function(horizontal, container, width=NULL, height=NULL, ext.args=NULL,...,
+                             init=function(horizontal, container, ..., width=NULL, height=NULL, ext.args=NULL,
                                collapsible=FALSE, default.size=NULL
                                ) {
                                child_ct <<- 0
@@ -113,7 +106,7 @@ GPanedGroup <- setRefClass("GPanedGroup",
 
                                container$add(.self, ...)
                              },
-                             add = function(child, where=NULL) {
+                             add = function(child, where=NULL, ...) {
                                ## where can be compass point. First child is in "center"
                                if(is.null(where)) {
                                  if(child_ct == 0)

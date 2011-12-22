@@ -1,9 +1,7 @@
 \name{enabled<-}
 \alias{enabled<-}
+\alias{enabled<-.GComponent}
 \title{Set if widget is enabled}
-\usage{
-  enabled(x) <- value
-}
 \arguments{
   \item{x}{widget}
 
@@ -11,5 +9,7 @@
 }
 \description{
   Set if widget is enabled
+
+  assignment method for enabled
 }
 

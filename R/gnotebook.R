@@ -20,12 +20,8 @@ NULL
 ##'
 ##' @param tab.pos where to place tabs. A value of 1 is the bottom, else the top.
 ##' @param close.buttons Logical. Are there close buttons on the tabs
-##' @param container parent container
-##' @param ... passed to add method of parent container
-##' @param width width in pixels, if specified
-##' @param height height in pixels, if specified
-##' @param ext.args extra arguments to pass to Ext constructor
-##' @return an ExtContainer object
+##' @inheritParams gwidget
+##' @return a GNotebook reference class object. 
 ##' @export
 ##' @examples
 ##' w <- gwindow()
@@ -39,8 +35,6 @@ gnotebook <- function(tab.pos = 3, close.buttons = FALSE, container, ...,
   nb
 }
 
-##' base class for gnotebook
-##' @name gnotebook-class
 GNotebook <- setRefClass("GNotebook",
                          contains="GContainer",
                          fields=list(

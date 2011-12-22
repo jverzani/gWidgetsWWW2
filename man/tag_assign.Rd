@@ -1,9 +1,7 @@
 \name{tag<-}
 \alias{tag<-}
+\alias{tag<-.GComponent}
 \title{Set a persistent attirbute for an object}
-\usage{
-  tag(x, key) <- value
-}
 \arguments{
   \item{x}{object}
 
@@ -13,5 +11,7 @@
 }
 \description{
   Set a persistent attirbute for an object
+
+  assignment method for tag
 }
 

@@ -25,14 +25,8 @@ NULL
 ##' @param filename A url or file in static temp file
 ##' @param dirname prepended to filename if non empty
 ##' @param size passed to \code{size<-} method if given
-##' @param handler ignored
-##' @param action ignored
-##' @param container parent container
-##' @param ... passed to parent container's \code{add} method
-##' @param width width in pixels
-##' @param height height in pixels
-##' @param ext.args extra arguments to pass to Ext constructor
-##' @return an ExtWidget object
+##' @inheritParams gwidget
+##' @return an GImage reference object
 ##' @export
 ##' @examples
 ##' w <- gwindow("hello", renderTo="replaceme")
@@ -64,8 +58,7 @@ gimage <- function(filename = "", dirname = "",  size = "",
   i
 }
 
-##' base class for gimage
-##' @name gimage-class
+
 GImage <- setRefClass("GImage",
                       contains="GHtml",
                       method=list(

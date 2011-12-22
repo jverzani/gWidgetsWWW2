@@ -23,14 +23,11 @@ NULL
 ##' @param center lat/lng pair where map should be centered
 ##' @param zoom zoom level for initial map
 ##' @param maptype Type of map
-##' @param container parent container
-##' @param ... passed to parent container's \code{add} method
-##' @param width width in pixels
-##' @param height height in pixels. Mandatory, else map will have 0 height
-##' @param ext.args extra arguments to pass to constructor
+##' @inheritParams gwidget
 ##' @return an GWidget object
 ##' @export
 ##' @examples
+##' \dontrun{
 ##' w <- gwindow("hello", renderTo="replaceme")
 ##' sb <- gstatusbar("Powered by gWidgetsWWW and Rook", cont=w)
 ##' 
@@ -70,6 +67,8 @@ NULL
 ##' gcheckbox("Bicycle overlay", checked=FALSE, width=150, cont=g1, handler=function(h,...) {
 ##'   gm$add_bikelayer(svalue(h$obj))
 ##' })
+##'
+##' }
 ggooglemaps <- function(center=c(45,45), zoom=13,
                         maptype="roadmap",
                         container, ...,
@@ -81,8 +80,6 @@ ggooglemaps <- function(center=c(45,45), zoom=13,
   gm
 }
 
-##' base class for ggooglemaps
-##' @name ggooglemaps-class
 GGoogleMaps <- setRefClass("GGoogleMaps",
                            contains="GWidget",
                            fields=list(
@@ -152,25 +149,20 @@ GGoogleMaps <- setRefClass("GGoogleMaps",
                              ## param = JavaScript code to define param value passed back to function
                              add_R_callback = function(signal, handler, action, cb_args, param_defn) {
                                "Add handler, call on map, not Ext guy"
-                               cbid <- toplevel$add_R_handler(.self, handler, action)
+# XXXX JV FIXME                               cbid <- toplevel$add_R_handler(.self, handler, action)
                                ## We need to buffer this, otherwise the handler call might not have a map to listen
                                ## to. Do do this we set up a delayed task.
-                               cmd <- sprintf("var _addL = function() {google.maps.event.addListener(%s, %s, function(%s) {%s;callRhandler(%s,param)})};",
+                               cmd <- sprintf("var _addL = function() {google.maps.event.addListener(%s, %s, function(%s) {%s;callRhandler(%s,'%s',param)})};",
                                               get_map(),
                                               ourQuote(signal),
                                               paste(cb_args,collapse=","),
                                               param_defn,
-                                              cbid)
+                                              get_id())
                                add_js_queue(cmd)
                                ## now call this function after a delay
                                cmd <- paste("new Ext.util.DelayedTask(_addL).delay(500);",
                                             sep="")
                                add_js_queue(cmd)
-                               invisible(
-                                         list(cbid=cbid,
-                                              signal=signal
-                                              )
-                                         )
                              },
                              add_handler_changed = function(handler, action=NULL, ...) {
                                add_handler_clicked(handler, action, ...)
@@ -327,7 +319,6 @@ ggooglemaps_marker <- function(position, title=NULL, icon=NULL, map) {
 }
 
 
-##' base class for ggooglemap markers
 GGoogleMapsMarker <- setRefClass("GGoogleMapsMarker",
                                  contains="GGoogleMapsObject",
                                  fields=list(
@@ -375,7 +366,6 @@ ggooglemaps_infowindow <- function(position, content, map) {
   gmiw
 }
 
-##' base class for ggooglemaps info windows
 GGoogleMapsInfoWindow <- setRefClass("GGoogleMapsInfoWindow",
                                      contains="GGoogleMapsObject",
                                      fields=list(
@@ -424,7 +414,6 @@ ggooglemaps_polyline <- function(path, stroke=list(color="#0000FF", opacity=1, w
   
 
 
-##' base class for ggooglemaps lines
 GGoogleMapsPolyline <- setRefClass("GGoogleMapsPolyline",
                                    contains="GGoogleMapsObject",
                                    fields=list(

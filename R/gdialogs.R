@@ -14,16 +14,14 @@
 ##      along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ##' @include gwidget.R
-NA
+NULL
 
 ##' A simple message dialog.
 ##' 
 ##' @param message main message.
 ##' @param title Title for dialog's window
-##' @param icon icon to decorate dialog
+##' @param icon icon to decorate dialog. One of \code{c("info", "warning", "error", "question")}.
 ##' @param parent parent container (the main window instance)
-##' @param handler Ignored. handler passed to dialog when confirmed
-##' @param action Ignored. action passed to handler
 ##' @param ... ignored
 ##' @return return value ignored
 ##' @export
@@ -35,8 +33,7 @@ NA
 gmessage <- function(message, title="message",
                      icon = NULL,
                      parent = NULL,
-                     handler = NULL,
-                     action = NULL,...) {
+                     ...) {
 
   dlg <- GDialog$new(parent$toplevel)
   icon <- sprintf("Ext.MessageBox.%s", toupper(match.arg(icon,c("info", "warning", "error", "question"))))
@@ -79,12 +76,13 @@ gconfirm <- function(message, title="Confirm",
                      action = NULL,...) {
 
   dlg <- GDialog$new(parent$toplevel)
-  cbid <- dlg$toplevel$add_R_handler(dlg, handler, action, ...)
-
+  dlg$change_signal <- "confirm"
   
+  dlg$add_handler(dlg$change_signal, handler, action)
+    
   icon <- sprintf("Ext.MessageBox.%s", toupper(match.arg(icon,c('info', 'warning', 'error', 'question'))))
 
-  fn <- sprintf("function(buttonID, text, o) {if(buttonID == 'yes') {callRhandler('%s')}}", cbid)
+  fn <- sprintf("function(buttonID, text, o) {if(buttonID == 'yes') {callRhandler('%s', '%s',null)}}", dlg$get_id(), dlg$change_signal)
 
   
   cmd <- sprintf("Ext.Msg.show({title:%s, msg:%s, buttons:Ext.Msg.YESNO, icon:%s, animEl:'%s', fn:%s});",
@@ -129,18 +127,21 @@ ginput <- function(message, text="", title="Input",
                    parent=NULL,
                    handler = NULL, action = NULL,...) {
 
-  dlg <- GDialog$new(parent$toplevel)
-  cbid <- dlg$toplevel$add_R_handler(dlg, handler, action, ...)
+  dlg <- GDialog$new(parent=parent)
+  dlg$change_signal <- "input"          # means nothing to Ext
+  dlg$add_handler(dlg$change_signal, handler, action)
 
   
   fn <- paste("function(buttonID, text) {",
               "if(buttonID == 'ok') {",
-              sprintf("callRhandler('%s', {input:text})",
-                      cbid),
+              sprintf("callRhandler('%s', '%s',  Ext.JSON.encode({input:text}))",
+                      dlg$get_id(),
+                      dlg$change_signal
+                      ),
               "}}",
               sep="")
-
-  
+                             
+                                  
   cmd <- sprintf("Ext.Msg.prompt(%s, %s, %s, this, true, %s);",
                  ourQuote(title),
                  ourQuote(message),
@@ -152,7 +153,13 @@ ginput <- function(message, text="", title="Input",
 
 ##' Base class for dialogs
 GDialog <- setRefClass("GDialog",
-                       contains="GWidget")
+                       contains="GWidget",
+                       methods=list(
+                         ## bypass this
+                         add_R_callback=function(...) {}
+                         )
+
+                       )
 
 
 

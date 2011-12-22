@@ -26,17 +26,11 @@ NULL
 ##' should be: Or a data frame with 1 column (items), two columns
 ##' (items, icons), or three columns (items, icons, tooltip))
 ##' @param selected initially selected item, by index. Use \code{0L} for none.
-##' @param editable logical. Does combobox allow editing. A bug (of
+##' @param editable logical. Does combobox allow editing. A bug (or
 ##' package writer's limiations) in extjs do not allow one to set the
 ##' value if it is a potential index. Go figure. Use 4.0, not 5 ...
 ##' @param coerce.with Function. If given, called on value before returning
-##' @param handler handler
-##' @param action action
-##' @param container parent container
-##' @param ... passed to \code{add} method of parent
-##' @param width width
-##' @param height height
-##' @param ext.args extra arguments to pass to constructor
+##' @inheritParams gwidget
 ##' @param tpl a template for the item (Not working!)
 ##' @return an ExtWidget instance
 ##' @note The \code{tpl} argument is not working as we'd like.
@@ -70,7 +64,7 @@ gcombobox <- function(items, selected=1, editable=FALSE, coerce.with=NULL,
 ##' Alternative name for gcomobox
 ##'
 ##' The name gdroplist is an alternative (not encouraged) for gcomobbox
-##' @name gcombobox
+##' @rdname gcombobox
 gdroplist <- gcombobox
 
 ## Not working: templates; tooltips, icons; 

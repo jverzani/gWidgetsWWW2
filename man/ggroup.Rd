@@ -1,35 +1,69 @@
-\name{GGroup}
-\alias{GGroup}
-\title{base class for ggroup}
-\description{
-  Boxes are different. For horizontal boxes they need to
-  have a width set, for vertical boxes they need to have a
-  height set. We use a default of 200.
+\name{ggroup}
+\alias{ggroup}
+\title{Group, or box, container}
+\usage{
+  ggroup(horizontal = TRUE, spacing = 5, use.scrollwindow =
+  FALSE, container, ..., width = NULL, height = NULL,
+  ext.args = NULL)
 }
-\details{
-  The standard expand, fill, anchor arugments are not
-  implemented as they are in RGtk2, say.
+\arguments{
+  \item{horizontal}{left or right (default), or top to
+  bottom (\code{horizontal=FALSE})}
 
-  The expand maps to flex which is a weight for stretching
-  the object in the packing direction. That is for a hbox,
-  it will strecth in horizontal direction
+  \item{spacing}{body spacing}
 
-  The fill corresponds to the align argument for the
-  container -- not the component. There is no way to fill
-  just one. The fill value of "stretch" will stretch the
-  component in the orthogonal directin to filling. Passing
-  the value "stretchmax" should stretch to the largest
-  child size, but not the max.
+  \item{use.scrollwindow}{logical. If given, scrollbars
+  will appear}
 
-  So expand=TRUE, fill=TRUE will will stretch in both
-  directions.
+  \item{container}{A parent container. In
+  \pkg{gWidgetsWWW2} a parent container is not optional
+  (though it can be substituted with the \code{parent}
+  argument in some circumstances). The parent specifies the
+  widget heirarchy and the \code{...} argument is used to
+  pass along arguments to layout the child component in the
+  parent container. Typically, these are passed to the
+  \code{add} method of the parent container.}
 
-  But wait, the fill value -- since it appears to the
-  container, but is specified by the children can be
-  specified more than once. The last one wins.
+  \item{...}{Used to pass along argument to the parent
+  container's ode{add} method and possible other arguments
+  to the underlying ference class constructors.}
 
-  When expand and fill are not used, anchoring should be
-  possible. The CSS class needs to be set up properly
-  though.
+  \item{width}{width in pixels of component. Sizing in
+  \pkg{gWidgetsWWW2} is sometimes necessary as the
+  arguments \code{expand} and \code{fill} are not well
+  implemented.}
+
+  \item{height}{height in pixels of the component.}
+
+  \item{ext.args}{The gWidgets' constructors ultimately
+  call an Ext constructor. The options passed to the Ext
+  constructor may be added to or overridden by use of this
+  argument. Values are passed in a named list components
+  and conversions to JavaScript objects}
+}
+\value{
+  a \code{GGroup} reference class object
+}
+\description{
+  A box container. Can pack in left to right or top to
+  bottom.
+}
+\examples{
+w <- gwindow()
+sb <- gstatusbar("Powered by gWidgetsWWW and Rook", cont=w)
+g <- ggroup(cont=w, horizontal=FALSE) ## top to bottom
+for(i in 1:10) gbutton(i, cont=g)
+## add/delete
+ctr <- 1 ### for label
+addRow <- function(g) {
+g1 <- ggroup(cont=g)
+gbutton("x", cont=g1, handler=function(h,...) {delete(g, g1)})
+glabel(paste("Click x to delete", ctr), cont=g1)
+ctr <<- ctr + 1
+}
+g1 <- gframe("add/delete", cont=g, horizontal=FALSE)
+addRow(g1)
+f <- gframe("Adding and deleting", cont=g, horizontal=FALSE)
+gbutton("+", cont=f, handler=function(h,...) addRow(f))
 }
 

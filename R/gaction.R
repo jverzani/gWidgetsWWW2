@@ -27,6 +27,7 @@ NULL
 ##' @param label Text for action
 ##' @param tooltip tooltip. Ignored for this toolkit
 ##' @param icon action icon class
+##' @param handler function called when action is invoked
 ##' @param parent toplevel window of action (where it can be
 ##' called). Required here
 ##' @param ... ignored

@@ -39,8 +39,6 @@ ghtml <- function(x, container = NULL,  ...,
   h
 }
 
-##' base class for ghtml
-##' @name ghtml-class
 GHtml <- setRefClass("GHtml",
                      contains="GWidget",
                      fields=list(

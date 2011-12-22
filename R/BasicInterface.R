@@ -1,8 +1,28 @@
+##      Copyright (C) 2011  John Verzani
+##  
+##      This program is free software: you can redistribute it and/or modify
+##      it under the terms of the GNU General Public License as published by
+##      the Free Software Foundation, either version 3 of the License, or
+##      (at your option) any later version.
+##  
+##      This program is distributed in the hope that it will be useful,
+##      but WITHOUT ANY WARRANTY; without even the implied warranty of
+##      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##      GNU General Public License for more details.
+##  
+##      You should have received a copy of the GNU General Public License
+##      along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+## When all is said and done this should end up in gWidgets2, not
+## gWidgetsWWW2. But that only happens when gWidgetsWWW2 is rewritten
+## to use the standard reference class interface and is called
+## gWidgets2WWW.
+
+
 ##' @include array.R
 ##' @include utils.R
 NULL
 
-## When all said and done this stays in gWidgets2, not gWidg
 ##' Return x unless NULL, NA, length 0, ..., in which case we give default
 ##'
 ##' @param x value to return or its default
@@ -20,7 +40,6 @@ getWithDefault <- function(x, default) {
 ##'
 ##' @param x object to test
 ##' @return logical
-##' @export
 is_empty <- function(x) {
   missing(x) ||
   is.null(x) ||
@@ -31,7 +50,6 @@ is_empty <- function(x) {
 ##' Functions to message something needs doing. Easy to search for
 ##'
 ##' @param msg optional message to emit
-##' @export
 XXX <- function(msg) {
   if(!missing(msg))
     message(msg)
@@ -56,10 +74,7 @@ define_me <- function(...) {
                   ))
 }
 
-##' Reference class to create an observer of an observable object
-##'
-##' @rdname S4-classes
-##' @name Observer-class
+## Observer class
 Observer <- setRefClass("Observer",
                         fields=list(
                           o = "ANY",   
@@ -77,12 +92,7 @@ Observer <- setRefClass("Observer",
                           )
                         )
 
-## XXX this is gWidgets override to pass in ... via h argument:
-
-##' Handler is a special observer with obj and actino passed as first argument
-##'
-##' @rdname S4-classes
-##' @name Handler-class
+## Handler class
 Handler <- setRefClass("Handler",
                        contains="Observer",
                        fields=list(
@@ -104,21 +114,12 @@ Handler <- setRefClass("Handler",
                           )
                         )
 
-##' constructor for handler object
-##'
-##' @param receiver object receiving event
-##' @param handler function to call
-##' @param action used to parametrize handler call
-##' not exported, call using :::
+## create an observer using the gWidgets interface of handler, action
 observer <- function(receiver, handler, action=NULL) 
   Handler$new(handler, receiver, action)
 
 
-##' Observable class sets up objects that can be observed. Inherited by template
-##'
-##' @exportClass Observable
-##' @rdname S4-classes
-##' @name Observable-class
+## Observable class sets up objects that can be observed. Inherited by template
 Observable <- setRefClass("Observable",
                           fields=list(
                             ..observers="list",
@@ -204,19 +205,16 @@ Observable <- setRefClass("Observable",
                             )
                           )
 
-##' Basic interface for a widget. These are methods referenced by the S3 methods
-##'
-##' This interface is inherited by the base GComponent classes in the
-##' toolkit implementations. The methods defined here are referenced
-##' by the S3 methods. For exampe, \code{svalue} dispatches to
-##' \code{get_value}.
-##'
-##' We combine both widget and container methods here. It isn't
-##' perfect, but they do share quite a bit. Perhaps, we could make the
-##' container class subclass the basic interface.
-##' @exportClass BasicToolkitInterface
-##' @rdname S4-classes
-##' @name BasicToolkitInterface-class
+## Basic interface for a widget. These are methods referenced by the S3 methods
+##
+## This interface is inherited by the base GComponent classes in the
+## toolkit implementations. The methods defined here are referenced
+## by the S3 methods. For exampe, \code{svalue} dispatches to
+## \code{get_value}.
+##
+## We combine both widget and container methods here. It isn't
+## perfect, but they do share quite a bit. Perhaps, we could make the
+## container class subclass the basic interface.
 BasicToolkitInterface <- setRefClass("BasicToolkitInterface",
                                      contains="Observable",
                                      fields=list(
@@ -295,7 +293,3 @@ BasicToolkitInterface <- setRefClass("BasicToolkitInterface",
                                          cat(sprintf("An object of class %s", class(.self)[1]), "\n")
                                        }
                                        ))
-
-## ## needed for internal guys
-## GComponent <- setRefClass("GComponent",
-##                           contains="BasicToolkitInterface")

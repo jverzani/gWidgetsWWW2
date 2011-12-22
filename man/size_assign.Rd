@@ -1,9 +1,7 @@
 \name{size<-}
 \alias{size<-}
+\alias{size<-.GComponent}
 \title{Set size property, if implemented}
-\usage{
-  size(x, ...) <- value
-}
 \arguments{
   \item{x}{widget}
 
@@ -14,5 +12,7 @@
 }
 \description{
   Set size property, if implemented
+
+  assignment method for size
 }
 

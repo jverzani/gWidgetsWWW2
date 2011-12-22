@@ -57,10 +57,6 @@ NULL
 ##' @param width width in pixels
 ##' @param height height in pixels,  should be set, otherwise get only 1 row
 ##' @param ext.args additional configuration values to pass to constructor
-##' @param paging. Logical. If \code{TRUE}, then data will be loaded
-##' in chunks -- not all at once. The default page size is 200. This
-##' can be adjusted by setting \code{gtable_object$page_size <- 50},
-##' say.
 ##' @param paging Either a logical variable or integer. If \code{TRUE}
 ##' then paging will be used which allows only chunks of the data to
 ##' be sent to the browser at a time (default size = 200 rows). If

@@ -76,7 +76,7 @@ gtree <- function(offspring = NULL,
   tr
 }
 
-##' base class for gtree
+## base class for gtree
 GTree <- setRefClass("GTree",
                      contains="GWidget",
                      fields=list(

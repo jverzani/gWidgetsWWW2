@@ -27,16 +27,9 @@ NA
 ##' @param by step size. Must be larger than 1 and even then will round to integer value
 ##' @param value initial value
 ##' @param horizontal orientation
-##' @param handler called when slider moved
-##' @param action passed to handler
-##' @param container parent container
-##' @param ... passed to \code{add} method of container
-##' @param width width
-##' @param height height
-##' @param ext.args list. Can pass in other configuration arguments to Ext widget
+##' @inheritParams gwidget
 ##' @param tpl Template for tooltip. Should have "\code{{0}}" but can have more formatting
-##' @return an ExtWidget object
-##' @note not sure why, but the icons capping the end of the slider display are off.
+##' @return a \code{GSlider} reference class object
 ##' @export
 ##' @examples
 ##' w <- gwindow()
@@ -60,10 +53,12 @@ gslider <- function(from = 0, to = 100, by = 1, value = from,
 
 ##' base class for gslider
 ##'
-##' The slider implementation allows one to adjust the formating of
-##' the tooltip that indicates the current value of the widget. The
-##' \code{tpl} command uses an HTML snippet where the value \code{{0}}
+##' The \code{GSlider} implementation allows one to adjust the
+##' formating of the tooltip that indicates the current value of the
+##' widget. The \code{tpl} command uses an HTML snippet where the
+##' value \code{{0}}
 ##' does the substitution.
+##' @rdname gWidgetsWWW2-pacakge
 GSlider <- setRefClass("GSlider", 
                        contains="GWidget",
                        fields=list(
@@ -118,19 +113,6 @@ GSlider <- setRefClass("GSlider",
                          },
                          process_transport = function(value) {
                            value <<- value
-                         },
-                         ## ## signals. Here we pass back value
-                         param_defn=function(signal) {
-                           if(signal == "change") {
-                             "param={value: newValue}"
-                           } else {
-                             ""
-                           }
-                         },
-                         prepare_for_handler=function(signal, params) {
-                           if(signal == "change") {
-                             value <<- params
-                           }
-                         }
+                         }                        
                          )
                        )

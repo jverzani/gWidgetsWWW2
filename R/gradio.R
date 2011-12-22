@@ -22,15 +22,9 @@ NA
 ##' @param items Items to choose from
 ##' @param selected index of initially selected item
 ##' @param horizontal logical. Horizontal or vertical layout. (See also columns)
-##' @param handler called when radio buttons change
-##' @param action passed to handler
-##' @param container parent container
-##' @param ... passed to add method of container
-##' @param width width in pixels
-##' @param height height in pixels
-##' @param ext.args list. Can pass in additional ext arguments, overriding defaults
+##' @inheritParams gwidget
 ##' @param columns Can be used to override horizontal TRUE or FALSE
-##' @return an ExtWidget object
+##' @return a \code{GRadio} reference class object
 ##' @export
 ##' @note the \code{[<-} method (to change the labels) is not implemented.
 ##' @examples
@@ -73,6 +67,7 @@ GRadio <- setRefClass("GRadio",
 
                            constructor <<- "Ext.form.RadioGroup"
                            transport_signal <<- "change"
+                           change_signal <<- "change"
                            
                            arg_list <- list(items=String(items_as_array()),
                                             width = width,
@@ -155,13 +150,9 @@ GRadio <- setRefClass("GRadio",
                            
                          },
                          ##
-                         add_handler_changed = function(...) {
-                           "Change handler is when radio button changes, perhaps through a click"
-                           add_handler_clicked(...)
-                         },
                          add_handler_clicked = function(...) {
                            "Click here is change -- perhaps through some method call, not just a moust event"
-                           add_handler_change(...)
+                           add_handler_changed(...)
                          }
                          )
                        )

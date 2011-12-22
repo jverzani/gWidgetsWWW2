@@ -21,13 +21,7 @@ NA
 ##' @param text character. text label for checkbox. 
 ##' @param checked logical. initial state (Set later with \code{svalue<-})
 ##' @param use.togglebutton logical. XXX not implemented If TRUE, represent with a togglebutton, else use check box 
-##' @param handler handler called when state is toggled. Check value
-##' @param action action passed to handler
-##' @param container parent container
-##' @param ... passed to \code{add} method of container.
-##' @param width width of widget. May be necessary, otherwise may take all horizontal real estate
-##' @param height height of widget (px)
-##' @param ext.args list of optional argument for ExtJS constructor
+##' @inheritParams gwidget
 ##' @export
 ##' @note No method to set label
 ##' @examples
@@ -53,14 +47,8 @@ gcheckbox = function(text="", checked = FALSE, use.togglebutton=FALSE,
 ##' @param use.table Needs implementing. If TRUE, uses a grid widget with checkboxes to
 ##' display. If TRUE, horizontal is ignored, and items may be a data
 ##' frame.
-##' @param handler handler called when state changes
-##' @param action passed to handler
-##' @param container parent container
-##' @param ... passed to add method of container
-##' @param width width of widget. May be necessary, otherwise may take all the horizontal real estate
-##' @param height height of widget (px)
-##' @param ext.args list of optional argument for ExtJS constructor
-##' @return An ExtWidget instance
+##' @inheritParams gwidget
+##' @return A \code{GCheckboxGroup} reference class instance
 ##' @export
 ##' @examples
 ##' w <- gwindow()
@@ -79,9 +67,8 @@ gcheckboxgroup = function (items, checked = FALSE, horizontal = FALSE, use.table
 
 
 
-##' Base class for checkbox group
-##' @note TODO share code with gradio -- one should be a subclass Gradio - GCheckboxGroup - GCheckbox
-##' @name gcheckboxgroup-class
+## Base class for checkbox group
+## @note TODO share code with gradio -- one should be a subclass Gradio - GCheckboxGroup - GCheckbox
 GCheckboxGroup <- setRefClass("GCheckboxGroup",
                          contains="GWidget",
                          fields=list(
@@ -196,8 +183,7 @@ GCheckboxGroup <- setRefClass("GCheckboxGroup",
                        )
                        
                          
-##' Base class for gcheckbox
-##' @name gcheckbox-class
+## Base class for gcheckbox
 GCheckbox <- setRefClass("GCheckbox",
                          contains="GCheckboxGroup",
                          method=list(
@@ -211,6 +197,7 @@ GCheckbox <- setRefClass("GCheckbox",
                            
                              constructor <<- "Ext.form.CheckboxGroup"
                              transport_signal <<- "change"
+                             change_signal <<- "change"
 
                              arg_list <- list(items=String(items_as_array()),
                                               width = width,

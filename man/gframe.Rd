@@ -11,22 +11,39 @@
 
   \item{pos}{position of label. Ignored?}
 
-  \item{horizontal}{logical. A hbox or vbox?}
+  \item{horizontal}{left or right (default), or top to
+  bottom (\code{horizontal=FALSE})}
 
-  \item{spacing}{between widget spacing}
+  \item{spacing}{body spacing}
 
-  \item{container}{parent container}
+  \item{container}{A parent container. In
+  \pkg{gWidgetsWWW2} a parent container is not optional
+  (though it can be substituted with the \code{parent}
+  argument in some circumstances). The parent specifies the
+  widget heirarchy and the \code{...} argument is used to
+  pass along arguments to layout the child component in the
+  parent container. Typically, these are passed to the
+  \code{add} method of the parent container.}
 
-  \item{...}{passed to add method of parent}
+  \item{...}{Used to pass along argument to the parent
+  container's ode{add} method and possible other arguments
+  to the underlying ference class constructors.}
 
-  \item{width}{width in pixels}
+  \item{width}{width in pixels of component. Sizing in
+  \pkg{gWidgetsWWW2} is sometimes necessary as the
+  arguments \code{expand} and \code{fill} are not well
+  implemented.}
 
-  \item{height}{height in pixels}
+  \item{height}{height in pixels of the component.}
 
-  \item{ext.args}{passed to constructor}
+  \item{ext.args}{The gWidgets' constructors ultimately
+  call an Ext constructor. The options passed to the Ext
+  constructor may be added to or overridden by use of this
+  argument. Values are passed in a named list components
+  and conversions to JavaScript objects}
 }
 \value{
-  an ExtContainer object
+  an \code{GContainer} object
 }
 \description{
   Use \code{svalue<-} to adjust the title

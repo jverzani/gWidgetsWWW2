@@ -14,7 +14,7 @@
 ##      along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ##' @include ggroup.R
-NA
+NULL
 
 
 ##' gframe is a title-decorated ggroup box container
@@ -22,14 +22,8 @@ NA
 ##' Use \code{svalue<-} to adjust the title
 ##' @param text label text
 ##' @param pos position of label. Ignored?
-##' @param horizontal logical. A hbox or vbox?
-##' @param spacing between widget spacing
-##' @param container parent container
-##' @param ... passed to add method of parent
-##' @param width width in pixels
-##' @param height height in pixels
-##' @param ext.args passed to constructor
-##' @return an ExtContainer object
+##' @inheritParams ggroup
+##' @return an \code{GContainer} object
 ##' @seealso \code{\link{ggroup}}
 ##' @export
 ##' @examples

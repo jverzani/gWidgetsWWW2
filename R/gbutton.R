@@ -14,7 +14,7 @@
 ##      along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ##' @include gwidget.R
-NA
+NULL
 
 
 ##' Basic button widget
@@ -22,14 +22,8 @@ NA
 ##' A button responds to mouse clicks by calling its handler
 ##'
 ##' @param text button text
-##' @param handler callback to call when button is clicked
+##' @inheritParams gwidget
 ##' @param action passed to callback as \code{h$action}
-##' @param container parent container
-##' @param ... passed to parent container's \code{add} method
-##' @param width width of button, if desired
-##' @param height height of button, if desired
-##' @param ext.args optional list of configuration options for ext
-##' widgets. For example \code{style=list(padding='20px')}.
 ##' @return a \code{GButton} instance
 ##' @export
 ##' @examples
@@ -66,8 +60,6 @@ gbutton <- function(text="",
   return(b)
 }
 
-##' class for gbutton
-##' @name gbutton-class
 GButton <- setRefClass("GButton",
                        contains="GWidget",
                        methods=list(

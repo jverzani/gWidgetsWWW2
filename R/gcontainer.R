@@ -1,6 +1,33 @@
+##      Copyright (C) 2011  John Verzani
+##  
+##      This program is free software: you can redistribute it and/or modify
+##      it under the terms of the GNU General Public License as published by
+##      the Free Software Foundation, either version 3 of the License, or
+##      (at your option) any later version.
+##  
+##      This program is distributed in the hope that it will be useful,
+##      but WITHOUT ANY WARRANTY; without even the implied warranty of
+##      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##      GNU General Public License for more details.
+##  
+##      You should have received a copy of the GNU General Public License
+##      along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 ##' @include gcomponent.R
 NULL
 
+##' Base reference class for container objects.
+##'
+##' Container objects are those that hold other components and may be
+##' passed to constructors through their \code{container}
+##' argument. All objects keep a reference to their parent container,
+##' containers also keep references to their child components. See the
+##' \code{children} array, which is used for this.
+##'
+##' The main method for containers is the \code{add} method, though
+##' this is rarely called, as the underlying method is used in a
+##' widget's constructor when a parent container is specified through
+##' the standard \code{container} argument.
 GContainer <- setRefClass("GContainer",
                           contains="GComponent",
                           fields=list(

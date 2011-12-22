@@ -2,9 +2,13 @@
 
 * update vignette
 
+* replace add_R_handler stuff googlempas, gwindow
+
 * nginx integration; think through load_app  improvements
 
 * group sizing -- odd
+
+* align property needs work (issue with glayout)
 
 * checkboxgroup/checkbox svalue inconsistency?
 
@@ -13,6 +17,8 @@
 * is gedit change signal change or "activate"
 
 * gcalendar -- way off.
+
+* ginput wasn't done
 
 * codemirror editor? Some code eidtor (gcodeeidtor)
 

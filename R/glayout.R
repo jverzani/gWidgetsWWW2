@@ -31,13 +31,10 @@ NULL
 ##' The layout is only finalized after call the \code{visible<-}
 ##' method with a value of \code{TRUE}. One adds all the desired
 ##' children, then calls this method.
+##' 
 ##' @param homogeneous equal sized columns/rows?
 ##' @param spacing between cell spacing
-##' @param container parent container
-##' @param ... passed to add method of parent container
-##' @param width width
-##' @param height height
-##' @param ext.args extra arguments for Ext constructor
+##' @inheritParams gwidget
 ##' @return an ExtContainer object
 ##' @export
 ##' @examples
@@ -60,8 +57,6 @@ glayout <- function(homogeneous = FALSE, spacing = 2, # 10 is too big here
   l
 }
 
-##' base class for glayout
-##' @name glayout-class
 GLayout <- setRefClass("GLayout",
                        contains="GContainer",
                        fields=list(

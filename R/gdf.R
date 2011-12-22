@@ -177,37 +177,38 @@ GDf <- setRefClass("GDf",
 
 ## We need to coerce a value from string to ..
 
-##' Generic to coerce value before assigning into data frame
-##' @param x what value will go into
-##' @param value to set into x
-coerceValue <- function(x, value) UseMethod("coerceValue")
 
-##' method to coerce value before assigning into data frame
-##' @param x what value will go into
-##' @param value to set into x
-coerceValue.default <- function(x, value) format(value)
+## ##' Generic to coerce value before assigning into data frame
+## ##' @param x what value will go into
+## ##' @param value to set into x
+## coerceValue <- function(x, value) UseMethod("coerceValue")
 
-##' method to coerce value before assigning into data frame
-##' @param x what value will go into
-##' @param value to set into x
-coerceValue.character <- function(x, value) as.character(value)
+## ##' method to coerce value before assigning into data frame
+## ##' @param x what value will go into
+## ##' @param value to set into x
+## coerceValue.default <- function(x, value) format(value)
 
-##' method to coerce value before assigning into data frame
-##' @param x what value will go into
-##' @param value to set into x
-coerceValue.integer <- function(x, value) as.integer(value)
+## ##' method to coerce value before assigning into data frame
+## ##' @param x what value will go into
+## ##' @param value to set into x
+## coerceValue.character <- function(x, value) as.character(value)
 
-##' method to coerce value before assigning into data frame
-##' @param x what value will go into
-##' @param value to set into x
-coerceValue.numeric <- function(x, value) as.numeric(value)
+## ##' method to coerce value before assigning into data frame
+## ##' @param x what value will go into
+## ##' @param value to set into x
+## coerceValue.integer <- function(x, value) as.integer(value)
 
-##' method to coerce value before assigning into data frame
-##' @param x what value will go into
-##' @param value to set into x
-coerceValue.logical <- function(x, value)  as.logical(toupper(value))
+## ##' method to coerce value before assigning into data frame
+## ##' @param x what value will go into
+## ##' @param value to set into x
+## coerceValue.numeric <- function(x, value) as.numeric(value)
 
-##' method to coerce value before assigning into data frame
-##' @param x what value will go into
-##' @param value to set into x
-coerceValue.factor <- function(x, value) ifelse(value %in% levels(x), value, NA)
+## ##' method to coerce value before assigning into data frame
+## ##' @param x what value will go into
+## ##' @param value to set into x
+## coerceValue.logical <- function(x, value)  as.logical(toupper(value))
+
+## ##' method to coerce value before assigning into data frame
+## ##' @param x what value will go into
+## ##' @param value to set into x
+## coerceValue.factor <- function(x, value) ifelse(value %in% levels(x), value, NA)

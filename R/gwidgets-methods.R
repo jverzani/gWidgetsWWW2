@@ -33,24 +33,20 @@ NULL
 ##' @param x the widget
 ##' @method enabled GComponent
 ##' @S3method enabled GComponent
-##' @nord
 enabled.GComponent <- function(x) x$enabled()
 
 ##' Set if widget is enabled
 ##'
 ##' @param x widget
 ##' @param value logical
-##' @usage enabled(x) <- value
 ##' @export "enabled<-"
 ##' @rdname enabled_assign
 "enabled<-" <- function(x, value) UseMethod("enabled<-")
 
 ##' assignment method for enabled
-##' @param x widget
-##' @param value logical
 ##' @method "enabled<-" GComponent
 ##' @S3method "enabled<-" GComponent
-##' @nord
+##' @rdname enabled_assign
 "enabled<-.GComponent" <- function(x, value) {
   x$set_enabled(value)
   x
@@ -61,17 +57,14 @@ enabled.GComponent <- function(x) x$enabled()
 ##'
 ##' @param x widget
 ##' @param value font specification, a named list, eg. list(size=10, color="red")
-##' @usage font(x) <- value
 ##' @export "font<-"
 ##' @rdname font_assign
 "font<-" <- function(x, value) UseMethod("font<-")
 
 ##' assignment method for font
-##' @param x widget
-##' @param value font specification, a named list, eg. list(size=10, color="red")
 ##' @method "font<-" GComponent
 ##' @S3method "font<-" GComponent
-##' @nord
+##' @rdname font_assign
 "font<-.GComponent" <- function(x, value) {
   x$set_font(value)
   x
@@ -83,18 +76,14 @@ enabled.GComponent <- function(x) x$enabled()
 ##' @param x widget
 ##' @param ... passed on 
 ##' @param value size specification, for most widgets a pair c(width, height), but can have exceptions
-##' @usage size(x, ...) <- value
 ##' @export "size<-"
 ##' @rdname size_assign
 "size<-" <- function(x, ..., value) UseMethod("size<-")
 
 ##' assignment method for size
-##' @param x widget
-##' @param ... passed on 
-##' @param value size specification, for most widgets a pair c(width, height), but can have exceptions
 ##' @method "size<-" GComponent
 ##' @S3method "size<-" GComponent
-##' @nord
+##' @rdname size_assign
 "size<-.GComponent" <- function(x, ..., value) {
   x$set_size(value, ...)
   x
@@ -113,7 +102,6 @@ tag <- function(x, key) UseMethod("tag")
 ##' @param key key holding attribute
 ##' @method tag GComponent
 ##' @S3method tag GComponent
-##' @nord
 tag.GComponent <- function(x, key) x$get_attr(key)
 
 ##' Set a persistent attirbute for an object
@@ -121,18 +109,14 @@ tag.GComponent <- function(x, key) x$get_attr(key)
 ##' @param x object
 ##' @param key key to store the value
 ##' @param value attribute value
-##' @usage tag(x, key) <- value
 ##' @export "tag<-"
 ##' @rdname tag_assign
 "tag<-" <- function(x, key, value) UseMethod("tag<-")
 
 ##' assignment method for tag
-##' @param x object
-##' @param key key to store the value
-##' @param value attribute value
 ##' @method "tag<-" GComponent
 ##' @S3method "tag<-" GComponent
-##' @nord
+##' @rdname tag_assign
 "tag<-.GComponent" <- function(x, key, value) x$set_attr(key, value)
 
 
@@ -140,17 +124,14 @@ tag.GComponent <- function(x, key) x$get_attr(key)
 ##'
 ##' @param x object Calls objects \code{set_visible} method
 ##' @param value logical
-##' @usage visible(x) <- value
 ##' @export "visible<-"
 ##' @rdname visible_assign
 "visible<-" <- function(x, value) UseMethod("visible<-")
 
 ##' assignment method for visible
-##' @param x object Calls object's \code{set_visible} method
-##' @param value logical
 ##' @method "visible<-" GComponent
 ##' @S3method "visible<-" GComponent
-##' @nord
+##' @rdname visible_assign
 "visible<-.GComponent" <- function(x,  value) {
   x$set_visible(value)
   x
@@ -169,7 +150,6 @@ tag.GComponent <- function(x, key) x$get_attr(key)
 ##' @param ... passed to \code{get_value} method. May include arguments \code{index} or \code{drop}
 ##' @method svalue GComponent
 ##' @S3method svalue GComponent
-##' @nord
 "svalue.GComponent" <- function(x, index=NULL, drop=FALSE, ...) {
   if(is.logical(index) && index)
     x$get_index(drop=drop, ...)
@@ -182,18 +162,14 @@ tag.GComponent <- function(x, key) x$get_attr(key)
 ##' @param x object
 ##' @param ... passed to \code{set_value} method. May include arguments for \code{index}
 ##' @param value value to set
-##' @usage svalue(x, ...) <- value
 ##' @export "svalue<-"
 ##' @rdname svalue_assign
 "svalue<-" <- function(x, ..., value) UseMethod("svalue<-")
 
 ##' assignment method for svalue
-##' @param x object
-##' @param ... passed to \code{set_value} method. May include arguments for \code{index}
-##' @param value value to set
 ##' @method "svalue<-" GComponent
 ##' @S3method "svalue<-" GComponent
-##' @nord
+##' @rdname svalue_assign
 "svalue<-.GComponent" <- function(x, index=NULL, ..., value) {
   if(!is.null(index) && index)
     x$set_index(value, ...)
@@ -209,17 +185,13 @@ tag.GComponent <- function(x, key) x$get_attr(key)
 ##' @param ... passed to \code{set_editable} method
 ##' @param value logical
 ##' @export "editable<-"
-##' @usage editable(x, ...) <- value
 ##' @rdname editable_assign
 "editable<-" <- function(x, ..., value) UseMethod("editable<-")
 
 ##' assignment method for tag
-##' @param x object. Calls objects \code{set_editable} method
-##' @param ... passed to \code{set_editable} method
-##' @param value logical
 ##' @method "editable<-" GComponent
 ##' @S3method "editable<-" GComponent
-##' @nord
+##' @rdname editable_assign
 "editable<-.GComponent" <- function(x,  ..., value) {
   x$set_editable(value, ...)
   x
@@ -235,7 +207,7 @@ tag.GComponent <- function(x, key) x$get_attr(key)
 ##' @param drop passed to \code{get_items}
 ##' @method "[" GComponent
 ##' @S3method "[" GComponent
-##' @nord
+##' @rdname "bracket"
 "[.GComponent" <- function(x, i, j, ..., drop=TRUE) {
   x$get_items(i, j, ...)
 }
@@ -248,7 +220,7 @@ tag.GComponent <- function(x, key) x$get_attr(key)
 ##' @param value passed to \code{set_items}
 ##' @method "[<-" GComponent
 ##' @S3method "[<-" GComponent
-##' @nord
+##' @rdname bracket_assign
 "[<-.GComponent" <- function(x, i, j, ..., value) {
   if(missing(i) && missing(j))
     x$set_items(value, ...)
@@ -265,7 +237,6 @@ tag.GComponent <- function(x, key) x$get_attr(key)
 ##' @param x object 
 ##' @method "names" GComponent
 ##' @S3method "names" GComponent
-##' @nord
 names.GComponent <- function(x) x$get_names()
 
 ##' assignment method for names
@@ -274,7 +245,7 @@ names.GComponent <- function(x) x$get_names()
 ##' @method "names<-" GComponent
 ##' @S3method "names<-" GComponent
 ##' @aliases namesGComponent
-##' @nord
+##' @rdname names_assign
 "names<-.GComponent" <- function(x, value) {
   x$set_names(value)
   x
@@ -288,10 +259,8 @@ names.GComponent <- function(x) x$get_names()
 ##' @param x object
 ##' @param ... passed along to \code{len} method
 ##' @return length of object, loosely interpreted
-##' @usage length(x, ...)
 ##' @method length GComponent
 ##' @S3method length GComponent
-##' @nord
 length.GComponent <- function(x, ...) x$len(...)
 
 ##' method for update

@@ -13,27 +13,50 @@
 
   \item{filter}{ignored}
 
-  \item{handler}{Called when file is succesfully uploaded}
+  \item{handler}{optional means (to
+  \code{\link{addHandlerChanged}} to specify a handler for
+  the default signal. A handler is a function with
+  signature \code{(h,...)} where \code{h} is a list with
+  components \code{obj} referring to the object emitting
+  the signal, \code{action} containing values passed to the
+  \code{action} argument, and possible other values.}
 
-  \item{action}{passed to handler when callled}
+  \item{action}{Passed to handler to parameterize a call}
 
-  \item{container}{parent container}
+  \item{container}{A parent container. In
+  \pkg{gWidgetsWWW2} a parent container is not optional
+  (though it can be substituted with the \code{parent}
+  argument in some circumstances). The parent specifies the
+  widget heirarchy and the \code{...} argument is used to
+  pass along arguments to layout the child component in the
+  parent container. Typically, these are passed to the
+  \code{add} method of the parent container.}
 
-  \item{...}{passed to add method of parent container}
+  \item{...}{Used to pass along argument to the parent
+  container's ode{add} method and possible other arguments
+  to the underlying ference class constructors.}
 
-  \item{width}{width in pixels}
+  \item{width}{width in pixels of component. Sizing in
+  \pkg{gWidgetsWWW2} is sometimes necessary as the
+  arguments \code{expand} and \code{fill} are not well
+  implemented.}
 
-  \item{height}{ignored}
+  \item{height}{height in pixels of the component.}
 
-  \item{ext.args}{extra args to pass to constructor}
+  \item{ext.args}{The gWidgets' constructors ultimately
+  call an Ext constructor. The options passed to the Ext
+  constructor may be added to or overridden by use of this
+  argument. Values are passed in a named list components
+  and conversions to JavaScript objects}
 }
 \value{
-  an ExtWidget
+  a \code{GFile} instance
 }
 \description{
   This renders a file selection form within a small panel
-  widget. There are two steps: select a file, then save the
-  file to the server.
+  widget. There are two steps needed to transfer a file: a)
+  select a file through a dialog, b) save the file to the
+  server by clicking the upload button.
 }
 \note{
   the \code{svalue} method returns the temporary filename
