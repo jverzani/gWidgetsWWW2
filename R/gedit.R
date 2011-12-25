@@ -101,7 +101,7 @@ GEdit <- setRefClass("GEdit",
                          signal <- "enterkey"
                          o <- observer(.self, handler, action) # in gWidgets2 but not now
                          add_observer(o, signal)
-                         cmd <- sprintf("%s.on('specialkey', function(w,e,opts) {if(e.keyCode == e.ENTER) {callRhandler('%s', 'enterkey', Ext.JSON.encode(null))}}, null, {delay:100, buffer:100, single:false});",
+                         cmd <- sprintf("%s.on('specialkey', function(w,e,opts) {if(e.keyCode == e.ENTER) {callRhandler('%s', 'enterkey', null)}}, null, {delay:100, buffer:100, single:false});",
                                         get_id(), get_id())
                          add_js_queue(cmd)
                        }

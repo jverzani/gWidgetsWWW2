@@ -8,7 +8,7 @@
     <!-- <link rel="stylesheet" type="text/css" href="/custom/gWidgetsWWW2/javascript/ext/resources/css/xtheme-blue.css"/> -->
 <!-- <link rel='stylesheet' type='text/css' href='/custom/gWidgetsWWW2/javascript/ext/examples/ux/css/ux-all.css' /> -->
 <!-- <link rel="shortcut icon" type="image/ico" href="/custom/gWidgetsWWW/images/favicon.ico" />  -->
-  <script type='text/javascript' src='/custom/gWidgetsWWW2/javascript/jquery-1.5.2.min.js'></script>
+  <script type='text/javascript' src='/custom/gWidgetsWWW2/javascript/jquery-1.7.1.min.js'></script>
   <script type='text/javascript'>
 var session_id = "script_global";
 var MyApp = "<%= app_name %>";
@@ -25,35 +25,41 @@ var unload_url = base_url + "closeSession";
 
 callRhandler = function(id, signal, value) {
   data = {id: id, signal:signal, value: value, session_id: session_id};
-  $.ajax(handler_url, {
-    dataType:'script',
-    data: data,
-    cache:false,
-    type:"GET"
-   })
+  Ext.Ajax.request({
+    url:handler_url,
+    jsonData:data,
+    success:function(response) {
+      eval(response.responseText);
+    },
+    failure:function(response) {
+      Ext.example.msg("Error:", response.text,3); 
+    }
+  })
 };
 
 transportFun = function(id, value) {
-   data = {id: id, param: value, session_id: session_id};
-   $.ajax(transport_url, {
-    dataType:'script',
-    data: data,
-    cache:false,
-    type:"GET"
-  })
+   data = {id: id, session_id: session_id, param: value};
+   Ext.Ajax.request({
+     url:transport_url,
+     jsonData:data,
+     success:function(response) {
+       eval(response.responseText);
+     },
+     failure:function(response) {
+       Ext.example.msg("Error:", response.text,3);
+     }
+   })
 };
 
 
 
-jRpc = function(obj, meth, params, callback) {
-   data = {id: obj, session_id: session_id, meth:meth, value: Ext.JSON.encode(params)};
-   $.ajax(rpc_url, {
-    dataType:'script',
-    data: data,
-    cache:false,
-    type:"POST",
-    success:callback
-  })
+jRpc =  function(obj, meth, params, callback) {
+    data = {id: obj, session_id: session_id, meth:meth, value: params};
+   Ext.Ajax.request({
+url:rpc_url,
+jsonData:data,
+success:callback
+})
 };
 
 
@@ -96,26 +102,24 @@ $(window).unload(function() {
 
 $(document).ready(function() {
 
-$("#loading").hide();
+  $("#loading").hide();
 
-Ext.QuickTips.init();
+  Ext.QuickTips.init();
 
-$.ajax(session_url, {
-  dataType: 'json',
-  cache: false,
-  success: function(data) {
-    session_id = data.id;
-    $.ajax(base_url,{
-      dataType:'script',
-      data: {session_id: session_id},
-      cache: false,
-      type: "GET"
-    })
-  }
+  $.ajax(session_url, {
+    dataType: 'json',
+    cache: false,
+    success: function(data) {
+      session_id = data.id;
+      $.ajax(base_url,{
+        dataType:'script',
+        data: {session_id: session_id},
+        cache: false,
+        type: "GET"
+      })
+    }
+  });
 });
-
-
-})
   </script>
 </head>
 <body>
@@ -131,7 +135,12 @@ $.ajax(session_url, {
   <script type="text/javascript" src="/custom/gWidgetsWWW2/javascript/ext.ux.example.js"></script>
   <script type="text/javascript" src="/custom/gWidgetsWWW2/javascript/ext.ux.CheckColumn.js"></script>
   <script type="text/javascript" src="/custom/gWidgetsWWW2/javascript/ext.ux.CustomSpinner.js"></script>
-  <script type="text/javascript" src="/custom/gWidgetsWWW2/javascript/GMapPanel3.js"></script>
+  <script type="text/javascript" src="/custom/gWidgetsWWW2/javascript/ext.ux.CodeMirror.js"></script>
+
+  <script type="text/javascript"  src="/custom/gWidgetsWWW2/javascript/GMapPanel3.js"></script>
+  <script type="text/javascript"  src="/custom/gWidgetsWWW2/javascript/CodeMirror/codemirror.js"></script>
+  <script type="text/javascript" src="/custom/gWidgetsWWW2/javascript/CodeMirror/r.js"></script>
+  <link rel='stylesheet' type='text/css' href='/custom/gWidgetsWWW2/javascript/CodeMirror/codemirror.css'  />
 
   <%= extra_html_code %>
 

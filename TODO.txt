@@ -2,11 +2,8 @@
 
 * update vignette
 
-* replace add_R_handler stuff googlempas, gwindow
-
 * nginx integration; think through load_app  improvements
 
-* group sizing -- odd
 
 * align property needs work (issue with glayout)
 

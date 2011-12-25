@@ -108,16 +108,8 @@ GContainer <- setRefClass("GContainer",
                               if(expand)
                                 child$add_args(list(flex=expand))
 
-                              if(!is.null(fill)) {
-                                fill <- switch(as.character(fill),
-                                               "TRUE"="stretch",
-                                               "both"="stretch",
-                                               "x"=ifelse(has_slot("horizontal") &&  !horizontal, "stretch", "left"),
-                                               "y"=ifelse(has_slot("horizontal") &&  horizontal, "stretch", "top"),
-                                               fill)
-                                ## add to already constructed container:
-                                ## XXX fill=FALSE, glayout add_js_queue(sprintf("%s.layout.align='%s';", get_id(), fill))
-                              }
+                              ## fill goes
+                              set_child_fill(child, fill, horizontal)
 
                               
                               if((is.null(fill) || (is.logical(fill) && !fill)) &&
@@ -126,23 +118,22 @@ GContainer <- setRefClass("GContainer",
                                   child$add_args(list(cls=mapAnchorToCSSClass(anchor)))
                               }
                               
-                              ## ## fill. isn't working
-                              ## fill <- getFromDots("fill", ..., default=NULL)
-                              ## if(!is.null(fill)) {
-                              ##   if(fill == "x")
-                              ##     child$add_args(list(width="auto"))
-                              ##   if(fill == "y")
-                              ##     child$add_args(list(height="auto"))
-                              ##   else
-                              ##     child$add_args(list(width="auto", height="auto"))
-                              ## }
-                              
                               
                             },
                             set_child_align=function(child, alt_child, anchor) {
                             },
                             set_child_fill=function(child, fill, horizontal=TRUE) {
                               "Fill can be NULL, TRUE, FALSE, '', 'both', 'x', 'y'..."
+                              if(!is.null(fill)) {
+                                fill <- switch(as.character(fill),
+                                               "TRUE"="stretch",
+                                               "both"="stretch",
+                                               "x"=ifelse(has_slot("horizontal") &&  !horizontal, "stretch", "left"),
+                                               "y"=ifelse(has_slot("horizontal") &&  horizontal, "stretch", "top"),
+                                               fill)
+                                ## add to already constructed container:
+                                add_js_queue(sprintf("%s.layout.align='%s';", get_id(), fill))
+                              }
                             },
                             delete=function(child, ...) {
                               "Remove child from container"

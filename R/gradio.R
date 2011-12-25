@@ -116,23 +116,11 @@ GRadio <- setRefClass("GRadio",
                          },
                          ## transport, brings back index as string
                          transport_fun = function() {
-                           "param={value:newValue.valueOf()};"#"param =  {value: newValue.getRawValue()};"
+                           "param={value:newValue.valueOf()};"
                          },
                          process_transport = function(value) {
                            ind <- as.numeric(value)
                            value <<- ind
-                         },
-                         param_defn=function(signal) {
-                           if(signal == change_signal) {
-                             transport_fun()
-                           } else {
-                             ""
-                           }
-                         },
-                         prepare_for_handler=function(signal, params) {
-                           if(signal == change_signal) {
-                             process_transport(params)
-                           }
                          },
                          ##
                          items_as_array = function() {

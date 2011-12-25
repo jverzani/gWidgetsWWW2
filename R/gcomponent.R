@@ -251,7 +251,7 @@ E.g. var param = {value: this.getText()}"
                            write_transport = function() {
                              "Writes out JavaScript for transport function"
                              ## param ? Ext.JSON.encode(param) : null
-                             cmd <- sprintf("%s.on('%s', function(%s) {%s; transportFun('%s', Ext.JSON.encode(param))}, null, {delay:100, buffer:100, single:false});",
+                             cmd <- sprintf("%s.on('%s', function(%s) {%s; transportFun('%s', param)}, null, {delay:100, buffer:100, single:false});",
                                             get_id(),
                                             transport_signal,
                                             getWithDefault(.ext_callback_arguments[[transport_signal]], ""),
@@ -322,7 +322,7 @@ E.g. var param = {value: this.getText()}"
                              
                              
                              ## create JS handler code
-                             cmd <- sprintf("%s.on('%s', function(%s) {%s; callRhandler('%s', '%s', Ext.JSON.encode(param))}, null, {delay:100, buffer:100, single:false});",
+                             cmd <- sprintf("%s.on('%s', function(%s) {%s; callRhandler('%s', '%s', param)}, null, {delay:100, buffer:100, single:false});",
                                             get_id(),
                                             signal,
                                             cb_args(signal),
@@ -408,6 +408,9 @@ E.g. var param = {value: this.getText()}"
                            add_handler_clicked=function(handler, action=NULL, ...) {
                              add_handler("clicked", handler, action, ...)
                            },
+                           add_handler_focus=function(handler, action=NULL, ...) {
+                             add_handler("focus", handler, action, ...)
+                           },
                            add_handler_blur=function(handler, action=NULL, ...) {
                              add_handler("blur", handler, action, ...)
                            },
@@ -418,7 +421,8 @@ E.g. var param = {value: this.getText()}"
                            ## rpc
                            ##
                            call_rpc = function(meth, val) {
-                             if(!is.list(value))
+                                   
+                             if(!is.list(val))
                                val <- list(val)
                              ## awkward way to call method by name avoiding cache
                              if(exists(meth, .self, inherits=FALSE))
@@ -491,7 +495,7 @@ E.g. var param = {value: this.getText()}"
                            get_visible = function() ..visible,
                            set_visible = function(value) {
                              ..visible <<- as.logical(value)
-                             call_Ext("setVisible", list(visible=as.logical(value)))
+                             call_Ext("setVisible", as.logical(value))
                            },
                            get_enabled=function() {
                              ..enabled

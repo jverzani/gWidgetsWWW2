@@ -96,4 +96,160 @@ GText <- setRefClass("GText",
 
                        }
                        ))
-                                          
+
+
+##' A gtext object modified to use codemirror for syntax highlighting
+##'
+##' The CodeMirror project (codemirror.net) provides a code editor in
+##' javascript with an R mode. This widget incorporates that into
+##' \pkg{gWidgetsWWW2}.
+##' @title codemirror 
+##' @param text initial text.
+##' @inheritParams gwidget
+##' @return a GCodeMirror reference class
+##' @author john verzani
+gcodemirror <- function(text="", container=NULL, ..., width=NULL, height=NULL, ext.args=list()) {
+  obj <- GCodeMirror$new(container)
+  obj$init(text, container, width=width, height=height, ext.args=ext.args, ...)
+  obj
+}
+
+GCodeMirror <- setRefClass("GCodeMirror",
+                           contains="GText",
+                           methods=list(
+                             init=function(text="", container, ..., width, height, ext.args) {
+                               constructor <<- "Ext.ux.CodeMirror"
+                               transport_signal <<- "change"
+                               
+                               arg_list <- list(value=text,
+                                                width=width,
+                                                height=height,
+                                                lineNumbers=TRUE,
+                                                mode="r",
+                                                ## ## signals are focus, blur
+                                                onChange=String(paste(
+                                                  sprintf("function(me, obj) {"),
+                                                  sprintf("  jRpc('%s', 'process_transport', obj);", get_id()),
+                                                  sprintf("}"),
+                                                  sep="")),
+                                                
+                                                onFocus=String(paste(
+                                                   sprintf("function() {"),
+                                                   sprintf("callRhandler('%s','focus',null);", get_id()),
+                                                   sprintf("}"),
+                                                   sep="")),
+                                                onBlur=String(paste(
+                                                  sprintf("function() {"),
+                                                  sprintf("callRhandler('%s','blur',null);", get_id()),
+                                                  sprintf("}"),
+                                                  sep=""))
+                                                  
+                                                )
+                               add_args(arg_list)
+                               setup(container, NULL, NULL, ext.args, ...)
+                               set_value(text)
+                               add_public_method(c("process_transport"))
+                             },
+                             process_transport1=function(val) {
+                               "Process entire chunk"
+                               ## the onChange thing didn't work due to ? and +
+                               set_value(val)
+                             },
+                             get_value=function(...) {
+                               "We store character vector of lines, so we need to paste on return"
+                               paste(value, collapse="\n")
+                             },
+                             set_value=function(val, ...) {
+                               "Set as character vector of lines"
+                               tmp <- unlist(strsplit(val, "\\n"))
+                               if(length(tmp) == 0)
+                                 tmp <- ""
+                               value <<- tmp
+                             },
+                             ## handler code
+                             ## override
+                             connect_to_toolkit=function(...) {},
+
+                             ## process transport bit by bit. Alternative to doing an entire chunk
+                             set_line=function(line, from, to, val) {
+                               "Helper function to process values from codemirror"
+                               out <- value
+                               if(line > length(out))
+                                 out[line] <- ""
+                               l <- out[line]
+                               tmp <- strsplit(l, "")[[1]]
+                               print(list("abc",from, length(tmp)))
+                               if(from < to) {
+                                 ## replace
+                                 tmp[from:to] <- val[1]                                 
+                               } else if(from == to) {
+                                 ## insert
+                                 if(from == 1)
+                                   tmp <- c(val[1], tmp)
+                                 else if(from >= length(tmp))
+                                   tmp <- c(tmp, val[1])
+                                 else
+                                   tmp <- c(tmp[1:from], val[1], tmp[(from+1):length(tmp)])
+                               }
+                               tmp[is.na(tmp)] <- ""
+                               out[line] <- paste(tmp, collapse="")
+                               if(length(val) > 1)
+                                insert_line(line + 1, val[-1])
+                               value <<- out
+                             },
+                             set_multiline=function(from, to, val) {
+                               from <- from + 1; to <- to + 1 # 1-based
+                               l_start <- from[1]; l_end <- to[1]
+                               ind_start <- from[2]; ind_end <- to[2]
+                               out <- value
+                               ## we need to stich up between start and end
+                               tmp <- strsplit(out[l_start], "")[[1]]
+                               if(ind_start == 1)
+                                 tmp <- val[1]
+                               else
+                                 tmp <- c(tmp[1:(ind_start-1)], val[1])
+                               
+                               tmp_to <- strsplit(out[l_end], "")[[1]]
+                               tmp_to <- tmp_to[(ind_end):length(tmp_to)]
+                               tmp <- c(tmp, tmp_to)
+                               out[l_start] <- paste(tmp, collapse="")
+                               ##
+                               if(l_start + 1 <= l_end)
+                                 out <- out[-((l_start+1):(l_end))]
+                               value <<- out
+                               if(length(val) > 1)
+                                 insert_line(l_start, val[-1])
+                             },
+                             insert_line=function(ind, val) {
+                               ## 0 - begin, n end
+                               if(ind <= 0) {
+                                 value <<- c(val[1], value)
+                               } else if(ind >= (n <- length(value))) {
+                                 value <<- c(value, val[1])
+                               } else {
+                                 value <<- c(value[1:ind], val[1], value[(ind+1):n])
+                               }
+                               if(length(val) > 1)
+                                 insert_line(ind + 1, val[-1])
+                             },
+                             process_transport=function(val, ...) {
+                               "Process codemirror transport piece"
+                               ## val has from, to, text and possibly next
+
+                               print(list("process_transport", val))
+                               
+                               from <- val$from; to <- val$to
+                               if(from['line'] == to['line']) {
+                                 line <- from['line'] + 1
+                                 set_line(line, from['ch'] + 1, to['ch'] + 1,
+                                          val$text)
+                               } else {
+                                 set_multiline(from, to, val$text)
+                               }
+                               ## recurse if requested
+                               if(!is.null(val[['next']]))
+                                 process_transport(val[['next']])
+                             }
+
+
+                             ))

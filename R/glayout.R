@@ -142,6 +142,9 @@ GLayout <- setRefClass("GLayout",
                            write_constructor()
                            container$add(.self, ...)
                          },
+                         set_child_fill=function(child, fill, ...) {
+                           ## XXX not defined
+                         },
                          no_columns = function() {
                            "How many columns? Needed in config"
                            cols <- unlist(widgets$pluck("j"))

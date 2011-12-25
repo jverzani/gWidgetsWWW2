@@ -229,7 +229,7 @@ GGoogleMaps <- setRefClass("GGoogleMaps",
                                  markers <- data.frame(markers, stringsAsFactors=FALSE)
 
                                if(is.numeric(markers[,1])) {
-                                 ## a set of lat lng pairs
+                                 ## a et of lat lng pairs
                                  nms <- c("lat", "lng", "marker", "setCenter", "listeners")
                                  names(markers) <- nms[1:ncol(markers)]
                                } else {

@@ -134,7 +134,7 @@ ginput <- function(message, text="", title="Input",
   
   fn <- paste("function(buttonID, text) {",
               "if(buttonID == 'ok') {",
-              sprintf("callRhandler('%s', '%s',  Ext.JSON.encode({input:text}))",
+              sprintf("callRhandler('%s', '%s',  {input:text})",
                       dlg$get_id(),
                       dlg$change_signal
                       ),

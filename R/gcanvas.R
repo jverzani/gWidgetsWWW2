@@ -208,7 +208,7 @@ GCanvas <- setRefClass("GCanvas",
                          add_R_callback = function(signal) {
                            "Override of R callback function, as canvas is different"
                            cmd <- paste(sprintf("var ctx = document.getElementById('%s');", get_canvas_id()),
-                                        sprintf("ctx.addEventListener('%s', function(e) {%s;callRhandler('%s', '%s', Ext.JSON.encode(params))},false);",
+                                        sprintf("ctx.addEventListener('%s', function(e) {%s;callRhandler('%s', '%s', params)},false);",
                                                 signal,
                                                 get_event_params(),
                                                 get_id(),

@@ -171,18 +171,29 @@ GWidgetsApp <- setRefClass("GWidgetsApp",
                                }
                                return(x)
                              },
-
+                             ## We bypass here req$GET() and req$POST() as they
+                             ## have issues with characters like "&" and "+" for various
+                             ## reasons. We instead pass in JSON encoded objects through the
+                             ## the Ajax calls and read them directly here. We return a list so
+                             ## that we can use $ for extraction
+                             read_rook_input = function(req) {
+                               "Read rook.input, then convert from JSON"
+                               req$env[['rook.input']]$rewind()
+                               input <- req$env[['rook.input']]$read()
+                               l <- fromJSON(rawToChar(input))
+                               if(!is.list(l))
+                                 l <- sapply(l, identity, simplify=FALSE)
+                               l
+                             },
+                             
                              ## The run functions (transport, handler, proxy
                              ## These use GET, not POST, although the latter would
                              ## be appropriate for some.
                              run_transport = function(req) {
                                "Assign values through transport. Return js commands if needed"
-                               l <- req$GET()
-                               if(length(l) == 0)
-                                 stop("No info to run transport")
+                               l <- read_rook_input(req)
                                toplevel <- get_toplevel(l$session_id)
-                               ## l has components id, param. param is json mapping to argumnets
-                               toplevel$call_transport(l$id, fromJSON(l$param))
+                               toplevel$call_transport(l$id, l$param)
                                
                                return(toplevel$js_queue$flush())
                              },
@@ -190,18 +201,13 @@ GWidgetsApp <- setRefClass("GWidgetsApp",
                              
                              run_handler = function(req) {
                                "Run a handler. Return js commands if needed"
-                               l <- req$GET()
-                               if(length(l) == 0)
-                                 stop("No info to run handler")
+
+                               l <- read_rook_input(req)
                                
                                ## l has components id, value. Value is json
                                toplevel <- get_toplevel(l$session_id)
+                               toplevel$call_handler(l$id, l$signal, l$value)
 
-                               out <- try(fromJSON(l$value), silent=TRUE)
-                               if(inherits(out, "try-error"))
-                                 out <- NULL
-                               toplevel$call_handler(l$id, l$signal, out)
-                               
                                return(toplevel$js_queue$flush())
                              },
 
@@ -218,17 +224,11 @@ GWidgetsApp <- setRefClass("GWidgetsApp",
 
                              run_rpc = function(req) {
                                "Run a long pull to read from queue. Returns js commands when successful"
-                               l <- req$POST()
-                               if(length(l) == 0)
-                                 stop("No info to run handler")
-                               
-                               ## l has components id
-                               out <- try(fromJSON(l$value), silent=TRUE)
-                               if(inherits(out, "try-error"))
-                                 out <- NULL
 
+                               l <- read_rook_input(req)
+                                                              
                                toplevel <- get_toplevel(l$session_id)
-                               toplevel$call_rpc(l$id, l$meth, out)
+                               toplevel$call_rpc(l$id, l$meth, l$value)
 
                                return(toplevel$js_queue$flush())
                              },
@@ -240,6 +240,11 @@ GWidgetsApp <- setRefClass("GWidgetsApp",
                                if(length(l) == 0)
                                  stop("No info to run proxy")
                                
+                               if(req$post()) {
+                                 ## We bypass the whole parsing in ROok, as we pass in a JSON encoded string
+                                 l$post_data <- read_rook_input(req)
+                               } 
+
                                ## l has components session_id, id, params, param is json
                                id <- l$id; l$id <- NULL
 
@@ -248,10 +253,9 @@ GWidgetsApp <- setRefClass("GWidgetsApp",
                                l[['_dc']] <- NULL # ext variable
                                toplevel <- get_toplevel(session_id)
 
-                               ## we may have a post request (updating a store)
-                               ## or a simple GET request. This one decides
-                               if(!is.null(post <- req$POST())){
-                                 out <- toplevel$call_post_proxy(id, l, post) # return JSON
+                               if(req$post()){
+                                 ##out <- toplevel$call_post_proxy(id, l, req$POST()) # return JSON
+                                 out <- toplevel$call_post_proxy(id, l) # return JSON
                                } else {
                                  out <- toplevel$call_proxy(id, l)
                                }

@@ -39,7 +39,7 @@ enabled.GComponent <- function(x) x$enabled()
 ##'
 ##' @param x widget
 ##' @param value logical
-##' @export "enabled<-"
+##' @export 
 ##' @rdname enabled_assign
 "enabled<-" <- function(x, value) UseMethod("enabled<-")
 
@@ -57,7 +57,7 @@ enabled.GComponent <- function(x) x$enabled()
 ##'
 ##' @param x widget
 ##' @param value font specification, a named list, eg. list(size=10, color="red")
-##' @export "font<-"
+##' @export 
 ##' @rdname font_assign
 "font<-" <- function(x, value) UseMethod("font<-")
 
@@ -76,7 +76,7 @@ enabled.GComponent <- function(x) x$enabled()
 ##' @param x widget
 ##' @param ... passed on 
 ##' @param value size specification, for most widgets a pair c(width, height), but can have exceptions
-##' @export "size<-"
+##' @export 
 ##' @rdname size_assign
 "size<-" <- function(x, ..., value) UseMethod("size<-")
 
@@ -109,7 +109,7 @@ tag.GComponent <- function(x, key) x$get_attr(key)
 ##' @param x object
 ##' @param key key to store the value
 ##' @param value attribute value
-##' @export "tag<-"
+##' @export 
 ##' @rdname tag_assign
 "tag<-" <- function(x, key, value) UseMethod("tag<-")
 
@@ -124,7 +124,7 @@ tag.GComponent <- function(x, key) x$get_attr(key)
 ##'
 ##' @param x object Calls objects \code{set_visible} method
 ##' @param value logical
-##' @export "visible<-"
+##' @export 
 ##' @rdname visible_assign
 "visible<-" <- function(x, value) UseMethod("visible<-")
 
@@ -162,7 +162,7 @@ tag.GComponent <- function(x, key) x$get_attr(key)
 ##' @param x object
 ##' @param ... passed to \code{set_value} method. May include arguments for \code{index}
 ##' @param value value to set
-##' @export "svalue<-"
+##' @export 
 ##' @rdname svalue_assign
 "svalue<-" <- function(x, ..., value) UseMethod("svalue<-")
 
@@ -184,7 +184,7 @@ tag.GComponent <- function(x, key) x$get_attr(key)
 ##' @param x object. Calls objects \code{set_editable} method
 ##' @param ... passed to \code{set_editable} method
 ##' @param value logical
-##' @export "editable<-"
+##' @export 
 ##' @rdname editable_assign
 "editable<-" <- function(x, ..., value) UseMethod("editable<-")
 
