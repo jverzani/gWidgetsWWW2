@@ -25,12 +25,13 @@ NULL
 ##' cont=tbl)}. The \code{tbl} object is on the right side, so the
 ##' widget has a toplevel and on the left to specify how the layout
 ##' will occur. Although one can specify i and j as a range of values,
-##' or even empty one must be careful that no "holes" would be left
+##' or even empty, one must be careful that no "holes" would be left
 ##' over, as otherwise the layout will not work out correctly.
 ##'
 ##' The layout is only finalized after call the \code{visible<-}
 ##' method with a value of \code{TRUE}. One adds all the desired
-##' children, then calls this method.
+##' children, then calls this method. This is a limitation of the
+##' underlying toolkit, Ext JS -- children must be specified at configuration.
 ##' 
 ##' @param homogeneous equal sized columns/rows?
 ##' @param spacing between cell spacing
@@ -46,6 +47,9 @@ NULL
 ##' tbl[2,1, anchor=c(1,0)] <- "Rank"
 ##' tbl[2,2] <- gedit("", cont=tbl)
 ##' visible(tbl) <- TRUE ## This line is needed!
+##' tbl[3,2] <- gbutton("click", cont=tbl, handler=function(h,...) {
+##'   galert(sprintf("%s is a %s", svalue(tbl[1,2]), svalue(tbl[2,2])), parent=w)
+##' })
 glayout <- function(homogeneous = FALSE, spacing = 2, # 10 is too big here
                     container = NULL, ...,
                     width=NULL, height=NULL, ext.args=NULL
@@ -89,8 +93,9 @@ GLayout <- setRefClass("GLayout",
 
                            ## we write constructor in set_visible
                          },
-                         add=function(...) {
-                           "Override add method, do nothing"
+                         add=function(child, ...) {
+                           "just keep track of bookkeeping"
+                           child_bookkeeping(child)                           
                          },
                          set_items=function(child, i, j, ...) {
                            "Add child at specified location"
@@ -142,6 +147,9 @@ GLayout <- setRefClass("GLayout",
                            write_constructor()
                            container$add(.self, ...)
                          },
+                         do_layout=function(...) {
+                           ## XXX How to refresh layout?
+                         },
                          set_child_fill=function(child, fill, ...) {
                            ## XXX not defined
                          },
@@ -155,6 +163,7 @@ GLayout <- setRefClass("GLayout",
                            rows <- unlist(widgets$pluck("i"))
                            max(rows, na.rm=TRUE)
                          },
+                         get_dim = function() c(rows=no_rows(), columns=no_columns()),
                          .get_widget = function(i, j) {
                            "Return widget (or NULL) occupying cell i,j"
                            ## could cache this (memoize) but here we go...
@@ -170,25 +179,34 @@ GLayout <- setRefClass("GLayout",
                              return(NULL)
                          },
                          get_items = function(i,j, ..., drop=TRUE) {
-                           "Return widgets in indices i,j in a list. If a single one and drop=TRUE, then return the object itself."
-                           ## find all widgets matching i,j return as list
-                           ## assume we have both i, j
-                           if(missing(i))
-                             i <- unlist(widgets$each(function(ind, key, value) value$i))
-                           if(missing(j))
-                             j <- unlist(widgets$each(function(ind, key, value) value$j))
-                           l <- list()
-                           for(row in i) {
-                             for(col in j) {
-                               w <- .get_widget(row, col)
-                               if(!is.null(w))
-                                 l[[length(l) + 1]] <- list(widget=w, row=row, column=col)
+                           "Return widgets in indices i,j. NON-standard return: if i,j single values return widget, if row or column, return list, else return matrix of widgets"
+
+                           if(missing(i) && missing(j)) {
+                             i <- seq_len(no_rows())
+                             j <- seq_len(no_columns())
+                             get_items(i,j, ..., drop=drop) 
+                           } else if(missing(i)) {
+                             i <- seq_len(no_rows())
+                             if(length(j) == 1) {
+                               return(lapply(i, get_items, j=j))
+                             } else {
+                               get_items(i, j, ..., drop=drop)
+                             }
+                           } else if(missing(j)) {
+                             j <- seq_len(no_columns())
+                             if(length(i) == 1) {
+                               ## return list
+                               return(lapply(j, get_items, i=i))                               
+                             } else {
+                               get_items(i, j, ..., drop=drop)
+                             }
+                           } else {
+                             if(length(i) == 1 && length(j) == 1) {
+                               return(.get_widget(i,j)$widget)
+                             } else {
+                               sapply(j, function(col) lapply(i, get_items, j=col))
                              }
                            }
-                           if(drop && length(l) == 1)
-                             return(l[[1]]$widget)
-                           else
-                             return(l)
                          }
-
+                         
 ))

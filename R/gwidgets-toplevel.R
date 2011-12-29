@@ -22,13 +22,15 @@ NULL
 GWidgetsTopLevel <- setRefClass("GWidgetsTopLevel",
                                 fields=list(
                                   "e" = "environment", # evaluation environment
+                                  "req"="ANY",         # request
                                   "objects"="Array",   # objects on page
                                   "js_queue"="Array",   # queue to flush
                                   ##
                                   "do_layout_cmd" = "character"
                                   ),
                                 methods=list(
-                                  initialize=function(...) {
+                                  initialize=function(req=NULL, ...) {
+                                    req <<- req
                                     objects <<- Array$new()
                                     js_queue <<- Array$new()
                                     callSuper(...)
@@ -39,7 +41,7 @@ GWidgetsTopLevel <- setRefClass("GWidgetsTopLevel",
                                   ##
                                   ## Call things
                                   ##
-                                  call_handler=function(id, signal, params) {
+                                  call_handler=function(id, signal, params, e_cookies) {
                                     "lookup widget by id, notify any observer of this signal"
                                     obj <- get_object_by_id(id)
                                     if(!missing(params)) {
@@ -47,6 +49,10 @@ GWidgetsTopLevel <- setRefClass("GWidgetsTopLevel",
                                       obj$prepare_for_handler(signal, params)
                                     }
                                     obj$notify_observers(signal=signal, params)
+
+                                    ## did we set a cookie? if so modify res object
+                                    e_cookies[["fred"]] <- "flintstone"
+                                    
                                   },
                                   ## transport add javascript
                                   call_transport = function(id, param) {
@@ -101,11 +107,11 @@ GWidgetsTopLevel <- setRefClass("GWidgetsTopLevel",
                                   },
                                   
                                   ## upload a file
-                                  call_upload = function(id, param, req) {
+                                  call_upload = function(id, param, post_data) {
                                     "process a file upload, sets value via svalue if file exists"
                                     obj <- get_object_by_id(id)
 
-                                    post_data <- req$POST()
+#                                    post_data <- req$POST()
                                     l <- Filter(is.list, post_data)
                                     ## list with tempfile, filename
                                     fname <- l[[1]]$tempfile

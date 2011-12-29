@@ -273,12 +273,11 @@ GTable <- setRefClass("GTable",
                             frame = FALSE,
                             autoExpandColumn=tail(names(items), n=1),
                             width=width,
-                            height=height,
-                            selModel = String(ifelse(multiple,
-                              "new Ext.selection.RowModel({mode:'multiple'})",
-                              "new Ext.selection.RowModel({mode:'simple'})")
-                              )
+                            height=height
                             )
+                          if(multiple)
+                            arg_list$selModel <- String("new Ext.selection.RowModel({mode:'MULTIPLE'})")
+                          
                           if(!paging) {
                             arg_list <- merge.list(arg_list, list(
                                                                   loadMask=TRUE

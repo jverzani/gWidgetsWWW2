@@ -19,7 +19,7 @@ NULL
 ##' A label widget
 ##' 
 ##' @param text text for label. Main property. Use \code{svalue<-} to change. 
-##' @param markup logical. Ignored, but see example for \code{ext.args} usage
+##' @param markup logical. Ignored, but see example for \code{ext.args} usage or use HTML in label text.
 ##' @param editable logical. Ignored
 ##' @inheritParams gwidget
 ##' @return an ExtWidget object
@@ -27,8 +27,10 @@ NULL
 ##' @examples
 ##' w <- gwindow()
 ##' sb <- gstatusbar("Powered by gWidgetsWWW and Rook", cont=w)
-##' glabel("A label widget", cont=w)
-##' glabel("A red label", cont=w,  ext.args=list(style=list("color"="red")))
+##' g <- ggroup(cont=w)
+##' glabel("A label widget", cont=g)
+##' glabel("A red label", cont=g,  ext.args=list(style=list("color"="red")))
+##' glabel("A <font color='blue'>blue</font> label", cont=g)
 glabel <- function(text = "", markup = FALSE, editable = FALSE,
                    handler = NULL, action = NULL, container = NULL,...,
                    width=NULL, height=NULL, ext.args=NULL
@@ -48,6 +50,8 @@ GLabel <- setRefClass("GLabel",
                           handler = NULL, action = NULL, container = NULL,...,
                           width=NULL, height=NULL, ext.args=NULL) {
 
+
+                          text <- as.character(text)
                           value <<- text
                           constructor <<- "Ext.form.Label"
                           arg_list <- list(
@@ -57,7 +61,6 @@ GLabel <- setRefClass("GLabel",
                            add_args(arg_list)
 
                           setup(container, handler, action, ext.args, ...)
-
                            .self
                         },
                         set_value = function(value, ...) {

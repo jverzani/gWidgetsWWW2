@@ -49,8 +49,7 @@ gfile <- function(text="Choose a file",
   f
 }
 
-##' base class for gfile
-##' @name gfile-class
+## base class for gfile
 GFile <- setRefClass("GFile",
                      contains="GWidget",
                      fields=list(

@@ -28,7 +28,7 @@ NA
 ##' @param value initial value
 ##' @param horizontal orientation
 ##' @inheritParams gwidget
-##' @param tpl Template for tooltip. Should have "\code{{0}}" but can have more formatting
+##' @param tpl Template for tooltip. Should have "\code{{0}}" to replace the value, but can have more formatting
 ##' @return a \code{GSlider} reference class object
 ##' @export
 ##' @examples

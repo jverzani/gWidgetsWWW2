@@ -19,7 +19,7 @@ NA
 ##' gexpandgroup is a group with trigger icon and label
 ##'
 ##' Use \code{svalue<-} to adjust the title. The \code{visible<-}
-##' method is used to programatically change display
+##' method is used to programatically change whether the child componented are displayed.
 ##' @param text label text
 ##' @param handler  Called when expanded or closed
 ##' @param action passed to handler

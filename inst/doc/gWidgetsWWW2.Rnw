@@ -69,6 +69,16 @@
 \SweaveOpts{keep.source=TRUE}
 
 
+** TODO
+-- gwindow update layout
+
+-- new widgets
+** gborderlayout
+** gcanvas, gsvg, ghtml,
+
+
+-- what it does -- fill in parts of a brew template
+
 
 
 \section*{Abstract:}

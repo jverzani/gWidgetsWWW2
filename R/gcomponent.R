@@ -143,6 +143,8 @@ GComponent <- setRefClass("GComponent",
                              initFields(..visible=TRUE,
                                         ..enabled=TRUE,
                                         ..index=NULL,
+                                        transport_signal=character(0),
+                                        change_signal=character(0),
                                         public_methods=character(0)
                                         )
                              
@@ -282,8 +284,8 @@ E.g. var param = {value: this.getText()}"
                                  handler <- decorator(handler)
                                o <- observer(.self, handler, action) # in gWidgets2 but not now
                                add_observer(o, signal)
-                               connect_to_toolkit_signal(signal)
                              }
+                             connect_to_toolkit_signal(signal)
                            },
                            invoke_handler=function(signal, ...) {
                              "Invoke observers listening to signal"
@@ -455,6 +457,9 @@ E.g. var param = {value: this.getText()}"
                              if(!is.null(container))
                                container$add(.self, ...)
 
+                             
+                             
+
                              if(length(nchar(transport_signal))) # character(0) or not?
                                write_transport()
                              
@@ -465,6 +470,7 @@ E.g. var param = {value: this.getText()}"
                            
                            ## Basic methods for gWidgets
                            get_length=function() 1,
+                           len=function() 1,
                            ## get/set value
                            coerce_to = function(val, ...) {
                              "if coerce_with property present, call function on value"

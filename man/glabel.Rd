@@ -11,7 +11,7 @@
   \code{svalue<-} to change.}
 
   \item{markup}{logical. Ignored, but see example for
-  \code{ext.args} usage}
+  \code{ext.args} usage or use HTML in label text.}
 
   \item{editable}{logical. Ignored}
 
@@ -60,7 +60,9 @@
 \examples{
 w <- gwindow()
 sb <- gstatusbar("Powered by gWidgetsWWW and Rook", cont=w)
-glabel("A label widget", cont=w)
-glabel("A red label", cont=w,  ext.args=list(style=list("color"="red")))
+g <- ggroup(cont=w)
+glabel("A label widget", cont=g)
+glabel("A red label", cont=g,  ext.args=list(style=list("color"="red")))
+glabel("A <font color='blue'>blue</font> label", cont=g)
 }
 

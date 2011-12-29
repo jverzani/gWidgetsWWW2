@@ -22,7 +22,7 @@
   \item{horizontal}{orientation}
 
   \item{tpl}{Template for tooltip. Should have "\code{{0}}"
-  but can have more formatting}
+  to replace the value, but can have more formatting}
 
   \item{handler}{optional means (to
   \code{\link{addHandlerChanged}} to specify a handler for

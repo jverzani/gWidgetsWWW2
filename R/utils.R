@@ -387,7 +387,7 @@ get_tempfile <- function(ext=".txt") {
 get_tempfile_url <- function(f) {
   if(!is(f, "StaticTempFile"))
     return(f)
-  
+  ## This should be configurable! (The first tmp anyways)
   sprintf("/custom/tmp/tmp/%s", basename(f))
 }
 

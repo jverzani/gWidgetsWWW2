@@ -138,7 +138,8 @@ GWindow <- setRefClass("GWindow",
 
 
                            arg_list <- list(
-                                            layout="fit"
+                                            layout="fit",
+                                            defaults=list(autoScroll=TRUE)
                                             )
 
                            ## Now what...
@@ -151,11 +152,11 @@ GWindow <- setRefClass("GWindow",
                                arg_list[['renderTo']] <- String("Ext.getBody()")
                                tpl <- "
 [{xtype:'panel',
-  dockedItems: %s,
-  id:'%s_panel'
-}]
-"
-                               arg_list[['items']] <- String(sprintf(tpl, docked_items(), get_id()))
+  dockedItems: {{docked_items}},
+  id:'{{id}}_panel'
+}]"
+                               arg_list[['items']] <- String(whisker.render(tpl, list(docked_items=docked_items(),
+                                                                                      id=get_id())))
 
                              } else if(!is.null(renderTo)) {
                                arg_list[['renderTo']] <- renderTo
@@ -256,6 +257,10 @@ GWindow <- setRefClass("GWindow",
                          ##
                          do_layout=function() {
                            add_js_queue(sprintf("%s_toplevel.doLayout()", get_id()))
+                         },
+                         ##
+                         cookies=function() {
+                           toplevel$req$cookies()
                          },
                          ##
                          start_comet=function() {

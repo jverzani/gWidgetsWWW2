@@ -48,8 +48,7 @@ gframe <- function(text = "", pos = 0, horizontal=TRUE, spacing=5, container=NUL
   f
 }
   
-##' base class for gframe
-##' @name gframe-class
+## base class for gframe
 GFrame <- setRefClass("GFrame",
                        contains="GGroup",
                        fields=list(

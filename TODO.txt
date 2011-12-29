@@ -3,21 +3,34 @@
 * update vignette
 
 * nginx integration; think through load_app  improvements
+* factor out code in indexgw.html -- I want three lines read css, read
+  js, call app
+* ggroup -- autoScroll=TRUE (isn't)
+DONE * gborderlayout (panel with border layout)
+DONE * gstackwidget
+* gformlayout (mebbe)
+* rethink load_app (google app like, i.e. make it require a subclass
+  so we can modify the process)
+* cookies!
 
 
-* align property needs work (issue with glayout)
+DONE * checkboxgroup/checkbox svalue inconsistency?
 
-* checkboxgroup/checkbox svalue inconsistency?
-
+* replace transport with jRpc call -- cut down on complexity
+* replace transport with call R handler call -- always call if
+  change=transport -- reduces calls by 1. If change_signal -- include
+  transport option; if note
 * fonts
 
 * is gedit change signal change or "activate"
 
-* gcalendar -- way off.
+DONE? * gcalendar -- way off.
 
-* ginput wasn't done
+DONE * ginput wasn't done
 
-* codemirror editor? Some code eidtor (gcodeeidtor)
+DONE* codemirror finish onChange handler
+* codemirror -- replace gtext widget with codemirror widget. Better
+change handler
 
 * ggooglevis in a panel?
 
@@ -29,18 +42,17 @@
 - css/...
 - javascript/...
 
-* gbutton: actions, icons
+DONE * gbutton: actions, icons
 
-* gradio: all of it
+DONE * gradio: all of it
 
-* gslider: working, needs tidying of param, transport
+DONE * gslider: working, needs tidying of param, transport
 
-* gstatusbar: better? no css
+DONE * gstatusbar: better? no css
 
-* galert: no css
+* galert: no css, too wide. Why? (css missing)
 
 * gcanvas: working, needs documenting
-
 
 * Why do we have to use indexgw.html! Uggh
 
@@ -52,36 +64,6 @@
 
 
 
-
-
-* Why is this causing loadMethods error:
-
-##' @import methods
-NA
-
-##' A class.
-A <- setRefClass("A",
-                 methods=list(
-                   initialize = function(...) {
-                     callSuper(...)
-#                     initFields(... )
-                   }
-                   ))
-
-
-##' B class
-B <- setRefClass("B",
-                 fields=list(
-                   "test"="A"
-                   ),
-                 methods=list(
-                   initialize=function(...) {
-                     test <<- A$new()
-                     callSuper(...)
-                   }
-                   ))
-
-
-
-
+* glayout: work on alignment, spacing around children
 * DONE [ method for glayout
+* align property needs work (issue with glayout)

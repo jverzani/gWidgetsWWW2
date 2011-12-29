@@ -137,7 +137,7 @@ GCheckboxGroup <- setRefClass("GCheckboxGroup",
                          },
                          ## transport, brings back index as string
                          transport_fun = function() {
-                           paste("var x = []; Ext.each(this.getValue(), function(val) {x.push(val.valueOf())});",
+                           paste("var x = []; Ext.each(this.getChecked(), function(val) {x.push(val.inputValue)});",
                                  "param =  {value: x};", sep="")
                          },
                          process_transport = function(value) {
@@ -148,7 +148,7 @@ GCheckboxGroup <- setRefClass("GCheckboxGroup",
                          param_defn=function(signal) {
                            if(signal == "change") {
                              transport_fun()
-                           } else {
+w3.                           } else {
                              ""
                            }
                          },

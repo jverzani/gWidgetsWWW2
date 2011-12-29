@@ -14,5 +14,10 @@
   though this is rarely called, as the underlying method is
   used in a widget's constructor when a parent container is
   specified through the standard \code{container} argument.
+
+  When an object is added one may need to recompute the
+  layout. The \code{do_layout} method will inittiate this.
+  To have this done each time a child is added set the
+  argument \code{auto_layout} to \code{TRUE}.
 }
 

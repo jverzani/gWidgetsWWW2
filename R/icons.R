@@ -106,11 +106,11 @@ getStockIcons <- function() {
 ##' getStockIconByName("Not there") ## NULL
 getStockIconByName <- function(icon_name, css=TRUE) {
   if(missing(icon_name) || is.null(icon_name))
-    return(NA)
+    return(NULL)
   l <- getStockIcons()
   i <- l[[as.character(icon_name), exact=TRUE]]
   if(is.null(i))
-    return(NA)
+    return(NULL)
   
   asIcon(ifelse(css, i$id, i$url))
 }

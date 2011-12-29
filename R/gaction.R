@@ -60,43 +60,34 @@ GAction <- setRefClass("GAction",
                            value <<- label
 
                            ## match with gcomponent
+                           constructor <<- "Ext.Action"
+
                            fn <- sprintf("function() {callRhandler('%s', 'action', '')}",
                                          get_id())
                            
-                           constructor <<- "Ext.Action"
                            arg_list <- list(
                                             text=label,
-                                            handler=String(fn)
+                                            handler=String(sprintf("function() {callRhandler('%s', 'action', '')}",get_id())),
+                                            iconCls=getStockIconByName(icon)
                                             )
+                           
                            add_args(arg_list)
                            write_constructor()
-                           set_icon(icon)
-                           ## no set_tooltip here
-                             
-                           
+
+
+                                                      
                          },
                          ## override this, done through handler argument at construction
                          connect_to_toolkit_signal=function(...) {},
                          get_value = function() value,
                          set_value = function(value, ...) {
-                           value <<- value
+                           value <<- as.logical(value)
                            call_Ext("setText", value)
-                         },
-                         set_enabled = function(value) {
-                           "Set whether widget is enabled"
-                           call_Ext(ifelse(value, "enable", "disable"))
                          },
                          set_visible = function(value) {
                            "Set whether widgets proxying action are visible"
+                           ..visible <<- as.logical(value)
                            callExt("setHidden", as.logical(value))
-                         },
-                         set_icon = function(value) {
-                           "Set icon class for action item"
-                           if(!is.null(value)) {
-                             icon <- getStockIcon(value)
-                             if(!is.null(icon))
-                               call_Ext("setIconClass", icon)
-                           }
                          }
                          ))
                          

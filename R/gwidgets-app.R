@@ -59,14 +59,15 @@ GWidgetsApp <- setRefClass("GWidgetsApp",
                                ## create GUI -- called with session_id, no path_info
 
                                headers <- list('Content-Type'='application/javascript')
-
+                               e_cookies <- new.env()
+                               
                                if(grepl("runTransport$", req$path_info())) {
                                  ## run the transport
                                  ## return javascript queue
                                  out <- run_transport(req)
                                } else if(grepl("runHandler$", req$path_info())) {
                                  ## handler, return javascript queue
-                                 out <- run_handler(req)
+                                 out <- run_handler(req, e_cookies)
                                } else if(grepl("runProxy", req$path_info())) {
                                  ## run proxy. The proxy returns JSON code, not html
                                  if(is.null(req$POST()))
@@ -97,7 +98,7 @@ GWidgetsApp <- setRefClass("GWidgetsApp",
                                 } else {
                                   ## Otherwise we create the GUI. Called as GET here
                                   session_id <- req$GET()$session_id
-                                  out <- create_GUI(session_id)
+                                  out <- create_GUI(session_id, req)
                                 }
 
                                ## need to populate result
@@ -107,9 +108,6 @@ GWidgetsApp <- setRefClass("GWidgetsApp",
                                                    )
                                res$write("")
                                res$finish()
-##                               assign(".out", out, .GlobalEnv)
-##                               base:::flush(stdout()) # isn't working under Linux, does this fix?
-##                                flush.console() # XXX Is this an issue??? On output wasn't sent.
                              },
                              get_session = function(sessionID) {
                                "Return session enviroment from id"
@@ -125,7 +123,7 @@ GWidgetsApp <- setRefClass("GWidgetsApp",
                                "Return file name of script to process create_GUI"
                                gw_script
                              },
-                             create_GUI = function(session_id) {
+                             create_GUI = function(session_id, req) {
                                "Run script within a new environment. Return character vector of javascript commands"
 
                                e <- session_manager$get_session_by_id(session_id)
@@ -134,7 +132,7 @@ GWidgetsApp <- setRefClass("GWidgetsApp",
                                  session_manager$store_session(session_id, e)
 
                                  ## create a toplevel element and place within an evaluation environment
-                                 toplevel <- GWidgetsTopLevel$new()
+                                 toplevel <- GWidgetsTopLevel$new(req)
                                  toplevel$set_e(e)
                                  assign(".gWidgets_toplevel", toplevel, env=e)
                                  lockBinding(".gWidgets_toplevel", env=e)
@@ -199,14 +197,14 @@ GWidgetsApp <- setRefClass("GWidgetsApp",
                              },
 
                              
-                             run_handler = function(req) {
+                             run_handler = function(req, e_cookies) {
                                "Run a handler. Return js commands if needed"
 
                                l <- read_rook_input(req)
                                
                                ## l has components id, value. Value is json
                                toplevel <- get_toplevel(l$session_id)
-                               toplevel$call_handler(l$id, l$signal, l$value)
+                               toplevel$call_handler(l$id, l$signal, l$value, e_cookies)
 
                                return(toplevel$js_queue$flush())
                              },
@@ -271,7 +269,7 @@ GWidgetsApp <- setRefClass("GWidgetsApp",
                                session_id <- l$session_id; l$session_id <- NULL
                                l[['_dc']] <- NULL # ext variable
                                toplevel <- get_toplevel(session_id)
-                               out <- toplevel$call_upload(id, l, req) # return JSON
+                               out <- toplevel$call_upload(id, l, req$POST()) # return JSON
                                return(out)
                              },
 

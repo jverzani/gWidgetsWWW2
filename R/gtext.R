@@ -119,12 +119,13 @@ GCodeMirror <- setRefClass("GCodeMirror",
                            methods=list(
                              init=function(text="", container, ..., width, height, ext.args) {
                                constructor <<- "Ext.ux.CodeMirror"
-                               transport_signal <<- "change"
+#                               transport_signal <<- "change"
                                
                                arg_list <- list(value=text,
                                                 width=width,
                                                 height=height,
                                                 lineNumbers=TRUE,
+                                                matchBrackets=TRUE,
                                                 mode="r",
                                                 ## ## signals are focus, blur
                                                 onChange=String(paste(
@@ -132,7 +133,7 @@ GCodeMirror <- setRefClass("GCodeMirror",
                                                   sprintf("  jRpc('%s', 'process_transport', obj);", get_id()),
                                                   sprintf("}"),
                                                   sep="")),
-                                                
+                                                onGutterClick=String("CodeMirror.newFoldFunction(CodeMirror.braceRangeFinder)"),
                                                 onFocus=String(paste(
                                                    sprintf("function() {"),
                                                    sprintf("callRhandler('%s','focus',null);", get_id()),
@@ -150,11 +151,6 @@ GCodeMirror <- setRefClass("GCodeMirror",
                                set_value(text)
                                add_public_method(c("process_transport"))
                              },
-                             process_transport1=function(val) {
-                               "Process entire chunk"
-                               ## the onChange thing didn't work due to ? and +
-                               set_value(val)
-                             },
                              get_value=function(...) {
                                "We store character vector of lines, so we need to paste on return"
                                paste(value, collapse="\n")
@@ -165,6 +161,7 @@ GCodeMirror <- setRefClass("GCodeMirror",
                                if(length(tmp) == 0)
                                  tmp <- ""
                                value <<- tmp
+                               call_Ext("setValue", paste(value, collapse="\n"))
                              },
                              ## handler code
                              ## override
@@ -178,10 +175,10 @@ GCodeMirror <- setRefClass("GCodeMirror",
                                  out[line] <- ""
                                l <- out[line]
                                tmp <- strsplit(l, "")[[1]]
-                               print(list("abc",from, length(tmp)))
                                if(from < to) {
                                  ## replace
-                                 tmp[from:to] <- val[1]                                 
+                                 tmp <- tmp[-(from:to)]
+                                 tmp[from] <- val[1]                                 
                                } else if(from == to) {
                                  ## insert
                                  if(from == 1)
@@ -193,9 +190,10 @@ GCodeMirror <- setRefClass("GCodeMirror",
                                }
                                tmp[is.na(tmp)] <- ""
                                out[line] <- paste(tmp, collapse="")
+                               value <<- out
+
                                if(length(val) > 1)
                                 insert_line(line + 1, val[-1])
-                               value <<- out
                              },
                              set_multiline=function(from, to, val) {
                                from <- from + 1; to <- to + 1 # 1-based
@@ -210,7 +208,10 @@ GCodeMirror <- setRefClass("GCodeMirror",
                                  tmp <- c(tmp[1:(ind_start-1)], val[1])
                                
                                tmp_to <- strsplit(out[l_end], "")[[1]]
-                               tmp_to <- tmp_to[(ind_end):length(tmp_to)]
+                               if(ind_end <= length(tmp_to))
+                                 tmp_to <- tmp_to[(ind_end):length(tmp_to)]
+                               else
+                                 tmp_to <- character(0)
                                tmp <- c(tmp, tmp_to)
                                out[l_start] <- paste(tmp, collapse="")
                                ##
@@ -220,12 +221,17 @@ GCodeMirror <- setRefClass("GCodeMirror",
                                if(length(val) > 1)
                                  insert_line(l_start, val[-1])
                              },
+                             ## handle:
+                             ## same line insert
+                             ## same line delete
+                             ## mutiline insert
+                             ## multiline delete
                              insert_line=function(ind, val) {
                                ## 0 - begin, n end
                                if(ind <= 0) {
                                  value <<- c(val[1], value)
                                } else if(ind >= (n <- length(value))) {
-                                 value <<- c(value, val[1])
+                                 value[ind] <<- val[1]
                                } else {
                                  value <<- c(value[1:ind], val[1], value[(ind+1):n])
                                }
@@ -236,8 +242,9 @@ GCodeMirror <- setRefClass("GCodeMirror",
                                "Process codemirror transport piece"
                                ## val has from, to, text and possibly next
 
-                               print(list("process_transport", val))
-                               
+                               if(missing(val) || is.null(val$text)) return()
+                               print(list("process", val))
+
                                from <- val$from; to <- val$to
                                if(from['line'] == to['line']) {
                                  line <- from['line'] + 1

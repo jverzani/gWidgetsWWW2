@@ -1,22 +1,12 @@
-\name{gexpandgroup}
-\alias{gexpandgroup}
-\title{gexpandgroup is a group with trigger icon and label}
+\name{gcodemirror}
+\alias{gcodemirror}
+\title{codemirror}
 \usage{
-  gexpandgroup(text = "", horizontal = TRUE, spacing = 5,
-  handler = NULL, action = NULL, container = NULL, ...,
-  width = NULL, height = NULL, ext.args = NULL)
+  gcodemirror(text = "", container = NULL, ..., width =
+  NULL, height = NULL, ext.args = list())
 }
 \arguments{
-  \item{text}{label text}
-
-  \item{handler}{Called when expanded or closed}
-
-  \item{action}{passed to handler}
-
-  \item{horizontal}{left or right (default), or top to
-  bottom (\code{horizontal=FALSE})}
-
-  \item{spacing}{body spacing}
+  \item{text}{initial text.}
 
   \item{container}{A parent container. In
   \pkg{gWidgetsWWW2} a parent container is not optional
@@ -44,19 +34,19 @@
   argument. Values are passed in a named list components
   and conversions to JavaScript objects}
 }
+\value{
+  a GCodeMirror reference class
+}
 \description{
-  Use \code{svalue<-} to adjust the title. The
-  \code{visible<-} method is used to programatically change
-  whether the child componented are displayed.
+  A gtext object modified to use codemirror for syntax
+  highlighting
 }
-\examples{
-w <- gwindow()
-sb <- gstatusbar("Powered by gWidgetsWWW and Rook", cont=w)
-g <- gexpandgroup("click to close", cont=w)
-gbutton("some button", cont=g)
-visible(g) <- FALSE ## to close
+\details{
+  The CodeMirror project (codemirror.net) provides a code
+  editor in javascript with an R mode. This widget
+  incorporates that into \pkg{gWidgetsWWW2}.
 }
-\seealso{
-  \code{\link{ggroup}}, \code{\link{gframe}}
+\author{
+  john verzani
 }
 

@@ -124,9 +124,11 @@ GGroup <- setRefClass("GGroup",
                                             height=height,
                                             defaults=list(margins=sprintf("%s %s %s %s", spacing, spacing, spacing, spacing))
                                             )
-                           if(use.scrollwindow)
+                           if(use.scrollwindow) {
                              arg_list[['autoScroll']] <- TRUE
-
+                             if(is.null(height))
+                               arg_list[['autoHeight']] <- TRUE
+                           }
 
                            ## From HBox.js:
                            ## * - **stretch** : child items are stretched vertically to fill the height of the container

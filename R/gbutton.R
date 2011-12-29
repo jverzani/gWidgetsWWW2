@@ -86,7 +86,7 @@ GButton <- setRefClass("GButton",
                          },
                         
                          ## main property
-                         get_value = function() {
+                         get_value = function(...) {
                            "Return label"
                            value
                          },

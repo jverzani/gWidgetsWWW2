@@ -32,16 +32,14 @@
   load a web app defined by a gWidgetsWWW2 script
 }
 \examples{
-\dontrun{
 ## open an app that takes the entire page
 gw_script <-  system.file("examples/hello-world.R", package="gWidgetsWWW2")
-load_app(gw_script, "HelloApp",  use.google=FALSE)
+if(interactive()) load_app(gw_script, "HelloApp",  use.google=FALSE)
 ## open an app using googlemaps
-load_app(system.file("examples/ggooglemaps.R", package="gWidgetsWWW2"),  "GoogleMapApp", use.google=TRUE)
+if(interactive()) load_app(system.file("examples/ggooglemaps.R", package="gWidgetsWWW2"),  "GoogleMapApp", use.google=TRUE)
 ## open an app embedded in another page
 gw_script <- system.file("examples/ex-multiple-gwindow.R", package="gWidgetsWWW2")
 brew_template <- system.file("framework/brew/custom.rhtml", package="gWidgetsWWW2")
-load_app(gw_script, "MultipleApp",  brew_template)
-}
+if(interactive()) load_app(gw_script, "MultipleApp",  brew_template)
 }
 

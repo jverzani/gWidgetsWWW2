@@ -75,9 +75,6 @@ GNotebook <- setRefClass("GNotebook",
 #                             }, param_defn ="{value:this.items.indexOf(c) + 1}")
                              
                              container$add(.self, ...)
-                             
-                             .self
-                             
                            },
                            transport_fun = function() {
                              "param={value: this.items.indexOf(tab) + 1}" # id, not index
@@ -101,6 +98,7 @@ GNotebook <- setRefClass("GNotebook",
                                                   tabTip = tooltip,
                                                   items=String(sprintf("['%s']", child$id))
                                                   ))
+                             value <<- length(notebook_children)
                              call_Ext("setActiveTab", value - 1)
                              call_Ext("doLayout")
                              
@@ -124,10 +122,10 @@ GNotebook <- setRefClass("GNotebook",
                              "Number of tabs"
                              base:::length(notebook_children)
                            },
-                           get_value = function() {
+                           get_value = function(...) {
                              value
                            },
-                           set_value = function(value) {
+                           set_value = function(value, ...) {
                              "make tab value visible"
                              value <<- value
                              call_Ext("setActiveTab", value - 1)

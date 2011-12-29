@@ -17,17 +17,16 @@ NULL
 ##' @param ... passed to \code{brew} call of \code{brew_template}
 ##' @export
 ##' @examples
-##' \dontrun{
 ##' ## open an app that takes the entire page
 ##' gw_script <-  system.file("examples/hello-world.R", package="gWidgetsWWW2")
-##' load_app(gw_script, "HelloApp",  use.google=FALSE)
+##' if(interactive()) load_app(gw_script, "HelloApp",  use.google=FALSE)
 ##' ## open an app using googlemaps
-##' load_app(system.file("examples/ggooglemaps.R", package="gWidgetsWWW2"),  "GoogleMapApp", use.google=TRUE)
+##' if(interactive()) load_app(system.file("examples/ggooglemaps.R", package="gWidgetsWWW2"),  "GoogleMapApp", use.google=TRUE)
 ##' ## open an app embedded in another page
 ##' gw_script <- system.file("examples/ex-multiple-gwindow.R", package="gWidgetsWWW2")
 ##' brew_template <- system.file("framework/brew/custom.rhtml", package="gWidgetsWWW2")
-##' load_app(gw_script, "MultipleApp",  brew_template)
-##' }
+##' if(interactive()) load_app(gw_script, "MultipleApp",  brew_template)
+##' 
 load_app <- function(script_name,
                      app_name="test",
                      brew_template = "",

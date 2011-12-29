@@ -386,9 +386,12 @@ GWidgetArrayProxy <- setRefClass("GWidgetArrayProxy",
                                    l <- list(#id=colIDs[i],
                                              header=colNames[i],
 #                                             sortable=TRUE,
-                                             width = col.widths[i],
                                              dataIndex = colIDs[i]
                                              )
+                                   if(i == n)
+                                     l$flex <- 1
+                                   else
+                                     l$width <- col.widths[i] 
                                    l <- merge(l, column_xtype(items[,i]))
 
                                    if(do.editor)

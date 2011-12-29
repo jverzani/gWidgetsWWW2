@@ -28,10 +28,16 @@ NULL
 ##' this is rarely called, as the underlying method is used in a
 ##' widget's constructor when a parent container is specified through
 ##' the standard \code{container} argument.
+##'
+##' When an object is added one may need to recompute the layout. The
+##' \code{do_layout} method will inittiate this. To have this done
+##' each time a child is added set the argument \code{auto_layout} to
+##' \code{TRUE}.
 GContainer <- setRefClass("GContainer",
                           contains="GComponent",
                           fields=list(
                             "children"="Array",
+                            "auto_layout"="logical",
                             spacing="numeric"
                             ),
                           methods=list(
@@ -39,6 +45,7 @@ GContainer <- setRefClass("GContainer",
                               initFields(
                                          children=Array$new(),
                                          spacing=5,
+                                         auto_layout=FALSE,
                                          default_fill=TRUE,
                                          default_expand=TRUE
                                          )
@@ -61,9 +68,15 @@ GContainer <- setRefClass("GContainer",
                               "Add child to parent, do internal book keeping"
                               child_bookkeeping(child)
                               call_Ext("add", String(child$get_id())) # add to GUI
+                              if(auto_layout)
+                                do_layout()
+                            },
+                            update=function(...) {
+                              "Update method for containers refreshes the layout"
                               do_layout()
                             },
                             do_layout=function() {
+                              "Call layout method of container to recompute"
                               call_Ext("doLayout") # call update method if needed
                             },
                             mapAnchorToCSSClass = function(anchor) {
@@ -124,6 +137,7 @@ GContainer <- setRefClass("GContainer",
                             },
                             set_child_fill=function(child, fill, horizontal=TRUE) {
                               "Fill can be NULL, TRUE, FALSE, '', 'both', 'x', 'y'..."
+                              ## XXX The align needs to be adjusted here.
                               if(!is.null(fill)) {
                                 fill <- switch(as.character(fill),
                                                "TRUE"="stretch",
@@ -132,7 +146,7 @@ GContainer <- setRefClass("GContainer",
                                                "y"=ifelse(has_slot("horizontal") &&  horizontal, "stretch", "top"),
                                                fill)
                                 ## add to already constructed container:
-                                add_js_queue(sprintf("%s.layout.align='%s';", get_id(), fill))
+                                ## XXX not if FALSE: add_js_queue(sprintf("%s.layout.align='%s';", get_id(), fill))
                               }
                             },
                             delete=function(child, ...) {
@@ -216,3 +230,4 @@ GContainer <- setRefClass("GContainer",
                             ))
 
    
+

@@ -47,7 +47,7 @@
   on the right side, so the widget has a toplevel and on
   the left to specify how the layout will occur. Although
   one can specify i and j as a range of values, or even
-  empty one must be careful that no "holes" would be left
+  empty, one must be careful that no "holes" would be left
   over, as otherwise the layout will not work out
   correctly.
 }
@@ -55,6 +55,8 @@
   The layout is only finalized after call the
   \code{visible<-} method with a value of \code{TRUE}. One
   adds all the desired children, then calls this method.
+  This is a limitation of the underlying toolkit, Ext JS --
+  children must be specified at configuration.
 }
 \examples{
 w <- gwindow("grid layout example")
@@ -65,5 +67,8 @@ tbl[1,2] <- gedit("", cont=tbl) ## tbl needed on right side too
 tbl[2,1, anchor=c(1,0)] <- "Rank"
 tbl[2,2] <- gedit("", cont=tbl)
 visible(tbl) <- TRUE ## This line is needed!
+tbl[3,2] <- gbutton("click", cont=tbl, handler=function(h,...) {
+galert(sprintf("\%s is a \%s", svalue(tbl[1,2]), svalue(tbl[2,2])), parent=w)
+})
 }
 

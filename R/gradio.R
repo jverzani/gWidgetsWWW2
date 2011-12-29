@@ -49,9 +49,8 @@ gradio <- function(items,
              width=width, height=width, ext.args=ext.args, columns=columns)
 }
 
-##' Base class for gradio
-##' @note TODO No way to change number of radio buttons via [<- ir get/set_items, as of now
-##' @name gradio-class
+## Base class for gradio
+## @note TODO No way to change number of radio buttons via [<- ir get/set_items, as of now
 GRadio <- setRefClass("GRadio",
                        contains="GWidget",
                        fields=list(
