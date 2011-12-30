@@ -147,18 +147,6 @@ GCombobox <- setRefClass("GCombobox",
                            process_transport=function(value, ...) {
                              callSuper(value)
                            },
-                           param_defn=function(signal) {
-                             if(signal == change_signal) {
-                               transport_fun()
-                             } else {
-                               ""
-                             }
-                           },
-                           prepare_for_handler=function(signal, params) {
-                             if(signal == change_signal) {
-                               process_transport(params)
-                             }
-                           },
                            get_value = function(index=FALSE, ...) {
                              "Return stored value"
                              value

@@ -44,11 +44,12 @@ GWidgetsTopLevel <- setRefClass("GWidgetsTopLevel",
                                   call_handler=function(id, signal, params, e_cookies) {
                                     "lookup widget by id, notify any observer of this signal"
                                     obj <- get_object_by_id(id)
+                                    out <- NULL
                                     if(!missing(params)) {
                                       ## XXX do this to stuff in things like value, index, ..
-                                      obj$prepare_for_handler(signal, params)
+                                      out <- obj$before_handler(signal, params)
                                     }
-                                    obj$notify_observers(signal=signal, params)
+                                    obj$notify_observers(signal=signal, params, out)
 
                                     ## did we set a cookie? if so modify res object
                                     e_cookies[["fred"]] <- "flintstone"

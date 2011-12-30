@@ -152,11 +152,6 @@ w3.                           } else {
                              ""
                            }
                          },
-                         prepare_for_handler=function(signal, params) {
-                           if(signal == "change") {
-                             process_transport(params)
-                           }
-                         },
                          ##
                          items_as_array = function() {
                            "Return items as array"

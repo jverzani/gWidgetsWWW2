@@ -71,3 +71,4 @@ Collate:
     'gwindow.R'
     'load.R'
     'gborderlayout.R'
+    'gstackwidget.R'

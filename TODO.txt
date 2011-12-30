@@ -5,6 +5,12 @@
 * nginx integration; think through load_app  improvements
 * factor out code in indexgw.html -- I want three lines read css, read
   js, call app
+
+* replace transport with jRpc call -- cut down on complexity
+
+
+
+
 * ggroup -- autoScroll=TRUE (isn't)
 DONE * gborderlayout (panel with border layout)
 DONE * gstackwidget
@@ -16,13 +22,9 @@ DONE * gstackwidget
 
 DONE * checkboxgroup/checkbox svalue inconsistency?
 
-* replace transport with jRpc call -- cut down on complexity
-* replace transport with call R handler call -- always call if
-  change=transport -- reduces calls by 1. If change_signal -- include
-  transport option; if note
 * fonts
 
-* is gedit change signal change or "activate"
+DONE * is gedit change signal change or "activate"
 
 DONE? * gcalendar -- way off.
 

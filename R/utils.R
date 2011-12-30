@@ -29,6 +29,9 @@ String <- function(x) {
   x
 }
 
+String_render <- function(tpl, l) {
+  String(whisker.render(tpl, l))
+}
 
 ## map R objects into object literals
 

@@ -324,18 +324,6 @@ GTable <- setRefClass("GTable",
                           else
                             value <<- sort(value)
                         },
-                        param_defn=function(signal) {
-                          if(signal == change_signal) {
-                            transport_fun()
-                          } else {
-                            ""
-                          }
-                        },
-                        prepare_for_handler=function(signal, params) {
-                          if(signal == change_signal) {
-                            process_transport(params)
-                          }
-                        },
                         get_value = function(index=FALSE, drop=TRUE, ...) {
                           "Return selected value(s)"
 

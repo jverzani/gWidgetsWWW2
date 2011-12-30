@@ -77,7 +77,7 @@ NULL
 ##' \code{invoke_handler}, \code{handler_widget},
 ##' \code{connect_to_toolkit},  \code{transport_fun},
 ##' \code{process_transport}, \code{param_defn},
-##' \code{prepare_for_handler}
+##' \code{before_handler}
 ##'
 ##'  @rdname gWidgetsWWW2-package
 GComponent <- setRefClass("GComponent",
@@ -143,8 +143,8 @@ GComponent <- setRefClass("GComponent",
                              initFields(..visible=TRUE,
                                         ..enabled=TRUE,
                                         ..index=NULL,
-                                        transport_signal=character(0),
-                                        change_signal=character(0),
+                                        transport_signal="",
+                                        change_signal="",
                                         public_methods=character(0)
                                         )
                              
@@ -244,6 +244,9 @@ GComponent <- setRefClass("GComponent",
                            ## 3. a process_transport method that is passed the widget id and this param value. It
                            ##    adjusts the state of the R widget and optionally other call, returning the javascript
                            ##    queue when done
+                           ##
+                           ## In the case where the transport_signal is the same as the default change_signal -- where we pass in the
+                           ## the change information -- we bypass this call.
                            transport_fun = function() {
                              "javascript function for transport web -> R. Creates an object param.
 This is a string to be passed to the javascript queue withing the transport function call
@@ -262,16 +265,16 @@ E.g. var param = {value: this.getText()}"
                                             )
                              add_js_queue(cmd)
                            },
+                           write_change_transport = function() {
+                             "Write change handler, instead of transport"
+                             add_handler(change_signal, NULL, NULL)
+                           },
                            process_transport = function(value, ...) {
                              "R Function to process the transport. Typically just sets 'value', but may do more. In the above example, where var param = {value: this.getText()} was from transport_fun we would get the text for value"
                              value <<- value
                            },
                            ## Call back code
                            ##
-                           prepare_for_handler=function(signal, params) {
-                             "Hook that can be called prior to observer call. Might be useful to set value without relying on transport call to arrive first"
-
-                           },
                            is_handler=function(handler) {
                              !missing(handler) && is.function(handler)
                            },
@@ -353,7 +356,8 @@ E.g. var param = {value: this.getText()}"
                                "var param = null"
                              }
                            },
-                           prepare_for_handler=function(signal, params) {
+                           before_handler=function(signal, params) {
+                             "Hook that can be called prior to observer call. Might be useful to set value without relying on transport call to arrive first. Return value -- a named list -- is passed to observers as components of h "
                              if(signal == change_signal) {
                                process_transport(params)
                              }
@@ -384,7 +388,7 @@ E.g. var param = {value: this.getText()}"
                              "remove a handler by ID"
                              remove_observer(ID)
                            },
-                           ## Used to add a javascript callback -- that is not call into R. Th
+                           ## Used to add a javascript callback -- that is not a call into R. 
                            add_js_callback = function(signal, callback, ...) {
                              "Add a javascript callback. The value of 'this' refers to the object this is called from"
                              cmd <- sprintf("%s.on('%s', %s);",
@@ -423,7 +427,7 @@ E.g. var param = {value: this.getText()}"
                            ## rpc
                            ##
                            call_rpc = function(meth, val) {
-                                   
+                             "The jRpc call back from JavaScript into R passes a method name and arguments to the object. This calls the method"  
                              if(!is.list(val))
                                val <- list(val)
                              ## awkward way to call method by name avoiding cache
@@ -435,13 +439,13 @@ E.g. var param = {value: this.getText()}"
                              f(val)
                            },
                            add_public_method=function(x) {
-                             "Add a method name to the public methods"
+                             "Add a method name to the public methods, so that jRpc can call back intoR."
                              public_methods <<- c(public_methods, x)
                            },
                            ##
                            ## Drag and Drop
                            ##
-
+                           ## XXX implement me
                            ##
                            ## setup
                            ##
@@ -458,16 +462,23 @@ E.g. var param = {value: this.getText()}"
                                container$add(.self, ...)
 
                              
-                             
+                             ## if transport & change are identical, we cut down
+                             ##  by one with this.
+                             if(nchar(transport_signal)) {
+                               if(transport_signal == change_signal)
+                                 write_change_transport()
+                               else
+                                 write_transport()
+                             }
 
-                             if(length(nchar(transport_signal))) # character(0) or not?
-                               write_transport()
-                             
                              if(!missing(handler)  & !is.null(handler))
                                add_handler_changed(handler, action)
                            },
-                           
-                           
+                           ##
+                           ## The standard gWidgets API for reference methods expects certain reference methods to be defined.
+                           ## see BasicInterface for these. That just presents the names, not their implementations. These are
+                           ## done here.
+                           ##
                            ## Basic methods for gWidgets
                            get_length=function() 1,
                            len=function() 1,
@@ -565,11 +576,6 @@ E.g. var param = {value: this.getText()}"
                              call_Ext("doLayout")
                            }
                            
-
-                           
-
-
-
                            ))
 
 

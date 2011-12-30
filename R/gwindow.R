@@ -150,14 +150,11 @@ GWindow <- setRefClass("GWindow",
                                constructor <<- "Ext.container.Viewport"
                                fullscreen <<- TRUE
                                arg_list[['renderTo']] <- String("Ext.getBody()")
-                               tpl <- "
-[{xtype:'panel',
-  dockedItems: {{docked_items}},
-  id:'{{id}}_panel'
-}]"
-                               arg_list[['items']] <- String(whisker.render(tpl, list(docked_items=docked_items(),
-                                                                                      id=get_id())))
-
+                              
+                               arg_list[['items']] <- String(whisker.render(panel_template(),
+                                                                            list(docked_items=docked_items(),
+                                                                                 id=get_id())))
+                               
                              } else if(!is.null(renderTo)) {
                                arg_list[['renderTo']] <- renderTo
                                arg_list[['border']] <- TRUE
@@ -277,6 +274,15 @@ GWindow <- setRefClass("GWindow",
                          add_handler_destroy = function(handler, action=NULL) {
                            "When window is destroyed, this is called"
                            add_handler("destroy", handler, action)
-                         }
+                         },
+                         ## templates -- can mess up formatting
+                         panel_template=function() {
+                           tpl <- "
+[{xtype:'panel',
+  dockedItems: {{docked_items}},
+  id:'{{id}}_panel'
+}]
+"
+}
                          )
                        )

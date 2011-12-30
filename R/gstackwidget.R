@@ -22,6 +22,14 @@ NULL
 ##' @return a GStackWidget reference class object. 
 ##' @export
 ##' @examples
+##' w <- gwindow()
+##' sb <- gstatusbar("Powered by gWidgetsWWW and Rook", cont=w)
+##' g <- gstackwidget(cont=w)
+##' gbutton("page 1. Next", cont=g, handler=function(h,...) svalue(g) <- svalue(g) + 1)
+##' gbutton("page 2. Next", cont=g, handler=function(h,...) svalue(g) <- svalue(g) + 1)
+##' gbutton("remove me", cont=g, handler=function(h,...) dispose(g))
+##' gbutton("page 3. First", cont=g, handler=function(h,...) svalue(g) <- 1)
+##' svalue(g) <- 1
 gstackwidget <- function(container, ...,
                          width=NULL, height=NULL, ext.args=NULL
                       ) {
@@ -86,16 +94,13 @@ GStackWidget <- setRefClass("GStackWidget",
                              "For deleting. Index can be numeric or character"
 
                              if(missing(index))
-                               index <- len() - 1L# last one
-
+                               index <- value ## current one
                              notebook_children[[index]] <<- NULL
-                             tpl <- "
-var card = {{id}}.getComponent({{page_no}});
-{{id}}.remove(card);
-"
-                             cmd <- whisker.render(tpl, list(id=get_id(), page_no=index-1))
+                             cmd <- whisker.render(dispose_template(),
+                                                   list(id=get_id(),
+                                                        page_no=index-1))
                              add_js_queue(cmd)
-                             set_value(min(1, index - 1))
+                             set_value(max(1, index - 1))
                            },
                            len = function() {
                              "Number of cards"
@@ -110,7 +115,15 @@ var card = {{id}}.getComponent({{page_no}});
                              add_js_queue(whisker.render('{{id}}.getLayout().setActiveItem({{page_no}});', list(id=get_id(), page_no=value - 1L)))
                            },
                            next_card = function() call_Ext("next"),
-                           previous_card = function() call_Ext("prev")
+                           previous_card = function() call_Ext("prev"),
+                           ## templates
+                           dispose_template=function() {
+                             tpl <- "
+var card = {{id}}.getComponent({{page_no}});
+{{id}}.remove(card);
+"
+tpl
+}
 
                            ))
                            
