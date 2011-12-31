@@ -152,8 +152,7 @@ function(value) {
                        },
                        before_handler=function(signal, params) {
                          if(signal == "keyup") {
-                           print(list("before_handler", params))
-                           return(params)
+                           ## how to process?
                          }
                        },
                        add_handler_keystroke=function(handler, action=NULL, ...) {
@@ -167,15 +166,11 @@ function(value) {
                          add_observer(o, signal)
                          tpl <- "
 {{id}}.on('specialkey', function(w, e, opts) {
-  alert(e.getKey());
   if(e.getKey() == e.ENTER) {
     callRhandler('{{id}}', '{{signal}}', null);
   }
 });
 "
-                         cmd <- sprintf("%s.on('specialkey', function(w,e,opts) {if(e.keyCode == e.ENTER) {callRhandler('%s', 'enterkey', null)}}, null, {delay:100, buffer:100, single:false});",
-                                        get_id(), get_id())
-
                          cmd <- whisker.render(tpl,
                                                list(id=get_id(), signal=signal))
 

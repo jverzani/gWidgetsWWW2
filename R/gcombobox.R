@@ -31,6 +31,7 @@ NULL
 ##' value if it is a potential index. Go figure. Use 4.0, not 5 ...
 ##' @param coerce.with Function. If given, called on value before returning
 ##' @inheritParams gwidget
+##' @param autocomplete If \code{TRUE}, will hide the trigger and make editable. When the user types the matching values are presented.
 ##' @param tpl a template for the item (Not working!)
 ##' @return an ExtWidget instance
 ##' @note The \code{tpl} argument is not working as we'd like.
@@ -42,13 +43,15 @@ NULL
 ##' addHandlerChanged(cb, handler=function(h,...) {
 ##' galert(paste("You selected ", svalue(h$obj), sep=""), parent=w)
 ##' })
-##' ## type ahead style
-##' cb$hide_trigger(TRUE)
+##' ## autocomplete
+##'  cb <- gcombobox(state.name, cont=w, autocomplete=TRUE)
 gcombobox <- function(items, selected=1, editable=FALSE, coerce.with=NULL,
            handler = NULL, action = NULL, container=NULL,...,
                       width=NULL,
                       height=NULL,
                       ext.args=NULL,
+                      autocomplete=FALSE,
+                      initial.msg="",
                       tpl=NULL
                       ) {
 
@@ -57,6 +60,8 @@ gcombobox <- function(items, selected=1, editable=FALSE, coerce.with=NULL,
                 width=width,
                 height=height,
                 ext.args=ext.args,
+          autocomplete=autocomplete,
+          initial.msg=initial.msg,
                 tpl=tpl)
   return(cb)
 }
@@ -80,7 +85,7 @@ GCombobox <- setRefClass("GCombobox",
                          methods=list(
                            init=function(items, selected=1, editable=FALSE, coerce.with=NULL,
                              handler = NULL, action = NULL, container=NULL,...,
-                             width=NULL, height=NULL, ext.args=NULL, tpl=NULL) {
+                             width=NULL, height=NULL, ext.args=NULL, autocomplete=NULL, initial.msg="", tpl=NULL) {
 
                              ## We store the value not the index
                              if(as.integer(selected) > 0)
@@ -95,9 +100,7 @@ GCombobox <- setRefClass("GCombobox",
                                items <- .normalize(items) # give standard names
 
 
-                             tpl <- "<tpl for '.'><div >{id} == {name}</div></tpl>"
-
-                             store <<- GWidgetArrayStore$new(container)
+                             store <<- GWidgetArrayStore$new(container, object_data=TRUE)
                              store$init(items)
                              
                              initFields(
@@ -110,12 +113,12 @@ GCombobox <- setRefClass("GCombobox",
                                tpl <- .make_tpl(items)
 
                              arg_list <- list(store=String(store$get_id()),
-                                              queryMode = "remote",
+                                              queryMode="local", ## would like "remote" for larger stores, but whatevs for now
                                               triggerAction="all",
                                               lastQuery='',
                                               ## Want to use templates here, but can't get to work
                                               ## instead use valueField and displayField defaults
-                                              #tpl=tpl,
+                                              ##displayTpl=tpl,
                                               valueField="id",
                                               displayField="name",
                                               ##
@@ -125,6 +128,14 @@ GCombobox <- setRefClass("GCombobox",
                                               loadingText=gettext("Loading..."),
                                               typeAhead=TRUE
                                               )
+                             if(autocomplete) {
+                               arg_list[['hideTrigger']] <- TRUE
+                               arg_list[['editable']] <- TRUE
+                               selected <- 0
+                             }
+                             if(selected == 0)
+                               arg_list[['emptyText']] <- initial.msg
+                             
                              add_args(arg_list)
 
                              setup(container, handler, action, ext.args, ...)
@@ -163,8 +174,8 @@ GCombobox <- setRefClass("GCombobox",
                              else
                                call_Ext("setValue", "")
                            },
-                           set_index=function(value, index, ...) {
-                             set_value(get_items()[index],  ...)
+                           set_index=function(value, ...) {
+                             set_value(get_items()[value],  ...)
                            },
                            process_transport = function(...) {
                              value <<- ..1
@@ -183,6 +194,7 @@ GCombobox <- setRefClass("GCombobox",
                              store$set_data(items, ...)
                              store$load_data()
                            },
+                           len=function(...) base::length(get_items()),
                            .normalize=function(items) {
                              "put on standard names to match template"
                              nms <- c("name", "icon", "tooltip")

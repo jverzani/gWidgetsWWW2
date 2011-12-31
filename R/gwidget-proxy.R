@@ -56,8 +56,13 @@ GWidgetProxy <- setRefClass("GWidgetProxy",
                           },
                           get_json_data=function(...) {
                             "The params determine what to pass back. "
-                            ## Default is just to json encode value
-                            toJSON(value)
+                            ## Default is just to return array of objects
+                            if(is.data.frame(value)) {
+                              out <- sapply(seq_len(nrow(value)), function(i) toJSObject(value[i,]))
+                              ret <- sprintf("[%s]", paste(out, collapse=","))
+                            }
+
+                            return(ret)
                           },
                           get_data=function(...) {
                             "Return raw data, not JSON encoded"
@@ -232,20 +237,22 @@ column_xtype.logical <- function(x, ...) {
 }
 
 
-##' Proxy to return array data (combobox, table, gdf, ...)
+##' Proxy to return array data (combobox, table, gdf, ...) [[],[],[]]
 GWidgetArrayProxy <- setRefClass("GWidgetArrayProxy",
                              contains="GWidgetProxy",
                              fields=list(
                                col.widths="ANY",
                                update_url_list = "list",
-                               ..visible="logical"
+                               ..visible="logical",
+                               object_data="logical"
                                ),
                              methods=list(
-                                init=function(value, ...) {
+                                init=function(value, object_data=FALSE, ...) {
                                   
                                   value <<- value
                                   ..visible <<- rep(TRUE, nrow(value))
                                   col.widths <<- getFromDots("col.widths", ..., default=NULL)
+                                  object_data <<- FALSE #XXX object_data
 
                                   ## Would like to use Ext.data.proxy.Rest here, but
                                   ## the PUT requests get blocked by Rook. Not sure why
@@ -275,6 +282,10 @@ GWidgetArrayProxy <- setRefClass("GWidgetArrayProxy",
                                },
                                get_json_data=function(...) {
                                  "Return JSON array [[],[],] ... *or* handle post data!"
+
+                                 if(object_data)
+                                   return(get_json_object_data(...))
+                                 
                                  params <- list(...)
                                  
                                  df <- cbind("id"=seq_len(nrow(value)), value)
@@ -321,6 +332,16 @@ GWidgetArrayProxy <- setRefClass("GWidgetArrayProxy",
                                  vals <- seq_len(nrow(value))
                                  df <- cbind("id"=vals[ind], value[ind,])
                                  String(toJSArray(df))
+                               },
+                               get_json_object_data=function(...) {
+                                 "The params determine what to pass back. "
+                                 ## Default is just to return array of objects
+                                 if(is.data.frame(value)) {
+                                   out <- sapply(seq_len(nrow(value)), function(i) toJSObject(value[i,]))
+                                   ret <- sprintf("[%s]", paste(out, collapse=","))
+                                 }
+                                 
+                                 return(ret)
                                },
                                remove_row=function(i) {
                                  "Remove the row"
@@ -537,6 +558,8 @@ GWidgetStore <- setRefClass("GWidgetStore",
                             proxy <<- GWidgetProxy$new(toplevel)
                             proxy$init(value, ...)
                             ## ? need to write out store code here...
+
+                            
                           },
 
                           get_data = function(...) {
@@ -552,6 +575,9 @@ GWidgetStore <- setRefClass("GWidgetStore",
                           },
                           write_model=function() {
                             "Write out model"
+                            cmd <- sprintf("Ext.define('%s',{extend: Ext.data.Model,fields:%s});",
+                                           model_id(), proxy$get_fields())
+                            add_js_queue(cmd)
                           }
                           )
                         )
@@ -565,13 +591,13 @@ GWidgetArrayStore <- setRefClass("GWidgetArrayStore",
                            paging = "logical"
                            ),
                          methods=list(
-                           init = function(df, paging=FALSE, page.size=200, extra_args=list(), ...) {
+                           init = function(df, paging=FALSE, page.size=200, extra_args=list(), object_data=FALSE, ...) {
                              if(missing(df))
                                df <- data.frame(name=character(0), stringsAsFactors=FALSE)
 
                              paging <<- as.logical(paging)
                              page_size <<- as.integer(page.size)
-                             proxy <<- GWidgetArrayProxy$new(toplevel, page.size=page.size)
+                             proxy <<- GWidgetArrayProxy$new(toplevel, page.size=page.size, object_data=object_data)
                              col.widths <- getFromDots("col.widths", ..., default=NULL)
                              proxy$init(df, col.widths)
                              
@@ -608,7 +634,6 @@ GWidgetArrayStore <- setRefClass("GWidgetArrayStore",
 #                                          sep="")
 #                             add_js_queue(cmd)
                            },
-                          
                            write_model=function() {
                              "Write out model"
                              cmd <- sprintf("Ext.define('%s',{extend: Ext.data.Model,fields:%s});",

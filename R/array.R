@@ -57,6 +57,9 @@ Array <- setRefClass("Array",
                         "TRUE if name is key in array"
                         !is.null(get_by_name(name))
                       },
+                      contains_item = function(item) {
+                        length(Filter(function(x) identical(x, item), l)) > 0
+                      },
                       get_by_name = function(name) {
                         "get item under name"
                         l[[name, exact=TRUE]]

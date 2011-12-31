@@ -131,6 +131,7 @@ GCheckboxGroup <- setRefClass("GCheckboxGroup",
                          },
                          set_items = function(items, ...) {
                            "Set items, update GUI"
+                           warning(gettext("No method to set items"))
                            ## XXX How to update radio buttons?
                            ## items <<- items
                            ## XXX update radio buttons??? TODO

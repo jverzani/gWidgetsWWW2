@@ -30,8 +30,11 @@ NULL
 ##'
 ##' The layout is only finalized after call the \code{visible<-}
 ##' method with a value of \code{TRUE}. One adds all the desired
-##' children, then calls this method. This is a limitation of the
-##' underlying toolkit, Ext JS -- children must be specified at configuration.
+##' children, then calls this method. It is at this point the widget
+##' is rendered, so if the widget is added to a box container, say, to
+##' which other components are added this one will appear after any
+##' others that had been added. (So pretty much, add the children then
+##' call visible.)
 ##' 
 ##' @param homogeneous equal sized columns/rows?
 ##' @param spacing between cell spacing
@@ -46,10 +49,10 @@ NULL
 ##' tbl[1,2] <- gedit("", cont=tbl) ## tbl needed on right side too
 ##' tbl[2,1, anchor=c(1,0)] <- "Rank"
 ##' tbl[2,2] <- gedit("", cont=tbl)
-##' visible(tbl) <- TRUE ## This line is needed!
 ##' tbl[3,2] <- gbutton("click", cont=tbl, handler=function(h,...) {
 ##'   galert(sprintf("%s is a %s", svalue(tbl[1,2]), svalue(tbl[2,2])), parent=w)
 ##' })
+##' visible(tbl) <- TRUE ## This line is needed!
 glayout <- function(homogeneous = FALSE, spacing = 2, # 10 is too big here
                     container = NULL, ...,
                     width=NULL, height=NULL, ext.args=NULL
@@ -81,7 +84,7 @@ GLayout <- setRefClass("GLayout",
                            spacing <<- spacing
                            
                            constructor <<- "Ext.Panel"
-                           arg_list <- list(layout="table",
+                           arg_list <- list(
                                             defaults=list(
                                               bodyStyle = sprintf("padding:%spx;", spacing)
                                               )
@@ -116,31 +119,46 @@ GLayout <- setRefClass("GLayout",
                          },
                          set_visible = function(value, ...) {
                            if(!value) return()
-                           ## set row and colspans for each widget
-                           widgets$each(function(i, key, value) {
-                             f <- function(x, default) if(is.na(diff(range(x)))) default else 1 + diff(range(x))
-                             rowspan <- f(value$i, no_rows())
-                             colspan <- f(value$j, no_rows())
 
-                             anchorCls <- mapAnchorToCSSClass(value$anchor)
+                           ## Need a new algorithm:
+                           ## for each row, loop over column
+                           ## get widget in (i,j) configure colspan and rowspan from widget
+                           ## if empty add blank label
+                           f <- function(x, default) if(is.na(diff(range(x)))) default else 1 + diff(range(x))
+                           already_seen <- Array$new()
+                           for(i in 1:no_rows()) {
+                             for(j in 1:no_columns()) {
+                               cur_widget <- .get_widget(i,j)
+                               if(is.null(cur_widget)) {
+                                 label <- glabel("", cont=.self)
+                                 already_seen$push(list(widget=label, i=i, j=j))
+                               } else {
+                                 if(!already_seen$contains_item(cur_widget)) {
+                                    rowspan <- f(cur_widget$i, no_rows())
+                                    colspan <- f(cur_widget$j, no_columns())
+                                    anchorCls <- mapAnchorToCSSClass(cur_widget$anchor)
 
-                             ## add row and column span attributes to child widget etc:
-                             l <- list(rowspan=rowspan,
-                                       colspan = colspan,
-                                       cellCls = anchorCls,
-                                       style=list(paddding=sprintf("%spx", spacing))
-                                       )
-                             value$widget$ext_apply(l)
-                           })
+                                    ## add row and column span attributes to child widget etc:
+                                    l <- list(rowspan=rowspan,
+                                              colspan = colspan,
+                                              cellCls = anchorCls,
+                                              style=list(paddding=sprintf("%spx", spacing))
+                                              )
+                                    cur_widget$widget$ext_apply(l)
 
-
+                                    already_seen$push(cur_widget)
+                                  }
+                               }
+                             }
+                           }
+                           
                            
                            ## now we add more arguments, then write constructor
-                           arg_list <- list(layoutConfig=list(
+                           arg_list <- list(layout=list(type="table",
                                               columns=no_columns()
                                               ),
                                             items=String(sprintf("[%s]",
-                                              paste(sapply(widgets$core(), function(a) a$widget$get_id()), collapse=",")
+                                              paste(sapply(already_seen$core(), function(a) a$widget$get_id()), collapse=",")
                                             ))
                                             )
                            add_args(arg_list)

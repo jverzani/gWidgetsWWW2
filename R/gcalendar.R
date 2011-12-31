@@ -52,7 +52,9 @@ GCalendar <- setRefClass("GCalendar",
                              width=NULL, height=NULL, ext.args=NULL) {
                              
                              date_format <<- getWithDefault(format, "%Y-%m-%d")
+                             ext_format <- gsub("%","", date_format)
 
+                             
                              ## Ext format has no %
                              fmt <- if(!is.null(format) && nchar(format) > 0) {
                                gsub("%","",format)
@@ -63,7 +65,8 @@ GCalendar <- setRefClass("GCalendar",
                              transport_signal <<- "change"
                              arg_list <- list(editable=TRUE,
                                               width=width,
-                                              height=height
+                                              height=height,
+                                              format=ext_format
                                               )
                              add_args(arg_list)
 
@@ -79,8 +82,8 @@ GCalendar <- setRefClass("GCalendar",
                            },
                            set_value = function(value, ...) {
                              value <<- value
-                             if(!is.null(date.format) && nchar(date.format))
-                               call_Ext("setValue", as.Date(value, date.format)) # right format?
+                             if(!is.null(date_format) && nchar(date_format))
+                               call_Ext("setValue", as.character(as.Date(value, date_format))) # right format?
                              else
                                call_Ext("setValue", value)
                            },

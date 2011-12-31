@@ -72,9 +72,14 @@
 ** TODO
 -- gwindow update layout
 
+-- difference
+* fonts -- use HTML
+* 
+
 -- new widgets
 ** gborderlayout
 ** gcanvas, gsvg, ghtml,
+
 
 
 -- what it does -- fill in parts of a brew template

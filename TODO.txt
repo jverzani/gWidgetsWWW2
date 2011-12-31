@@ -8,8 +8,14 @@
 
 * replace transport with jRpc call -- cut down on complexity
 
+* proxy code is ugghly
 
+* gedit "validate.type" -- valid.type?
 
+* gcombobox 
+-- cant get templates to work! Ughh. displayTpl is close,
+  but no cigar
+-- would like remote queryMode for autocomplete on larger stores
 
 * ggroup -- autoScroll=TRUE (isn't)
 DONE * gborderlayout (panel with border layout)
@@ -21,6 +27,8 @@ DONE * gstackwidget
 
 
 DONE * checkboxgroup/checkbox svalue inconsistency?
+* names for checkbox (we have [<- are values and svalue selected, but
+why not also names for [?
 
 * fonts
 
@@ -34,7 +42,7 @@ DONE* codemirror finish onChange handler
 * codemirror -- replace gtext widget with codemirror widget. Better
 change handler
 
-* ggooglevis in a panel?
+* ggooglevis in a panel? XXX This needs work
 
 * app structure: Name
 - R file
@@ -66,6 +74,6 @@ DONE * gstatusbar: better? no css
 
 
 
-* glayout: work on alignment, spacing around children
+DONE* glayout: Need a new algorithm -- is basically broken. work on alignment, spacing around children
 * DONE [ method for glayout
 * align property needs work (issue with glayout)

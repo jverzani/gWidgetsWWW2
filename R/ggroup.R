@@ -154,6 +154,9 @@ GGroup <- setRefClass("GGroup",
                                                      
                            container$add(.self, ...)
                            
+                         },
+                         get_items= function(i, j, ...) {
+                           children$core()[i, ...]
                          }
 
                            

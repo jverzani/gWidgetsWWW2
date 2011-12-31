@@ -19,7 +19,9 @@ NULL
 ##' A label widget
 ##' 
 ##' @param text text for label. Main property. Use \code{svalue<-} to change. 
-##' @param markup logical. Ignored, but see example for \code{ext.args} usage or use HTML in label text.
+##' @param markup logical. Ignored, but see example for
+##' \code{ext.args} usage or use \code{ghtml} widget and
+##' HTML-formatted text
 ##' @param editable logical. Ignored
 ##' @inheritParams gwidget
 ##' @return an ExtWidget object

@@ -78,7 +78,7 @@ GRadio <- setRefClass("GRadio",
 
                            setup(container, handler, action, ext.args, ...)
                            
-                           set_value(selected, index=TRUE)
+                           set_index(selected)
                            .self
                          },
                          ## main property. We store the index in value, not the label
@@ -94,25 +94,36 @@ GRadio <- setRefClass("GRadio",
                            set_index(match(value, items))
                          },
                          set_index=function(value, ...) {
-                           value <<- value
+                           val <- as.integer(value)
                            ## bit awkward to set the value
-                           if(is.na(.self$value)) {
+                           if(is.na(val)) {
+                             warning(gettext("Can not set value"))
                              return()
                            }
-                           
+
+                           ## bounds check
+                           if(val < 1 || val > length(items)) {
+                             warning(gettext("Trying to set value outside of range is not supported. Setting to initial button"))
+                             val <- 1L
+                           }
+
+                           value <<- val
                            cmd <- sprintf("%s.items.get(%s).setValue(true)",
                                           get_id(),
                                           .self$value - 1) # 0-based arrays
                            add_js_queue(cmd)
                          },
-                         get_items = function(...) {
-                           items
+                         get_items = function(i, ...) {
+                           items[i]
                          },
                          set_items = function(items, ...) {
                            "Set items, update GUI"
-                           items <<- items
+                           warning(gettext("Unable to update radio button items via [<-"))
+                           return()
+                           ## items <<- items
                            ## XXX update radio buttons??? TODO
                          },
+                         len=function(...) base::length(items),
                          ## transport, brings back index as string
                          transport_fun = function() {
                            "param={value:newValue.valueOf()};"
@@ -121,7 +132,7 @@ GRadio <- setRefClass("GRadio",
                            ind <- as.numeric(value)
                            value <<- ind
                          },
-                         ##
+                         ## helper function
                          items_as_array = function() {
                            "Return items as array"
                            makeRadio <- function(label, i,  name) {

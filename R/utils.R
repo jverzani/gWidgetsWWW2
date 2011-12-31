@@ -113,7 +113,7 @@ toJSObject <- function(x) {
   }
   nms <- names(out); ind <- grepl("-", nms) # a-b-c -> "a-b-c"
   nms[ind] <- sprintf('"%s"', nms[ind])
-  sprintf("{%s}", paste(nms, out, sep=":", collapse=","))
+  sprintf("{%s}", paste(paste("'",nms,"'", sep=""), out, sep=":", collapse=","))
 }
 
 ## ## coerce a single value to javascript with quotes

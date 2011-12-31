@@ -1,10 +1,3 @@
-Ext.ns('Ext.ux');
-//CURRENTLY WORTHLESS ...
-/**
- * @class Ext.ux.GGoogleVis
- * @extends Ext.Panel
- * @author JV
- */
 Ext.define('Ext.ux.GGoogleVis', {
     
     extend: 'Ext.panel.Panel',
@@ -19,11 +12,6 @@ Ext.define('Ext.ux.GGoogleVis', {
              * @event apiready
              * Fires when the vis is ready for interaction
              * @param {GGoogleVis} this
-             */
-            'apiready',
-            /**
-             * @event apiready
-             * Fires when the Google Maps API is loaded
              */
             'apiready'
         );
