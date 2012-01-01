@@ -6,12 +6,14 @@
   gcombobox(items, selected = 1, editable = FALSE,
   coerce.with = NULL, handler = NULL, action = NULL,
   container = NULL, ..., width = NULL, height = NULL,
-  ext.args = NULL, tpl = NULL)
+  ext.args = NULL, autocomplete = FALSE, initial.msg = "",
+  tpl = NULL)
 
   gdroplist(items, selected = 1, editable = FALSE,
   coerce.with = NULL, handler = NULL, action = NULL,
   container = NULL, ..., width = NULL, height = NULL,
-  ext.args = NULL, tpl = NULL)
+  ext.args = NULL, autocomplete = FALSE, initial.msg = "",
+  tpl = NULL)
 }
 \arguments{
   \item{items}{a vector of items to choose from. (Not
@@ -29,6 +31,10 @@
 
   \item{coerce.with}{Function. If given, called on value
   before returning}
+
+  \item{autocomplete}{If \code{TRUE}, will hide the trigger
+  and make editable. When the user types the matching
+  values are presented.}
 
   \item{tpl}{a template for the item (Not working!)}
 
@@ -89,7 +95,7 @@ cb <- gcombobox(state.name, cont=w)
 addHandlerChanged(cb, handler=function(h,...) {
 galert(paste("You selected ", svalue(h$obj), sep=""), parent=w)
 })
-## type ahead style
-cb$hide_trigger(TRUE)
+## autocomplete
+cb <- gcombobox(state.name, cont=w, autocomplete=TRUE)
 }
 

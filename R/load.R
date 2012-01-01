@@ -36,8 +36,10 @@ load_app <- function(script_name,
                      ...
                          ) {
 
+  load_once(port=port)
+
+
   options("Rhttpd_debug"=as.logical(show.log))
-  
   
   R <- Rhttpd$new()
   try(R$start(port=port), silent=TRUE)
@@ -58,22 +60,6 @@ load_app <- function(script_name,
   ##                        '<script type="text/javascript" src="http://www.google.com/jsapi"></script>'
   ##                        )
                          
-
-  
-  ## gWidgetsWWW, static files
-  gWidgetsWWW <- Rook::Static$new(
-                                  urls = c("/images", "/javascript", "/css"),
-                                  root = system.file("base", package="gWidgetsWWW2")
-                                  )
-  R$add(RhttpdApp$new(gWidgetsWWW, name="gWidgetsWWW2"))
-  
-  ## tmpdir
-  tmpApp <- Rook::Static$new(
-                             urls=c("/tmp"),
-                             root=tempdir()
-                             )
-  R$add(RhttpdApp$new(tmpApp, name="tmp"))
-  
   ## brew index
   brewery <- Rook:::Brewery$new(url="/",
                                 root=system.file("framework/brew", package="gWidgetsWWW2"),
@@ -83,6 +69,7 @@ load_app <- function(script_name,
                                 ...
                                 )
                                         #  R$add(RhttpdApp$new(brewery, name="gwbrew"))
+
   
   ## an application
   app <- Rook::Builder$new(
@@ -98,7 +85,7 @@ load_app <- function(script_name,
                            ##                    root='.'
                            ##                    ),
                            ## why do I need this?
-                           tmpApp,
+#                           tmpApp,
                            GWidgetsApp$new(url="/gwapp", script=script_name, session_manager=make_session_manager()),
                            ## why does this fail?
                            Rook:::Redirect$new(sprintf("http://127.0.0.1:%s/custom/%s/indexgw.rhtml", tools:::httpdPort, app_name))
@@ -110,3 +97,31 @@ load_app <- function(script_name,
   
 }
 
+.load_once <- function(port=9000, ...) {
+  
+  R <- Rhttpd$new()
+  try(R$start(port=port), silent=TRUE)
+
+  
+  
+  ## gWidgetsWWW, static files
+  gWidgetsWWW <- Rook::Static$new(
+                                  urls = c("/images", "/javascript", "/css"),
+                                  root = system.file("base", package="gWidgetsWWW2")
+                                  )
+  R$add(RhttpdApp$new(gWidgetsWWW, name="gWidgetsWWW2"))
+  
+  ## tmpdir
+  tmpApp <- Rook::Static$new(
+                             urls=c("/tmp"),
+                             root=tempdir()
+                             )
+  R$add(RhttpdApp$new(tmpApp, name="tmp"))
+  
+
+  ## This handles the AJAX calls
+  R$add(GWidgetsAppAjax$new(session_manager=make_session_manager()), name="gwappAJAX")
+
+}
+
+load_once <- memoize(.load_once)

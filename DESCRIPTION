@@ -72,3 +72,4 @@ Collate:
     'load.R'
     'gborderlayout.R'
     'gstackwidget.R'
+    'json-rpc.R'

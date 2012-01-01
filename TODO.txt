@@ -2,14 +2,45 @@
 
 * update vignette
 
-* nginx integration; think through load_app  improvements
-* factor out code in indexgw.html -- I want three lines read css, read
-  js, call app
+* write unit tests
+
 
 * replace transport with jRpc call -- cut down on complexity
 
 * proxy code is ugghly
 
+*JSON_RPC class to subclass. Allows access to R session, not special environments
+
+
+* nginx integration; think through load_app  improvements
+* rethink load_app (google app like, i.e. make it require a subclass
+  so we can modify the process)
+* cookies!
+* get_tempfile -- are tmp files working?
+
+* Why do we have to use indexgw.html! Uggh
+* factor out code in indexgw.html -- I want three lines read css, read
+  js, call app
+* app structure: Name
+- R file
+- R/filename.R
+- brew/brewname.R
+- images/...
+- css/...
+- javascript/...
+
+
+* rename router
+
+
+# containers
+* ggroup -- autoScroll=TRUE (isn't)
+DONE * gborderlayout (panel with border layout)
+DONE * gstackwidget
+* gformlayout (mebbe)
+
+
+# widgerts
 * gedit "validate.type" -- valid.type?
 
 * gcombobox 
@@ -17,20 +48,12 @@
   but no cigar
 -- would like remote queryMode for autocomplete on larger stores
 
-* ggroup -- autoScroll=TRUE (isn't)
-DONE * gborderlayout (panel with border layout)
-DONE * gstackwidget
-* gformlayout (mebbe)
-* rethink load_app (google app like, i.e. make it require a subclass
-  so we can modify the process)
-* cookies!
-
 
 DONE * checkboxgroup/checkbox svalue inconsistency?
-* names for checkbox (we have [<- are values and svalue selected, but
+DONE * names for checkbox (we have [<- are values and svalue selected, but
 why not also names for [?
 
-* fonts
+* fonts -- do we need? Use HTML
 
 DONE * is gedit change signal change or "activate"
 
@@ -44,14 +67,6 @@ change handler
 
 * ggooglevis in a panel? XXX This needs work
 
-* app structure: Name
-- R file
-- R/filename.R
-- brew/brewname.R
-- images/...
-- css/...
-- javascript/...
-
 DONE * gbutton: actions, icons
 
 DONE * gradio: all of it
@@ -64,9 +79,6 @@ DONE * gstatusbar: better? no css
 
 * gcanvas: working, needs documenting
 
-* Why do we have to use indexgw.html! Uggh
-
-* rename router
 
 * gtable: checkbox selection; grouping variables (add), means to limit which fields are shown
 

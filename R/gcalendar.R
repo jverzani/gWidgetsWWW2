@@ -24,6 +24,8 @@ NULL
 ##' @param format format of date. Default of Y-m-d.
 ##' @inheritParams gwidget
 ##' @return a \code{GCalendar} instance
+##' @note the \code{svalue} method returns an instance of \code{Date}
+##' class by conversion through \code{as.Date}.
 ##' @export
 ##' @examples
 ##' w <- gwindow("Calendar")
@@ -74,7 +76,8 @@ GCalendar <- setRefClass("GCalendar",
 
                              if(nchar(text))
                                set_value(text)
-                             
+                             else
+                               set_value(NA)
                              .self
                            },
                            get_value = function(...) {

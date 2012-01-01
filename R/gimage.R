@@ -19,12 +19,12 @@ NULL
 ##' Container for an image
 ##'
 ##' The image shows a url. This url can be external. For local urls,
-##' the file must be accessible by the server. The convenience method
-##' \code{obj$get_tempfile()} or the function \code{get_tempfile} can
-##' be used to create a file that is accessible. See the example.
-##' @param filename A url or file in static temp file
-##' @param dirname prepended to filename if non empty
-##' @param size passed to \code{size<-} method if given
+##' the file must be accessible by the server. The function
+##' \code{get_tempfile} can be used to create a file that is so
+##' accessible. See the example.
+##' @param filename A url or file from \code{get_tempfile}.
+##' @param dirname ignored.
+##' @param size A vector passed to \code{width} and \code{height} arguments.
 ##' @inheritParams gwidget
 ##' @return an GImage reference object
 ##' @export
@@ -40,7 +40,7 @@ NULL
 ##' 
 ##' i <- gimage(f, container=g)
 ##' b <- gbutton("click", cont=g, handler=function(h,...) {
-##'   f <- i$get_tempfile(ext=".png")   ## a method call, for variety
+##'   f <- get_tempfile(ext=".png") 
 ##'   png(f)
 ##'   hist(rnorm(100))
 ##'   dev.off()
@@ -48,27 +48,37 @@ NULL
 ##' })
 ##' @note requires tempdir to be mapped to a specific url, as this is
 ##' assumed by \code{get_tempfile} and \code{get_tempfile_url}
-gimage <- function(filename = "", dirname = "",  size = "",
+gimage <- function(filename = "", dirname = "",  size = NULL,
                    handler = NULL, action = NULL, container = NULL,...,
                    width=NULL, height=NULL, ext.args=NULL
                    ) {
+
+
+  
   i <- GImage$new(container, ...)
   i$init(filename, container, ...,
          width=width, height=height, ext.args=ext.args)
+  if(!is.null(size))
+    size(i) <- size
   i
 }
 
 
 GImage <- setRefClass("GImage",
                       contains="GHtml",
+                      fields=list(
+                        filename="ANY"
+                        ),
                       method=list(
                         init=function(filename, container, ...,
                           width=NULL, height=NULL, ext.args=NULL) {
 
+                          filename <<- filename
                           callSuper(img_wrap(filename), container, ...,
                                     width=width, height=height, ext.args=ext.args)
                         },
                         img_wrap =function(x, alt="") {
+                          "wrap image file into HTML call"
                           if(missing(x)) {
                             value <<- ""
                           } else if(is(x, "StaticTempFile")) {
@@ -76,15 +86,18 @@ GImage <- setRefClass("GImage",
                           } else {
                             value <<- x # assume a url
                           }
-                          sprintf("<img src=\"%s\" alt=\"%s\" />", x, alt)
+                          sprintf("<img src=\"%s\" alt=\"%s\" />", value, alt)
                         },
                         set_value = function(f, alt="", ...) {
+                          filename <<- filename
                           x <- img_wrap(f, alt=alt)
                           callSuper(x)
                         },
-                        get_tempfile = function(ext=".txt") {
-                          "Create a new temporary file"
-                          get_tempfile(ext)
+                        get_value = function(...) {
+                          filename
+                        },
+                        get_index=function(...) {
+                          get_value()
                         }
                         ))
 

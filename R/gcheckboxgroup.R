@@ -136,6 +136,9 @@ GCheckboxGroup <- setRefClass("GCheckboxGroup",
                            ## items <<- items
                            ## XXX update radio buttons??? TODO
                          },
+                         ## cost-free aliases
+                         get_names=function(...) get_items(...),
+                         set_names = function(...) set_items(...),
                          ## transport, brings back index as string
                          transport_fun = function() {
                            paste("var x = []; Ext.each(this.getChecked(), function(val) {x.push(val.inputValue)});",

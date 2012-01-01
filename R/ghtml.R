@@ -81,13 +81,14 @@ GHtml <- setRefClass("GHtml",
                        },
                        set_value = function(value, ...) {
                          x <- value
-                         if(isURL(x)) {
-                           x <- paste(readLines(x), collapse="")
+                         if(isURL(x) ||
+                            is(x[1], "StaticTempFile") ||
+                            file.exists(x[1])) {
+                           x <- readLines(x)
                          }
-                         proxy$set_value(x)
+                         proxy$set_value(paste(x, collapse=""))
 
                          ## notify panel to update
-
                          cmd <- sprintf("%s.update('%s', %s)", get_id(), x, toJSObject(update_url))
                          add_js_queue(cmd)
                          parent$do_layout()

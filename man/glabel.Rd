@@ -11,7 +11,8 @@
   \code{svalue<-} to change.}
 
   \item{markup}{logical. Ignored, but see example for
-  \code{ext.args} usage or use HTML in label text.}
+  \code{ext.args} usage or use \code{ghtml} widget and
+  HTML-formatted text}
 
   \item{editable}{logical. Ignored}
 

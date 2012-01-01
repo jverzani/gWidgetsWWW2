@@ -54,9 +54,12 @@
 \details{
   The layout is only finalized after call the
   \code{visible<-} method with a value of \code{TRUE}. One
-  adds all the desired children, then calls this method.
-  This is a limitation of the underlying toolkit, Ext JS --
-  children must be specified at configuration.
+  adds all the desired children, then calls this method. It
+  is at this point the widget is rendered, so if the widget
+  is added to a box container, say, to which other
+  components are added this one will appear after any
+  others that had been added. (So pretty much, add the
+  children then call visible.)
 }
 \examples{
 w <- gwindow("grid layout example")
@@ -66,9 +69,9 @@ tbl[1,1, anchor=c(1,0)] <- "Name"  ## a character maps to a label
 tbl[1,2] <- gedit("", cont=tbl) ## tbl needed on right side too
 tbl[2,1, anchor=c(1,0)] <- "Rank"
 tbl[2,2] <- gedit("", cont=tbl)
-visible(tbl) <- TRUE ## This line is needed!
 tbl[3,2] <- gbutton("click", cont=tbl, handler=function(h,...) {
 galert(sprintf("\%s is a \%s", svalue(tbl[1,2]), svalue(tbl[2,2])), parent=w)
 })
+visible(tbl) <- TRUE ## This line is needed!
 }
 

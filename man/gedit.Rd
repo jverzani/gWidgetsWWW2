@@ -4,7 +4,8 @@
 \usage{
   gedit(text = "", width = 25, coerce.with = NULL,
   initial.msg = "", handler = NULL, action = NULL,
-  container = NULL, ..., ext.args = NULL)
+  container = NULL, ..., ext.args = NULL, validate.type =
+  NULL, validate.regexp = NULL)
 }
 \arguments{
   \item{text}{initial text}
@@ -18,6 +19,15 @@
 
   \item{initial.msg}{initial message to user, in greyed out
   text}
+
+  \item{validate.type}{pre-defined validation type:
+  \code{c("alpha","alphanum","numeric",
+  "email","url","nonempty")}. When specified, value is
+  verified to match this type.}
+
+  \item{validate.regexp}{optional regular expression to
+  validate against. If the argument has a names argument,
+  this is used to notify the user why the type is invalid.}
 
   \item{handler}{optional means (to
   \code{\link{addHandlerChanged}} to specify a handler for
@@ -54,12 +64,22 @@
 \description{
   No [<- method. This can be done with a combobox though.
 }
+\note{
+  The 'change' event varies from browser to browser. To
+  catch just an enter key, the \code{add_handler_enter}
+  reference method is available.
+}
 \examples{
 w <- gwindow()
 sb <- gstatusbar("Powered by gWidgetsWWW and Rook", cont=w)
-e <- gedit("initial text", cont=w)
+g <- ggroup(cont=w, horizontal=FALSE)
+e <- gedit("initial text", cont=g)
 addHandlerChanged(e, handler=function(h,...) {
 galert(paste("You entered", svalue(h$obj)), parent=w)
 })
+## initial message
+e1 <- gedit(initial.msg="type a value here ...", cont=g)
+## validation
+e2 <- gedit(cont=g, validate.regexp=setNames("^[a-z]*$", "Lower case only"))
 }
 

@@ -38,8 +38,9 @@
   method \code{get_event_params} provides the mapping.
 
   For the \code{GEdit} class, the change signal is
-  "change". Use \code{add_handler_enter} for enter key
-  press and \code{add_handler_blur} for focus out events
+  "change". Use the reference class method
+  \code{add_handler_enter} for "enter" key press and
+  \code{addHandlerBlur} for focus out events
 
   For \code{GGroup} and its subclasses, boxes are
   different. For vertical boxes they need to have a height
@@ -98,7 +99,7 @@
   \code{add_handler}, \code{invoke_handler},
   \code{handler_widget}, \code{connect_to_toolkit},
   \code{transport_fun}, \code{process_transport},
-  \code{param_defn}, \code{prepare_for_handler}
+  \code{param_defn}, \code{before_handler}
 
   The standard expand, fill, anchor arugments are not
   implemented as they are in RGtk2, say.

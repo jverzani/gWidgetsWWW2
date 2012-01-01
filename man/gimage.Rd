@@ -2,16 +2,17 @@
 \alias{gimage}
 \title{Container for an image}
 \usage{
-  gimage(filename = "", dirname = "", size = "", handler =
-  NULL, action = NULL, container = NULL, ..., width = NULL,
-  height = NULL, ext.args = NULL)
+  gimage(filename = "", dirname = "", size = NULL, handler
+  = NULL, action = NULL, container = NULL, ..., width =
+  NULL, height = NULL, ext.args = NULL)
 }
 \arguments{
-  \item{filename}{A url or file in static temp file}
+  \item{filename}{A url or file from \code{get_tempfile}.}
 
-  \item{dirname}{prepended to filename if non empty}
+  \item{dirname}{ignored.}
 
-  \item{size}{passed to \code{size<-} method if given}
+  \item{size}{A vector passed to \code{width} and
+  \code{height} arguments.}
 
   \item{handler}{optional means (to
   \code{\link{addHandlerChanged}} to specify a handler for
@@ -55,9 +56,8 @@
 \description{
   The image shows a url. This url can be external. For
   local urls, the file must be accessible by the server.
-  The convenience method \code{obj$get_tempfile()} or the
-  function \code{get_tempfile} can be used to create a file
-  that is accessible. See the example.
+  The function \code{get_tempfile} can be used to create a
+  file that is so accessible. See the example.
 }
 \note{
   requires tempdir to be mapped to a specific url, as this
@@ -76,7 +76,7 @@ dev.off()
 
 i <- gimage(f, container=g)
 b <- gbutton("click", cont=g, handler=function(h,...) {
-f <- i$get_tempfile(ext=".png")   ## a method call, for variety
+f <- get_tempfile(ext=".png")
 png(f)
 hist(rnorm(100))
 dev.off()

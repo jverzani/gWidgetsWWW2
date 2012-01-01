@@ -55,6 +55,10 @@
   dialog. The svalue method refers to the date, which
   depends on the value of format.xf
 }
+\note{
+  the \code{svalue} method returns an instance of
+  \code{Date} class by conversion through \code{as.Date}.
+}
 \examples{
 w <- gwindow("Calendar")
 sb <- gstatusbar("Powered by gWidgetsWWW and Rook", cont=w)

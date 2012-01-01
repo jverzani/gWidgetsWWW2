@@ -13,8 +13,10 @@
 
 var session_id = "script_global";
 var MyApp = "<%= app_name %>";
-var base_url = "/custom/" + MyApp + "/gwapp/";
-var handler_url = base_url + "runHandler";
+var app_url = "/custom/" + MyApp + "/gwapp/";
+var base_url = "/custom/gwappAJAX/";
+var handler_url_old = base_url + "runHandler";
+var handler_url = "/custom/gwappAJAX/runHandler";
 var comet_url = base_url + "runComet";
 var rpc_url = base_url + "runRpc";
 var transport_url = base_url + "runTransport";
@@ -112,7 +114,7 @@ Ext.QuickTips.init();
     cache: false,
     success: function(data) {
       session_id = data.id;
-      $.ajax(base_url,{
+      $.ajax(app_url,{
         dataType:'script',
         data: {session_id: session_id},
         cache: false,
