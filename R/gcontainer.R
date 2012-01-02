@@ -213,12 +213,12 @@ GContainer <- setRefClass("GContainer",
                               "Set width in pixels"
                               call_Ext("setWidth", px)
                             },
-                            set_size = function(value) {
-                              "w is c(width, height)"
-                              set_width(value[1])
-                              if(length(value) > 1)
-                                set_height(value[1])
-                            },
+                            ## set_size = function(value) {
+                            ##   "w is c(width, height)"
+                            ##   set_width(value[1])
+                            ##   if(length(value) > 1)
+                            ##     set_height(value[1])
+                            ## },
                             set_visible = function(value) {
                               "Show container and its siblings"
                               if(value)

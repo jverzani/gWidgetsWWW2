@@ -43,8 +43,9 @@ gframe <- function(text = "", pos = 0, horizontal=TRUE, spacing=5, container=NUL
          ...,
          width=width,
          height=height,
-         ext.args = merge(list(title=text), ext.args)
+         ext.args = ext.args
          )
+  f$set_value(text)
   f
 }
   
@@ -55,6 +56,9 @@ GFrame <- setRefClass("GFrame",
                          value = "ANY"
                          ),
                        methods=list(
+                         get_value = function(...) {
+                           value
+                         },
                          set_value = function(value, ...) {
                            value <<- value
                            call_Ext("setTitle", value)

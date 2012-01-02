@@ -120,6 +120,19 @@ tag.GComponent <- function(x, key) x$get_attr(key)
 "tag<-.GComponent" <- function(x, key, value) x$set_attr(key, value)
 
 
+##' Generically returns if widget is in visible state
+##'
+##' @param x object Calls objects \code{set_visible} method
+##' @export 
+"visible" <- function(x) UseMethod("visible")
+
+##' getters method for visible
+##' @method "visible" GComponent
+##' @S3method "visible" GComponent
+"visible.GComponent" <- function(x) {
+  x$get_visible()
+}
+
 ##' Primarily used to set if widget is shown, but also has other meanings
 ##'
 ##' @param x object Calls objects \code{set_visible} method

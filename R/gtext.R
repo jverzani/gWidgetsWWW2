@@ -24,7 +24,6 @@ NULL
 ##' @param font.attr Ignored. Default font attributes
 ##' @param wrap Ignored Do we wrap the tet
 ##' @inheritParams gwidget
-##' @param resizable Ignored. (Should area be resizable on the page)
 ##' @return an ExtWidget instance
 ##' @export
 ##' @examples
@@ -41,14 +40,14 @@ NULL
 gtext <- function(text = NULL, width = NULL, height = 300,
                   font.attr = NULL, wrap = TRUE,
                   handler = NULL, action = NULL, container = NULL,...,
-                  ext.args=NULL,
-                  resizable = FALSE     # gWidgetsWWW arg. Keep?
+                  ext.args=NULL
                   ) {
 
-  txt <- GText$new(container,...)
+#  txt <- GText$new(container,...)
+  txt <- GCodeMirrorPlainText$new(container, ...)
   txt$init(text, font.attr, wrap, handler, action, container, ...,
            width=width, height=height,
-           ext.args=ext.args, resizable=resizable)
+           ext.args=ext.args)
   txt
 }
 
@@ -62,7 +61,7 @@ GText <- setRefClass("GText",
                      method=list(
                        init = function(text, font.attr, wrap, handler, action, container, ...,
                          width, height, 
-                         ext.args=ext.args, resizable=resizable) {
+                         ext.args=list()) {
 
                          value <<- getWithDefault(text, "")
                          constructor <<- "Ext.form.TextArea"
@@ -126,30 +125,38 @@ GCodeMirror <- setRefClass("GCodeMirror",
                                                 height=height,
                                                 lineNumbers=TRUE,
                                                 matchBrackets=TRUE,
-                                                mode="r",
-                                                ## ## signals are focus, blur
-                                                onChange=String(paste(
-                                                  sprintf("function(me, obj) {"),
-                                                  sprintf("  jRpc('%s', 'process_transport', obj);", get_id()),
-                                                  sprintf("}"),
-                                                  sep="")),
-                                                onGutterClick=String("CodeMirror.newFoldFunction(CodeMirror.braceRangeFinder)"),
-                                                onFocus=String(paste(
-                                                   sprintf("function() {"),
-                                                   sprintf("callRhandler('%s','focus',null);", get_id()),
-                                                   sprintf("}"),
-                                                   sep="")),
-                                                onBlur=String(paste(
-                                                  sprintf("function() {"),
-                                                  sprintf("callRhandler('%s','blur',null);", get_id()),
-                                                  sprintf("}"),
-                                                  sep=""))
-                                                  
+                                                electricChars=TRUE,
+                                                mode="r"
+                                               
                                                 )
+                               arg_list <- add_on_callbacks(arg_list)
                                add_args(arg_list)
                                setup(container, NULL, NULL, ext.args, ...)
                                set_value(text)
                                add_public_method(c("process_transport"))
+                             },
+                             add_on_callbacks=function(lst) {
+                               lst <- merge(lst,
+                                            ##signals are focus, blur
+                                            list(
+                                                 onChange=String(paste(
+                                                   sprintf("function(me, obj) {"),
+                                                   sprintf("  jRpc('%s', 'process_transport', obj);", get_id()),
+                                                   sprintf("}"),
+                                                   sep="")),
+                                                 onGutterClick=String("CodeMirror.newFoldFunction(CodeMirror.braceRangeFinder)"),
+                                                 onFocus=String(paste(
+                                                   sprintf("function() {"),
+                                                   sprintf("callRhandler('%s','focus',null);", get_id()),
+                                                   sprintf("}"),
+                                                   sep="")),
+                                                 onBlur=String(paste(
+                                                   sprintf("function() {"),
+                                                   sprintf("callRhandler('%s','blur',null);", get_id()),
+                                                   sprintf("}"),
+                                                   sep=""))
+                                                 ))
+                               return(lst)
                              },
                              get_value=function(...) {
                                "We store character vector of lines, so we need to paste on return"
@@ -243,7 +250,6 @@ GCodeMirror <- setRefClass("GCodeMirror",
                                ## val has from, to, text and possibly next
 
                                if(missing(val) || is.null(val$text)) return()
-                               print(list("process", val))
 
                                from <- val$from; to <- val$to
                                if(from['line'] == to['line']) {
@@ -260,3 +266,25 @@ GCodeMirror <- setRefClass("GCodeMirror",
 
 
                              ))
+
+GCodeMirrorPlainText <- setRefClass("GCodeMirrorPlainText",
+                                    contains="GCodeMirror",
+                                    methods=list(
+                                      init=function(
+                                        text, font.attr, wrap, handler, action, container, ...,
+                                        width, height, 
+                                        ext.args=list()
+                                        ) {
+
+                                        ext.args <- getWithDefault(ext.args, list())
+                                        ext.args <- merge(ext.args,
+                                                          list(
+                                                               lineNumbers=FALSE,
+                                                               matchBrackets=FALSE,
+                                                               mode="plain",
+                                                               lineWrapping=TRUE
+                                                               )
+                                                          )
+                                        callSuper(text, container, ..., width=width, height=height, ext.args=ext.args)
+                                      }
+                                      ))

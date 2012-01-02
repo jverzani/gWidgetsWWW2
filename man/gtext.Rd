@@ -4,8 +4,7 @@
 \usage{
   gtext(text = NULL, width = NULL, height = 300, font.attr
   = NULL, wrap = TRUE, handler = NULL, action = NULL,
-  container = NULL, ..., ext.args = NULL, resizable =
-  FALSE)
+  container = NULL, ..., ext.args = NULL)
 }
 \arguments{
   \item{text}{initial text}
@@ -17,9 +16,6 @@
   \item{font.attr}{Ignored. Default font attributes}
 
   \item{wrap}{Ignored Do we wrap the tet}
-
-  \item{resizable}{Ignored. (Should area be resizable on
-  the page)}
 
   \item{handler}{optional means (to
   \code{\link{addHandlerChanged}} to specify a handler for

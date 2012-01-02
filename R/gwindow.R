@@ -72,11 +72,11 @@ gwindow <- function(title="",
       cat("DEBUG only\n")
       toplevel <- GWidgetsTopLevel$new()
     }
+    w <- GWindow$new(toplevel=toplevel)
    } else {
-    toplevel <- parent$toplevel
+    w <- GSubWindow$new(parent=parent)
   }
-  
-  w <- GWindow$new(toplevel=toplevel)
+ 
   w$init(title, parent, handler, action, ...,
          renderTo=renderTo,
          width=width, height=height, ext.args=ext.args)
@@ -199,33 +199,7 @@ GWindow <- setRefClass("GWindow",
                            callSuper(toplevel=.self)
                          },
                          ##
-                         init_subwindow = function(title, parent, handler, action, ..., width=NULL, height=NULL) {
-                           ## initialize a subwindow
-                           width <- getWithDefault(width, 200)
-                           height <- getWithDefault(height, 200)
-
-                           constructor <<- "Ext.Window"
-                           arg_list <- list(renderTo=String("Ext.getBody()"),
-                                             title=title,
-                                             layout="auto",
-                                             width=width,
-                                             height=height,
-                                             closeAction="hide",
-                                             autoScroll=TRUE,
-                                             plain=TRUE,
-                                             button=String(sprintf('[{text: "Close", handler: function(){%s.hide()}}]',
-                                               get_id()))
-                                             )
-                           add_args(arg_list)
-                           write_constructor()
-                           
-                           if(!is.null(handler))
-                             add_handler_changed(handler, action)
-
-                           call_Ext("render")
-                           call_Ext("show")
-                           
-                         },
+                         
                          add = function (child, expand, anchor, fill, ...) {
                            ## We override the sizing here
                            if(is(child, "GGroup") && getWithDefault(expand, TRUE)) {
@@ -239,7 +213,7 @@ GWindow <- setRefClass("GWindow",
                             do_layout()
                          },
                          ##
-                         get_value = function() {
+                         get_value = function(...) {
                            "Return title text"
                            value
                          },
@@ -286,3 +260,36 @@ GWindow <- setRefClass("GWindow",
 }
                          )
                        )
+
+
+GSubWindow <- setRefClass("GSubWindow",
+contains="GWindow",
+methods=list(
+init = function(title, parent, handler, action, ..., renderTo=NULL,width=NULL, height=NULL, ext.args=list()) {
+                           ## initialize a subwindow
+                           width <- getWithDefault(width, 200)
+                           height <- getWithDefault(height, 200)
+
+                           constructor <<- "Ext.Window"
+                           arg_list <- list(renderTo=String("Ext.getBody()"),
+                                             title=title,
+                                             layout="auto",
+                                             width=width,
+                                             height=height,
+                                             closeAction="hide",
+                                             autoScroll=TRUE,
+                                             plain=TRUE,
+                                             button=String(sprintf('[{text: "Close", handler: function(){%s.hide()}}]',
+                                               get_id()))
+                                             )
+                           add_args(arg_list)
+                           write_constructor()
+                           
+                           if(!is.null(handler))
+                             add_handler_changed(handler, action)
+
+                           call_Ext("render")
+                           call_Ext("show")
+                           
+                         }
+))

@@ -30,7 +30,7 @@ NA
 ##' w <- gwindow()
 ##' sb <- gstatusbar("Powered by gWidgetsWWW and Rook")
 gstatusbar <- function(text = "", container=NULL, ...) {
-  if(!is(container, "GWindow"))
+  if(!is(container, "GWindow") || is(container, "GGroup"))
     return()
 
   sb <- GStatusbar$new(container, ...)

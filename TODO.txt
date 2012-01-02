@@ -13,14 +13,16 @@
 
 
 * nginx integration; think through load_app  improvements
+
 * rethink load_app (google app like, i.e. make it require a subclass
   so we can modify the process)
 * cookies!
-* get_tempfile -- are tmp files working?
+DONE * get_tempfile -- are tmp files working?
 
 * Why do we have to use indexgw.html! Uggh
-* factor out code in indexgw.html -- I want three lines read css, read
+DONE * factor out code in indexgw.html -- I want three lines read css, read
   js, call app
+* put javascript into a namespace (gWidgets.base_url, ...)
 * app structure: Name
 - R file
 - R/filename.R
@@ -34,7 +36,7 @@
 
 
 # containers
-* ggroup -- autoScroll=TRUE (isn't)
+* ggroup -- autoScroll=TRUE (isn't); size issues; menubar statusbar
 DONE * gborderlayout (panel with border layout)
 DONE * gstackwidget
 * gformlayout (mebbe)
@@ -62,7 +64,7 @@ DONE? * gcalendar -- way off.
 DONE * ginput wasn't done
 
 DONE* codemirror finish onChange handler
-* codemirror -- replace gtext widget with codemirror widget. Better
+DONE * codemirror -- replace gtext widget with codemirror widget. Better
 change handler
 
 * ggooglevis in a panel? XXX This needs work
@@ -79,6 +81,7 @@ DONE * gstatusbar: better? no css
 
 * gcanvas: working, needs documenting
 
+* gstatusbar for ggroup objects
 
 * gtable: checkbox selection; grouping variables (add), means to limit which fields are shown
 

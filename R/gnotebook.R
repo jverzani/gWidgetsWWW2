@@ -107,7 +107,7 @@ GNotebook <- setRefClass("GNotebook",
                            dispose = function(index) {
                              "For deleting. Index can be numeric or character"
                              if(missing(index))
-                               index <- length() - 1L# last one
+                               index <- len() - 1L# last one
 
                              if(is.character(index))
                                index <- match(index, names(notebook_children))

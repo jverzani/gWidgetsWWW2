@@ -1,0 +1,96 @@
+
+var session_id = "script_global";
+var base_url = "/custom/gwappAJAX/";
+var proxy_url = base_url + "runProxy";
+var html_proxy_url = base_url + "runHtmlProxy";
+
+callRhandler = function(id, signal, value) {
+  data = {id: id, signal:signal, value: value, session_id: session_id};
+  Ext.Ajax.request({
+    url: base_url + "runHandler",
+    jsonData:data,
+    success:function(response) {
+      $.globalEval(response.responseText);
+    },
+    failure:function(response) {
+      Ext.example.msg("Error:", response.text,3); 
+    }
+  })
+};
+
+transportFun = function(id, value) {
+   data = {id: id, session_id: session_id, param: value};
+   Ext.Ajax.request({
+     url:base_url + "runTransport",
+     jsonData:data,
+     success:function(response) {
+       $.globalEval(response.responseText);
+     },
+     failure:function(response) {
+       Ext.example.msg("Error:", response.text,3);
+     }
+   })
+};
+
+
+
+jRpc =  function(obj, meth, params, callback) {
+    data = {id: obj, session_id: session_id, meth:meth, value: params};
+   Ext.Ajax.request({
+url:base_url + "runRpc" ,
+jsonData:data,
+success:callback
+})
+};
+
+createGui = function(app_url) {
+  $.ajax(base_url + "newSessionId", {
+    dataType: 'json',
+    cache: false,
+    success: function(data) {
+      session_id = data.id;
+      $.ajax(app_url,{
+        dataType:'script',
+        data: {session_id: session_id},
+        cache: false,
+        type: "GET"
+      })
+    }
+  });
+};
+
+listen = function() {
+    listening = false;
+    if (listening)
+        return;
+    
+    listening = true;
+    $.ajax({
+	data: {session_id: session_id},
+	dataType: 'script',
+        type: 'GET',
+        url:  base_url + "runComet",
+        async: true,
+        cache: true,
+        timeout: 10000,
+        ifModified: true,
+        
+        success: function(data) {
+            listening = false;
+            setTimeout(listen, 1000);
+        },
+
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+            listening = false;
+            if (textStatus == 'timeout') {
+                listen()
+            } else {
+                setTimeout(listen, 10000);
+            }
+        },
+    });
+};
+
+$(window).unload(function() {
+  $.ajax({url: base_url + "closeSession", data: {session_id: session_id}, timeout:1000});
+});

@@ -13,7 +13,7 @@
 ##      You should have received a copy of the GNU General Public License
 ##      along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-##' @include ggroup.R
+##' @include gframe.R
 NA
 
 ##' gexpandgroup is a group with trigger icon and label
@@ -42,17 +42,19 @@ gexpandgroup <- function(text = "", horizontal = TRUE,
                          ) {
 
   eg <- GExpandgroup$new(container, ...)
-  eg$init(horizontal=horizontal,
+  eg$init(text=text,
+          horizontal=horizontal,
           spacing=spacing,
           use.scrollwindow = FALSE,
           container,
           ...,
           width=width,
           height=height,
-          ext.args=merge.list(list(title=text,collapsible=TRUE),
+          ext.args=merge.list(list(collapsible=TRUE),
             ext.args)
           )
-
+  eg$set_value(text)
+  
   if(!is.null(handler)) {
     eg$add_handler("collapse", handler, action)
     eg$add_handler("expand", handler, action)
@@ -62,21 +64,18 @@ gexpandgroup <- function(text = "", horizontal = TRUE,
 }
 
 GExpandgroup <- setRefClass("GExpandgroup",
-                            contains="GGroup",
+                            contains="GFrame",
                             fields=list(
                               value="ANY",
                               visible="logical"
                               ),
                             methods=list(
-                              set_value = function(value, ...) {
-                                value <<- value
-                                call_Ext("setTitle", value)
-                              },
                               set_visible = function(value, ...) {
                                 "Show or collapse"
                                 if(value)
                                   call_Ext("expand")
                                 else
                                   call_Ext("collapse")
+                                ..visible <<- as.logical(value)
                               }
                               ))

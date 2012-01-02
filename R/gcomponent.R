@@ -100,7 +100,7 @@ GComponent <- setRefClass("GComponent",
                            ..index="ANY"
                            ),
                          methods=list(
-                           initialize=function(container=NULL, parent=NULL,...) {
+                           initialize=function(container=NULL, parent=NULL,  ...) {
                              "Initialize widget. @param toplevel required or found"
                              if(!is.null(toplevel) && is(toplevel, "GWidgetsTopLevel")) {
                                toplevel <<- toplevel
@@ -562,7 +562,8 @@ E.g. var param = {value: this.getText()}"
                                  call_Ext("setSize", val[1], val[2])
                                } else {
                                  ## This allows set_size("100%", "100%")
-                                 cmd <- sprintf("%s.setSize(width:'%s',height:'%s');", val[1], val[2])
+                                 cmd <- sprintf("%s.setSize(width:'%s',height:'%s');",
+                                                get_id(), val[1], val[2])
                                  add_js_queue(cmd)
                                }
                              }

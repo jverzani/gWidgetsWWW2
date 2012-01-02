@@ -16,6 +16,16 @@
 ##' @include gwidget.R
 NULL
 
+## helper to format messasge with detail
+.make_message <- function(msg) {
+  if(length(msg) > 1)
+    msg <- sprintf("<b>%s</b><br/>%s",
+                   msg[1],
+                   paste(msg[-1], collapse="<br/>")
+                   )
+  ourQuote(msg)
+}
+
 ##' A simple message dialog.
 ##' 
 ##' @param message main message.
@@ -35,14 +45,26 @@ gmessage <- function(message, title="message",
                      parent = NULL,
                      ...) {
 
+ 
+  
   dlg <- GDialog$new(parent$toplevel)
   icon <- sprintf("Ext.MessageBox.%s", toupper(match.arg(icon,c("info", "warning", "error", "question"))))
 
-  cmd <- sprintf("Ext.Msg.show({title:%s, msg:%s, buttons:Ext.Msg.CANCEL, icon:%s, animEl:'%s'});",
-                 ourQuote(title),
-                 ourQuote(message),
-                 icon,
-                 parent$id)
+  tpl <- "
+Ext.Msg.show({
+  title:{{title}},
+  msg:{{message}},
+  buttons:Ext.Msg.CANCEL,
+  icon:{{icon}},
+  animEl:'{{parent_id}}'
+});
+"
+  cmd <- whisker.render(tpl,
+                        list(title=ourQuote(title),
+                             message=.make_message(message),
+                             icon=icon,
+                             parent_id=parent$id)
+                        )
   dlg$add_js_queue(cmd)
 }
 
@@ -80,20 +102,29 @@ gconfirm <- function(message, title="Confirm",
   
   dlg$add_handler(dlg$change_signal, handler, action)
     
-  icon <- sprintf("Ext.MessageBox.%s", toupper(match.arg(icon,c('info', 'warning', 'error', 'question'))))
-
-  fn <- sprintf("function(buttonID, text, o) {if(buttonID == 'yes') {callRhandler('%s', '%s',null)}}", dlg$get_id(), dlg$change_signal)
-
-  
-  cmd <- sprintf("Ext.Msg.show({title:%s, msg:%s, buttons:Ext.Msg.YESNO, icon:%s, animEl:'%s', fn:%s});",
-                 ourQuote(title),
-                 ourQuote(message),
-                 icon,
-                 parent$id,
-                 fn
-                 )
+  tpl <- "
+Ext.Msg.show({
+  title:{{title}},
+  msg:{{message}},
+  buttons:Ext.Msg.YESNO,
+  icon:Ext.MessageBox.{{icon}},
+  animEl:'{{parent_id}}',
+  fn:function(buttonID, text, o) {
+    if(buttonID == 'yes') {
+      callRhandler('{{id}}', '{{signal}}',null)
+    }
+  }
+});
+"
+  cmd <- whisker.render(tpl,
+                        list(title=ourQuote(title),
+                             message=.make_message(message),
+                             icon=toupper(match.arg(icon,c('info', 'warning', 'error', 'question'))),
+                             parent_id=parent$id,
+                             id=dlg$get_id(),
+                             signal=dlg$change_signal
+                             ))
   dlg$add_js_queue(cmd)
-
 }
 
 
@@ -144,7 +175,7 @@ ginput <- function(message, text="", title="Input",
                                   
   cmd <- sprintf("Ext.Msg.prompt(%s, %s, %s, this, true, %s);",
                  ourQuote(title),
-                 ourQuote(message),
+                 .make_message(message),
                  fn,
                  ourQuote(text)
                  )
@@ -186,11 +217,9 @@ galert <- function(message, title = "message", delay=3, parent) {
   if(missing(message))
     message <- ""
   
-  message <- paste(message, collapse="<br />")
-  
   cmd <- sprintf("Ext.example.msg(%s, %s, %s);",
                  ourQuote(title),
-                 ourQuote(message),
+                 .make_message(message),
                  delay)
 
   dlg$add_js_queue(cmd)
