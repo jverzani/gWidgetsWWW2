@@ -20,7 +20,8 @@ Depends:
     RJSONIO,
     canvas,
     memoise,
-    whisker
+    whisker,
+    digest
 LazyLoad: yes
 Collate:
     'gwidgets-package.R'
@@ -66,6 +67,7 @@ Collate:
     'gsvg.R'
     'gtext.R'
     'gtree.R'
+    'Authenticator.R'
     'gwidgets-app.R'
     'gwidgets-methods.R'
     'gwindow.R'

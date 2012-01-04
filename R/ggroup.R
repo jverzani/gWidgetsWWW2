@@ -122,7 +122,9 @@ GGroup <- setRefClass("GGroup",
                                             anchor="100%",
                                             width=width,
                                             height=height,
-                                            defaults=list(margins=sprintf("%s %s %s %s", spacing, spacing, spacing, spacing))
+                                            defaults=list(
+                                              margins=sprintf("%s %s %s %s", spacing, spacing, spacing, spacing)
+                                              )
                                             )
                            if(use.scrollwindow) {
                              arg_list[['autoScroll']] <- TRUE

@@ -138,8 +138,7 @@ GWindow <- setRefClass("GWindow",
 
 
                            arg_list <- list(
-                                            layout="fit",
-                                            defaults=list(autoScroll=TRUE)
+                                            layout="fit"
                                             )
 
                            ## Now what...
@@ -253,6 +252,7 @@ GWindow <- setRefClass("GWindow",
                          panel_template=function() {
                            tpl <- "
 [{xtype:'panel',
+  autoScroll:true,
   dockedItems: {{docked_items}},
   id:'{{id}}_panel'
 }]

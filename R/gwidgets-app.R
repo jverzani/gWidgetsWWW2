@@ -17,6 +17,7 @@
 ##' @include utils.R
 ##' @include gwidgets-toplevel.R
 ##' @include gwidgets-session.R
+##' @include Authenticator.R
 NULL
 
 
@@ -26,62 +27,105 @@ NULL
 ## We basically queue up javascript commands (gwidgets-toplevel)
 
 
+GWidgetsAppBase <- setRefClass("GWidgetsAppBase",
+                               contains="Middleware",
+                               methods=list(
+                                 get_session = function(sessionID) {
+                                   "Return session enviroment from id"
+                                   e <- session_manager$get_session_by_id(sessionID)
+                                   return(e)
+                                 },
+                                 
+                                 get_toplevel = function(sessionID) {
+                                   "Return toplevel instance from sessionID"
+                                   e <- get_session(sessionID)
+                                   e[[".gWidgets_toplevel"]]
+                                 },
+                                 ## that we can use $ for extraction
+                                 read_rook_input = function(req) {
+                                   "Read rook.input, then convert from JSON"
+                                   req$env[['rook.input']]$rewind()
+                                   input <- req$env[['rook.input']]$read()
+                                   l <- fromJSON(rawToChar(input))
+                                   if(!is.list(l))
+                                     l <- sapply(l, identity, simplify=FALSE)
+                                   l
+                                 }
+                                 ))
+                             
 ##' Basic class for a gwidgetsWWW2 applications
 GWidgetsApp <- setRefClass("GWidgetsApp",
-                           contains="Middleware",
+                           contains="GWidgetsAppBase",
                            fields=list(
                              "url"="character",
                              "gw_script"="character",
-                             session_manager="ANY"
+                             "app_name"="character",
+                             session_manager="ANY",
+                             ##
+                             authenticator="ANY",
+                             ##
+                             login_cookie="character",
+                             login_cookie_expiry="numeric",
+                             cookie_salt="character"
                              ),
                            methods=list(
-                             initialize=function(url="", script="",  ...) {
+                             initialize=function(url="", app_name="", script="", authenticator=NULL, ...) {
+                               
                                initFields(
                                           url=paste("^", url, sep=""),
+                                          app_name=app_name,
                                           gw_script=script,
-                                          session_manager=make_session_manager()
+                                          session_manager=make_session_manager(),
+                                          ##
+                                          authenticator=authenticator,
+                                          login_cookie=character(0),
+                                          login_cookie_expiry=1,
+                                          cookie_salt="replace me"
                                           )
                                           
                                
                                callSuper(...)
                              },
                              call = function(env) {
-                               "Main method. We set up dispatch on path_info here"
+                               "Main method. Job is to create_GUI, but may need to authentiate first"
 
                                ## Main router function. Here we dispatch based on path_info to
+                               headers <- list('Content-Type'='application/javascript')
+                               status <- 200L
+
                                ## the appropirate method
                                req <- Request$new(env)
+                               res <- Response$new(
+                                                   status=status,
+                                                   headers=headers
+                                                   )
                                assign(".req", req, .GlobalEnv)
-                               ## get session id -- called with no parameter session_id
-                               ## create GUI -- called with session_id, no path_info
-
-                               headers <- list('Content-Type'='application/javascript')
-                               e_cookies <- new.env()
+                               
                                session_id <- req$GET()$session_id
-                               out <- try(create_GUI(session_id, req), silent=TRUE)
-
+                               out <- try(create_GUI(session_id, req, res), silent=TRUE)
+                                 
                                if(inherits(out, "try-error")) {
-                                 res <- Response$new(status=404L,
-                                                    headers=headers,
-                                                    body=paste(out, collapse="\n")
-                                                    )
-                                 res$write("")
-                                 res$finish()
-                               } else {
-                                 ## need to populate result
-                                 res <- Response$new(status=200L,
-                                                     headers=headers,
-                                                     body=paste(out, collapse="\n")
-                                                     )
-                                 res$write("")
-                                 res$finish()
-                               }
+                                 status <- 400L
+                               } 
+                               
+                               ## write response
+                               res$body <- paste(out, collapse="\n")
+                               res <- Response$new(status=status,
+                                                   headers=headers,
+                                                   body=paste(out, collapse="\n")
+                                                   )
+                               if(length(login_cookie))
+                                 res$set_cookie("gWidgetsWWW2Login", login_cookie)
+                               res$write("")
+                               res$finish()
                              },
+                            
                              script = function() {
                                "Return file name of script to process create_GUI"
                                gw_script
                              },
-                             create_GUI = function(session_id, req) {
+                            
+                             create_GUI = function(session_id, req, res) {
                                "Run script within a new environment. Return character vector of javascript commands"
 
                                e <- session_manager$get_session_by_id(session_id)
@@ -94,19 +138,32 @@ GWidgetsApp <- setRefClass("GWidgetsApp",
                                  toplevel$set_e(e)
                                  assign(".gWidgets_toplevel", toplevel, env=e)
                                  lockBinding(".gWidgets_toplevel", env=e)
+
+                                 
                                  ## debug
                                  assign(".toplevel", toplevel, .GlobalEnv)
                                } else {
                                  toplevel <- get_toplevel(session_id)
                                }
 
-                               ## helper
-                               write_error <- function(msg) {
-                                 sprintf("alert('error: %s');", msg)
+                               ## clean up if there
+                               cmd <- "
+var tmp = Ext.getDom('gWidgetsLoginForm');
+if(tmp) { document.body.removeChild(tmp)}
+"
+                                toplevel$js_queue_push(cmd)
+                               
+                               ## really should check if authenticator is there
+                               if(!is.null(authenticator)) {
+                                 out <- do_authentification(req, session_id)
+                                 if(!is.null(out)) {
+                                   toplevel$js_queue_push(out)
+                                   return(toplevel$js_queue$flush())
+                                 }
                                }
+
                                
                                the_script <- script()
-
                                
                                if(file.exists(the_script)) {
                                  attach(e) # attach/detach allows one to find toplevel
@@ -114,8 +171,7 @@ GWidgetsApp <- setRefClass("GWidgetsApp",
                                  detach(e)
 
                                  if(inherits(out, "try-error")) {
-                                   x <- write_error(out)
-                                   stop(x)
+                                   stop(out)
                                  } else {
                                    cmd <- sprintf("var session_id='%s';", session_id)
                                    toplevel$js_queue$push(cmd)
@@ -124,10 +180,51 @@ GWidgetsApp <- setRefClass("GWidgetsApp",
                                  }
                                } else {
                                  ## What else goes here?
-                                 x <- write_error("File '%s' does not exist", the_script)
+                                 x <- sprintf("File '%s' does not exist", the_script)
                                  stop(x)
                                }
                                return(x)
+                             },
+                             do_authentification=function(req, session_id) {
+                               "Take care of authentification issues"
+                               ## create authentification instance
+                               if(!is(authenticator, "Authenticator")) {
+                                 authenticator <<- Authenticator$new(app_name)
+                               }
+                               
+                               if(!(authenticator$is_valid_cookie(req$cookies()) ||
+                                    is_valid_cookie(req$cookies()))) {
+                                 formVals <- read_rook_input(req)
+                                 user <- getWithDefault(formVals$user_name, "")
+                                 pwd <- getWithDefault(formVals$password, "")
+
+                                 
+                                 if(!authenticator$is_valid_user(user, pwd )) {
+                                   out <- authenticator$create_login(session_id)
+                                   return(out)
+                                 } else {
+                                   login_cookie <<- create_login_cookie(user)
+                                   return(NULL)
+                                 }
+                               } else {
+                                 return(NULL)
+                               }                               
+                             },
+                             ##
+                             create_login_cookie=function(user) {
+                               l <- list("user"=user,
+                                         time=as.numeric(julian(Sys.time())),
+                                         value=digest(paste(user, cookie_salt))
+                                         )
+                               ## use JSON to serialize a list to a character
+                               toJSON(l)
+                             },
+                             is_valid_cookie=function(cookie) {
+                               "is the gWidgetsWWW2 cookie valid?"
+                               l <- fromJSON(cookie$gWidgetsWWW2Login)
+                               ifelse(digest(paste(l$user, cookie_salt)) == l$value &&
+                                      as.numeric(julian(Sys.time())) - l$time < login_cookie_expiry,
+                                      TRUE, FALSE)
                              }
                              ))
 
@@ -136,7 +233,7 @@ GWidgetsApp <- setRefClass("GWidgetsApp",
 
 ## handle AJAX calls back into the game
 GWidgetsAppAjax <- setRefClass("GWidgetsAppAjax",
-                            contains="Middleware",
+                            contains="GWidgetsAppBase",
                             fields=list(
                               session_manager="ANY"
                               ),

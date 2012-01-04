@@ -17,7 +17,15 @@ var app_url = "/custom/" + MyApp + "/gwapp/";
 $(document).ready(function() {
   $("#loading").hide();
   Ext.QuickTips.init();
-  createGui(app_url);
+
+  $.ajax(base_url + "newSessionId", {
+    dataType: 'json',
+    cache: false,
+    success: function(data) {
+      session_id = data.id;
+      createGUI(app_url)
+    }
+  })
 });
   </script>
 </head>

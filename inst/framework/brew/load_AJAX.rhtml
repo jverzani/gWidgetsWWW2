@@ -1,5 +1,5 @@
 
-var session_id = "script_global";
+var session_id = null;
 var base_url = "/custom/gwappAJAX/";
 var proxy_url = base_url + "runProxy";
 var html_proxy_url = base_url + "runHtmlProxy";
@@ -43,21 +43,16 @@ success:callback
 })
 };
 
-createGui = function(app_url) {
-  $.ajax(base_url + "newSessionId", {
-    dataType: 'json',
-    cache: false,
-    success: function(data) {
-      session_id = data.id;
-      $.ajax(app_url,{
+
+createGUI = function(app_url) {
+  $.ajax(app_url,{
         dataType:'script',
         data: {session_id: session_id},
         cache: false,
         type: "GET"
-      })
-    }
-  });
+     })
 };
+
 
 listen = function() {
     listening = false;

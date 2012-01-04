@@ -22,7 +22,7 @@ NULL
 GWidgetsTopLevel <- setRefClass("GWidgetsTopLevel",
                                 fields=list(
                                   "e" = "environment", # evaluation environment
-                                  "req"="ANY",         # request
+                                  "the_request"="ANY",         # request
                                   "objects"="Array",   # objects on page
                                   "js_queue"="Array",   # queue to flush
                                   ##
@@ -30,7 +30,7 @@ GWidgetsTopLevel <- setRefClass("GWidgetsTopLevel",
                                   ),
                                 methods=list(
                                   initialize=function(req=NULL, ...) {
-                                    req <<- req
+                                    the_request <<- req
                                     objects <<- Array$new()
                                     js_queue <<- Array$new()
                                     callSuper(...)

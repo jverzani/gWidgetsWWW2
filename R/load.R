@@ -4,16 +4,47 @@ NULL
 
 ## scripts to load apps
 
-##' load a web app defined by a gWidgetsWWW2 script
+##' Load a web app defined by a gWidgetsWWW2 script
 ##'
+##' There are two basic tasks that gWidgetsWWW2 does: a) create the
+##' javascript to populate a page (or part of the page) and b) create
+##' an means for AJAX requests between the web browser and the R
+##' process. For b) there isn't much to say except that it is supposed
+##' to just work.
+##'
+##' As for a) there are things one can pay attention to. The simplest
+##' case is really pretty simple. Write some script, save it to a file
+##' and call this function with the script name (and path if needed).
+##' This simple case will create a full screen app. Each app runs in
+##' its own environment in the R session, so running lots of instances
+##' can be expensive. That is, don't expect gWidgetsWWW2 to scale.
+##'
+##' There are other cases one might want. An app can run within a web
+##' page. The web template can be passed through the
+##' \code{brew_template} argument with the \code{...} parameters
+##' passed along.
+##'
+##' One might even be able to copy the provided indexgw.rhtml file and
+##' modify that. When using either of these approaches, pass a DOM id
+##' to the \code{renderTo} argument of the \code{gwindow} instance.
+##'
+##' Apps can require authentification. By default, this is not
+##' validated. One can write a subclass of \code{Authenticator} to do
+##' other validations. (Of course this needs improvement).
+##' 
 ##' @param script_name path to gWidgetssWWW2 script
 ##' @param app_name base name for script, unique per project
 ##' @param brew_template The script may render to the entire page, or
 ##' parts of the page specified by an ID. The allows one to specify a
 ##' brew template to hold these place holders and other HTML code.
-##' @param use.googlemap If using \code{ggooglemaps} include this so that the JavaScript files are downloaded.
 ##' @param show.log If TRUE, logged information is written to the console
 ##' @param port Initial port for Rhttpd server, provided it hasn't already started.
+##' @param authenticator Used to specify a subclass of
+##' \code{\link{Authenticator}} for doing authentification. Specifying
+##' a value of \code{TRUE} will do a trivial
+##' authentification. Subclasses of \code{Authenticator} should
+##' implement the methods \code{is_valid_cookie} and
+##' \code{is_valid_user}.
 ##' @param ... passed to \code{brew} call of \code{brew_template}
 ##' @export
 ##' @examples
@@ -30,9 +61,9 @@ NULL
 load_app <- function(script_name,
                      app_name="test",
                      brew_template = "",
-                     use.googlemap = FALSE,
                      show.log=FALSE,
                      port=9000,
+                     authenticator=NULL,
                      ...
                          ) {
 
@@ -46,19 +77,6 @@ load_app <- function(script_name,
 
   ## extra html code googlemaps, ace?, ...
   extra_html_code <- character(0)
-  if(use.googlemap)
-    extra_html_code <- c(extra_html_code,
-                         '<script type="text/javascript" ',
-                         'src="http://www.google.com/jsapi?autoload={\'modules\':[{name:\'maps\',version:3,other_params:\'sensor=false\'}]}">',
-                         '</script>',
-                         '<script type="text/javascript" src="/custom/gWidgetsWWW2/javascript/ext.ux.GMapPanel3.js"></script>'
-                         )
-
-  ## XXX Set up for using google visualization through googleVis. First attempt didn't work.
-  ## if(use.googleVis)
-  ##   extra_html_code <- c(extra_html_code,
-  ##                        '<script type="text/javascript" src="http://www.google.com/jsapi"></script>'
-  ##                        )
                          
   ## brew index
   brewery <- Rook:::Brewery$new(url="/",
@@ -86,7 +104,10 @@ load_app <- function(script_name,
                            ##                    ),
                            ## why do I need this?
 #                           tmpApp,
-                           GWidgetsApp$new(url="/gwapp", script=script_name, session_manager=make_session_manager()),
+                           GWidgetsApp$new(url="/gwapp", app_name=app_name, script=script_name,
+                                           session_manager=make_session_manager(),
+                                           authenticator=authenticator
+                                           ),
                            ## why does this fail?
                            Rook:::Redirect$new(sprintf("http://127.0.0.1:%s/custom/%s/indexgw.rhtml", tools:::httpdPort, app_name))
                            )

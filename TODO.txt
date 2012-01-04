@@ -1,3 +1,16 @@
+* json-rpc javascript method call
+* document use of such a call (page counter)
+* stuff the_request into toplevel
+* ourQuote -- make better ', but not \' to \'
+* document how to get toplevel object from session_manager (given ID)
+* need hook to add session id to list (by script), so if listen is
+  turned on, one can send info to each client (or by ID)
+* clean up session manager info on page clean up
+* authenticate option in load_app (do_authenticate, authenticate_type)
+* gpanel to embed other objects into gWidgets
+* cookies from create_gui reqeuest are in req, but method to write
+  cookies needed (w$set_cookie(key, value))
+
 * Update roxygen documentation
 
 * update vignette
@@ -33,7 +46,7 @@ DONE * factor out code in indexgw.html -- I want three lines read css, read
 
 
 * rename router
-
+* JSON-RPC give example (way to access common objects), D3 for text...
 
 # containers
 * ggroup -- autoScroll=TRUE (isn't); size issues; menubar statusbar
