@@ -141,18 +141,24 @@ GCheckboxGroup <- setRefClass("GCheckboxGroup",
                          set_names = function(...) set_items(...),
                          ## transport, brings back index as string
                          transport_fun = function() {
-                           paste("var x = []; Ext.each(this.getChecked(), function(val) {x.push(val.inputValue)});",
-                                 "param =  {value: x};", sep="")
+                           tpl <- "
+var x = [];
+Ext.each(this.getChecked(), function(val) {
+  x.push(val.inputValue);
+});
+var param = {value: x};
+"
+                           tpl
                          },
                          process_transport = function(value) {
-                           ## coerce to numeric, that's about it
-                           ind <- as.numeric(value)
-                           value <<- ind
+                           ## value is a list
+                           value <<- as.numeric(unlist(value))
                          },
                          param_defn=function(signal) {
                            if(signal == "change") {
                              transport_fun()
-w3.                           } else {
+
+                          } else {
                              ""
                            }
                          },

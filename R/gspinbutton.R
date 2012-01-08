@@ -53,7 +53,7 @@ GSpinbutton <- setRefClass("GSpinbutton",
 
 
                            initFields(
-                                      value=value,
+#                                      value=value,
                                       constructor="Ext.ux.CustomSpinner",
                                       transport_signal="change",
                                       change_signal="change"
@@ -69,7 +69,8 @@ GSpinbutton <- setRefClass("GSpinbutton",
                            add_args(arg_list)
 
                            setup(container, handler, action, ext.args, ...)
-                           
+
+                           set_value(value)
                            .self
 
                          },

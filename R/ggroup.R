@@ -16,12 +16,20 @@
 ##' @include gcontainer.R
 NULL
 
+## TODO: anchoring of widgets
 
-##'  Group, or box, container
+
+##' Group, or box, container
 ##'
-##' A box container. Can pack in left to right or top to bottom.
 ##' @param horizontal left or right (default), or top to bottom (\code{horizontal=FALSE})
-##' @param spacing body spacing
+##' @param spacing Margin around each child component in pixels. Can
+##' be a single number, in which case it is equal pixel space around
+##' each child. But for gWidgetsWWW2 one can specify a vector with
+##' recycling like function(top, right=top, bottom=top, left=right). A
+##' typical pattern is c(5,5,0,0), as otherwise there are 10 = 5 + 5 pixels
+##' between adjoing children. To get padding just around interior of
+##' box, pass in a value through ext.args, as in
+##' \code{ext.args=list(bodyPadding=10)}.
 ##' @param use.scrollwindow logical. If given, scrollbars will appear
 ##' @inheritParams gwidget
 ##' @return a \code{GGroup} reference class  object
@@ -45,7 +53,7 @@ NULL
 ##' gbutton("+", cont=f, handler=function(h,...) addRow(f))
 ggroup <- function(
                    horizontal=TRUE,
-                   spacing=5,
+                   spacing=2,
                    use.scrollwindow = FALSE,
                    container,
                    ...,
@@ -58,36 +66,64 @@ ggroup <- function(
   g
 }
 
+##' Shortcut for vertical box containers. Specific to gWidgetsWWW2.
+##'
+##' @param ... passed to \code{ggroup}
+##' @export
+##' @rdname ggroup
+gvbox <- function(...) {
+  f <- function(..., horizontal) ggroup(..., horizontal=FALSE)
+  f(...)
+}
 
-##' base class for ggroup
+##' \code{GGroup} is the base class for ggroup and all box containers/
 ##'
-##' For \code{GGroup}  and its subclasses, boxes are different. For
-##' vertical boxes they need to have a height set. We use a default of
-##' 200.
-##' 
-##' The standard expand, fill, anchor arugments are not implemented as
-##' they are in RGtk2, say.
+##' Box containers pack in child objects in a left to right manner
+##' (horizontal) or top to bottom (horizonta=FALSE). In the gWidgets
+##' API the space allocated to a child dependsd on the arguments
+##' expand, fill and anchor. These have a different interpretation in
+##' gWidgetsWWW2, as there are no analogs in Ext's Box layouts.
 ##'
-##' The expand maps to flex which is a weight for stretching the
-##' object in the packing direction. That is for a hbox, it will
-##' strecth in horizontal direction
+##' Let's discuss vertical box containers, turn this on the side to
+##' think about horizontal ones. A vertical box container places its
+##' children from top to bottom. When packing each child has its
+##' requested height. If the sum of these is less than the height of
+##' the box (and no flex values is given) then there is excess space
+##' in the bottom of the box. If the sum is greater, the argument
+##' \code{use.scrollwindow} should make it so that parent box
+##' containers has scrollbars allowing the user to scroll to see the
+##' bottom widgets. This has been an issue getting to work though.
 ##'
-##' The fill corresponds to the align argument for the container --
-##' not the component. There is no way to fill just one. The fill
-##' value of "stretch" will stretch the component in the orthogonal
-##' direction to filling. Passing the value "stretchmax" should stretch
-##' to the largest child size, but not the max.
+##' Now, when there is more availabe verticle space than requested
+##' space, we can also have the widgets request more availabel
+##' space. The expand argument can be a logical indicating if the
+##' available space to a widget should expand to fill the possible
+##' space. In Ext, this maps to a value of flex, which is a weight so
+##' child items with bigger flex values get a weighted amount of
+##' space. As such, you can specify a positive number to the expand
+##' argument. A logical is simply converted to 0 or 1;
 ##'
-##' So expand=TRUE, fill=TRUE will will stretch in both
-##' directions.
+##' As for horizontal space, the FILL argument should be used to
+##' indicate if a child item should expand in the horizontal space
+##' allotted. However, Ext doesn't allow per item sizing of children,
+##' rather the 'align' property is a property of the parent container
+##' (the box). We set it to 'stretch'. This gives similar behaviour as
+##' RGtk2, where child components always stretch to fill the direction
+##' orthogonal to the packing direction.
 ##'
-##' But wait, the fill value -- since it appears to the container, but
-##' is specified by the children can be specified more
-##' than once. The last one wins.
+##' This can lead to large box containers, when a box container is
+##' also a child of a parent box container. The size of the child box
+##' can be controlled through the width and height arguments. These
+##' map to \code{maxWidth} and \code{maxHeight}, not the usual
+##' \code{width} and \code{height} which are really requests, but
+##' additional space can be allocated.
 ##'
-##' When expand and fill are not used, anchoring should be
-##' possible. The CSS class needs to be set up properly though.
-##' @rdname gWidgetsWWW2-package
+##' The anchor argument is meant to locate the actual widget within
+##' the space allocated to the widget. In the gWidgets spec if
+##' expand=TRUE, fill=FALSE, then the widget may have additional space
+##' to fill than it needs. The anchor specifies in x and y coordinates
+##' where it should go values are in {-1,0,1} x {-1, 0, 1}. 
+##' @rdname gggroup
 GGroup <- setRefClass("GGroup",
                        contains="GContainer",
                        fields=list(
@@ -96,7 +132,7 @@ GGroup <- setRefClass("GGroup",
                        methods=list(
                          init = function(
                            horizontal=TRUE,
-                           spacing=5,
+                           spacing=2, 
                            use.scrollwindow = FALSE,
                            container,
                            ...,
@@ -105,25 +141,28 @@ GGroup <- setRefClass("GGroup",
                            ext.args = NULL
                            ) {
 
-                           constructor <<- "Ext.Panel"
-                           spacing <<- spacing
+                           constructor <<- "Ext.panel.Panel"
                            horizontal <<- horizontal
+                           ## get spacing right
+                           margins <- spacing
+                           if(length(spacing) == 1)
+                             margins <- rep(spacing, 4)
+                           else if(length(spacing) == 2)
+                             margins <- rep(spacing, 2)
+                           else if(length(spacing) == 3)
+                             margins <- c(spacing, spacing[2])
+                           else
+                             margins <- spacing[1:4]
+                           spacing <<- margins
 
-                           ## give a default height if horizontal=FALSE
-                           ## height <- getWithDefault(height, default=if(!horizontal) 200 else NULL)
-
-                           
-                           ## spacing goes around inner margins of the box
-                           ## padding goes between objects. Here we use the same value
-                           ## for each
-                           
-                           arg_list <- list(border = TRUE,
+                           ## we put margins in defaults so that it
+                           ## goes around each child we add, this
+                           ## effectively puts space around each
+                           ## child.
+                           arg_list <- list(border = FALSE,
                                             hideBorders = FALSE,
-                                            anchor="100%",
-                                            width=width,
-                                            height=height,
                                             defaults=list(
-                                              margins=sprintf("%s %s %s %s", spacing, spacing, spacing, spacing)
+                                              margins=sprintf("%s %s %s %s", margins[1], margins[2], margins[3], margins[4])
                                               )
                                             )
                            if(use.scrollwindow) {
@@ -132,35 +171,28 @@ GGroup <- setRefClass("GGroup",
                                arg_list[['autoHeight']] <- TRUE
                            }
 
+                          
+
+                           
                            ## From HBox.js:
                            ## * - **stretch** : child items are stretched vertically to fill the height of the container
                            ## * - **stretchmax** : child items are stretched vertically to the height of the largest item.      
                            if(horizontal)
-                             arg_list[['layout']] <- list(type="hbox", padding=spacing, align="top")
+                             arg_list[['layout']] <- list(type="hbox", align="stretch") # was 'top'
                            else
-                             arg_list[['layout']] <- list(type="vbox", padding=spacing, align="left")
+
+                             arg_list[['layout']] <- list(type="vbox", align="stretch") # was 'left'
                            
 
-                           add_args(arg_list)
-                           
-                           if(!is.null(ext.args))
-                             args$extend(ext.args)
-                           
-                           container$add_dots(.self, ...)                           
+                           add_args(arg_list, ext.args)
 
+                           container$add_dots(.self, ...)
                            write_constructor()
-                           add_js_queue(sprintf("var %s=%s.getComponent('%s_status_bar')",
-                                                status_id(), get_id(), get_id()))
-                           add_js_queue(sprintf("var %s=%s.getComponent('%s_toolbar')",
-                                                toolbar_id(), get_id(), get_id()))
-                                                     
                            container$add(.self, ...)
-                           
+                           set_size(list(width=width, height=height))
                          },
                          get_items= function(i, j, ...) {
                            children$core()[i, ...]
                          }
-
-                           
                          )
                        )

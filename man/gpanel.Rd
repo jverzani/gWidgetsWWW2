@@ -1,0 +1,75 @@
+\name{gpanel}
+\alias{gpanel}
+\title{A panel to hold other JavaScript things}
+\usage{
+  gpanel(container, ..., width = NULL, height = NULL,
+  ext.args = NULL)
+}
+\arguments{
+  \item{container}{A parent container. In
+  \pkg{gWidgetsWWW2} a parent container is not optional
+  (though it can be substituted with the \code{parent}
+  argument in some circumstances). The parent specifies the
+  widget heirarchy and the \code{...} argument is used to
+  pass along arguments to layout the child component in the
+  parent container. Typically, these are passed to the
+  \code{add} method of the parent container.}
+
+  \item{...}{Used to pass along argument to the parent
+  container's ode{add} method and possible other arguments
+  to the underlying ference class constructors.}
+
+  \item{width}{width in pixels of component. Sizing in
+  \pkg{gWidgetsWWW2} is sometimes necessary as the
+  arguments \code{expand} and \code{fill} are not well
+  implemented.}
+
+  \item{height}{height in pixels of the component.}
+
+  \item{ext.args}{The gWidgets' constructors ultimately
+  call an Ext constructor. The options passed to the Ext
+  constructor may be added to or overridden by use of this
+  argument. Values are passed in a named list components
+  and conversions to JavaScript objects}
+}
+\value{
+  a \code{GPanel} reference class object
+}
+\description{
+  ##'
+}
+\examples{
+w <- gwindow("windows and dialogs")
+g <- ggroup(cont=w, horizontal=FALSE)
+
+pan <- gpanel(cont=g, width=200, height=200)
+## will load d3 javascript library
+d3_url <- "http://mbostock.github.com/d3/d3.js?2.7.1"
+## template to simply insert HTML
+## div_id comes from pan$div_id()
+tpl <- "
+function(data, status, xhr) {
+d3.select('#{{div_id}}').html('Look ma HTML');
+}
+"
+## more complicated example to draw a line
+tpl2 <- "
+function(data, status, xhr) {
+var chart = d3.select('#{{div_id}}').append('svg')
+.attr('class', 'chart')
+.attr('width', 200)
+.attr('height', 200);
+
+chart.append('line')
+.attr('x1', 25)
+.attr('x2', 200 - 25)
+.attr('y1', 100)
+.attr('y2', 100)
+.style('stroke', '#000');
+}
+"
+
+cmd <- whisker.render(tpl2, list(div_id=pan$div_id()))
+pan$load_external(d3_url, cmd)
+}
+

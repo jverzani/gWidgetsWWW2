@@ -71,10 +71,12 @@ GRadio <- setRefClass("GRadio",
                            arg_list <- list(items=String(items_as_array()),
                                             width = width,
                                             height = height,
+                                            autoHeight=TRUE,
+                                            autoWidth=TRUE,
                                             columns=columns, vertical=!horizontal
                                             )
                            
-                           add_args(arg_list)
+                           add_args(arg_list, ext.args)
 
                            setup(container, handler, action, ext.args, ...)
                            

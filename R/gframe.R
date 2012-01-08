@@ -31,7 +31,7 @@ NULL
 ##' g <- gframe("Label", cont=w)
 ##' b <- gbutton("insider frame", cont=g)
 ##' svalue(g) <- "new label"
-gframe <- function(text = "", pos = 0, horizontal=TRUE, spacing=5, container=NULL,...,
+gframe <- function(text = "", pos = 0, horizontal=TRUE, spacing=2, container=NULL,...,
                    width=NULL, height=NULL, ext.args=NULL
                    ) {
 
@@ -42,13 +42,12 @@ gframe <- function(text = "", pos = 0, horizontal=TRUE, spacing=5, container=NUL
          container,
          ...,
          width=width,
-         height=height,
-         ext.args = ext.args
+         height=height, 
+         ext.args = merge.list(list(title=text,ext.args))
          )
-  f$set_value(text)
   f
 }
-  
+
 ## base class for gframe
 GFrame <- setRefClass("GFrame",
                        contains="GGroup",

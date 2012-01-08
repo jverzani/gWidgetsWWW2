@@ -32,6 +32,7 @@ NULL
 ##' @param coerce.with Function. If given, called on value before returning
 ##' @inheritParams gwidget
 ##' @param autocomplete If \code{TRUE}, will hide the trigger and make editable. When the user types the matching values are presented.
+##' @param initial.msg If \code{selected=0}, then one can assign an initial message here
 ##' @param tpl a template for the item (Not working!)
 ##' @return an ExtWidget instance
 ##' @note The \code{tpl} argument is not working as we'd like.
@@ -39,12 +40,15 @@ NULL
 ##' @examples
 ##' w <- gwindow()
 ##' sb <- gstatusbar("Powered by gWidgetsWWW and Rook", cont=w)
-##' cb <- gcombobox(state.name, cont=w)
+##' g <- ggroup(cont=w, horizontal=FALSE)
+##' cb <- gcombobox(state.name, cont=g)
 ##' addHandlerChanged(cb, handler=function(h,...) {
 ##' galert(paste("You selected ", svalue(h$obj), sep=""), parent=w)
 ##' })
+##' ## initial message
+##' gcombobox(state.name, cont=g, selected=0, initial.msg="Choose a state...")
 ##' ## autocomplete
-##'  cb <- gcombobox(state.name, cont=w, autocomplete=TRUE)
+##'  cb <- gcombobox(state.name, cont=g, autocomplete=TRUE)
 gcombobox <- function(items, selected=1, editable=FALSE, coerce.with=NULL,
            handler = NULL, action = NULL, container=NULL,...,
                       width=NULL,
@@ -89,9 +93,9 @@ GCombobox <- setRefClass("GCombobox",
 
                              ## We store the value not the index
                              if(as.integer(selected) > 0)
-                               selected <- items[selected]
+                               value  <<- items[selected]
                              else
-                               selected <- NA
+                               value <<- NA
 
                              editable <<- editable
                              coerce_with <<- coerce.with
@@ -143,7 +147,6 @@ GCombobox <- setRefClass("GCombobox",
                              ## load data
                              .self$store$load_data()
                              ## set value -- should be set_value, but isn't dispatching to right one
-                             set_value(selected)
                              ## if(!is.na(selected)) {
                              ##   value <<- selected
                              ##   call_Ext("setValue", selected)

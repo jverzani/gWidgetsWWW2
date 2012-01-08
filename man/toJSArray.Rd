@@ -2,6 +2,7 @@
 \alias{toJSArray}
 \alias{toJSArray.character}
 \alias{toJSArray.data.frame}
+\alias{toJSArray.Date}
 \alias{toJSArray.default}
 \alias{toJSArray.factor}
 \alias{toJSArray.list}
@@ -25,6 +26,8 @@
 
   \method{"toJSArray"}{factor} (x, doBrackets = TRUE)
 
+  \method{"toJSArray"}{Date} (x, doBrackets = TRUE)
+
   \method{"toJSArray"}{matrix} (x, doBrackets = TRUE)
 
   \method{"toJSArray"}{list} (x, doBrackets = TRUE)
@@ -41,6 +44,8 @@
 }
 \description{
   Make a JS array from an R object
+
+  ToJSArray method
 
   ToJSArray method
 

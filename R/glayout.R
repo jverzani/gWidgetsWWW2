@@ -68,7 +68,8 @@ GLayout <- setRefClass("GLayout",
                        contains="GContainer",
                        fields=list(
                          widgets="Array",
-                         container="ANY"
+                         container="ANY",
+                         dots="list"
                          ),
                        methods=list(
                          init=function(homogeneous=FALSE,
@@ -82,6 +83,7 @@ GLayout <- setRefClass("GLayout",
                            widgets <<- Array$new()
                            container <<- container
                            spacing <<- spacing
+                           dots <<- list(...)
                            
                            constructor <<- "Ext.Panel"
                            arg_list <- list(
@@ -91,10 +93,8 @@ GLayout <- setRefClass("GLayout",
                                             )
                            add_args(arg_list)
 
-                           container$add_dots(.self, ...)                           
-
-
                            ## we write constructor in set_visible
+                           ## and add to parent container
                          },
                          add=function(child, ...) {
                            "just keep track of bookkeeping"
@@ -116,6 +116,22 @@ GLayout <- setRefClass("GLayout",
                                       list(...),
                                       overwrite=FALSE)
                            widgets$push(l)
+                         },
+                         mapAnchorToCSSClass = function(anchor) {
+                           "Return a css class for the anchor value"
+                           if(is.null(anchor))
+                             return("td-northwest")
+                           if(all(anchor == 0))
+                             return("td-center")
+                           
+                           lr <- c("west", "", "east")
+                           ns <- c("north", "", "south")
+                           m <- rbind(paste("td", "-", ns[1], lr, sep=""),
+                                      paste("td", "-", ns[2], lr, sep=""),
+                                      paste("td", "-", ns[3], lr, sep="")
+                                      )
+                           
+                           m[ 2 - anchor[2], 2 + anchor[1]]
                          },
                          set_visible = function(value, ...) {
                            if(!value) return()
@@ -163,7 +179,11 @@ GLayout <- setRefClass("GLayout",
                                             )
                            add_args(arg_list)
                            write_constructor()
-                           container$add(.self, ...)
+                           ## funny way to add, but need to pass in
+                           ## expand, fill, anchor arg when adding to
+                           ## parent
+                           dots$child <<- .self
+                           do.call(container$add, dots)
                          },
                          do_layout=function(...) {
                            ## XXX How to refresh layout?

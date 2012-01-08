@@ -16,9 +16,14 @@
 ##' @include gwidgets-package.R
 NULL
 
-## An array class.
-##
-## Like a list, but has some methods. Completely superflous, but makes copying some code algorithms easier
+##' An array class.
+##'
+##' Like a list, but has some methods. Completely superflous, but
+##' makes copying some code algorithms easier. We implement methods
+##' such as \code{append}, \code{push}, \code{pop} and \code{each} for
+##' iteration. As well, there are some lookup methods.
+##' @exportClass Array
+##' @name Array-class
 Array <- setRefClass("Array",
                     fields=list(
                       "l"="list",

@@ -4,6 +4,7 @@ var base_url = "/custom/gwappAJAX/";
 var proxy_url = base_url + "runProxy";
 var html_proxy_url = base_url + "runHtmlProxy";
 
+"Call back into R to run a handler. Returns javascript.";
 callRhandler = function(id, signal, value) {
   data = {id: id, signal:signal, value: value, session_id: session_id};
   Ext.Ajax.request({
@@ -18,6 +19,7 @@ callRhandler = function(id, signal, value) {
   })
 };
 
+"Synchronize widget with server's value";
 transportFun = function(id, value) {
    data = {id: id, session_id: session_id, param: value};
    Ext.Ajax.request({
@@ -33,7 +35,7 @@ transportFun = function(id, value) {
 };
 
 
-
+"Make a simple callback into gWidgetsWWW2. Returns a script -- not json!";
 jRpc =  function(obj, meth, params, callback) {
     data = {id: obj, session_id: session_id, meth:meth, value: params};
    Ext.Ajax.request({
@@ -43,7 +45,25 @@ success:callback
 })
 };
 
+"Callback into R process an exported JsonRPCObject";
+json_rpc = function(obj_name, meth_name, params, callback, url) {
+    if(!url) {
+	url = "JSON_RPC"
+    };
 
+    Ext.Ajax.request({
+	url: "/custom/" + url,
+	jsonData: [{
+	    obj:obj_name,
+	    meth:meth_name,
+	    params: params,
+	}],
+	success:callback
+    });
+};
+
+
+"Call to create the GUI";
 createGUI = function(app_url) {
   $.ajax(app_url,{
         dataType:'script',
@@ -53,7 +73,7 @@ createGUI = function(app_url) {
      })
 };
 
-
+"Will poll server for changes. Turn on in gwindow object";
 listen = function() {
     listening = false;
     if (listening)

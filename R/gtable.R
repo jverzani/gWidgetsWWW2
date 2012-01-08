@@ -51,11 +51,6 @@ NULL
 ##' @param filter.labels Ignored 
 ##' @param filter.FUN Ignored. 
 ##' @param handler single click handlers
-##' @param action action passed to handler
-##' @param container parent container
-##' @param ... passed to parent container's \code{add} method
-##' @param width width in pixels
-##' @param height height in pixels,  should be set, otherwise get only 1 row
 ##' @param ext.args additional configuration values to pass to constructor
 ##' @param paging Either a logical variable or integer. If \code{TRUE}
 ##' then paging will be used which allows only chunks of the data to
@@ -99,7 +94,7 @@ gtable <- function(items, multiple = FALSE, chosencol = 1,
                    filter.column = NULL, filter.labels = NULL,
                    filter.FUN = NULL, handler = NULL, action = NULL,
                    container = NULL, ...,
-                   width=200, height=200, ext.args=NULL,
+                   width=NULL, height=NULL, ext.args=NULL,
                    paging = FALSE, 
                    col.widths = rep(20, ncol(as.data.frame(items)))
                    ) {
@@ -137,22 +132,25 @@ GWidgetGrid <- setRefClass("GWidgetGrid",
                                nms <<- names(store$proxy$value)
                                store$load_data()
                              },
-                             set_size = function(value, ...) {
+                             set_size = function(val, ...) {
                                "Set size of table (width,height) or columnWidths"
                                width <- height <- colWidths <- NULL
-                               if(is.list(value)) {
-                                 width <- value$width
-                                 height <- value$height
-                                 colWidths <- value$columnWidths
-                               } else {
-                                 width <- value[1]
-                                 if(base:::length(value) >= 2) # need base!
-                                   height <- value[2]
+                               val <- as.list(val)
+                               if(is.list(val)) {
+                                 width <- val$width
+                                 height <- val$height
+                                 colWidths <- val$columnWidths
+                                 if(!is.null(colWidths))
+                                   set_column_widths(colWidths)
                                }
-                               call_Ext("setWidth", width)
-                               if(!is.null(height)) call_Ext("setHeight", height)
-                               if(!is.null(colWidths))
-                                 set_column_widths(colWidths)
+                               if(is.null(width) && is.null(height))
+                                 return()
+                               else if(is.null(height))
+                                 call_Ext("setWidth", width)
+                               else if(is.null(width))
+                                 call_Ext("setHeight", height)
+                               else
+                                 callSuper(c(width, height))
                              },
                              dim = function() {
                                base:::dim(get_items())
@@ -227,7 +225,6 @@ GWidgetGrid <- setRefClass("GWidgetGrid",
 GTable <- setRefClass("GTable",
                       contains="GWidgetGrid",
                       fields=list(
-                        "store"="ANY",
                         "multiple"="logical",
                         "chosencol"="integer",
                         "paging" = "logical",
@@ -323,6 +320,18 @@ GTable <- setRefClass("GTable",
                             value <<- sort(unlist(value))
                           else
                             value <<- sort(value)
+                        },
+                        param_defn=function(signal) {
+                          if(signal == change_signal) {
+                            transport_fun()
+                          } else {
+                            ""
+                          }
+                        },
+                        prepare_for_handler=function(signal, params) {
+                          if(signal == change_signal) {
+                            process_transport(params)
+                          }
                         },
                         get_value = function(index=FALSE, drop=TRUE, ...) {
                           "Return selected value(s)"

@@ -109,7 +109,8 @@ gwindow <- function(title="",
 GWindow <- setRefClass("GWindow",
                        contains="GContainer",
                        fields=list(
-                         fullscreen="logical" # using a viewport?
+                         fullscreen="logical", # using a viewport?
+                         loadmask_created ="logical"
                          ),
                        methods=list(
                          init = function(
@@ -124,9 +125,7 @@ GWindow <- setRefClass("GWindow",
                            ext.args = NULL
                            ) {
 
-                           constructor <<- "Ext.Panel"
-                           fullscreen <<- FALSE
-
+                        
                            ## we have two arguments: parent and renderTo
                            ## parent: if NULL, grab toplevel from environment. This is set once per page.
                            ## otherwise this is grabbed from the toplevel property of the parent object
@@ -137,63 +136,62 @@ GWindow <- setRefClass("GWindow",
 
 
 
-                           arg_list <- list(
-                                            layout="fit"
-                                            )
+                           if(is.null(renderTo)) {
+                             ## render to a ext.getBody and use a Viewport containing a panel
+                             fullscreen <<- TRUE
+                                                          
+                             ## Hence this gets a little tricky
+                             constructor <<- "Ext.container.Viewport"
+                             arg_list <- list(
+                                              layout="fit", ## fit
+                                              renderTo=String("Ext.getBody()"),
+                                              items=String(sprintf("[%s]",
+                                                toJSObject(list(
+                                                                xtype="panel",
+                                                                id=get_id(),
+                                                                layout="fit"
+                                                                )
+                                                           ))),
+                                              ## items=String(paste("[{xtype:'panel',",,
+                                              ##   sprintf("id:'%s'}]", get_id()),
+                                              ##   sep="")),
+                                              defaults=list(
+                                                autoScroll=TRUE,
+                                                autoHeight=TRUE,
+                                                autoWidth=TRUE
+                                                )
+                                              )
+                           } else if(!is.null(renderTo)) {
 
-                           ## Now what...
-                           if(is.null(parent)) {
-                             if(is.null(renderTo)) {
-                               ## render to a ext.getBody and use a Viewport containing a panel
-                               ## Hence this gets a little tricky
-                               constructor <<- "Ext.container.Viewport"
-                               fullscreen <<- TRUE
-                               arg_list[['renderTo']] <- String("Ext.getBody()")
-                              
-                               arg_list[['items']] <- String(whisker.render(panel_template(),
-                                                                            list(docked_items=docked_items(),
-                                                                                 id=get_id())))
-                               
-                             } else if(!is.null(renderTo)) {
-                               arg_list[['renderTo']] <- renderTo
-                               arg_list[['border']] <- TRUE
-                               arg_list[['hideBorders']] <- FALSE
-                               arg_list[['dockedItems']] <- docked_items()
-                             }
-
-                             add_args(arg_list)
-                             
-                             if(!is.null(ext.args))
-                               args$extend(ext.args)
-                             
-                             write_constructor()
-                             
-                             ## now steal object IDs if fullscreen
-                             if(fullscreen) {
-                               add_js_queue(sprintf("var %s_toplevel=%s;", get_id(), get_id()))
-                               add_js_queue(sprintf("var %s=%s.child(0);", get_id(), get_id()))
-                             }
-                             ## create statusbar and toolbar IDs
-                             add_js_queue(sprintf("var %s=%s.getComponent('%s_status_bar')",
-                               status_id(), get_id(), get_id()))
-                             add_js_queue(sprintf("var %s=%s.getComponent('%s_toolbar')",
-                               toolbar_id(), get_id(), get_id()))
-                             
-                             
-                             if(!is.null(handler))
-                               add_handler_changed(handler, action)
-                             
-                             ## write title
-                             if(nchar(title))
-                               set_value(title)
-                             
-                             
-                             .self$toplevel$do_layout_cmd = sprintf("%s.doLayout()", get_id())
-
-                           } else {
-                             ## do a subwindow
-                             init_subwindow(title, parent, handler, action, ..., width=width, height=height)
+                             constructor <<- "Ext.Panel"
+                             fullscreen <<- FALSE
+                             arg_list <- list(
+                                              layout="fit",
+                                              renderTo=renderTo,
+                                              border=TRUE
+                                              )
                            }
+                           
+                           add_args(arg_list, ext.args)
+                           write_constructor()
+                           
+                           ## now steal object IDs if fullscreen
+                           if(fullscreen) {
+                             add_js_queue(sprintf("var %s_toplevel=%s;", get_id(), get_id()))
+                             add_js_queue(sprintf("var %s=%s.child(0);", get_id(), get_id()))
+                           }
+                           
+                             
+                           if(!is.null(handler))
+                             add_handler_changed(handler, action)
+                           
+                           ## write title
+                           if(nchar(title))
+                             set_value(title)
+                           
+                           loadmask_created <<- FALSE
+                           
+                           .self$toplevel$do_layout_cmd = sprintf("%s.doLayout()", get_id())
                            
                            callSuper(toplevel=.self)
                          },
@@ -203,7 +201,7 @@ GWindow <- setRefClass("GWindow",
                            ## We override the sizing here
                            if(is(child, "GGroup") && getWithDefault(expand, TRUE)) {
                               cmd <- paste(child$get_id(),".setSize({width:'100%', height:'100%'});",sep="")
-                              add_js_queue(cmd)
+#                              add_js_queue(cmd)
                            }
                            callSuper(child, expand, anchor, fill, ...)
                          },
@@ -224,6 +222,7 @@ GWindow <- setRefClass("GWindow",
                          dispose = function() {
                            call_Ext("hide")
                          },
+                        
                          ##
                          do_layout=function() {
                            add_js_queue(sprintf("%s_toplevel.doLayout()", get_id()))
@@ -238,6 +237,27 @@ GWindow <- setRefClass("GWindow",
                            add_js_queue("listen()")
                          },
                          ##
+                         ## Mask for slow loading
+                         ##
+                         load_mask_id = function() {
+                           sprintf("%s_loadmask", get_id())
+                         },
+                         show_load_mask=function(msg="") {
+                           if(!loadmask_created) {
+                             tpl <- "
+var {{id}} = new Ext.LoadMask(Ext.getBody(), {msg:'{{msg}}'});
+"
+                             cmd <- whisker.render(tpl, list(id=load_mask_id(),
+                                                             msg=msg))
+                             add_js_queue(cmd)
+                             loadmask_created <<- TRUE
+                           }
+                           add_js_queue(sprintf("%s.show();", load_mask_id()))
+                         },
+                         hide_load_mask=function() {
+                           add_js_queue(sprintf("%s.hide();", load_mask_id()))
+                         },
+                         ##
                          ## debugging
                          ##
                          dump = function() {
@@ -247,19 +267,9 @@ GWindow <- setRefClass("GWindow",
                          add_handler_destroy = function(handler, action=NULL) {
                            "When window is destroyed, this is called"
                            add_handler("destroy", handler, action)
-                         },
-                         ## templates -- can mess up formatting
-                         panel_template=function() {
-                           tpl <- "
-[{xtype:'panel',
-  autoScroll:true,
-  dockedItems: {{docked_items}},
-  id:'{{id}}_panel'
-}]
-"
-}
-                         )
-                       )
+                         }
+                         ))
+                       
 
 
 GSubWindow <- setRefClass("GSubWindow",
@@ -270,19 +280,20 @@ init = function(title, parent, handler, action, ..., renderTo=NULL,width=NULL, h
                            width <- getWithDefault(width, 200)
                            height <- getWithDefault(height, 200)
 
-                           constructor <<- "Ext.Window"
+                           constructor <<- "Ext.window.Window"
                            arg_list <- list(renderTo=String("Ext.getBody()"),
                                              title=title,
-                                             layout="auto",
+                                             layout="fit",
                                              width=width,
                                              height=height,
                                              closeAction="hide",
-                                             autoScroll=TRUE,
+#                                             autoScroll=TRUE,
                                              plain=TRUE,
                                              button=String(sprintf('[{text: "Close", handler: function(){%s.hide()}}]',
                                                get_id()))
                                              )
-                           add_args(arg_list)
+                           add_args(arg_list, ext.args)
+
                            write_constructor()
                            
                            if(!is.null(handler))

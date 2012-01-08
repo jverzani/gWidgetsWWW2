@@ -74,7 +74,6 @@ GButton <- setRefClass("GButton",
                                       change_signal="click")
 
                            arg_list <- list(
-                                            tooltip = getFromDots("tooltip", ...),
                                             width = width,
                                             height = height
                                             )

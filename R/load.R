@@ -69,7 +69,6 @@ load_app <- function(script_name,
 
   load_once(port=port)
 
-
   options("Rhttpd_debug"=as.logical(show.log))
   
   R <- Rhttpd$new()
@@ -90,6 +89,10 @@ load_app <- function(script_name,
 
   
   ## an application
+  gwapp <- GWidgetsApp$new(url="/gwapp", app_name=app_name, script=script_name,
+                           session_manager=make_session_manager(),
+                           authenticator=authenticator
+                           )
   app <- Rook::Builder$new(
                            ## app specific static files
                            Rook:::Static$new(
@@ -104,10 +107,7 @@ load_app <- function(script_name,
                            ##                    ),
                            ## why do I need this?
 #                           tmpApp,
-                           GWidgetsApp$new(url="/gwapp", app_name=app_name, script=script_name,
-                                           session_manager=make_session_manager(),
-                                           authenticator=authenticator
-                                           ),
+                           gwapp,
                            ## why does this fail?
                            Rook:::Redirect$new(sprintf("http://127.0.0.1:%s/custom/%s/indexgw.rhtml", tools:::httpdPort, app_name))
                            )
@@ -115,7 +115,7 @@ load_app <- function(script_name,
   R$add(RhttpdApp$new(app, name=app_name))
   
   browseURL(sprintf("http://127.0.0.1:%s/custom/%s/indexgw.rhtml", tools:::httpdPort, app_name))
-  
+  invisible(gwapp)
 }
 
 .load_once <- function(port=9000, ...) {
@@ -145,4 +145,5 @@ load_app <- function(script_name,
 
 }
 
+## internal helper function to load static files for gWdigetsWWW2
 load_once <- memoize(.load_once)

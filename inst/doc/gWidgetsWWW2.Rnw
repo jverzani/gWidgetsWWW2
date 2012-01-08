@@ -77,10 +77,36 @@
 * 
 
 -- new widgets
-** gborderlayout
+** gborderlayout, gstackwidget,
+** gpanel
 ** gcanvas, gsvg, ghtml,
 
 
+-- JavaScript addons
+** gpanel
+** json_rpc_server
+
+-- w thingies
+** w\$toplevel
+** w\$toplevel\$the\_request
+** w\$listen()
+** w\$add\_js\_queue
+** w\$set\_cookie
+** w\$show\_load\_mask
+** w\$hide\_load\_mask
+<<>>=
+require(gWidgetsWWW2)
+w <- gwindow("Cookies")
+g <- ggroup(cont=w)
+
+w$set_cookie("one", "two")
+
+b <- gbutton("click me", cont=g, handler=function(h,...) {
+  print(b$get_cookies()) ## cookies at time of page initiation, so won't include "one" first time
+})
+
+@ 
+-- debugging
 
 -- what it does -- fill in parts of a brew template
 

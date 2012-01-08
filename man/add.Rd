@@ -17,6 +17,6 @@
 }
 \description{
   Usually called internally by specifying
-  \code{container=parent} to the constructor.
+  \code{container=parent} to the constructor
 }
 

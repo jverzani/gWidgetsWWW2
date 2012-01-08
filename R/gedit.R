@@ -68,12 +68,15 @@ gedit <- function (text = "", width = 25, coerce.with = NULL, initial.msg="",
 
 
 
-##' base class for gedit
+##' \code{GEdit} is base class for gedit
 ##' 
-##' For the \code{GEdit} class, the change signal is  "change". Use
-##' the reference class method \code{add_handler_enter} for "enter" key press and
-##' \code{addHandlerBlur} for focus out events
-##' @rdname gWidgetsWWW2-package
+##' For the \code{GEdit} class, the change signal is  "blur" or a
+##' focus-out event. Use the reference class method
+##' \code{add_handler_enter} for "enter" key press and
+##' \code{add_handler_change} for a mix of change events (browser
+##' dependent, but for most includes \code{['change', 'input',
+##' 'textInput', 'keyup', 'dragdrop']}.
+##' @rdname gedit
 GEdit <- setRefClass("GEdit",
                      contains="GWidgetText",
                      fields=list(
@@ -87,12 +90,15 @@ GEdit <- setRefClass("GEdit",
                          validate.regexp=NULL
                          ) {
 
+                         if(!is.null(coerce.with) && is.character(coerce.with))
+                           coerce.with <- get(coerce.with, inherits=TRUE)
+                         
                          initFields(
                                     value=text,
                                     coerce_with=coerce.with,
                                     constructor="Ext.form.field.Text",
                                     transport_signal="keyup",
-                                    change_signal="change"
+                                    change_signal="blur"
                                     )
 
                          
@@ -143,7 +149,7 @@ function(value) {
                        },
                        param_defn=function(signal) {
                          if(signal == change_signal) {
-                           "var param = {value: newValue};"
+                           "var param = {value: this.getValue()};"
                          } else if(signal == "keyup") {
                            "var param = {key: e.getKey()};"
                          } else {

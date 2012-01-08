@@ -3,16 +3,26 @@ sb <- gstatusbar("Powered by gWidgetsWWW2 and Rook", cont=w)
 addHandlerDestroy(w, handler=function(h,...) { dev.off() }) ## close canvas device
                   
 g <- ggroup(cont=w, horizontal=FALSE)
-ghtml(paste("The <code>gcanvas</code> constructor makes a widget to display graphics",
-            "produced by the <code>canvas</code> device. This device writes JavaScript",
-            "code to manipulate the web browser's canvas tag. To use <code>gcanvas</code>",
-            "one simply passes the file of JavaScript commands to the object using <code>svalue</code>.",
-            "The widget responds to mouse clicks and passes back the position of the click in ndc",
-            "coordinates (in [0,1], with (0,0) being the lower left hand corner of the display) and pixel coordinates",
-            "with (0,0) being the upper left. These are passed as x,y and X,Y components of the",
-            "'h' list passed to the callback.",
-            "In the example, a new point is added and the regression line redrawn.",
-            sep=" "), cont=g)
+ghtml("
+The <code>gcanvas</code> constructor makes a widget to display graphics
+produced by the <code>canvas</code> device (in the <code>canvas</code> package.
+(The canvas widget in
+HTML5 produced by this widget may be interacted with independently. See the motion
+example for that use.)
+The <code>canvas</code> device translates R's low-level graphics commands into JavaScript
+code to manipulate the web browser's canvas tag. To use the <code>gcanvas</code>
+widget one simply passes the file of JavaScript commands to the object using
+<code>svalue</code>.
+<br />
+The widget responds to mouse clicks and passes back the position of the click in ndc
+coordinates (in [0,1] x [0,1], with (0,0) being the lower left hand corner of the display) and pixel coordinates
+with (0,0) being the upper left. These are passed as x,y and X,Y components of the
+'h' list passed to the callback.
+<br />
+In the example, following a mouse click, a new point is added and the
+regression line is redrawn.
+",
+      width=400, cont=g)                # not full screen
 
 
 x <- runif(3)
@@ -25,7 +35,8 @@ g1 <- ggroup(cont=g)
 tpl <- "Plotting %s points"
 lab <- glabel("", cont=g1)
 
-gbutton("reset", cont=g, handler=function(h,...) {
+g2 <- ggroup(cont=g)                    # stop button stretch
+gbutton("reset", cont=g2, handler=function(h,...) {
   x <<- runif(3)
   y <<- runif(3)
   make_plot()

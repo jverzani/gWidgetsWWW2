@@ -3,7 +3,8 @@
 
 w <- gwindow("Tic-Tac-Toe")
 sb <- gstatusbar("Powered by gWidgetsWWW2 and Rook", cont=w)
-ghtml("Tic-Tac-Toe, three in a row", cont=w)
+g <- gvbox(cont=w)
+ghtml("Tic-Tac-Toe, three in a row", cont=g)
 
 
 ## sizing
@@ -16,7 +17,7 @@ x_move <- TRUE
 sym <- c("o", "x")
 
 
-cnv <- gcanvas(width=width, height=height, cont=w)
+cnv <- gcanvas(width=width, height=height, cont=g)
 
 ##' make the game board
 make_board <- function() {

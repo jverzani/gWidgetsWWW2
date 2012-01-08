@@ -7,17 +7,17 @@ glabel("This page shows the example files in the package's examples directory.",
 fs <- list.files(system.file("examples", package="gWidgetsWWW2"), full=TRUE)
 basefs <- gsub("\\.R$", "", basename(fs))
 
-## Can't use sapply here if we return gWidgetsWWW2 objects, as the call to simplify2array
-## tries to call the length.ExtWidget method
-lapply(seq_along(fs), function(i) {
+sapply(seq_along(fs), function(i) {
   g1 <- ggroup(cont=g)
 
   gbutton("Source", cont=g1, action=i, handler=function(h,...) {
-    lns <- readLines(fs[h$action])
     w1 <- gwindow(sprintf("Source of %s", basefs[i]), width=450, height=400, parent=w)
-    gw <- ggroup(cont=w1, horizontal=FALSE)
-    ghtml(sprintf("<pre>%s</pre>", paste(lns, collapse="\n")), height=375, cont=gw)
-    gbutton("dismiss", cont=gw, handler=function(h,...) dispose(w1))
+    gw <- ggroup(cont=w1, spacing=0, horizontal=FALSE)
+    lns <- readLines(fs[h$action])
+    gcodemirror(paste(lns, collapse="\n"), expand=TRUE,  cont=gw)
+    gseparator(cont=gw)
+    bg <- ggroup(cont=gw)
+    gbutton("dismiss", cont=bg, handler=function(h,...) dispose(w1))
   })
 
   gbutton("View example", cont=g1, action=i, handler=function(h,...) {

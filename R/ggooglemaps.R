@@ -152,12 +152,21 @@ GGoogleMaps <- setRefClass("GGoogleMaps",
 # XXXX JV FIXME                               cbid <- toplevel$add_R_handler(.self, handler, action)
                                ## We need to buffer this, otherwise the handler call might not have a map to listen
                                ## to. Do do this we set up a delayed task.
-                               cmd <- sprintf("var _addL = function() {google.maps.event.addListener(%s, %s, function(%s) {%s;callRhandler(%s,'%s',param)})};",
-                                              get_map(),
-                                              ourQuote(signal),
-                                              paste(cb_args,collapse=","),
-                                              param_defn,
-                                              get_id())
+                               
+                               tpl <- "
+var _addL = function() {
+  google.maps.event.addListener({{map}}, {{signal}}, function({{args}}) {
+    {{param_defn}};
+    callRHandler('{{id}}', '{{signal}}', param);
+  })
+}
+"
+                               cmd <- whisker.render(tpl, list(
+                                                               map=get_map(),
+                                                               signal=signal,
+                                                               args=paste(cb_args,collapse=","),
+                                                               param_defn=param_defn,
+                                                               od=get_id()))
                                add_js_queue(cmd)
                                ## now call this function after a delay
                                cmd <- paste("new Ext.util.DelayedTask(_addL).delay(500);",
@@ -173,9 +182,10 @@ GGoogleMaps <- setRefClass("GGoogleMaps",
                                add_R_callback("click", handler, action, cb_args, param_defn)
                              },
                              add_handler_mouse_motion = function(handler, action=NULL, ...) {
+                               ## THIS NEEDS WORK
                                cb_args <- "e"
                                param_defn <- "var param={lat: e.latLng.lat(), lng: e.latLng.lng(), x: e.point.x, y: e.point.y};"
-                               add_R_callback("mousemove", handler, action, cb_args, param_defn)
+                               add_handler("mousemove", handler, action, cb_args, param_defn)
                              },
                              ##
                              ## some of the apie
@@ -285,13 +295,22 @@ GGoogleMapsObject <- setRefClass("GGoogleMapsObject",
                                    ## write_constructor, so haven't
                                    add_R_callback = function(signal, handler, action, cb_args=c(), param="") {
                                      "Add handler, call on object, not map, not Ext guy"
-                                     cbid <- toplevel$add_R_handler(.self, handler, action)
-                                     cmd <- sprintf("var _fDelayed = function() {google.maps.event.addListener(%s, %s, function(%s) {%s;callRhandler(%s,param)})};",
-                                                    get_id(),
-                                                    ourQuote(signal),
-                                                    paste(cb_args,collapse=","),
-                                                    param,
-                                                    cbid)
+                                     cbid <- toplevel$add_handler(.self, handler, action)
+
+                                     tpl <- "
+var _fDelayed = function() {
+  google.maps.event.addListener({{id}}, '{{signal}}', function({{args}}) {
+    {{param_defn}};
+    callRhandler('{{id}}', '{{signal}}, param)
+  })
+};
+"
+#                                     cmd <- sprintf("var _fDelayed = function() {google.maps.event.addListener(%s, %s, function(%s) {%s;callRhandler(%s,param)})};",
+                                     cmd <- whisker.render(tpl, list(
+                                                                     id=get_id(),
+                                                                     signal=signal,
+                                                                     args=paste(cb_args,collapse=","),
+                                                                     param_defn=param))
                                      add_js_queue(cmd)
                                      ## now call this function after a delay
                                      cmd <- paste("new Ext.util.DelayedTask(_fDelayed).delay(500);",
@@ -346,9 +365,10 @@ GGoogleMapsMarker <- setRefClass("GGoogleMapsMarker",
                                      write_constructor()
                                    },
                                    add_handler_clicked = function(handler, action=NULL, ...) {
+                                     ## THIS NEEDS WORK
                                      cb_args <- "e"
                                      param <- "var param={};" #"var param={lat: e.latLng.lat(), lng: e.latLng.lng(), x: e.point.x, y: e.point.y};"
-                                     add_R_callback("click", handler, action, cb_args, param)
+                                     add_handler("click", handler, action)#, cb_args, param)
                                    }
                                    ))
 

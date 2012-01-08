@@ -49,27 +49,45 @@ NULL
 ##' )
 ##' m <- gmenu(l, cont=w)
 ##' gtext("Text goes here", cont=w)
-gmenu <- function(menulist,  popup = FALSE, action=NULL, container = NULL,...) {
+gmenu <- function(menulist,  popup = FALSE, action=NULL, container = NULL,..., ext.args=NULL) {
   m <- GMenu$new(container, ...)
-  m$init(menulist, action, container)
+  m$init(menulist, action, container, ..., ext.args=ext.args)
   m
 }
 
 ##' base class for menu instances.
 ##' @name gmenu-class
 GMenu <- setRefClass("GMenu",
-                     contains="GWidget",
+                     contains="GContainer",
                      method=list(
-                       init=function(menulist, action=NULL, container) {
-                         container$add_to_toolbar(menulist)
+                       init=function(menulist, action=NULL, container, ..., ext.args=NULL) {
+                         constructor <<- "Ext.toolbar.Toolbar"
+                         arg_list=list(
+                           dock="top"
+                           )
+                         add_args(arg_list, ext.args)
+                         write_constructor()
+                         container$add_toolbar(.self)
+                         add_to_toolbar(menulist)
+                         container$do_layout()
+                       },
+                       add_to_toolbar=function(lst) {
+                         addToToolbar(lst, nm="", self=.self)
+                       },
+                       remove_from_toolbar=function(obj) {
+                         "Remove object from toolbar"
+                         add_js_queue(sprintf("%s.remove(%s)",
+                                              toolbar_id(), obj$get_id()))
+                       },
+                       toolbar_id=function() {
+                         sprintf("%s_toolbar", get_id())
                        }
-                       ## What methods does this class have?
                        ))
 
 
-                           
+
 ## Tedious bit to avoid defined athrowaway S3 method in a reference method, which gives lookup issues
-## though not reproducible in a small examples
+## though not reproducible in a small example
 addToToolbar <- function(x, nm, self) UseMethod("addToToolbar")
 addToToolbar.list <- function(x, nm="", self) {
   ## If nm="" then a toplevel list, else a
@@ -78,7 +96,7 @@ addToToolbar.list <- function(x, nm="", self) {
     ## submenu
     menu <- GMenuItem$new(parent=self)
     menu$init(x, nm, self)
-    self$add_js_queue(sprintf("%s.add({text: '%s', menu:%s});",  self$toolbar_id(), nm, menu$get_id()))
+    self$add_js_queue(sprintf("%s.add({text: '%s', menu:%s});",  self$get_id(), nm, menu$get_id()))
   } else {
     ## toolbar like
     nms <- names(x)
@@ -92,10 +110,10 @@ addToToolbar.list <- function(x, nm="", self) {
   }
 }
 addToToolbar.GComponent <- function(x, nm, self) {
-  self$add_js_queue(sprintf("%s.add(%s);", self$toolbar_id(), x$get_id()))
+  self$add_js_queue(sprintf("%s.add(%s);", self$get_id(), x$get_id()))
 }
 addToToolbar.GSeparator <- function(x, nm, self) {
-  self$add_js_queue(sprintf("%s.add('-');", self$toolbar_id()))
+  self$add_js_queue(sprintf("%s.add('-');", self$get_id()))
 }
 
 ## Class for menubar items

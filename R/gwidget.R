@@ -58,6 +58,7 @@ gwidget <- function(handler, action=NULL, container=NULL, ...,
 ##' GWidget is the Base class for widget objects. See
 ##' \code{gcontainer} for the base class for container objects. Both
 ##' derive from the \code{GComponent} class.
+##' @rdname gWidgets-pacakge
 GWidget <- setRefClass("GWidget",
                        contains="GComponent",
                        fields=list(

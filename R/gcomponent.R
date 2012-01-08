@@ -117,10 +117,6 @@ GComponent <- setRefClass("GComponent",
                              ## toplevel when none is specified, which
                              ## should only happen with the initial
                              ## gwindow() call.
-                             
-                             args <<- ExtArgs$new() # append with add_args method
-                             .e <<- new.env()
-                             
                              ## insert a toplevel thingy
                              if(is.null(toplevel)) {
                                ## this variable is created when a new session is and lives in the
@@ -128,19 +124,20 @@ GComponent <- setRefClass("GComponent",
                                if(exists(".gWidgets_toplevel", inherits=TRUE))
                                   toplevel <<- get(".gWidgets_toplevel", inherits=TRUE)
                                else
-                                 toplevel <<- GWidgetsTopLevel$new()
+                                 toplevel <<- gWidgetsWWW2:::GWidgetsTopLevel$new()
                              } 
                              ## work on id
                              ## id is used for html DOM id, o+id is used for
                              ## javascript variable and key within toplevel hash
                              ## to refer to this object
-                             prefix <<- "o"
-                             id <<- sprintf("gWidget_ID%s", toplevel$get_object_id())
-                             args$extend(list(id=id))
-                             toplevel$add_object(.self, get_id())
 
-
-                             initFields(..visible=TRUE,
+                             initFields(
+                                        args=gWidgetsWWW2:::ExtArgs$new(), # append with add_args method
+                                        .e=new.env(),
+                                        prefix="o",
+                                        id=sprintf("gWidget_ID%s", toplevel$get_object_id()),
+                                        ##
+                                        ..visible=TRUE,
                                         ..enabled=TRUE,
                                         ..index=NULL,
                                         transport_signal="",
@@ -148,7 +145,11 @@ GComponent <- setRefClass("GComponent",
                                         public_methods=character(0)
                                         )
                              
-                             ## return
+                             args$extend(list(id=id))
+                             toplevel$add_object(.self, get_id())
+                             
+                             ## return. We've eaten all the arguments
+                             ## we know of by now
                              callSuper()
                            },
                            init=function(...) {
@@ -160,15 +161,17 @@ GComponent <- setRefClass("GComponent",
                              exists(key, .self, inherits=FALSE)
                            },
                            ##
-                           add_args = function(new_args, overwrite=TRUE) {
-                             "add new arguments. Will overwrite. @param new_args is a list"
-                             args$extend(new_args, overwrite)
+                           add_args = function(..., overwrite=TRUE) {
+                             "add new arguments. Will overwrite. Pass in lists of arguments through ..."
+
+                             sapply(list(...), args$extend, overwrite=overwrite)
                            },
                            ## id of base object (ogWidgetID1) There
                            ## are two ids: the object id returned here
                            ## refers to the actual javascript object
-                           ## created. The other id (id) is the DOM id
-                           ## of the object. The object id is usually what we want.
+                           ## created. The other id (the id property)
+                           ## is the DOM id of the object. The object
+                           ## id is usually what we want.
                            get_id = function() {
                              "ID of object. There is DOM id store in id property and Ext object id returned by this"
                              sprintf("%s%s", prefix, id)
@@ -282,13 +285,15 @@ E.g. var param = {value: this.getText()}"
                            ## creates an observer arranges to connect to toolkit
                            add_handler=function(signal, handler, action=NULL, decorator) {
                              "Uses Observable framework for events. Adds observer, then call connect signal method. Override last if done elsewhere"
+                             ID <- NULL
                              if(is_handler(handler)) {
                                if(!missing(decorator))
                                  handler <- decorator(handler)
                                o <- observer(.self, handler, action) # in gWidgets2 but not now
-                               add_observer(o, signal)
+                               ID <- add_observer(o, signal)
                              }
                              connect_to_toolkit_signal(signal)
+                             invisible(ID)
                            },
                            invoke_handler=function(signal, ...) {
                              "Invoke observers listening to signal"
@@ -455,8 +460,7 @@ E.g. var param = {value: this.getText()}"
                              if(!is.null(ext.args))
                                args$extend(ext.args)
 
-                             if(!is.null(container))
-                               container$add_dots(.self, ...)
+                             container$add_dots(.self, ...)
                              write_constructor()
                              if(!is.null(container))
                                container$add(.self, ...)
@@ -473,6 +477,24 @@ E.g. var param = {value: this.getText()}"
 
                              if(!missing(handler)  & !is.null(handler))
                                add_handler_changed(handler, action)
+                           },
+                           ##
+                           ## Cookies
+                           ##
+                           ## Example:
+                           ## w <- gwindow("Cookies")
+                           ## g <- ggroup(cont=w)
+                           ## w$set_cookie("one", "two")
+                           ## b <- gbutton("click me", cont=g, handler=function(h,...) {
+                           ##   print(b$get_cookies()) ## cookies at time of page initiation, so won't include "one" first time
+                           ## })
+                           set_cookie = function(key, value) {
+                             "Set a cookie"
+                             toplevel$cookies[[key]] <<- value
+                           },
+                           get_cookies = function() {
+                             "Return list of cookies"
+                             toplevel$the_request$cookies()
                            },
                            ##
                            ## The standard gWidgets API for reference methods expects certain reference methods to be defined.
@@ -546,27 +568,47 @@ E.g. var param = {value: this.getText()}"
                              "Set persistent attribute"
                              attr(.e, key) <<- value
                            },
+                            set_height = function(px) {
+                              "Set height in pixels"
+                              call_Ext("setHeight", px)
+                            },
+                            set_width = function(px) {
+                              "Set width in pixels"
+                              call_Ext("setWidth", px)
+                            },
                            set_size = function(val) {
-                             "Set size, specified as width or c(width, height)"
+                             "Set size, specified as width or c(width, height) or list(width,height)"
                              ## may use:
                              ## A Number specifying the new width in the Element's Ext.Element.defaultUnits (by default, pixels).
                              ## A String used to set the CSS width style.
-                             if(is.list(val))
-                               val <- unlist(val)
+                             if(!is.list(val)) {
+                               nms <- c("width", "height")[seq_along(val)]
+                               val <- setNames(as.list(val), nms)
+                             }
+                             width <- val$width; height <- val$height
                              
-                             if(length(val) == 1)
-                               call_Ext("setWidth", val)
-                             else {
+                             if(is.null(width) && is.null(height))
+                               return()
+                             else if(is.null(height))
+                               set_width(width)
+                             else if(is.null(width))
+                               set_height(height)
+                             else 
                                ## depends on class
-                               if(is.numeric(val)) {
-                                 call_Ext("setSize", val[1], val[2])
+                               if(is.numeric(width)) {
+                                 call_Ext("setSize", width, height)
                                } else {
                                  ## This allows set_size("100%", "100%")
-                                 cmd <- sprintf("%s.setSize(width:'%s',height:'%s');",
-                                                get_id(), val[1], val[2])
+                                 cmd <- sprintf("%s.setSize({width:'%s',height:'%s'});",
+                                                get_id(), width, height)
                                  add_js_queue(cmd)
                                }
-                             }
+                           },
+                           get_font = function(...) {
+                             message("Fonts not implemented")
+                           },
+                           set_font = function(value, ...) {
+                             message("Fonts are not implemented. Perhaps using HTML will work.")
                            },
                            destroy = function() {
                              "destroy component"

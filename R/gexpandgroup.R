@@ -33,7 +33,7 @@ NA
 ##' gbutton("some button", cont=g)
 ##' visible(g) <- FALSE ## to close
 gexpandgroup <- function(text = "", horizontal = TRUE,
-                         spacing=5,
+                         spacing=2, 
                          handler = NULL, action=NULL,
                          container=NULL, ...,
                          width=NULL,
@@ -50,10 +50,9 @@ gexpandgroup <- function(text = "", horizontal = TRUE,
           ...,
           width=width,
           height=height,
-          ext.args=merge.list(list(collapsible=TRUE),
+          ext.args=merge.list(list(title=text,collapsible=TRUE),
             ext.args)
           )
-  eg$set_value(text)
   
   if(!is.null(handler)) {
     eg$add_handler("collapse", handler, action)

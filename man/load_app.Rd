@@ -1,9 +1,9 @@
 \name{load_app}
 \alias{load_app}
-\title{load a web app defined by a gWidgetsWWW2 script}
+\title{Load a web app defined by a gWidgetsWWW2 script}
 \usage{
   load_app(script_name, app_name = "test", brew_template =
-  "", use.googlemap = FALSE, show.log = FALSE, port = 9000,
+  "", show.log = FALSE, port = 9000, authenticator = NULL,
   ...)
 }
 \arguments{
@@ -16,20 +16,52 @@
   one to specify a brew template to hold these place
   holders and other HTML code.}
 
-  \item{use.googlemap}{If using \code{ggooglemaps} include
-  this so that the JavaScript files are downloaded.}
-
   \item{show.log}{If TRUE, logged information is written to
   the console}
 
   \item{port}{Initial port for Rhttpd server, provided it
   hasn't already started.}
 
+  \item{authenticator}{Used to specify a subclass of
+  \code{\link{Authenticator}} for doing authentification.
+  Specifying a value of \code{TRUE} will do a trivial
+  authentification. Subclasses of \code{Authenticator}
+  should implement the methods \code{is_valid_cookie} and
+  \code{is_valid_user}.}
+
   \item{...}{passed to \code{brew} call of
   \code{brew_template}}
 }
 \description{
-  load a web app defined by a gWidgetsWWW2 script
+  There are two basic tasks that gWidgetsWWW2 does: a)
+  create the javascript to populate a page (or part of the
+  page) and b) create an means for AJAX requests between
+  the web browser and the R process. For b) there isn't
+  much to say except that it is supposed to just work.
+}
+\details{
+  As for a) there are things one can pay attention to. The
+  simplest case is really pretty simple. Write some script,
+  save it to a file and call this function with the script
+  name (and path if needed). This simple case will create a
+  full screen app. Each app runs in its own environment in
+  the R session, so running lots of instances can be
+  expensive. That is, don't expect gWidgetsWWW2 to scale.
+
+  There are other cases one might want. An app can run
+  within a web page. The web template can be passed through
+  the \code{brew_template} argument with the \code{...}
+  parameters passed along.
+
+  One might even be able to copy the provided indexgw.rhtml
+  file and modify that. When using either of these
+  approaches, pass a DOM id to the \code{renderTo} argument
+  of the \code{gwindow} instance.
+
+  Apps can require authentification. By default, this is
+  not validated. One can write a subclass of
+  \code{Authenticator} to do other validations. (Of course
+  this needs improvement).
 }
 \examples{
 ## open an app that takes the entire page

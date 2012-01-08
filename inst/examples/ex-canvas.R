@@ -1,5 +1,6 @@
-w <- gwindow("Example of canvas device within gWidgetsWWW")
-g <- ggroup(cont = w, horizontal=FALSE)
+w <- gwindow("Example of canvas device within gWidgetsWWWs")
+gstatusbar("Powered by Rook and gWidgetsWWWs", cont = w)
+g <- ggroup(cont = w, horizontal=FALSE, spacing=c(10,10,0,0))
 
 width <- height <- 400
 
@@ -26,12 +27,12 @@ if(!require(canvas)) {
   ## Use a canvas widget
   canvas <- gcanvas(cont = g, width=width, height=height)
   svalue(canvas) <- makePlot()
-  b <- gbutton("click me for another", cont = g, handler = function(h,...) {
+  button_group <- ggroup(cont=g)                  # avoid button stretch
+  b <- gbutton("click me for another", cont = button_group, handler = function(h,...) {
     svalue(canvas) <- makePlot()
   })
   
 }
 
-## add status bar and show off
-gstatusbar("Powered by RApache and gWidgetsWWW", cont = w)
-visible(w) <- TRUE
+
+

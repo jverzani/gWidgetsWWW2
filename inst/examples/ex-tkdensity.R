@@ -3,39 +3,46 @@
 w <- gwindow("tkdensity-type example")
 gstatusbar("Powered by gWidgetsWWW and Rook", cont=w)
 
-g <- ggroup(cont=w, horizontal=FALSE)
-ghtml("A web app similar to that of the tkdensity demo", cont=g)
+bl <- gborderlayout(cont=w)
+ghtml("A web app similar to that of the tkdensity demo", cont=bl, where="north")
 
-pg <- gpanedgroup(cont=g,  height=450)
-
-width <- height <- 400;
+width <- 500; height <- 400;
 plotFile <- get_tempfile()
 
-cnv <- gcanvas(plotFile, width=width, height=height, cont=pg)
-fg <- ggroup(cont=pg, horizontal=FALSE)
+cnv <- gcanvas(plotFile, width=width, height=height, cont=bl, where="center")
+
+fg <- ggroup(cont=bl, horizontal=FALSE, where="west", use.scrollwindow=TRUE)
+bl$set_panel_size("west", 200)
 
 ## our filters
 fs <- list()
 
-f1 <- gframe("Distribution", cont=fg)
-dens <- list("Normal"=rnorm, "Exponential"=rexp)
-fs$distribution <- gradio(names(dens), cont=f1)
-
-f1 <- gframe("Kernel", cont=fg)
-kerns <- c("gaussian", "epanechnikov", "rectangular", "triangular", "cosine")
-fs$kernel <- gtable(kerns, cont=f1)
-svalue(fs$kernel, index=TRUE) <- 1      # isn't working? Sets value, not highlight
-
-f1 <- gframe("Sample size", cont=fg)
-fs$n <- gcombobox(c(50, 100, 200, 300), editable=TRUE, cont=f1)
-
-f1 <- gframe("Bandwidth", cont=fg)
-fs$bw <- gslider(from=5, to=200, by=5, tpl="{0}%", value=100, cont=f1)
-
-gseparator(cont=fg)
 gbutton("refresh", cont=fg, handler=function(h,...) {
   make_plot()
 })
+
+GLABEL <- function(txt, ...) ghtml(sprintf("<b>%s</b>",txt), ...)
+
+GLABEL("Distribution", cont=fg)
+dens <- list("Normal"=rnorm, "Exponential"=rexp)
+fs$distribution <- gradio(names(dens), cont=fg)
+
+GLABEL("Sample size", cont=fg)
+fs$n <- gcombobox(c(50, 100, 200, 300), editable=TRUE, cont=fg)
+
+GLABEL("Bandwidth", cont=fg)
+fs$bw <- gslider(from=5, to=200, by=5, tpl="{0}%", value=100, cont=fg)
+
+
+
+GLABEL("Kernel", cont=fg)
+kerns <- data.frame(kernels=c("gaussian", "epanechnikov", "rectangular", "triangular", "cosine"), stringsAsFactors=FALSE)
+fs$kernel <- gtable(kerns, cont=fg, height=150, expand=FALSE)
+svalue(fs$kernel, index=TRUE) <- 1      # isn't working? Sets value, not highlight
+
+## size them
+sapply(fs, function(i) size(i) <- list(width=200))
+
 
 
 make_plot <- function(...) {
@@ -47,11 +54,12 @@ make_plot <- function(...) {
   kern <- svalue(fs$kernel, index=FALSE)
   bw <- svalue(fs$bw)/100
 
-  plot(density(y, bw=bw, kernel=kern))
+  plot(density(y))#, bw=bw, kernel=kern))
   points(y,rep(0,length(y)))
 
   dev.off()
   svalue(cnv) <- plotFile
 }
+
 
 sapply(fs, addHandlerChanged, handler=make_plot)

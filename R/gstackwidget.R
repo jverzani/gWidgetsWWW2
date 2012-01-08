@@ -58,13 +58,8 @@ GStackWidget <- setRefClass("GStackWidget",
                                               height=height,
                                               defaults=list(border=FALSE)
                                               )
-                             add_args(arg_list)
-                             
-                             if(!is.null(ext.args))
-                               args$extend(ext.args)
-                             
-                             container$add_dots(.self, ...)                           
 
+                             add_args(arg_list, ext.args)
                              write_constructor()
                              container$add(.self, ...)
                              

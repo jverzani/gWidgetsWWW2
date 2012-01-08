@@ -29,6 +29,10 @@ String <- function(x) {
   x
 }
 
+##' Internal function to call whisker.render and compose with String
+##' @param tpl template
+##' @param l data
+##' @return a character containing filled in template
 String_render <- function(tpl, l) {
   String(whisker.render(tpl, l))
 }
@@ -207,6 +211,16 @@ toJSArray.factor <- toJSArray.character
 
 ##' ToJSArray method
 ##' 
+##' @method "toJSArray" Date
+##' @S3method "toJSArray" Date
+##' @rdname toJSArray
+toJSArray.Date <- function(x, doBrackets=TRUE) {
+  ## SHould make format an option. Here it needs to match \code{column_xtype.Date}.
+  toJSArray.String(ourQuote(format(x, "%Y/%m/%d")), doBrackets)
+}
+
+##' ToJSArray method
+##' 
 ##' @method "toJSArray" matrix
 ##' @S3method "toJSArray" matrix
 ##' @rdname toJSArray
@@ -326,7 +340,7 @@ merge.list <- function(x, y, overwrite=TRUE) {
   if(missing(y) || is.null(y))
     return(x)
   for(i in names(y))
-    if(overwrite || !(i %in% names(x)))
+    if((is.logical(overwrite) && overwrite) || !(i %in% names(x)))
       x[[i]] <- y[[i]]
   x
 }

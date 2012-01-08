@@ -1,10 +1,15 @@
 w <- gwindow("gcanvas example")
 sb <- gstatusbar("Powered by gWidgetsWWW2 and Rack", cont=w)
 g <- ggroup(cont=w, horizontal=FALSE)
-ghtml(paste("An example showing the canvas mouse move events when used with an R callback.",
-             "They work -- but are not so responsive, as evidenced by the jerkiness below.",
-             "Try clicking on a circle and dragging it around",
-             sep=" "),
+ghtml("
+An example showing the canvas mouse move events when used with an R callback.
+They work -- but are not so responsive, as evidenced by the jerkiness below.
+Try clicking on a circle and dragging it around.
+<br />
+We use the call_method reference class method for the canvas object below. This
+method is used to make it easy to call the underlying methods of the canvas
+widget that is rendered on the screen.
+",
       cont=g)
 
 
@@ -51,8 +56,10 @@ Circle <- setRefClass("Circle",
                         }
                         )
                       )
-          
-circleList <- gWidgetsWWW2:::Array$new() ## helper class
+
+## Store the circles
+circleList <- gWidgetsWWW2:::Array$new() ## helper class with convenient iterator each
+
 x <- seq(from=50, to=350, by=50)
 y <- x
 r <- 25

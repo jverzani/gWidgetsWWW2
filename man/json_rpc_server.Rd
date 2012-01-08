@@ -1,0 +1,121 @@
+\name{json_rpc_server}
+\alias{json_rpc_server}
+\title{Start a json RPC server}
+\usage{
+  json_rpc_server(url = "JSON_RPC", port = 9000, envir =
+  .GlobalEnv)
+}
+\arguments{
+  \item{url}{URL to run server under. Defaults to
+  "JSON_RPC", so url would be (without work),
+  "/custom/JSON_RPC"}
+
+  \item{port}{Which port to start Rhttpd, if Rhttpd server
+  has not already started.}
+
+  \item{envir}{Where to look for JsonRPCObjects, defaults
+  to global environment}
+}
+\description{
+  This JSON RPC server allows the JavaScript programmer to
+  call back into R, specifying an object by name (whose
+  class is a subclass of JsonRPCObject), a method name (in
+  the exported methods of the object) and a JSON encoded
+  set of parameters. The server will return the results of
+  the method call as a JSON encoded object. The example
+  uses Ext.Ajax.request to make the request and
+  Ext.json.decode to decode the response. To use this
+  successfully, one needs to write a callback in JavaScript
+  to do something with the returned value.
+}
+\details{
+  The basic idea is one starts the server, then creates
+  subclasses of the JsonRPCObject class. See the example
+  for how this can be done.
+
+  We memoise this call, so that the server is only started
+  one time, though one could bypass this with the
+  \code{load} reference method (say one wanted multiple
+  urls for the server).
+}
+\examples{
+## Create a PageCounter object using JSON_RPC
+w <- gwindow("PageCounter")
+g <- ggroup(cont=w)
+page_ctr <- glabel("replace me below...", cont=g)
+
+
+## Run this once
+## It sets up the PageCounter JsonRPCObject and starts the server
+where <- .GlobalEnv ## where to look for objects
+if(!exists("PageCounter", where)) {
+json_rpc_server(envir=where)
+PageCounter <- setRefClass("PageCounter",
+contains="JsonRPCObject",
+fields=list(
+ctr="list"
+),
+methods=list(
+initialize=function(...) {
+ctr <<- list()
+to_export <- c("value") # exported methods
+callSuper(to_export, ...)
+},
+get_count = function(page, ...) {
+## could do something with a file here
+## should do file locking though!
+## f <- "/tmp/ctr.txt"
+## if(file.exists(f)) {
+##   ctr <- read.table(f, colClasses=c("character", "integer"), header=TRUE)
+## } else {
+##   ctr <- data.frame(page=character(0), count=integer(0), stringsAsFactors=FALSE)
+## }
+## if(!is.na(ind <- match(page,ctr[,1]))) {
+##   count <- ctr[ind,2] + 1
+##   ctr[ind,2] <- count
+## } else {
+##   count <- 1
+##   ctr[nrow(ctr) + 1, ] <- list(page, count)
+## }
+## write.table(ctr, file=f, row.names=FALSE)
+return(count)
+
+
+if(is.null(ctr[[page]]))
+count <- 1
+else
+count <- ctr[[page]] + 1
+ctr[[page]] <<- count
+return(count)
+},
+value=function(page, ...) {
+val <- sprintf("Page accessed \%s times", get_count(page))
+print(val)
+toJSON(list(text=val))
+}
+))$new()
+## JsonRPCObjects are found in the global environment by default
+assign("PageCounter", PageCounter, where)
+}
+
+## Now add json_rpc call to javascript queue setText method for a
+## label widget. See the set_value reference method to know. The JavaScript function
+## json_rpc is defined in the \\code{load_AJAX.rhtml} file.
+tpl <- "
+json_rpc('PageCounter', 'value',{page: '{{app_name}}' },
+function(response) {
+txt = Ext.JSON.decode(response.responseText);
+{{id}}.setText(txt.text);
+});
+"
+cmd <- whisker.render(tpl, list(id=page_ctr$get_id(),
+app_name="page_counter_example"))
+
+## Add the JavaScript command to the queue so that the browser will
+## get it when the queue is flushed
+w$add_js_queue(cmd)
+}
+\seealso{
+  \code{\link{JsonRPCObject}}
+}
+

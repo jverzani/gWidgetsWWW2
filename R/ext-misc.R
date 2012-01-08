@@ -72,23 +72,28 @@ NULL
                                 valid = "w")
 
 
-## a class to handle map between R and arguments for constructor
+##' a class to handle map between R and arguments for constructor
+##'
+##' The ExtArgs are simply an Array instance wrapper with an extend method and
+##' a conversion method
+##' @exportClass ExtArgs
+##' @name ExtArgs-class
 ExtArgs <- setRefClass("ExtArgs",
                        fields=list(
                          "args"="Array"
                          ),
                        methods=list(
                          initialize = function(...) {
-                           args <<- Array$new(...)
+                           args <<- gWidgetsWWW2:::Array$new(...)
                            callSuper()
                          },
                          extend = function(l, overwrite=TRUE) {
                          "Extend argument list by list l."
-                         for(i in names(l)) {
-                           if(!(i %in% names(args) ) ||
-                              overwrite)
+                         QT <- sapply(names(l), function(i) {
+                           if((is.logical(overwrite) && overwrite) ||
+                              !(i %in% names(args) ))
                              args$push(l[[i]], i)
-                         }
+                         })
                        },
                          to_js_object = function() {
                            "Convert to string of object literal"

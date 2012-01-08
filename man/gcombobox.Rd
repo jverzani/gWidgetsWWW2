@@ -36,6 +36,9 @@
   and make editable. When the user types the matching
   values are presented.}
 
+  \item{initial.msg}{If \code{selected=0}, then one can
+  assign an initial message here}
+
   \item{tpl}{a template for the item (Not working!)}
 
   \item{handler}{optional means (to
@@ -91,11 +94,14 @@
 \examples{
 w <- gwindow()
 sb <- gstatusbar("Powered by gWidgetsWWW and Rook", cont=w)
-cb <- gcombobox(state.name, cont=w)
+g <- ggroup(cont=w, horizontal=FALSE)
+cb <- gcombobox(state.name, cont=g)
 addHandlerChanged(cb, handler=function(h,...) {
 galert(paste("You selected ", svalue(h$obj), sep=""), parent=w)
 })
+## initial message
+gcombobox(state.name, cont=g, selected=0, initial.msg="Choose a state...")
 ## autocomplete
-cb <- gcombobox(state.name, cont=w, autocomplete=TRUE)
+cb <- gcombobox(state.name, cont=g, autocomplete=TRUE)
 }
 

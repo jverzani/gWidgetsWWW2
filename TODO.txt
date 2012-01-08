@@ -1,27 +1,29 @@
-* json-rpc javascript method call
-* document use of such a call (page counter)
-* stuff the_request into toplevel
+DONE * json-rpc javascript method call
+DONE (Gave Example)* document use of such a call (page counter)
+DONE * stuff the_request into toplevel
 * ourQuote -- make better ', but not \' to \'
 * document how to get toplevel object from session_manager (given ID)
 * need hook to add session id to list (by script), so if listen is
   turned on, one can send info to each client (or by ID)
 * clean up session manager info on page clean up
-* authenticate option in load_app (do_authenticate, authenticate_type)
-* gpanel to embed other objects into gWidgets
-* cookies from create_gui reqeuest are in req, but method to write
+DONE * authenticate option in load_app (do_authenticate, authenticate_type)
+DONE * gpanel to embed other objects into gWidgets
+DONE * cookies from create_gui reqeuest are in req, but method to write
   cookies needed (w$set_cookie(key, value))
 
 * Update roxygen documentation
-
+* devtools --> load_all working
 * update vignette
 
 * write unit tests
 
+* work on size issues with radio, check box, groups, windows...
 
 * replace transport with jRpc call -- cut down on complexity
 
-* proxy code is ugghly
-
+* proxy
+* column_xtype should be configurable, as should how dates are passed
+  back by the proxy.
 *JSON_RPC class to subclass. Allows access to R session, not special environments
 
 
@@ -33,7 +35,7 @@
 DONE * get_tempfile -- are tmp files working?
 
 * Why do we have to use indexgw.html! Uggh
-DONE * factor out code in indexgw.html -- I want three lines read css, read
+DONE * factodr out code in indexgw.html -- I want three lines read css, read
   js, call app
 * put javascript into a namespace (gWidgets.base_url, ...)
 * app structure: Name
@@ -44,12 +46,8 @@ DONE * factor out code in indexgw.html -- I want three lines read css, read
 - css/...
 - javascript/...
 
-
-* rename router
-* JSON-RPC give example (way to access common objects), D3 for text...
-
 # containers
-* ggroup -- autoScroll=TRUE (isn't); size issues; menubar statusbar
+DONE * ggroup -- autoScroll=TRUE (isn't); size issues; menubar statusbar
 DONE * gborderlayout (panel with border layout)
 DONE * gstackwidget
 * gformlayout (mebbe)
@@ -63,6 +61,7 @@ DONE * gstackwidget
   but no cigar
 -- would like remote queryMode for autocomplete on larger stores
 
+* do demos work?
 
 DONE * checkboxgroup/checkbox svalue inconsistency?
 DONE * names for checkbox (we have [<- are values and svalue selected, but
@@ -90,13 +89,17 @@ DONE * gslider: working, needs tidying of param, transport
 
 DONE * gstatusbar: better? no css
 
+* ggooglemaps handlers are broken.
+
 * galert: no css, too wide. Why? (css missing)
 
 * gcanvas: working, needs documenting
 
 * gstatusbar for ggroup objects
 
-* gtable: checkbox selection; grouping variables (add), means to limit which fields are shown
+* gtable: checkbox selection; grouping variables (add), means to limit
+  which fields are shown
+* can't be bottom in layout???
 
 * gdf: We can add and edit, but can't delete. WOuld like to use Rest proxy, but isn't working iwth Rook, as the request is denied -- not even parsable
 

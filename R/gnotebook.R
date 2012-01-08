@@ -60,13 +60,7 @@ GNotebook <- setRefClass("GNotebook",
                                               width=width,
                                               height=height
                                               )
-                             add_args(arg_list)
-                             
-                             if(!is.null(ext.args))
-                               args$extend(ext.args)
-                             
-                             container$add_dots(.self, ...)                           
-
+                             add_args(arg_list, ext.args)
                              write_constructor()
                              write_transport()
 

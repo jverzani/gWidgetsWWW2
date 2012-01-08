@@ -1,0 +1,19 @@
+\name{String_render}
+\alias{String_render}
+\title{Internal function to call whisker.render and compose with String}
+\usage{
+  String_render(tpl, l)
+}
+\arguments{
+  \item{tpl}{template}
+
+  \item{l}{data}
+}
+\value{
+  a character containing filled in template
+}
+\description{
+  Internal function to call whisker.render and compose with
+  String
+}
+

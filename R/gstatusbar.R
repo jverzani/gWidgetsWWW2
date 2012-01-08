@@ -13,7 +13,7 @@
 ##      You should have received a copy of the GNU General Public License
 ##      along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-##' @include gwidget.R
+##' @include gcontainer.R
 NA
 
 ##' Status bar for gwindow instances
@@ -29,33 +29,79 @@ NA
 ##' @examples
 ##' w <- gwindow()
 ##' sb <- gstatusbar("Powered by gWidgetsWWW and Rook")
-gstatusbar <- function(text = "", container=NULL, ...) {
+gstatusbar <- function(text = "", container=NULL, ..., ext.args=NULL) {
   if(!is(container, "GWindow") || is(container, "GGroup"))
     return()
 
   sb <- GStatusbar$new(container, ...)
-  sb$init(text, container, ...)
+  sb$init(text, container, ..., ext.args=ext.args)
   sb
 }
 
-##' base class for gstatusbar
+##' \code{GStatusbar}  class for gstatusbar
+##'
+##' The convenience reference class method \code{clear} will clear the
+##' text. This is basically the same as \code{svalue(obj) <- ""}.
+##'
+##' We add in reference methods \code{show_loading} and
+##' \code{hide_loading} to allow one to indicate something is
+##' loading. Not really that useful though, as is. This is due to how
+##' the JavaScript commands come back from the R process in a block so
+##' unless the browser takes a long time to process the returning
+##' JavaScript, you will likely show the loading for just a bit.
+##'
+##' This class inherits for \code{GContainer}, thereby allowing one to
+##' add in widgets in addition to the message by using the status bar
+##' as the parent container. This might be useful.
 ##' @name gstatusbar-class
 GStatusbar <- setRefClass("GStatusbar",
-                          contains="GWidget",
+                          contains="GContainer",
                           fields=list(
                             container="ANY"
                             ),
                           methods=list(
-                            init=function(text, container, ...) {
-                              container <<- container
-                              if(!missing(text))
-                                set_value(text)
+                            init=function(text, container, ..., ext.args=NULL) {
+                              constructor <<- "Ext.toolbar.Toolbar"
+                              value <<- text
+                              tpl <- "
+[{xtype:'label',text:''},
+ {xtype:'label', id:'{{id}}_status', text:'{{txt}}'}
+]
+"
+                              
+                              arg_list=list(
+                                dock='bottom',
+                                items=String(whisker.render(tpl,list(id=get_id(),
+                                                                     txt=text)))
+                                )
+                              add_args(arg_list, ext.args)
+                              write_constructor()
+                              container$add_statusbar(.self)
                             },
                             set_value = function(value, ...) {
+                              cmd <- sprintf("%s.getComponent(1).setText('%s')",
+                                             get_id(), value)
+                              add_js_queue(cmd)
                               value <<- value
-                              container$set_status(value)
                             },
                             clear = function() {
                               set_value("")
+                            },
+                            show_loading=function(msg="") {
+                               url <- "/custom/gWidgetsWWW2/images/ajax-loader.gif"
+                               tpl <- "
+{{id}}.getComponent(0).setText('<img src=\"{{url}}\" width=16 height=16 />{{msg}}', false);
+{{id}}.doLayout();
+"
+                            cmd <- whisker.render(tpl, list(url=url,id=get_id(), msg=msg))
+                            add_js_queue(cmd)
+                            },
+                            hide_loading=function() {
+                               tpl <- "
+{{id}}.getComponent(0).setText('');
+{{id}}.doLayout();
+"
+                            cmd <- whisker.render(tpl, list(id=get_id()))
+                            add_js_queue(cmd)
                             }
                             ))

@@ -53,7 +53,10 @@ GWidgetsAppBase <- setRefClass("GWidgetsAppBase",
                                  }
                                  ))
                              
-##' Basic class for a gwidgetsWWW2 applications
+## This class handles the running of the script that creates the gWidgetsWWW2 app
+## Before running, one can ask for a user to be authenticated.
+## The main work is the method create_GUI which runs the script, which stores Javascript commands
+## in the js_queue of the toplevel object, then flushes these commands when returning.
 GWidgetsApp <- setRefClass("GWidgetsApp",
                            contains="GWidgetsAppBase",
                            fields=list(
@@ -100,13 +103,19 @@ GWidgetsApp <- setRefClass("GWidgetsApp",
                                                    headers=headers
                                                    )
                                assign(".req", req, .GlobalEnv)
+
+                               if(req$get())
+                                 session_id <- req$GET()$session_id
+                               else
+                                 session_id <- read_rook_input(req)$session_id
                                
-                               session_id <- req$GET()$session_id
                                out <- try(create_GUI(session_id, req, res), silent=TRUE)
                                  
                                if(inherits(out, "try-error")) {
                                  status <- 400L
                                } 
+
+                               toplevel <- get_toplevel(session_id)
                                
                                ## write response
                                res$body <- paste(out, collapse="\n")
@@ -114,8 +123,14 @@ GWidgetsApp <- setRefClass("GWidgetsApp",
                                                    headers=headers,
                                                    body=paste(out, collapse="\n")
                                                    )
+                               ## write cookies
                                if(length(login_cookie))
                                  res$set_cookie("gWidgetsWWW2Login", login_cookie)
+
+                               e_cookies <- toplevel$cookies
+                               sapply(ls(e_cookies), function(i) res$set_cookie(i, e_cookies[[i]]))
+                               toplevel$cookies <- new.env()
+                               
                                res$write("")
                                res$finish()
                              },
@@ -129,6 +144,7 @@ GWidgetsApp <- setRefClass("GWidgetsApp",
                                "Run script within a new environment. Return character vector of javascript commands"
 
                                e <- session_manager$get_session_by_id(session_id)
+                               
                                if(is.null(e)) {
                                  e <- new.env()
                                  session_manager$store_session(session_id, e)
@@ -138,7 +154,6 @@ GWidgetsApp <- setRefClass("GWidgetsApp",
                                  toplevel$set_e(e)
                                  assign(".gWidgets_toplevel", toplevel, env=e)
                                  lockBinding(".gWidgets_toplevel", env=e)
-
                                  
                                  ## debug
                                  assign(".toplevel", toplevel, .GlobalEnv)
@@ -146,12 +161,12 @@ GWidgetsApp <- setRefClass("GWidgetsApp",
                                  toplevel <- get_toplevel(session_id)
                                }
 
-                               ## clean up if there
+                               ## clean up login form if there
                                cmd <- "
 var tmp = Ext.getDom('gWidgetsLoginForm');
 if(tmp) { document.body.removeChild(tmp)}
 "
-                                toplevel$js_queue_push(cmd)
+                               toplevel$js_queue_push(cmd)
                                
                                ## really should check if authenticator is there
                                if(!is.null(authenticator)) {
@@ -170,6 +185,7 @@ if(tmp) { document.body.removeChild(tmp)}
                                  out <- try(sys.source(the_script, envir=e), silent=TRUE)
                                  detach(e)
 
+                                 
                                  if(inherits(out, "try-error")) {
                                    stop(out)
                                  } else {
@@ -251,9 +267,9 @@ GWidgetsAppAjax <- setRefClass("GWidgetsAppAjax",
                                ## the appropirate method
                                req <- Request$new(env)
                                assign(".req", req, .GlobalEnv)
-                               
-                               headers <- list('Content-Type'='application/javascript')
+
                                e_cookies <- new.env()
+                               headers <- list('Content-Type'='application/javascript')
 
                                ## Here we dispatch on the path_info
                                ## value. Depending on the type we
@@ -301,6 +317,9 @@ GWidgetsAppAjax <- setRefClass("GWidgetsAppAjax",
                                                    headers=headers,
                                                    body=paste(out, collapse="\n")
                                                    )
+                               ## if e_cookies do something
+                               sapply(ls(e_cookies), function(i) {res$set_cookie(i, e_cookies[[i]])})
+                               
                                res$write("")
                                res$finish()
                              },
@@ -365,9 +384,11 @@ GWidgetsAppAjax <- setRefClass("GWidgetsAppAjax",
                                toplevel <- get_toplevel(l$session_id)
                                return(toplevel$js_queue$flush())
                              },
-
+                              ##
+                              ##
+                              ##
                              run_rpc = function(req) {
-                               "Run a long pull to read from queue. Returns js commands when successful"
+                               "Simple means to call a method fo a gWidgetsWWW2 object"
 
                                l <- read_rook_input(req)
                                                               
@@ -376,7 +397,9 @@ GWidgetsAppAjax <- setRefClass("GWidgetsAppAjax",
 
                                return(toplevel$js_queue$flush())
                              },
-                             
+                              ##
+                              ##
+                              ##
                              run_proxy = function(req) {
                                "Call proxy object to return JSON data"
                                
@@ -405,6 +428,9 @@ GWidgetsAppAjax <- setRefClass("GWidgetsAppAjax",
                                }
                                return(out)
                              },
+                              ##
+                              ##
+                              ##
                              run_upload = function(req) {
                                "Upload file"
                                l <- req$POST()
@@ -418,7 +444,9 @@ GWidgetsAppAjax <- setRefClass("GWidgetsAppAjax",
                                out <- toplevel$call_upload(id, l, req$POST()) # return JSON
                                return(out)
                              },
-
+                              ##
+                              ##
+                              ##
                              close_session=function(req) {
                                l <- req$GET()
                                if(length(l) == 0)

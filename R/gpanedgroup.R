@@ -96,12 +96,7 @@ GPanedGroup <- setRefClass("GPanedGroup",
                                                 items=String(items)
                                                 )
 
-                               args$extend(arg_list)
-                               if(!is.null(ext.args))
-                                 args$extend(ext.args)
-
-                               container$add_dots(.self, ...)                           
-
+                               args$extend(arg_list, ext.args)
                                write_constructor()
 
                                container$add(.self, ...)

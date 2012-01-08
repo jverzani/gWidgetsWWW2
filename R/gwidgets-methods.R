@@ -220,7 +220,7 @@ tag.GComponent <- function(x, key) x$get_attr(key)
 ##' @param drop passed to \code{get_items}
 ##' @method "[" GComponent
 ##' @S3method "[" GComponent
-##' @rdname "bracket"
+##' @rdname bracket
 "[.GComponent" <- function(x, i, j, ..., drop=TRUE) {
   x$get_items(i, j, ...)
 }
@@ -317,7 +317,7 @@ insert.GComponent <- function (obj, value, where = "end",
 
 ##' Add child component to parent container
 ##'
-##' Usually called internally by specifying \code{container=parent} to the constructor.
+##' Usually called internally by specifying \code{container=parent} to the constructor
 ##' @param x object
 ##' @param child child object
 ##' @param ... Not implemented. For values like \code{expand}, \code{fill} and \code{anchor}
@@ -374,7 +374,6 @@ dispose.GComponent <- function(x,...) x$dispose(...)
 ##' The default event is specified in the definition of the
 ##' object. Using this function allows one to have a "generic" name
 ##' for adding a handler.
-##'
 ##' @param x the object
 ##' @param ... Used to pass through \code{handler}, and \code{action}
 ##' values. The handler is a function whose first argument is a list
@@ -465,7 +464,7 @@ addHandlerKeystroke <- function(x, ...) x$add_handler_keystroke(...)
 ##' @export
 addHandlerFocus <- function(x, ...) x$add_handler_focus(...)
 
-##'  Assign handler to blur (lose focus) event
+##' Assign handler to blur (lose focus) event
 ##'
 ##' @param x the object
 ##' @param ... Used to pass through \code{handler}, and \code{action}
@@ -476,7 +475,7 @@ addHandlerFocus <- function(x, ...) x$add_handler_focus(...)
 ##' @export
 addHandlerBlur <- function(x, ...) x$add_handler_blur(...)
 
-##'  Assign handler to destroy event (such as page being unloaded)
+##' Assign handler to destroy event (such as page being unloaded)
 ##'
 ##' @param x the object
 ##' @param ... Used to pass through \code{handler}, and \code{action}
@@ -500,30 +499,36 @@ addHandlerIdle <- function(x, interval=1000, handler, action=NULL)
 
 
 
-##'  Remove handler
+##' Remove handler
 ##'
 ##' @param x the object handler is called on.
 ##' @param cbid the callback id returned by an addHandlerXXX call
 ##' @return NULL
+##' @note see the reference method \code{remove_handlers} to remove
+##' all handlers on a widget.
 ##' @export
-removeHandler <- function(x, cbid) x$remove_R_callback(cbid)
+removeHandler <- function(x, cbid) x$remove_handler(cbid)
 
 
-##'  temporariliy block handler by id
+##' temporariliy block handler by id
 ##'
 ##' @param x the object handler is called on.
 ##' @param cbid the callback id returned by an addHandlerXXX call
 ##' @return NULL
+##' @note see the reference method \code{block_handlers} to block all
+##' handlers for the widget.
 ##' @export
-blockHandler <- function(x, cbid) x$block_R_callback(cbid)
+blockHandler <- function(x, cbid) x$block_handler(cbid)
 
 
 
-##'  unblock handler by id
+##' unblock handler by id
 ##'
 ##' @param x the object handler is called on.
 ##' @param cbid the callback id returned by an addHandlerXXX call
 ##' @return NULL
+##' @note see the reference method \code{unblock_handlers} to unblock
+##' all the handlers for a widget.
 ##' @export
-unblockHandler <- function(x, cbid) x$unblock_R_callback(cbid)
+unblockHandler <- function(x, cbid) x$unblock_handler(cbid)
 

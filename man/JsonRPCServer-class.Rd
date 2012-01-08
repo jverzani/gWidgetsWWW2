@@ -1,0 +1,23 @@
+\name{JsonRPCServer-class}
+\alias{JsonRPCServer-class}
+\title{A Rook app to be a JSON RPC server}
+\description{
+  This app allows the browser to call back into R by
+  specifying an object name, its method name and some
+  parameters. The object then returns JSON to the browser.
+  Only instances of subclasses of \code{JsonRPCObject} are
+  allowed and for them only exported methods may be
+  accessed.
+}
+\details{
+  Unlike other \code{gWidgetsWWW2} AJAX calls, the
+  environment that these objects lives in is typically the
+  global environment, rather than an environment that is
+  created when a gWidgetsWWW2 page is. This allows one to
+  share such objects across many pages. In the examples
+  there is a page counter and a data set provider.
+
+  This is not subclassed, but rather the function call
+  \code{\link{json_rpc_server}} should be made.
+}
+

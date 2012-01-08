@@ -19,12 +19,29 @@ NULL
 ## Need a toplevel gWidgetsApp to store session, ...
 ## called from GWindow
 
+##' A toplevel object for a gWidgetsWWW2 app stores page-specific values
+##'
+##' The toplevel object for gWidgetsWWW2 apps stores page specific
+##' information. As there can potentially be several \code{gwindow}
+##' instances on a page (using \code{renderTo}), however all share the
+##' same toplevel instance. This instance holds a reference to the
+##' evaluation environment, the request that generates the page, the
+##' objects populating the page, and a queue for holding JavaScript
+##' commands (produced by method calls, say).
+##'
+##' The sharing of this toplevel object amongs each component is the
+##' reason why the constructors require a specification of either a
+##' \code{container} or \code{parent} argument.
+##'
+##' @exportClass GWidgetsTopLevel
+##' @name GWidgetsTopLevel-class
 GWidgetsTopLevel <- setRefClass("GWidgetsTopLevel",
                                 fields=list(
                                   "e" = "environment", # evaluation environment
                                   "the_request"="ANY",         # request
                                   "objects"="Array",   # objects on page
                                   "js_queue"="Array",   # queue to flush
+                                  "cookies"="environment",
                                   ##
                                   "do_layout_cmd" = "character"
                                   ),
@@ -33,6 +50,7 @@ GWidgetsTopLevel <- setRefClass("GWidgetsTopLevel",
                                     the_request <<- req
                                     objects <<- Array$new()
                                     js_queue <<- Array$new()
+                                    cookies <<- new.env() # replace each handler call
                                     callSuper(...)
                                   },
                                   set_e = function(e) {
@@ -43,6 +61,7 @@ GWidgetsTopLevel <- setRefClass("GWidgetsTopLevel",
                                   ##
                                   call_handler=function(id, signal, params, e_cookies) {
                                     "lookup widget by id, notify any observer of this signal"
+                                    cookies <<- e_cookies
                                     obj <- get_object_by_id(id)
                                     out <- NULL
                                     if(!missing(params)) {
@@ -50,9 +69,7 @@ GWidgetsTopLevel <- setRefClass("GWidgetsTopLevel",
                                       out <- obj$before_handler(signal, params)
                                     }
                                     obj$notify_observers(signal=signal, params, out)
-
-                                    ## did we set a cookie? if so modify res object
-                                    e_cookies[["fred"]] <- "flintstone"
+                                    
                                     
                                   },
                                   ## transport add javascript

@@ -14,7 +14,7 @@
 ##      along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ##' @include gcontainer.R
-NA
+NULL
 
 ##' A "border" layout is a 5-panel layout where "north", "east",
 ##' "south", and "west" satellite panels surround a "center" panel. 
@@ -53,8 +53,9 @@ NA
 ##' @seealso \code{\link{gpanedgroup}} is a two-panel border layout
 ##' with just an "east" or "south" satellite panel configured.
 ##' @author john verzani
+##' @export
 ##' @examples
-##' w <- gwindow("dialogs")
+##' w <- gwindow("border layout")
 ##' #
 ##' bl <- gborderlayout(cont=w,
 ##'                     title=list(center="State facts (state.x77)", west="Select a state"),
@@ -108,14 +109,11 @@ gborderlayout <- function(container=NULL, ...,
 }
 
 GBorderLayout <- setRefClass("GBorderLayout",
-                            contains="GContainer",
-                            fields=list(
-                              stub="ANY"
-                              ),
-                            methods=list(
+                             contains="GContainer",
+                             methods=list(
                               init=function(container, ...,
                                 width=NULL, height=NULL,
-                                ext.args=list(),
+                                ext.args=NULL,
                                 title,
                                 collapsible
                                 ) {
@@ -129,11 +127,7 @@ GBorderLayout <- setRefClass("GBorderLayout",
                                                  )
 
                                 
-                                args$extend(arg_list)
-                                if(!is.null(ext.args))
-                                  args$extend(ext.args)
-                                
-                                container$add_dots(.self, ...)                           
+                                args$extend(arg_list, ext.args)
                                 write_constructor()
                                 container$add(.self, ...)
                                 
@@ -163,7 +157,8 @@ GBorderLayout <- setRefClass("GBorderLayout",
                                 paste(out, collapse=",")
                               },
                               add=function(child,
-                                where=c("center","north", "south", "east", "west")
+                                where=c("center","north", "south", "east", "west"),
+                                ...
                                 ) {
                                 "add child to specific region, defaulting to center"
                                 child_bookkeeping(child)

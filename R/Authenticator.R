@@ -1,14 +1,19 @@
 ## authenticate framework
 
+##' Base class for providing authentification
+##'
+##' Meant to be subclassed
+##' @exportClass Authenticator
+##' @name Authenticator-class
 Authenticator <- setRefClass("Authenticator",
                              fields=list(
                                app_name="character",
-                               role="character",
-                               type="character" # subclass?
+                               last_message="character"
                                ),
                              methods=list(
                                initialize=function(app_name="",...) {
-                                 initFields(app_name=app_name)
+                                 initFields(app_name=app_name,
+                                            last_message="")
 
                                  
                                  callSuper(...)
@@ -18,11 +23,13 @@ Authenticator <- setRefClass("Authenticator",
                                },
                                is_valid_user=function(user, pwd, ...) {
                                  "Return logical if a valid user for the given role"
-                                 if(!is.null(user))
+                                 if(!is.null(user)) {
                                    TRUE
-                                 else
+                                 } else {
                                    FALSE
+                                 }
                                },
+                               clear_message=function() last_message <<- "",
                                create_login=function(session_id) {
                                  "Create login form. If successful redirect to appname"
                                  tpl <- "
@@ -50,7 +57,13 @@ var simple = Ext.create('Ext.form.Panel', {
             fieldLabel: 'Password',
             name: 'password',
             inputType: 'password'
-        }],
+        },
+        {
+            fieldLabel: ' ',
+            xtype: 'label',
+            html: '<em>{{last_message}}</em>'
+        }
+],
 
         buttons: [{
             text: 'Submit',
@@ -74,7 +87,8 @@ var simple = Ext.create('Ext.form.Panel', {
                                  out <- whisker.render(tpl,
                                                        list(app_url="/custom/test",
                                                             title="Authenticate",
-                                                            session_id=session_id
+                                                            session_id=session_id,
+                                                            last_message=last_message
                                                             )
                                                        )
                                  return(out)
@@ -83,12 +97,38 @@ var simple = Ext.create('Ext.form.Panel', {
 
 
 ## example subclass
-## we only authenticate if user matches "John"
-AuthenticateJohn <- setRefClass("AuthenticateJohn",
+## put in a spouse
+AuthenticateCartoons <- setRefClass("AuthenticateCartoons",
                                 contains="Authenticator",
+                                fields=list(
+                                  passwords="data.frame"
+                                  ),
                                 methods=list(
+                                  initialize=function(...) {
+                                    txt <- "Fred Wilma
+Barney Betty
+Wilma Fred
+Betty Barney
+Homer Marge
+Marge Homer
+"
+                                    
+                                    passwords <<- data.frame(do.call("rbind",strsplit(strsplit(txt, "\\n")[[1]], " ")), stringsAsFactors=FALSE)
+                                    passwords$lookup <<- paste(passwords[[1]], passwords[[2]], sep="")
+                                    callSuper(...)
+                                  },
                                   is_valid_user=function(user, pwd, ...) {
-                                    user == "John"
+                                    "Do we match a row in the data frame?"
+                                    out <- paste(user, pwd, sep="") %in% passwords$lookup
+                                    if(out) {
+                                      clear_message()
+                                    } else {
+                                      if(user == "")
+                                        clear_message()
+                                      else
+                                        last_message <<- ifelse(is.na(match(user, passwords[[1]])),  "No such user", "Password incorrect")
+                                    }
+                                    out
                                   }
                                   ))
                                 

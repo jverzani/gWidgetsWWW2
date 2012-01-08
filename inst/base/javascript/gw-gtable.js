@@ -5,7 +5,7 @@ gtableNumeric = function(val) {
 }
     
 gtableInteger = function(val) { 
-    return '<span style="color:red">' + val + '</span>';
+    return '<span style="color:red">' + val  + '</span>';
 };
 
 gtableLogical = function(val) { 
@@ -13,9 +13,8 @@ gtableLogical = function(val) {
 };
 
 gtableIcon = function(val, metaData, record, rowIndex, columnIndex, store) { 
-    metaData.css = val;
     metaData.style = 'background-repeat:no-repeat'
-    return '';
+    return "<img src='" + val + "' />";
 }
 
 gtableDate = function(val) {

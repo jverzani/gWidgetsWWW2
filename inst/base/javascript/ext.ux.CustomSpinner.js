@@ -11,7 +11,7 @@ Ext.define('Ext.ux.CustomSpinner', {
             if(me.getValue() !== '') {
                 val = parseInt(me.getValue()); // gets rid of " Pack"
             }
-            me.setValue(Math.max(val + me.step, me.maxValue));
+            me.setValue(Math.min(val + me.step, me.maxValue));
         }
     },
   onSpinDown: function() {
@@ -20,7 +20,7 @@ Ext.define('Ext.ux.CustomSpinner', {
             if(me.getValue() !== '') {
                 val = parseInt(me.getValue()); // gets rid of " Pack"
             }
-            me.setValue(Math.min(val - me.step, me.minValue));
+            me.setValue(Math.max(val - me.step, me.minValue));
         }
     }
 });

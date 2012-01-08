@@ -36,18 +36,17 @@ NULL
 GContainer <- setRefClass("GContainer",
                           contains="GComponent",
                           fields=list(
-                            "children"="Array",
+                            "children"="ANY",
                             "auto_layout"="logical",
                             spacing="numeric"
                             ),
                           methods=list(
                             initialize=function(...) {
-                              initFields(
-                                         children=Array$new(),
+                              initFields(children=gWidgetsWWW2:::Array$new(),
                                          spacing=5,
                                          auto_layout=FALSE,
-                                         default_fill=TRUE,
-                                         default_expand=TRUE
+                                         default_fill=FALSE,
+                                         default_expand=FALSE
                                          )
                               
 
@@ -79,27 +78,14 @@ GContainer <- setRefClass("GContainer",
                               "Call layout method of container to recompute"
                               call_Ext("doLayout") # call update method if needed
                             },
-                            mapAnchorToCSSClass = function(anchor) {
-                              "Return a css class for the anchor value"
-                              if(is.null(anchor))
-                                return("td-northwest")
-                              if(all(anchor == 0))
-                                return("td-center")
-                              
-                              lr <- c("west", "", "east")
-                              ns <- c("north", "", "south")
-                              m <- rbind(paste("td", "-", ns[1], lr, sep=""),
-                                         paste("td", "-", ns[2], lr, sep=""),
-                                         paste("td", "-", ns[3], lr, sep="")
-                                         )
-                              
-                              m[ 2 - anchor[2], 2 + anchor[1]]
-                            },
+                           
 
                             add_dots=function(child, expand=FALSE, fill=FALSE, anchor=NULL, ...) {
                               "Function to do process expand, fill, anchor arguments when adding a child"
-                              ## This gets called before constructor is written, so we modify the args of the
-                              ## child component
+                              ## This gets called before constructor
+                              ## is written, as we modify the args of
+                              ## the child component. Typical call (as in setup) is
+                              ## add_dots, write_constructor, container$add
                               
                               
                               ## ## spacing first
@@ -117,7 +103,7 @@ GContainer <- setRefClass("GContainer",
 
                               ## turn expand into number 0=FALSE
                               ## this way flex can vary with default of TRUE=1
-                              expand <- as.integer(expand)
+                              expand <- as.numeric(expand)
                               if(expand)
                                 child$add_args(list(flex=expand))
 
@@ -157,45 +143,24 @@ GContainer <- setRefClass("GContainer",
                             do_layout=function() {
                               call_Ext("doLayout")
                             },
-                            ## toolbar and statusbar things for panels. Inherited by ggroup, gwindow
-                            docked_items=function() {
-                              "Return string with docked items template"
-                                                         tpl <- "[
- {
-   xtype:'toolbar',
-   dock:'top',
-   id:'%s_toolbar'
- },
- {
-   xtype:'toolbar',
-   dock:'bottom',
-   id:'%s_status_bar',
-   items:[
-          {
-            xtype:'label',
-            text:''
-          }]
- }]
-"
-                           dockedItems <- String(sprintf(tpl, get_id(), get_id()))
-                              dockedItems
-                            },
-                            status_id=function() sprintf("%s_status_bar", get_id()),
-                            toolbar_id=function() sprintf("%s_toolbar", get_id()),
-                            set_status = function(value="") {
-                              "Set status bar text"
-                              add_js_queue(sprintf("%s.getComponent(0).setText('%s');",
-                                                   status_id(), value))
+                            ## toolbar/status methods. Should be just
+                            ## for Panel objects (such as gwindow, and
+                            ## ggroup, but we stuff in here
+                            ## nonetheless, as we don't have such a
+                            ## subclass
+                            add_statusbar=function(status, ...) {
+                              cmd <- sprintf("%s.addDocked(%s);",
+                                             get_id(),
+                                             status$get_id())
+                              add_js_queue(cmd)
                               do_layout()
                             },
-                            add_to_toolbar = function(lst) {
-                              "Add a list of objects to the toolbar"
-                              addToToolbar(lst, nm="", self=.self)
-                            },
-                            remove_from_toolbar=function(obj) {
-                              "Remove object from toolbar"
-                              add_js_queue(sprintf("%s.remove(%s)",
-                                                   toolbar_id(), obj$get_id()))
+                            add_toolbar=function(status, ...) {
+                              cmd <- sprintf("%s.addDocked(%s);",
+                                             get_id(),
+                                             status$get_id())
+                              add_js_queue(cmd)
+                              do_layout()
                             },
                             ## gWidgets methods
                             set_enabled=function(value, ...) {
@@ -205,20 +170,7 @@ GContainer <- setRefClass("GContainer",
                               else
                                 call_Ext("cascade", String("function(){ this.disable()}"))
                             },
-                            set_height = function(px) {
-                              "Set height in pixels"
-                              call_Ext("setHeight", px)
-                            },
-                            set_width = function(px) {
-                              "Set width in pixels"
-                              call_Ext("setWidth", px)
-                            },
-                            ## set_size = function(value) {
-                            ##   "w is c(width, height)"
-                            ##   set_width(value[1])
-                            ##   if(length(value) > 1)
-                            ##     set_height(value[1])
-                            ## },
+                           
                             set_visible = function(value) {
                               "Show container and its siblings"
                               if(value)

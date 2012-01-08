@@ -14,15 +14,34 @@
 ##      along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ##' @include gwidget.R
-NA
+NULL
 
-##Class for widgets which use a proxy store
+## In Ext4 the MVC pattern is used throughout. A widget has a backend
+## store associated to it from where it gets its data. This store has
+## either an implicit or explicit model. As well, the store can store
+## its data locally or have the data come via a proxy, in either case
+## the store needs a reader to read the data coming from the proxy.
+##
+## In gWidgetsWWW2 we follow suit creating classes for both proxies
+## and stores. The store writes the model and specifies a reader, as
+## well it specifies an underlying proxy object.
+##
+## Stores need methods for a) returning data from a request, b)
+## displaying javascript to make request
+## 
+## The numbering of objects is roughly:
+## ogWidget_id1 = proxy(url)
+## ogWidget_id(1+1) = store
+## ogWidgets_id(1+2) = GridPanel
+## 
+## The proxy returns the values to the Ext store in response to an
+## AJAX request. The call_proxy routine in gwidgets-toplevel calls
+## the get_json_data method of the proxy. Proxies typically return
+## JSON encoded data, though it may also be desirable to return other
+## values. (In those cases, we still call get_json_data and
+## deliberately avoid the name
+## implication.)
 
-## Stores need methods for a) returning data from a request, b) displaying javascript to make request
-## basic idea:
-##ogWidget_id1 = proxy(url)
-##ogWidget_id(1+1) = store
-##ogWidgets_id(1+2) = GridPanel
 
 ##' interface between R objects and JSON to supply Ext objects with data
 GWidgetProxy <- setRefClass("GWidgetProxy",
@@ -34,7 +53,6 @@ GWidgetProxy <- setRefClass("GWidgetProxy",
                           init=function(value, ...) {
                             
                             value <<- value
-                            
                             constructor <<- "Ext.data.proxy.Ajax"
                             arg_list <- merge.list(
                                                    get_url_list(),
@@ -93,9 +111,17 @@ GWidgetHTMLProxy <- setRefClass("GWidgetHTMLProxy",
                               }
                               ))
 
-## this function is used internally by  make_column_model but for some reason doesn't work
-## when defined within that method body
-## the rendererers are defined in gw-gtable.js
+
+## For make_column_model we need to specify various things: renderer,
+## xtype, and editor.
+##
+## These S3 generics are used to do so based on the class of the
+## column
+
+
+## this function is used internally by make_column_model but for some
+## reason doesn't work when defined within that method body the
+## rendererers are defined in gw-gtable.js
 
 ##' Generic function to render a column in ExtJS Grid
 ##' @param x object to get column class from
@@ -107,23 +133,7 @@ column_renderer.default <- function(x) list()
 
 ##' Method to render a column in ExtJS Grid
 ##' @param x object to get column class from
-column_renderer.integer <- function(x) list(renderer=String("gtableInteger"))
-
-##' Method to render a column in ExtJS Grid
-##' @param x object to get column class from
-column_renderer.numeric <- function(x) list(renderer=String("gtableNumeric"))
-
-##' Method to render a column in ExtJS Grid
-##' @param x object to get column class from
-column_renderer.logical <- function(x) list(renderer=String("gtableLogical"))
-
-##' Method to render a column in ExtJS Grid
-##' @param x object to get column class from
 column_renderer.Icon    <- function(x) list(width=20, renderer=String("gtableIcon"))
-
-##' Method to render a column in ExtJS Grid
-##' @param x object to get column class from
-column_renderer.date    <- function(x) list(renderer=String("gtableDate")) ## fix this js
 
 
 ## This function is use by make_column_model when editing of cells is
@@ -160,8 +170,6 @@ column_editor.integer <- function(x, ...) {
 ##' @param ... ignored
 column_editor.numeric <- function(x, ...) {
     list(editor=list(xtype="numberfield", hideTrigger=TRUE, decimalPrecision=16L, nanText="NaN"))
-#    list(editor =  String(sprintf("new Ext.form.NumberField(%s)",
-#         toJSObject(list(allowBlank=TRUE, allowDecimals=TRUE, nanText='NA')))))
 }
 
 ## should be Checkbox, but can't get to work
@@ -210,7 +218,7 @@ column_editor.factor <- function(x, ...) {
   ##                        )))))
 }
 column_editor.Date <- function(x, ...) {
-  list(editor="datefield", format: 'Y/m/d')
+  list(editor="datefield", format= 'Y/m/d')
 }
 
 
@@ -233,8 +241,12 @@ column_xtype.logical <- function(x, ...) {
       ,trueText= 'TRUE'
       ,falseText= 'FALSE'
       )
-#  list(xtype="checkcolumn",width=55L)
 }
+
+column_xtype.Date <- function(x, ...) {
+  list(xtype="datecolumn", format= 'Y/m/d')
+}
+
 
 
 ##' Proxy to return array data (combobox, table, gdf, ...) [[],[],[]]
@@ -243,16 +255,14 @@ GWidgetArrayProxy <- setRefClass("GWidgetArrayProxy",
                              fields=list(
                                col.widths="ANY",
                                update_url_list = "list",
-                               ..visible="logical",
-                               object_data="logical"
+                               ..visible="logical"
                                ),
                              methods=list(
-                                init=function(value, object_data=FALSE, ...) {
+                                init=function(value, ...) {
                                   
                                   value <<- value
                                   ..visible <<- rep(TRUE, nrow(value))
                                   col.widths <<- getFromDots("col.widths", ..., default=NULL)
-                                  object_data <<- FALSE #XXX object_data
 
                                   ## Would like to use Ext.data.proxy.Rest here, but
                                   ## the PUT requests get blocked by Rook. Not sure why
@@ -283,9 +293,6 @@ GWidgetArrayProxy <- setRefClass("GWidgetArrayProxy",
                                get_json_data=function(...) {
                                  "Return JSON array [[],[],] ... *or* handle post data!"
 
-                                 if(object_data)
-                                   return(get_json_object_data(...))
-                                 
                                  params <- list(...)
                                  
                                  df <- cbind("id"=seq_len(nrow(value)), value)
@@ -392,7 +399,10 @@ GWidgetArrayProxy <- setRefClass("GWidgetArrayProxy",
                                  ind <- sapply(items, isIcon)
                                  if(any(ind)) {
                                    for(i in which(ind)) {
-                                     items[,i] <- asIcon(sapply(items[,i], getStockIconByName))
+                                     ## uggh
+                                     tmp <- sapply(items[,i], getStockIconByName, css=FALSE)
+                                     tmp[sapply(tmp, is.null)] <- ""
+                                     items[i] <- asIcon(unlist(tmp))
                                      colNames[i] <- NA
                                    }
                                    value <<- items # update                                   
@@ -429,7 +439,7 @@ GWidgetArrayProxy <- setRefClass("GWidgetArrayProxy",
                                ))
 
 
-##' tree proxy is all we need
+## tree proxy is all we need for gtree
 GWidgetTreeProxy <- setRefClass("GWidgetTreeProxy",
                             contains="GWidgetArrayProxy",
                             fields=list(
@@ -495,6 +505,7 @@ GWidgetTreeProxy <- setRefClass("GWidgetTreeProxy",
                               },
                               make_columns=function() {
                                 "Make columns specification for tree"
+                                ## called in gtree constructor
                                 df <- call_offspring("",character(0))
                                 df <- df[,-(1:3)] # drop first 3
                                 nms <- names(df)
@@ -506,36 +517,6 @@ GWidgetTreeProxy <- setRefClass("GWidgetTreeProxy",
                                          }))
                                 String(sprintf("[%s]", paste(out, collapse=",")))
                               },
-                              get_json_data_old = function(node, sort, ...) {
-                                "return JSON to be read by treeloader"
-                                ## XXX modify for grid
-                                if(!is.null(node)) {
-                                  ## check if JSON data
-                                  ochildren <- children <- offspring(, offspring.data)
-                                  m <- nrow(children)
-                                  out <- "[]" # m == 0
-                                  if(m > 0) {
-                                    ## XX get icon, more than 1 row?
-                                    ## append id, then pad
-                                    children[,1] <- sprintf("%s:%s", node, gsub(":","_",children[,1]))
-                                    if(ncol(children) == 1)
-                                      children[,2] <- rep(FALSE, m)
-                                    if(ncol(children) == 2)
-                                      children[,3] <- rep(NA, m)
-                                    if(ncol(children) == 3)
-                                      children[,4] <- children[,1]
-                                    if(ncol(children) == 4)
-                                      children[,5] <- rep(NA, m)
-                                    ## these match config options for a Ext.tree.TreeNode
-                                    names(children) <- c("id","leaf","iconCls", "value", "qtip")
-                                    children$iconCls <- sapply(children$iconCls, getStockIconByName, css=TRUE)
-                                    
-                                    res <- sapply(seq_len(m), function(i) toJSObject(children[i,]))
-                                    out <- sprintf("[%s]", paste(res, collapse=","))
-                                  }
-                                }
-                                return(out)
-                              },
                               make_fields=function() {
                                 ## used to define model
                                 df <- call_offspring("",character(0))
@@ -543,124 +524,8 @@ GWidgetTreeProxy <- setRefClass("GWidgetTreeProxy",
                               }
                             ))
 
-## Stores are provided when a reader is needed between the component and the proxy.
-## Set up in Ext4: store has a proxy, there are also models, readers and more
-                            
-##' Basic store, no default proxy so this isn't useful without being subclassed
-GWidgetStore <- setRefClass("GWidgetStore",
-                        contains="GWidget",
-                        fields=list(
-                          proxy="GWidgetProxy"
-                          ),
-                        methods=list(
-                          init = function(value, ...) {
-                            "Initialize proxy, then set up store"
-                            proxy <<- GWidgetProxy$new(toplevel)
-                            proxy$init(value, ...)
-                            ## ? need to write out store code here...
 
-                            
-                          },
 
-                          get_data = function(...) {
-                            "Get data in store"
-                            proxy$get_data(...)
-                          },
-                          set_data = function(value, ...) {
-                            "Set data for store"
-                            proxy$set_data(value, ...)
-                          },
-                          model_id=function() {
-                            sprintf("%s_model", get_id())
-                          },
-                          write_model=function() {
-                            "Write out model"
-                            cmd <- sprintf("Ext.define('%s',{extend: Ext.data.Model,fields:%s});",
-                                           model_id(), proxy$get_fields())
-                            add_js_queue(cmd)
-                          }
-                          )
-                        )
-
-##' A store for an array (inbetween widget and proxy)
-GWidgetArrayStore <- setRefClass("GWidgetArrayStore",
-                         contains="GWidgetStore",
-                         fields=list(
-                           proxy="GWidgetArrayProxy",
-                           page_size = "numeric",
-                           paging = "logical"
-                           ),
-                         methods=list(
-                           init = function(df, paging=FALSE, page.size=200, extra_args=list(), object_data=FALSE, ...) {
-                             if(missing(df))
-                               df <- data.frame(name=character(0), stringsAsFactors=FALSE)
-
-                             paging <<- as.logical(paging)
-                             page_size <<- as.integer(page.size)
-                             proxy <<- GWidgetArrayProxy$new(toplevel, page.size=page.size, object_data=object_data)
-                             col.widths <- getFromDots("col.widths", ..., default=NULL)
-                             proxy$init(df, col.widths)
-                             
-
-                             constructor <<- "Ext.data.ArrayStore"
-                             arg_list <- list(
-                                              
-                                              pageSize=page_size,
-                                              proxy = String(.self$proxy$get_id())
-                                              ,autoLoad=FALSE
-                                              ,storeId=get_id()
-                                              ,idIndex= 0
-                                          #    ,fields=String(.self$proxy$get_fields())
-                                              ##
-                                              ,model=String(model_id())
-                                              ,buffered=TRUE
-                                              ,autoSync=TRUE
-                                           )
-
-                             
-                             
-#                             arg_list <- merge(arg_list, extra_args)
-                             add_args(arg_list)
-
-                             write_model()
-                             write_constructor()
-
-                             add_public_method("set_record")
-                             
-#                             cmd <- paste(sprintf("%s.on('beforeload', function(store, options) {", get_id()),
-#                                          sprintf("Ext.apply(options.params, {id:'%s', session_id:session_id});",
-#                                                  proxy$get_id()),
-#                                          "});",
-#                                          sep="")
-#                             add_js_queue(cmd)
-                           },
-                           write_model=function() {
-                             "Write out model"
-                             cmd <- sprintf("Ext.define('%s',{extend: Ext.data.Model,fields:%s});",
-                                            model_id(), proxy$get_fields())
-                             add_js_queue(cmd)
-                           },
-                           load_data=function() {
-                             if(paging)
-                               cmd <- sprintf("%s.load({params:{start:0, limit: %s, session_id:session_id, id:'%s'}, add:false, callback:function() {}});",
-                                              get_id(), page_size, proxy$get_id())
-                             else
-                               cmd <- sprintf("%s.load({params:{session_id:session_id, id:'%s'}, add:false, callback:function() {}});",
-                                              get_id(), proxy$get_id())
-                             add_js_queue(cmd)
-                           },
-                           set_record=function(rec) {
-                             "Set the record?"
-                             ### XXX is this used?
-                           },
-                           get_visible=function(...) {
-                             proxy$get_visible(...)
-                           },
-                           set_visible=function(value, ...) {
-                             proxy$set_visible(value, ...)
-                           }
-                           )
-                         )
 
 
 ## Helper Functions to makeFields.
@@ -750,6 +615,119 @@ makeFields <- function(df) {
   return(out)
 }
 
+
+##################################################
+## Stores
+##
+                            
+##' Basic store, no default proxy so this isn't useful without being subclassed
+GWidgetStore <- setRefClass("GWidgetStore",
+                        contains="GWidget",
+                        fields=list(
+                          proxy="ANY"
+                          ),
+                        methods=list(
+                          init = function(value, ...) {
+                            "Initialize proxy, then set up store"
+                            proxy <<- GWidgetProxy$new(toplevel)
+                            proxy$init(value, ...)
+                            ## ? need to write out store code here...
+
+                            
+                          },
+
+                          get_data = function(...) {
+                            "Get data in store"
+                            proxy$get_data(...)
+                          },
+                          set_data = function(value, ...) {
+                            "Set data for store"
+                            proxy$set_data(value, ...)
+                          },
+                          model_id=function() {
+                            sprintf("%s_model", get_id())
+                          },
+                          write_model=function() {
+                            "Write out model"
+                            cmd <- sprintf("Ext.define('%s',{extend: Ext.data.Model,fields:%s});",
+                                           model_id(), proxy$get_fields())
+                            add_js_queue(cmd)
+                          }
+                          )
+                        )
+
+##' A store for an array (inbetween widget and proxy)
+GWidgetArrayStore <- setRefClass("GWidgetArrayStore",
+                         contains="GWidgetStore",
+                         fields=list(
+                           page_size = "numeric",
+                           paging = "logical"
+                           ),
+                         methods=list(
+                           init = function(df, paging=FALSE, page.size=200, extra_args=list(),  ...) {
+                             if(missing(df))
+                               df <- data.frame(name=character(0), stringsAsFactors=FALSE)
+
+                             paging <<- as.logical(paging)
+                             page_size <<- as.integer(page.size)
+                             proxy <<- GWidgetArrayProxy$new(toplevel)
+                             col.widths <- getFromDots("col.widths", ..., default=NULL)
+                             proxy$init(df, col.widths)
+                             
+
+                             constructor <<- "Ext.data.ArrayStore"
+                             arg_list <- list(
+                                              
+                                              pageSize=page_size,
+                                              proxy = String(.self$proxy$get_id())
+                                              ,autoLoad=FALSE
+                                              ,storeId=get_id()
+                                              ,idIndex= 0
+                                              ##
+                                              ,model=String(model_id())
+                                              ,buffered=TRUE
+                                              ,autoSync=TRUE
+                                           )
+
+                             
+                             
+                             arg_list <- merge(arg_list, extra_args)
+                             add_args(arg_list)
+
+                             write_model()
+                             write_constructor()
+
+                             
+#                             cmd <- paste(sprintf("%s.on('beforeload', function(store, options) {", get_id()),
+#                                          sprintf("Ext.apply(options.params, {id:'%s', session_id:session_id});",
+#                                                  proxy$get_id()),
+#                                          "});",
+#                                          sep="")
+#                             add_js_queue(cmd)
+                           },
+                           write_model=function() {
+                             "Write out model"
+                             cmd <- sprintf("Ext.define('%s',{extend: Ext.data.Model,fields:%s});",
+                                            model_id(), proxy$get_fields())
+                             add_js_queue(cmd)
+                           },
+                           load_data=function() {
+                             if(paging)
+                               cmd <- sprintf("%s.load({params:{start:0, limit: %s, session_id:session_id, id:'%s'}, add:false, callback:function() {}});",
+                                              get_id(), page_size, proxy$get_id())
+                             else
+                               cmd <- sprintf("%s.load({params:{session_id:session_id, id:'%s'}, add:false, callback:function() {}});",
+                                              get_id(), proxy$get_id())
+                             add_js_queue(cmd)
+                           },
+                           get_visible=function(...) {
+                             proxy$get_visible(...)
+                           },
+                           set_visible=function(value, ...) {
+                             proxy$set_visible(value, ...)
+                           }
+                           )
+                         )
 
 
 

@@ -75,7 +75,7 @@
   \code{where} and a numeric \code{dimension}.
 }
 \examples{
-w <- gwindow("dialogs")
+w <- gwindow("border layout")
 #
 bl <- gborderlayout(cont=w,
 title=list(center="State facts (state.x77)", west="Select a state"),
