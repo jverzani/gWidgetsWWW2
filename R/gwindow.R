@@ -69,7 +69,7 @@ gwindow <- function(title="",
     if(exists(".gWidgets_toplevel", inherits=TRUE)) {
       toplevel <- get(".gWidgets_toplevel", inherits=TRUE)
     } else {
-      cat("DEBUG only\n")
+      message("DEBUG only\n")
       toplevel <- GWidgetsTopLevel$new()
     }
     w <- GWindow$new(toplevel=toplevel)

@@ -6,11 +6,7 @@
 
 \usepackage{times}              % for fonts
 \usepackage[]{geometry}
-\usepackage{mathptm}            % for math fonts type 1
 \usepackage{graphicx}           % for graphics files
-%%\usepackage{floatflt}           % for ``floating boxes''
-%%\usepackage{index}
-\usepackage{relsize}            % for relative size fonts
 \usepackage{amsmath}            % for amslatex stuff
 \usepackage{amsfonts}           % for amsfonts
 \usepackage{url}                % for \url,
@@ -18,21 +14,6 @@
 \usepackage{color}
 \usepackage{fancyvrb}
 \usepackage{fancyhdr}
-%%\usepackage{jvfloatstyle}       % redefine float.sty for my style. Hack
-
-
-%% squeeze in stuff
-%%\floatstyle{jvstyle}
-%%\restylefloat{table}
-%%\restylefloat{figure}
-%%\renewcommand\floatpagefraction{.9}
-\renewcommand\topfraction{.9}
-\renewcommand\bottomfraction{.9}
-\renewcommand\textfraction{.1}
-\setcounter{totalnumber}{50}
-\setcounter{topnumber}{50}
-\setcounter{bottomnumber}{50}
-
 %% Fill these in
 \pagestyle{fancy}
 \usepackage{fancyhdr}
@@ -50,82 +31,40 @@
 %% My abbreviations
 \newcommand{\pkg}[1]{\textbf{#1}}
 \newcommand{\code}[1]{\texttt{#1}}
-\newcommand{\RFunc}[1]{\code{#1}} %% no ()
-\newcommand{\RArg}[1]{\code{#1=}}
-\newcommand{\RListel}[1]{\code{\$#1}}
-\newcommand{\R}{\texttt{R}}
+\newcommand{\proglang}[1]{\code{#1}}
+\newcommand{\R}{\proglang{R}}
 
-\newenvironment{RArgs}{\begin{list}{}{}}{\end{list}}
+\newenvironment{rargs}{\begin{list}{}{}}{\end{list}}
 
 
 \begin{document}
 \thispagestyle{plain}
-\title{gWidgetsWWW}
+\title{gwidgetswww2}
 
-\author{John Verzani, \url{gWidgets@gmail.com}}
-\maketitle
+\author{John Verzani, \url{jverzani@gmail.com}}
 
 %% Sweave stuff
 \SweaveOpts{keep.source=TRUE}
 
 
-** TODO
--- gwindow update layout
-
--- difference
-* fonts -- use HTML
-* 
-
--- new widgets
-** gborderlayout, gstackwidget,
-** gpanel
-** gcanvas, gsvg, ghtml,
-
-
--- JavaScript addons
-** gpanel
-** json_rpc_server
-
--- w thingies
-** w\$toplevel
-** w\$toplevel\$the\_request
-** w\$listen()
-** w\$add\_js\_queue
-** w\$set\_cookie
-** w\$show\_load\_mask
-** w\$hide\_load\_mask
-<<>>=
-require(gWidgetsWWW2)
-w <- gwindow("Cookies")
-g <- ggroup(cont=w)
-
-w$set_cookie("one", "two")
-
-b <- gbutton("click me", cont=g, handler=function(h,...) {
-  print(b$get_cookies()) ## cookies at time of page initiation, so won't include "one" first time
-})
-
-@ 
--- debugging
-
--- what it does -- fill in parts of a brew template
-
 
 
 \section*{Abstract:}
-The \pkg{gWidgets} package provides a programming interface to write
-graphical user interfaces from within R. The API trades off power for
-relative simplicity and has proven useful for writing small to
-moderately complicated GUIs. This package \pkg{gWidgetsWWW2}
-implements much of the API for programming GUIs for the web. It uses
-the Ext JS JavaScript libraries (\url{(www.sencha.com}) to provide the
-toolkit and the \pkg{Rook} package of Jeffrey Horner to integrate with
-\R's local web server or \pkg{rapache}, for serving page to a public
-audience.
+The \pkg{gWidgets} package provides a programming interface (an API)
+to write graphical user interfaces from within R. The API trades off
+power for relative simplicity and has proven useful for writing small
+to moderately complicated GUIs. The \pkg{gWidgetsWWW2} package
+(\url{https://github.com/jverzani/gWidgetsWWW2}) implements much of
+the API for programming GUIs for the web. It uses the Ext JS
+JavaScript libraries (\url{(www.sencha.com}) to provide the toolkit
+and the \pkg{Rook} package of Jeffrey Horner to integrate with \R's
+local web server. The \code{nginx} web proxy can be used to serve
+pages to a public audience.
 
 As the name suggests, this is the second version of the
-implementation. This one uses \R's reference classes internally,
-although the programmer never need know this.
+implementation. This one uses the newer Ext JS 4.1 libraries and
+internally  uses \R's reference classes -- not the \pkg{proto} package
+-- to provide mutable objects.
 
 %\setcounter{tocdepth}{3}
 %\tableofcontents
@@ -134,111 +73,227 @@ although the programmer never need know this.
 
 A modern set of web tools includes three primary domains: HTML for
 markup of the text, CSS for the layout of the page, and JavaScript to
-manipulate the page. This package requires none of these, as it
-leverages a popular javascript library (ext from \url{www.sencha.com})
-to provide a consistent look (the CSS part) and the javascript interactivity. As the
-pages are not centered around displaying content, but rather
-interactive controls, there is no need for HTML knowledge. However, if
-desired, the package can be used to integrate in with an existing web
-page.
+manipulate the page. In addition, often there is a back end language,
+such as \proglang{python}, for server-side programming. The combined
+set of pre-requisites can be daunting, though clearly many have
+succeeded in mastering them. The goal of this package is for the R
+programmer to avoid nearly all of these considerations, yet still be
+able to produce interactive web sites powered by \R.
+
+This package leverages a popular javascript library (ext from
+\url{www.sencha.com}) to provide a consistent look (the CSS part) and
+the javascript interactivity. \R\/ is used for the ``server-side''
+programming, and \R's internal web server is used for serving pages,
+through the \pkg{Rook} package of Jeffrey Horner.
+
+The primary contribution of the package is a) a means to create
+JavaScript from \R\/ code (from the \pkg{gWidgets} API) and b) a means
+to easily incorporate this into a web page.  These web pages are not
+centered around displaying content, but rather for creating
+interactive controls. However, if desired, the package can be used to
+integrate in with an existing web page, such as those provided through
+\pkg{brew} templates.
 
 To make a GUI in \pkg{gWidgets} requires two steps: writing a script
-and calling that script.
+and calling that script within some web page.
 
-A simple script could look like:
-\begin{Sinput}
+<<echo=FALSE, results=hide>>=
+require("gWidgetsWWW2")
+suppressMessages(gwindow())
+@ 
+
+A simple script creating an interactive GUI could be as simple as:
+<<>>=
 w <- gwindow("simple GUI with one button", visible=FALSE)
 g <- ggroup(cont = w)
 b <- gbutton("click me", cont = g, handler = function(h,...) {
   gmessage("hello world", parent = b)
 })
-visible(w) <- TRUE
-\end{Sinput}
+@ 
+%%
+(Though you'd be unimpressed with the layout of the widgets.)
 
-The script can be run through a specific URL which is created when the
-\code{load\_app} command is executed. For example, if the script above
-is stored as \code{hello.R}, then this call will open the page:
-<<eval=FALSE>>=
-load_app("hello.R", app_name="HelloApp")
+
+
+If called correctly, the package translates these commands into
+JavaScript commands to manipulate a web page:
+
+<<>>=
+out <- w$dump()
+head(out)
 @ 
 
 
-GUIs made with gWidgetsWWW are not as snappy as other web GUIs. The
-main reason for this is the fact that callbacks to manipulate the page
-are sent back into R (the server) and then returned. In many GUIs,
-this is avoided by using javascript directly on the web page. The
-clear tradeoff is ease of programming for the R user (R not
-javascript) versus speed for the user.
 
 
-The package provides some documentation of its main functions. The
-\pkg{gWidgets} package has more, but there are many additional
-\pkg{gWidgetsWWW2} specific arguments to the constructors, so the
-package documentation needs to be looked at.
+%% view a web page
+The easiest way to see this webpage is to run the script through a
+specific URL which is created when the \code{load\_app} command is
+executed. For example, if the script above is stored as
+\code{hello.R}, then this call will open the page and load the url
+\url{http://127.0.01:PORT/custom/HelloApp/indexgw.rhtml}:
+
+<<eval=FALSE>>=
+load_app("hello.R", app_name="HelloApp")
+@ 
+%%
+Other means to incorporate this into a web page are possible, but
+require additional work.
+
+%% handlers
+Not only does the GUI get constructed, the package provides a means
+to callback into the \R\/ process from the web server to further
+manipulate the page. The ``handler'' in the definition of the button,
+\code{b} above, is called through an AJAX call when the button is
+pressed. In this case, the \code{gmessage} call produces additional
+JavaScript that causes a modal message dialog to be produced. The
+handlers are written in R -- not JavaScript. This makes them easier to
+write, but slower to process, as their use requires a round trip to
+the server from the web page. This process of communication between
+client and server happens more often than this, as the state of the
+GUI is synchronized with the \R{} process, as changes are made.
+
+
+
+Documentation for the package is provided in help pages, but the main
+\pkg{gWidgets} API is better documented in that package. (Though that
+package is not a dependency and should not be loaded, as this package
+is a stand alone implementation.) There are numerous package-specific
+features beyond the basic \pkg{gWidgets} API. Mostly these are
+implemented as reference-class methods and are documented with the
+contstructors.
+
+The documentation provides a few basic uses, more complicated examples
+are provided through the \code{demo}.
 
 \section{Top level windows}
 
-Web GUIs are different than desktop GUIs. Not only are they slower, as
-they have lag time between the GUI and the server, there can only be
-one top-level window. This is a \code{gwindow} instance called without
-a \code{parent} argument.
+Web GUIs with \pkg{gWidgetsWWW2} are different than desktop GUIs. Not
+only are they slower, as they have lag time between the GUI and the
+server, there can only be one top-level window. This is a
+\code{gwindow} instance called without a \code{parent} argument.
   
 Other \code{gwindow} instances are either a) subwindows (appearing as
 a separate window) if the argument \code{renderTo} is not specified of
 b) rendered to the DOM element with id specified by
-\code{renderTo}. The latter allows \pkg{gWidgetsWWW2} to integrate
-with other web pages. Within a page, leave a tag, such as
-\verb+<div id="some_id"></div>+ and then pass the argument
-\code{renderTo="some\_id"} to the constructor. The \code{ex-multiple}
-example demonstrates.
-  
+\code{renderTo}.~\footnote{The latter allows \pkg{gWidgetsWWW2} to
+  integrate with other web pages. Within a page, leave a \code{div}
+  tag with an id \code{some\_id}, say, and then pass the argument
+  \code{renderTo="some\_id"} to the constructor. The
+  \code{ex-multiple} example demonstrates.  }
 
-
+Common to all windows (and child widgets) is a single instance of the
+\code{GWidgetsTopLevel} class. In order to share this, each widget
+constructor requires a specification of the widget heirarchy through a
+parent container (with the \code{container}) or if the widget is not
+in the heirarchy, a \code{parent} argument. This toplevel instance is
+stores references to each created object, process the outgoing
+JavaScript queue, and is used to route incoming callback requests. The
+callbacks are all evaluated within an enviroment that is also stored
+within the toplevel object.  As the toplevel instance is created each
+time a page is loaded, this evaluation environment is not persistent.
 
 
 
 \section{The containers}
 \label{sec:containers}
 
-The \pkg{gWidgetsWWW} package has all the following containers the
-top-level container \code{gwindow}, subwindows also constructed
-through \code{gwindow} (use a parent object); the box
-containers\code{ggroup}, \code{gframe} and \code{gexpandgroup}; the
-tabular layout container \code{glayout}; the notebook container
-\code{gnotebook}, and \code{gpanedgroup}.
+%% basic gWidgets containers
+The \pkg{gWidgetsWWW2} package implements the basic widgets of the
+\pkg{gWidgets} APIL:
+\begin{itemize}
+\item the top-level container \code{gwindow} and subwindows
+also constructed through \code{gwindow} (use a parent argument);
+\item the box containers\code{ggroup}, \code{gframe} and \code{gexpandgroup};
+\item tabular layout container \code{glayout};
+\item the notebook container \code{gnotebook};
+\item the split-window container \code{gpanedgroup}.
+\end{itemize}
 
-To make a component appear in response to some action -- such as
-happens with gexpandgroup, one can add it to a box container
-dynamically. Or one can put it in a \code{ggroup} instance and toggle
-that containers visibility with the \code{visible} method, in a manner
-identical to how \code{gexpandgroup} is used.
+In addition to these, the \code{ExtJS} libraries make it easy to
+provides some other containers:
+\begin{description}
+\item[gstackwidget] This widget is similar to a notebook container,
+  but without the tabs. It is part of the the \pkg{gWidgets2} API
+  (\url{https://github.com/jverzani/gWidgets2}). It is useful here, as
+  each new page load creates its own unique evaluation environment, so
+  page loads do not share global variables. To work around this, one
+  can use this widget to flip between ``pages.''
+\item[gborderlayout] A common web-layout is a ``border'' layout with 5
+  areas to place components: a ``center'', and 4 satellites: north,
+  south, east and west. As with \code{gexpandgroup}, a user can resize
+  the space allocated to each area.
+\item[gpanel] The gpanel widget is a container for other JavaScript
+  libraries. Basically it creates a \code{DIV} tag, which can be
+  overwritten by external JavaScript calls. An example shows how the
+  \code{d3} JavaScript libraries
+  (\url{http://mbostock.github.com/d3/}) can be incorporated.
+\end{description}
 
-The containers in \pkg{gWidgetsWWW} may need to have their sizes fixed
-to have them render as desired. The constructors have arguments
-\code{width} and \code{height} for specifying the initial width and
-height. These take values in numbers of pixels, or the character
-string \code{"auto"}, for automatic sizing by the layout mechanism of ExtJS.
+%% dynamic
+As with \pkg{gWidgets}, child components can be added and deleted from
+parent containers dynamically. The \code{gexpandgroup} widget can be
+used to hide or disclose parts of GUI.
+
+%% box containers
+The size of containers in \pkg{gWidgetsWWW2} is different from other
+\pkg{gWidgets} implementations. When used to produce a stand-alone app
+(the basic usage), the top-level window takes up the entire web
+browser screen. Its child component will is allocated this entire
+space. Box containers have the property (similar to \pkg{RGtk2}) that
+child components expand to fill the space orthogonal to the direction
+of packing (vertical boxes and child components that take up the
+maximum horizontal space). Thus in the simple ``hello world'' example,
+the horizontal box container fills the entire page, and the button
+stretches vertically to fill that space -- a really tall button. A
+common use then is to use nested containers with different packing directions:
+<<>>=
+w <- gwindow("simple GUI with one button", visible=FALSE)
+g <- ggroup(cont = w, horizontal=FALSE, use.scrollwindow=TRUE)
+button_group <- ggroup(cont=g, horizontal=TRUE) ## opposite to g
+b <- gbutton("click me", cont = button_group, handler = function(h,...) {
+  gmessage("hello world", parent = b)
+})
+@ 
+%%
+The \code{use.scrollwindow=TRUE} call will allow the GUI to be larger
+than the allocated screen space, often a useful thing.
+
+
+Containers also have the odd property, that they may have no
+dimension allocated to them, despite having children. You may need to
+specify a height or width.  In \pkg{gWidgetsWWW2} the constructors all
+have arguments \code{width} and \code{height} for specifying the
+initial width and height. These take values in numbers of pixels. The
+\code{size} assignment method can also take values in percentages of
+allowed space, as in \code{100\%}.
+
+
 
 \section{The widgets}
 \label{sec:what-works}
 
-Most -- but not all -- of the standard widgets work as expected. This
-includes labels (\code{glabel}), buttons (\code{gbutton}), radio
-buttons (\code{gradio}), checkboxes (\code{gcheckbox},
-\code{gcheckboxgroup}), comboboxes (\code{gcombobox}), sliders
-(\code{gslider}), spinboxes (well kind of) (\code{gspinbutton}),
-single-line edit boxes (\code{gedit}), multi-line text areas
-(\code{gtext}), dataframe viewers (\code{gtable}) and editors
-(\code{gdf}), images (\code{gimage} -- the image is a url), menu bars
-(\code{gmenu} -- but not toolbars), and statusbars (\code{gstatusbar}).
+The standard widgets of \pkg{gWidgets} are implemented:
+\begin{itemize}
+\item Buttons and labels with \code{gbutton} and \code{glabel};
+\item The widgets to select from a vector of values:
+  \code{gcheckbox}, \code{gcheckboxgroup}, \code{gradio}, \code{gcomobox};
+\item The widgets to select from a range of values: \code{gslider} and \code{gspinbutton};
+\item The text widgets \code{gedit}, for single-line edit boxes and
+  \code{gtext}, for multi-line text areas;
+\item The table selection widget \code{gtable};
+\item The tree widget \code{gtree}
+\item The data frame editor \code{gdf};
+\item Images can be viewd through \code{gimage} -- the image is a url
+\item menu bars but not toolbars with \code{gmenu} and statusbars
+  (\code{gstatusbar});
+\item File uploads can be incorporated through \code{gfile}.
+\end{itemize}
 
-The dialogs (except \code{gbasicdialog}) are implemented. Just use a subwindow for that functionality.
 
-The widgets \code{galert}, \code{ghtml} and \code{gaction} are all
-implemented.
-
-The \code{gtree} widget is implemented, but only has one column for
-display -- not a grid.
+The basic dialogs are implemented except \code{gbasicdialog}). These
+include \code{galert}, \code{gmessage}, \code{ginput}, and
+\code{gcalendar}.  All require a \code{parent} argument.
 
 
 No attempt has been made to include the compound widgets
@@ -247,6 +302,17 @@ No attempt has been made to include the compound widgets
 
 The \code{ghelp} constructor is not provided. The \pkg{helpr} package
 is very useful for that.
+
+In addition to the above, the package has other widgets. In addition
+to the different widgets for graphics described below, there is:
+\begin{description}
+\item[\code{ghtml}] A widget for displaying HTML either specified as a
+  string or as a URL.
+\item[\code{ggooglemaps}] A widget for displaying google maps,
+  described below.
+\end{description}
+
+
 
 
 \subsection{graphics}
@@ -266,27 +332,133 @@ Both the last two require both a file and a url, the file to write to,
 the url to use by the browser. If the file is created by
 \code{get\_tempfile} the details are implemented by the widget.
 
-The \code{gcanvas} device is used like a non-interactive device (open
-the device, create the graphic, call \code{dev.off()}). The widget it
-provides responds to mouse clicks through a handler specified with
-\code{addHandlerClicked}. The ``h'' argument is a list with additional
-components \code{x} and \code{y} (containing the ndc coordinates of
-the point with $(0,0)$ being the lower left corner) and \code{X} and
-\code{Y} (containing the pixel coordinates of the click, with $(0,0)$
-being the upper left corner. The \code{x} and \code{y} values can be
-converted into \code{user} coordinates through \code{grconvertXY}, but
-there is a catch -- the device needs to be reopened with the same
-dimensions, as that information is lost when the device is closed. See
-the example \code{ex-gcanvas} for an illustration.
+The \code{canvas} device is used like a non-interactive device (open
+the device, create the graphic, call \code{dev.off()}). For example,
+<<Canvas-usage>>=
+w <- gwindow("Display a graphic with canvas")
+width <- height <- 400
+## make graphic
+f <- tempfile()
+canvas(f, width=width, height=height)
+hist(rnorm(100))
+dev.off()
+## display graphic
+g <- ggroup(cont = w, horizontal=FALSE)
+gcanvas(f, width=width, height=height, container=g)
+@ 
+%%
+The \code{gsvg} widget is similar, though one uses a file that can be
+served as a url, so replace \code{tempfile} with the package-provided
+\code{get\_tempfile}, as with \code{get\_tempfile(ext='.svg')}. The
+advantage of \code{svg} graphics is they scale to fill the space of
+their container, unlike the canvas object.
+
+
+The \code{gcanvas} device allows access to HTML5's underlying canvas
+tag methods, allowing one to manipulate objects in the widget.  The
+widget itself can responds to mouse clicks through a handler specified
+with \code{addHandlerClicked}. The ``h'' argument is a list with
+additional components \code{x} and \code{y} (containing the ndc
+coordinates of the point with $(0,0)$ being the lower left corner) and
+\code{X} and \code{Y} (containing the pixel coordinates of the click,
+with $(0,0)$ being the upper left corner. The \code{x} and \code{y}
+values can be converted into \code{user} coordinates through
+\code{grconvertXY}, but there is a catch -- the device needs to be
+reopened with the same dimensions, as that information is lost when
+the device is closed. See the example \code{ex-gcanvas} for an
+illustration.
 
 
 \subsection{ggooglemaps}
 \label{sec:ggooglemaps}
 
 The \code{ggooglemaps} widget provides access to a sliver of the
-google maps API.  The \code{load\_app} method has an argument to
-indicate this will be used, as otherwise the google libraries need not
-be loaded.
+google maps API. See the help page for an illustration.
+
+
+
+\subsection{Data persistence}
+\label{sec:data-persistence}
+
+AJAX technologies are used to prevent a page load every time a request
+is made of the server, but each time a page is loaded a new R session
+is loaded. Any variables stored in a previous are forgotten. To keep
+data persistent across pages, one can load and write data to a file or
+a data base.
+
+The \code{JsonRPCServer} class provides an alternative. This allows
+the web page to call back into objects in the \R\/ processes global
+workspace by method name. The help page for \code{json\_rpc\_server}
+shows how this can be used for a page counter.
+
+
+
+\section{Additional details}
+\label{sec:additional-details}
+
+
+There are several places where additional methods are provided by
+reference class methods beyond the basic \pkg{gWidgets} API.
+
+To step back, each constructor produces an instance of some reference
+class. These instances have their own methods defined for them. The
+\pkg{gWidgets} API simply dispatches to the appropriately named
+method. (For example, \code{svalue} looks for \code{get\_value} and
+\code{get\_index}, whereas
+the assignment method looks for \code{set\_value} or
+\code{set\_index}.) Reference class methods are called using \R's
+object oriented notation.
+
+%% toplevel things
+
+\subsection{Toplevel object}
+\label{sec:toplevel-object}
+
+
+The toplevel object is stored in the \code{toplevel} property of the
+objects and can be accessed as follows:
+<<eval=FALSE>>=
+w$toplevel
+@ 
+%%
+This is shared among the objects:
+<<>>=
+identical(w$toplevel, g$toplevel)
+@ 
+
+The \code{toplevel} instance holds a reference to the request that
+made the page. This can be useful to get script information (not
+useful here though, as Sweave isn't calling as Rook does):
+<<eval=FALSE>>=
+w$toplevel$the_request$path_info()
+@ 
+
+\subsection{The toplevel window}
+\label{sec:toplevel-window}
+
+
+The toplevel object holds a queue of JavaScript commands to send back
+to the browser. One can add to this queue, if desired. For
+convenience, each component has the method \code{add\_js\_queue} to do
+so. One specifies a string of JavaScript to passback, for example:
+<<>>=
+w$add_js_queue("alert('hello world');")
+@ 
+
+Now when the page makes a request for the server, this will also be
+passed back.
+
+By design, the server only responds to requests from the clients. One
+can not push server requests to clients (as can be done with web
+sockets). If such a thing is desired, the top-level window has the
+method \code{start\_comet} which causes the page to poll the server
+periodically, and not just in an event-driven manner.
+
+The toplevel window can be used to get and set cookies. The methods
+\code{cookies} returns the cookies available when the page is created,
+the method \code{set\_cookie} can set a cookie. (A cookie set with
+\code{set\_cookie} will not appear in the \code{cookies} list, as
+these are from when the page is created.)
 
 
 \subsection{Ext}
@@ -309,51 +481,28 @@ the widget. (As will the call \code{visible(b) = FALSE}, in this
 example.). The method \code{ext\_apply} will merge configuration
 values from list.
 
-The method \code{add\_js\_queue} allows one to pass arbitrary
-JavaScript calls to the browser. This queue is flushed when the client
-browser makes a request of the server, such as when a callback is
-being processed.
 
-\subsection{Data persistence}
-\label{sec:data-persistence}
+\subsection{Debugging}
+\label{sec:debugging}
 
-AJAX technologies are used to prevent a page load every time a request
-is made of the server, but each time a page is loaded a new R session
-is loaded. Any variables stored in a previous are forgotten. To keep
-data persistent across pages, one can load and write data to a file or
-a data base.
-
-
-
-
-\subsection{Quirks}
-\label{sec:quirks}
-
-A number of little quirks are present, that are not present with other \pkg{gWidgets} implementations:
+Finding bugs can be tedious, as they can appear in different places:
 \begin{description}
-\item[Top-level windows] There can be only one top-level window (one
-  without a parent container).
-\item[Data transport] The interface between the browser and R is
-  one-way only. There is (currently) no means for the R process to
-  query the state of the browser. As such, to synchronize, an AJAX
-  call is made back to the R process when each widget is updated. We
-  call this \code{transport} and for the most part it works as
-  expected. There are times where it gets confused.
-\item[Environment of handlers] Each page is loaded in a different
-  environment, so as not to interfere with th
-  e users workspace. This
-  environment is created when the page is loaded and persists until it
-  is closed.
-\item[Debugging woes] Debugging can be tough as the R session is not readily
-  available. The error messages in the browser are useful. For
-  development of the package the firebug (\url{getfirebug.com}) add on
-  to FireFox has proven very useful. Alternatively, it can be helpful
-  to source in the script at the command line to see if there are errors.
-\item[\code{sapply}] If one calls \code{sapply} and returns widgets
-  and error will occur. This is due to the \code{length} method of the
-  widget interfering with the base \code{length} function in the call
-  to \code{simplify2array}. To work around that use \code{lapply}.
+\item[R issues] Issues with R code can be detected b trying to run the
+  script at the R console (\code{source}, say). One can also run the
+  script locally, and see if any errors are logged at the console.
+\item[JavaScript issuse] These are more subtle. Most browsers have
+  some JavaScript debugging tools built in, or easily added (e.g.,
+  firebug for Mozilla). The debugger for Chrome allows one to see what
+  is requested and what the response is. 
 \end{description}
+It is important to realize that just looking at the source will not
+help. The source for a script loaded with \code{load\_app} simply
+loads some external packages and then issues a call to populate the
+page. This call does not appear in the page source, but rather is a
+response to an AJAX request. The JavaScript debugger can show you this.
+
+
+
 
 
 
@@ -361,10 +510,42 @@ A number of little quirks are present, that are not present with other \pkg{gWid
 \section{Installation}
 The local usage is configured when the package is installed. After
 installation typing \code{demo(gWidgetsWWW2)} should open a page
-allowing the examples to be run.
+allowing the examples to be run. The \code{load\_app} function can be
+used to turn a script into a web page.
 
-At this point the package needs to be intergrated in with
-\pkg{rapache} to serve pages to the public.
+\subsection{Serving pages on the internet}
+\label{sec:serving-pages}
+
+
+At this point the package can be intergrated in with
+\pkg{nginx}, say, to serve pages to the public. The \pkg{nginx} web
+server is basically a proxy, routing requests to the underlying
+\pkg{Rook} process. 
+\begin{quotation}
+  \textbf{No claim is made that this is industrial grade}. For that,
+  use a real web-development stack. This should be able to handle
+  moderate usage, though there are many areas where scaling will just
+  plain fail.
+\end{quotation}
+
+A basic configuration for \pkg{nginx} simple reroutes calls to the
+Rook process. The \code{load\_app} call opens up port 9000 by default,
+so a configuration  in \code{nginx.conf} like:
+
+\begin{verbatim}
+location /custom { 
+  proxy_pass http://localhost:9000/custom; 
+}
+\end{verbatim}
+will route all urls \url{http://you.domain.com/custom/XXX} to the
+\code{Rook} process. Jeffrey Horner has more details in a gist at
+\url{https://gist.github.com/6d09536d871c1a648a84}.
+ 
+ 
+Each app enabled by \code{load\_app} has an option for an
+``\code{app\_name}'' and this maps to the URL:
+\url{http://you.domain.com/custom/app\_name/indexgw.rhtml}.
+
 
 
 % \section{Security}

@@ -283,6 +283,8 @@ JsonRPCObject <- setRefClass("JsonRPCObject",
                                  exported <<- c(exported, meth)
                                },
                                call_method=function(meth, lst) {
+                                 ## XXX This needs to have some process locking
+                                 ## implemented!!!
                                  lst <- as.list(lst)
                                  
                                  if(meth %in% exported) {
