@@ -1,4 +1,4 @@
-Port of gWidgets to the web
+** Port of gWidgets to the web **
 
 This package implements the `gWidgets` API for web
 programming. Primarily, the package turns the gWidgets commands into
@@ -8,7 +8,8 @@ environment for `JavaScript`. Of course, the `R` user need not know any
 `JavaScript`, or even any web technologies -- not even HTML. Basically,
 most simple gWidgets scripts will just work.
 
-== Example ==
+Example
+-------
 
 To use `gWidgetsWWW2`, one writes scripts to be executed by Rook.
 The basic "Hello World" app with a window, container, button and
@@ -40,7 +41,8 @@ default of 9000.
 The "hello" in the url matches that given by the `app_name` argument.
 
 
-== Installation ==
+Installation
+------------
 
 Installing the package from GitHub is made easy if the `devtools`
 package of H. Wickham is installed:
@@ -52,7 +54,8 @@ package of H. Wickham is installed:
 Otherwise, a) install git, b) clone the project c) use +R CMD
 INSTALL+, or some such to install from a local set of files.
 
-== Serving pages through a web server, nginx ==
+Serving pages through a web server, nginx
+-----------------------------------------
 
 The package uses the `Rook` package of J. Horner to serve web pages
 through `R`'s internal web server (for serving help pages). This can be
@@ -71,7 +74,8 @@ changed in the location directive. The above uses port 9000, the
 default. For more information on using nginx in front of Rook, see
 this post: https://gist.github.com/6d09536d871c1a648a84
 
-== Graphics ==
+Graphics
+--------
 
 There is no interactive graphic device, though one can use several
 non-interactive graphics devices, in particular: `canvas`, through the
