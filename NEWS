@@ -5,12 +5,15 @@ NEWS for gWidgetsWWW2
 Changes for 0.3
 -------------------
  
+* We use Ext-4.1-beta so that certain layouts work. A **major
+  drawback** is the fact that it doesn't work with IE! Oh well, try
+  chrome for now. When 4.1 is out of beta it should be back to normal
+
+* New widgets: gstackwidget, gpanel, gborderlayout, gcodemirror
+
 * Major changes to integrate in Ext-4.0.
 
-* Eventually this will merge into gWidgets2WWW (where we use gWidgets2
-  to set up the methods), but for now we stick with gWidgetsWWW2,
-  where the methods are defined in this package.
-
+* move to GitHub for development
 
 Changes for 0.1
 -------------------

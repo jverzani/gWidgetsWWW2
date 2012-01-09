@@ -1,4 +1,5 @@
-** Port of gWidgets to the web **
+Port of gWidgets to the web
+---------------------------
 
 This package implements the `gWidgets` API for web
 programming. Primarily, the package turns the gWidgets commands into
