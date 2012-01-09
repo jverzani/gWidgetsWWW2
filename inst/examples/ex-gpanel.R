@@ -29,7 +29,7 @@ pan$load_external(c(d3_url, d3_geo_url))
 ## template for d3_cmds. The only feature here is the use of #{{div_id}} for the
 ## d3.select method. This is filled in by whisker using pan$div_id().
 tpl <- '
-var us_states_json = {{json_data}}
+var us_states_json = {{json_data}};
 
 var path = d3.geo.path();
 
@@ -47,7 +47,10 @@ states.selectAll("path")
     .attr("d", path);
 '
 
-## states data comes from d3 example page
+## states data comes from d3 example page. Processed with:
+## x <- readLines("http://mbostock.github.com/d3/data/us-states.json")
+## x <- gsub('"', "'",x)
+## cat(paste(x, collapse="\n"), file="states.json")
 states_json <- readLines(system.file("ex_data","states.json", package="gWidgetsWWW2"))
 
 ## make the commands
