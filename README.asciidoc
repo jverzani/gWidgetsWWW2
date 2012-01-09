@@ -27,14 +27,15 @@ b <- gbutton("click me", cont=g, handler=function(h,...) {
 This script is turned into a web page through the +load_app+ function:
 
 .Loading an app
-[code,javascript]
+[code,python]
 ----
 require(gWidgetsWWW2)
 load_app("hello.R", app_name="hello")
 ----
 
 The app is then mapped to the url
-[code,javascript]
+
+[code,python]
 ----
 http://127.0.0.1:PORT/custom/hello/indexgw.rhtml
 ----
@@ -51,7 +52,7 @@ The "hello" in the url matches that given by the +app_name+ argument.
 Installing the package is made easy if the +devtools+ package of
 H. Wickham is installed:
 
-[code,javascript]
+[code,python]
 ----
 library(devtools)
 install_github("gWidgetsWWWW2", "jverzani")
@@ -91,7 +92,7 @@ example for the canvas device, which writes JavaScript to an HTML5
 canvas object in the web page:
 
 .Example of displaying R graphics through the +canvas+ device
-[code,javascript]
+[code,python]
 ----
 require(canvas) 
 w <- gwindow("Test")
