@@ -51,14 +51,14 @@ gslider <- function(from = 0, to = 100, by = 1, value = from,
   sl
 }
 
-##' base class for gslider
+##' \code{GSlider} is the base class for gslider
 ##'
 ##' The \code{GSlider} implementation allows one to adjust the
 ##' formating of the tooltip that indicates the current value of the
 ##' widget. The \code{tpl} command uses an HTML snippet where the
 ##' value \code{{0}}
 ##' does the substitution.
-##' @rdname gWidgetsWWW2-pacakge
+##' @rdname gslider
 GSlider <- setRefClass("GSlider", 
                        contains="GWidget",
                        fields=list(

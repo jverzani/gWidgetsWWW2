@@ -43,8 +43,11 @@ gtext <- function(text = NULL, width = NULL, height = 300,
                   ext.args=NULL
                   ) {
 
-#  txt <- GText$new(container,...)
-  txt <- GCodeMirrorPlainText$new(container, ...)
+  if(getFromDots("use.codemirror", ..., default=FALSE))
+  ## This seems too slow and sizing is awkward
+    txt <- GCodeMirrorPlainText$new(container, ...)
+  else    
+    txt <- GText$new(container,...)
   txt$init(text, font.attr, wrap, handler, action, container, ...,
            width=width, height=height,
            ext.args=ext.args)
@@ -54,8 +57,7 @@ gtext <- function(text = NULL, width = NULL, height = 300,
 ## TODO: ace editing? 
 ##       fonts
 
-##' base class for gtext
-##' @name gtext-class
+## base class for gtext
 GText <- setRefClass("GText",
                      contains="GWidgetText",
                      method=list(
@@ -63,12 +65,11 @@ GText <- setRefClass("GText",
                          width, height, 
                          ext.args=list()) {
 
-                         value <<- getWithDefault(text, "")
+                         value <<- paste(getWithDefault(text, ""), collapse="\n")
                          constructor <<- "Ext.form.TextArea"
-
                          transport_signal <<- "change"
                          
-                         arg_list <- list(value=String(ourQuote(.self$value)),
+                         arg_list <- list(value=escapeSingleQuote(.self$value),
                                           width=width,
                                           height=height,
                                           selectOnFocus = TRUE,
@@ -101,7 +102,9 @@ GText <- setRefClass("GText",
 ##'
 ##' The CodeMirror project (codemirror.net) provides a code editor in
 ##' javascript with an R mode. This widget incorporates that into
-##' \pkg{gWidgetsWWW2}.
+##' \pkg{gWidgetsWWW2}. This does R syntax highlighting. To use
+##' codemirror with gtext (and no highlighting), pass the argument
+##' \code{use.codemirror=TRUE} to the \code{gtext} call.
 ##' @title codemirror 
 ##' @param text initial text.
 ##' @inheritParams gwidget
@@ -169,6 +172,17 @@ GCodeMirror <- setRefClass("GCodeMirror",
                                  tmp <- ""
                                value <<- tmp
                                call_Ext("setValue", paste(value, collapse="\n"))
+                             },
+                             set_editable=function(val, ...) {
+                               "readonly? Then set to FALSE."
+                               ..editable <<- as.logical(val)
+                               cmd <- sprintf("%s.editor.setOption('readOnly', %s);",
+                                              get_id(),
+                                              ifelse(val, "false", "true")
+                                              )
+                             },
+                             get_editable=function(...) {
+                               ..editable
                              },
                              ## handler code
                              ## override
@@ -267,6 +281,7 @@ GCodeMirror <- setRefClass("GCodeMirror",
 
                              ))
 
+## Modifications to use plain text editing
 GCodeMirrorPlainText <- setRefClass("GCodeMirrorPlainText",
                                     contains="GCodeMirror",
                                     methods=list(
@@ -281,7 +296,7 @@ GCodeMirrorPlainText <- setRefClass("GCodeMirrorPlainText",
                                                           list(
                                                                lineNumbers=FALSE,
                                                                matchBrackets=FALSE,
-                                                               mode="plain",
+                                                               mode="null",
                                                                lineWrapping=TRUE
                                                                )
                                                           )

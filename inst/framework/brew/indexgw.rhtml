@@ -15,14 +15,14 @@ var app_url = "/custom/" + MyApp + "/gwapp/";
  <%= brew(system.file("framework", "brew", "load_AJAX.rhtml", package="gWidgetsWWW2")) %>
 
 $(document).ready(function() {
-  $("#loading").hide();
   Ext.QuickTips.init();
-
+  $("#loading").hide();
   $.ajax(base_url + "newSessionId", {
     dataType: 'json',
     cache: false,
     success: function(data) {
       session_id = data.id;
+      $("#load_app").innerHTML="Loading app... ";
       createGUI(app_url)
     }
   })
@@ -30,6 +30,12 @@ $(document).ready(function() {
   </script>
 </head>
 <body>
+ <div id='loading'>
+    <div class='loading-indicator'>
+    <span id='loading-msg'>Loading ExtJS...</span>
+    </div>
+  </div>
+  <div id='load_app'></div>
  <%= brew(system.file("framework", "brew", "load_js.rhtml", package="gWidgetsWWW2")) %>
 
   <%= extra_html_code %>

@@ -97,6 +97,7 @@ GComponent <- setRefClass("GComponent",
                            connected_signals="list",
                            ..visible="logical",
                            ..enabled="logical",
+                           ..editable="logical",
                            ..index="ANY"
                            ),
                          methods=list(
@@ -139,6 +140,7 @@ GComponent <- setRefClass("GComponent",
                                         ##
                                         ..visible=TRUE,
                                         ..enabled=TRUE,
+                                        ..editable=TRUE,
                                         ..index=NULL,
                                         transport_signal="",
                                         change_signal="",
@@ -274,7 +276,9 @@ E.g. var param = {value: this.getText()}"
                            },
                            process_transport = function(value, ...) {
                              "R Function to process the transport. Typically just sets 'value', but may do more. In the above example, where var param = {value: this.getText()} was from transport_fun we would get the text for value"
-                             value <<- value
+
+                             if(!is.null(value))
+                               value <<- value
                            },
                            ## Call back code
                            ##
@@ -283,7 +287,7 @@ E.g. var param = {value: this.getText()}"
                            },
                            ## add a handler
                            ## creates an observer arranges to connect to toolkit
-                           add_handler=function(signal, handler, action=NULL, decorator) {
+                           add_handler=function(signal, handler, action=NULL, decorator, ...) {
                              "Uses Observable framework for events. Adds observer, then call connect signal method. Override last if done elsewhere"
                              ID <- NULL
                              if(is_handler(handler)) {
@@ -292,7 +296,7 @@ E.g. var param = {value: this.getText()}"
                                o <- observer(.self, handler, action) # in gWidgets2 but not now
                                ID <- add_observer(o, signal)
                              }
-                             connect_to_toolkit_signal(signal)
+                             connect_to_toolkit_signal(signal, ...)
                              invisible(ID)
                            },
                            invoke_handler=function(signal, ...) {
@@ -304,12 +308,13 @@ E.g. var param = {value: this.getText()}"
                              .self
                            },
                            connect_to_toolkit_signal=function(
-                             signal # which signal
+                             signal, # which signal
+                             ...
                              ) {
                              "Connect signal of toolkit to notify observer"
                              ## only connect once
                              if(is.null(connected_signals[[signal, exact=TRUE]]))
-                              add_R_callback(signal)
+                              add_R_callback(signal, ...)
                              connected_signals[[signal]] <<- TRUE
                            },
                            cb_args=function(signal) {
@@ -320,7 +325,7 @@ E.g. var param = {value: this.getText()}"
                              "Return object for callback. Defaults to get_id(), but can be subclassed"
                              get_id()
                            },
-                           add_R_callback = function(signal) {
+                           add_R_callback = function(signal, ...) {
                              "Add a callback into for the Ext signal. Return callback idas a list."
 
                              ## XXX This needs a fixing. The callbacks are now stored in the objects and we

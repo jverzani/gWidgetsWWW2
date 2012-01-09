@@ -58,14 +58,14 @@ coerceToJSString.default <- function(x) x # no quote
 ##' @method "coerceToJSString" character
 ##' @S3method "coerceToJSString" character
 ##' @rdname coerceToJSString
-coerceToJSString.character <- function(x) ourQuote(x)
+coerceToJSString.character <- function(x) sprintf("'%s'", escapeSingleQuote(x))
 
 ##' S3 method for coerceToString
 ##'
 ##' @method "coerceToJSString" factor
 ##' @S3method "coerceToJSString" factor
 ##' @rdname coerceToJSString
-coerceToJSString.factor <- function(x) ourQuote(as.character(x))
+coerceToJSString.factor <- function(x) coerceToJSString(as.character(x))
 
 ##' S3 method for coerceToString
 ##' 
@@ -198,7 +198,7 @@ toJSArray.logical <- function(x,doBrackets=TRUE) {
 ##' @rdname toJSArray
 toJSArray.character <- function(x, doBrackets=TRUE) {
   if(!length(x)) return(emptyJSArray(doBrackets))  
-  x <- sprintf("%s", ourQuote(x))
+  x <- sprintf("'%s'", escapeSingleQuote(x))
   toJSArray.String(x, doBrackets)
 }
 
@@ -314,8 +314,15 @@ ourQuote <- function(x) {
 ##' @param x string to escape
 ##' @return string with "'" replaced by "\'"
 escapeSingleQuote <- function(x) {
+  ## This coudl be *much* improved if only I knew regular expressions better
+  esc_q <- "[\\][']"
+  stupid_match <- "THISWOULDNEVERHAPPEN"
+  x <- gsub(esc_q, stupid_match,x)
+  x <- gsub("'", "\\\\'", x)
+  x <- gsub(stupid_match, "\\\\'", x)
   ## gsub("'", '"', x)  ## could replace, but escaping seems safer
-  gsub("\\'", "\\\\'", x)
+  #gsub("\\'", "\\\\'", x)
+  return(x)
 }
 
 
@@ -408,6 +415,6 @@ get_tempfile_url <- function(f) {
   asURL(sprintf("/custom/tmp/tmp/%s", basename(f)))
 }
 
-
+DEBUG <- function(...) print(list(...))
 
 

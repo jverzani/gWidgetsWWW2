@@ -22,9 +22,11 @@ NULL
 ##' The \code{svalue<-} method is used to specify value by name or by
 ##' index. The \code{[<-} method can be used to update the data to
 ##' select from.
-##' @param items a vector of items to choose from. (Not supported, but
-##' should be: Or a data frame with 1 column (items), two columns
-##' (items, icons), or three columns (items, icons, tooltip))
+##' @param items a vector of items to choose from. Coerced to
+##' character class. Use \code{coerce.with} to get a numeric value,
+##' say. (Not supported, but should also allow: Or a data frame with 1 column
+##' (items), two columns (items, icons), or three columns (items,
+##' icons, tooltip))
 ##' @param selected initially selected item, by index. Use \code{0L} for none.
 ##' @param editable logical. Does combobox allow editing. A bug (or
 ##' package writer's limiations) in extjs do not allow one to set the
@@ -78,8 +80,7 @@ gdroplist <- gcombobox
 
 ## Not working: templates; tooltips, icons; 
 
-##' Base class for gcombobox
-##' @name gcombobox-class
+##Base class for gcombobox
 GCombobox <- setRefClass("GCombobox",
                          contains="GWidget",
                          fields=list(
@@ -91,12 +92,7 @@ GCombobox <- setRefClass("GCombobox",
                              handler = NULL, action = NULL, container=NULL,...,
                              width=NULL, height=NULL, ext.args=NULL, autocomplete=NULL, initial.msg="", tpl=NULL) {
 
-                             ## We store the value not the index
-                             if(as.integer(selected) > 0)
-                               value  <<- items[selected]
-                             else
-                               value <<- NA
-
+                             
                              editable <<- editable
                              coerce_with <<- coerce.with
 
@@ -122,7 +118,7 @@ GCombobox <- setRefClass("GCombobox",
                                               lastQuery='',
                                               ## Want to use templates here, but can't get to work
                                               ## instead use valueField and displayField defaults
-                                              ##displayTpl=tpl,
+                                              #displayTpl=tpl,
                                               valueField="id",
                                               displayField="name",
                                               ##
@@ -146,6 +142,8 @@ GCombobox <- setRefClass("GCombobox",
                              
                              ## load data
                              .self$store$load_data()
+
+                             set_index(selected)
                              ## set value -- should be set_value, but isn't dispatching to right one
                              ## if(!is.na(selected)) {
                              ##   value <<- selected
@@ -160,10 +158,6 @@ GCombobox <- setRefClass("GCombobox",
                            },
                            process_transport=function(value, ...) {
                              callSuper(value)
-                           },
-                           get_value = function(index=FALSE, ...) {
-                             "Return stored value"
-                             value
                            },
                            get_index=function(...) {
                              match(value, get_items())
@@ -204,13 +198,14 @@ GCombobox <- setRefClass("GCombobox",
                              if(!is.data.frame(items))
                                items <- data.frame(items, stringsAsFactors=FALSE)
                              names(items) <- nms[1:ncol(items)]
+                             items[[1]] <- as.character(items[[1]])
                              items
                            },
                            ## XXX This isn't working. Fix it later
                            .make_tpl=function(items) {
                              "Make template to match standard names"
                              just_name <- "<tpl for '.'><div class='x-combo-list-item'>{id} == {name}</div></tpl>"
-                             just_name <- "<h3>{name}</h3>"
+#                             just_name <- "<h3>{name}</h3>"
 #                             paste('<tpl for="."><div class="search-item">',
 #                                                '<h3><span>{name}</span></h3>',
 #                                                '</div></tpl>',

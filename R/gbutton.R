@@ -51,9 +51,11 @@ gbutton <- function(text="",
                     ext.args=NULL
                     ) {
   if(!is.null(action) && is(action,"GAction")) {
+    ## with an action
     b <- GButtonWithAction$new(container, ...)
     b$init(action, container, ...,  width=width, height=height, ext.args=ext.args)
   }  else {
+    ## regular button
     b <- GButton$new(container, ...)
     b$init(text,  handler, action, container, ..., width=width, height=height, ext.args=ext.args)
   }

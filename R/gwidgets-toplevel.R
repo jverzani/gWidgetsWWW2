@@ -98,7 +98,6 @@ GWidgetsTopLevel <- setRefClass("GWidgetsTopLevel",
                                     if(!is.list(param))
                                       param <- list(param)
 
-                                    
                                     ## obj should be GWidgetProxy
                                     out <- ""
                                     if(is(obj, "GWidgetProxy"))

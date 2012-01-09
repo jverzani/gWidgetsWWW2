@@ -28,7 +28,8 @@ dens <- list("Normal"=rnorm, "Exponential"=rexp)
 fs$distribution <- gradio(names(dens), cont=fg)
 
 GLABEL("Sample size", cont=fg)
-fs$n <- gcombobox(c(50, 100, 200, 300), editable=TRUE, cont=fg)
+fs$n <- gcombobox(c(50, 100, 200, 300), selected=1, editable=TRUE, cont=fg,
+                  coerce.with=as.numeric)
 
 GLABEL("Bandwidth", cont=fg)
 fs$bw <- gslider(from=5, to=200, by=5, tpl="{0}%", value=100, cont=fg)
@@ -49,7 +50,7 @@ make_plot <- function(...) {
   canvas(plotFile, width=width, height=height)
 
   ## get values
-  n <- as.numeric(svalue(fs$n))
+  n <- svalue(fs$n)
   y <- dens[[svalue(fs$distribution)]](n)
   kern <- svalue(fs$kernel, index=FALSE)
   bw <- svalue(fs$bw)/100

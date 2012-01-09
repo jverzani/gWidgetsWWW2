@@ -1,6 +1,6 @@
 w <- gwindow("gWidgetsWWW2 examples")
-sb <- gstatusbar("Powered by gWidgetsWWW2 and Rack", cont=w)
-g <- gframe("Some basic examples for gWidgetsWWW2", horizontal=FALSE, cont=w)
+sb <- gstatusbar("Powered by Rook and gWidgetsWWW2", cont=w)
+g <- gframe("Some basic examples of gWidgetsWWW2", use.scrollwindow=TRUE, horizontal=FALSE, cont=w)
 
 glabel("This page shows the example files in the package's examples directory.", cont=g)
 
@@ -14,7 +14,8 @@ sapply(seq_along(fs), function(i) {
     w1 <- gwindow(sprintf("Source of %s", basefs[i]), width=450, height=400, parent=w)
     gw <- ggroup(cont=w1, spacing=0, horizontal=FALSE)
     lns <- readLines(fs[h$action])
-    gcodemirror(paste(lns, collapse="\n"), expand=TRUE,  cont=gw)
+    cm <- gcodemirror(paste(lns, collapse="\n"), expand=TRUE,  cont=gw)
+    cm$set_editable(FALSE)
     gseparator(cont=gw)
     bg <- ggroup(cont=gw)
     gbutton("dismiss", cont=bg, handler=function(h,...) dispose(w1))

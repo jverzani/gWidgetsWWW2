@@ -8,8 +8,9 @@ ghtml(paste("A simple example of adding a widget dynamically to a GUI.",
             sep=" "),
       cont=g)
 
+
 ## simple way to see that things have changed
-gbutton("click to see stored value(s)", cont = g, handler = function(h,...) {
+gbutton("click to see stored value(s)", cont = ggroup(cont=g), handler = function(h,...) {
   out <- sapply(l, svalue)
   galert(paste(out, collapse="  "), parent=w)
 })

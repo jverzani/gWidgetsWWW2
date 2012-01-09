@@ -74,7 +74,10 @@ gwindow <- function(title="",
     }
     w <- GWindow$new(toplevel=toplevel)
    } else {
-    w <- GSubWindow$new(parent=parent)
+     if(!is.null(renderTo))
+       w <- GWindow$new(parent=parent)
+     else
+       w <- GSubWindow$new(parent=parent)
   }
  
   w$init(title, parent, handler, action, ...,
@@ -162,7 +165,7 @@ GWindow <- setRefClass("GWindow",
                                                 )
                                               )
                            } else if(!is.null(renderTo)) {
-
+                             DEBUG("render to", renderTo)
                              constructor <<- "Ext.Panel"
                              fullscreen <<- FALSE
                              arg_list <- list(
@@ -235,27 +238,6 @@ GWindow <- setRefClass("GWindow",
                          start_comet=function() {
                          "Turn on long-poll process for passing in commands from server"
                            add_js_queue("listen()")
-                         },
-                         ##
-                         ## Mask for slow loading
-                         ##
-                         load_mask_id = function() {
-                           sprintf("%s_loadmask", get_id())
-                         },
-                         show_load_mask=function(msg="") {
-                           if(!loadmask_created) {
-                             tpl <- "
-var {{id}} = new Ext.LoadMask(Ext.getBody(), {msg:'{{msg}}'});
-"
-                             cmd <- whisker.render(tpl, list(id=load_mask_id(),
-                                                             msg=msg))
-                             add_js_queue(cmd)
-                             loadmask_created <<- TRUE
-                           }
-                           add_js_queue(sprintf("%s.show();", load_mask_id()))
-                         },
-                         hide_load_mask=function() {
-                           add_js_queue(sprintf("%s.hide();", load_mask_id()))
                          },
                          ##
                          ## debugging

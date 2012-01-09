@@ -97,7 +97,7 @@ GCheckboxGroup <- setRefClass("GCheckboxGroup",
 
                            setup(container, handler, action, ext.args, ...)
                            
-                           set_value(as.logical(rep(checked, len=length(items))), index=FALSE)
+                           set_value(checked)
                            .self
                          },
                          ## main property. We store the index in value, not the label
@@ -108,7 +108,8 @@ GCheckboxGroup <- setRefClass("GCheckboxGroup",
                          set_value = function(value, ...) {
                            "Set value. Value may be index, logical, or labels"
                            if(is.logical(value)) {
-                             set_index(which(value))
+                             val <- rep(value, len=length(items))
+                             set_index(which(val))
                            } else {
                              out <- Filter(function(x) !is.na(x), match(value, items))
                              if(length(out))
@@ -121,10 +122,9 @@ GCheckboxGroup <- setRefClass("GCheckboxGroup",
                          set_index=function(value, ...) {
                            value <<- value
 
-                           tmp <- rep(FALSE, len=length(items))
-                           if(length(value))
-                             tmp[value] <- TRUE
-                           call_Ext("setValue", String(toJSArray(tmp)))
+                           l <- list()
+                           l[[get_id()]] <- String(toJSArray(value))
+                           call_Ext("setValue", l)
                          },
                          get_items = function(i, ...) {
                            items[i]

@@ -25,13 +25,11 @@ NULL
 ##' rows. For large data sets, the data can be "paged", that is given
 ##' to the browser in bite-sized chunks so the lag is lacking.  The
 ##' change handler is for a single click, also used for selection. Use
-##' \code{addHandlerDoublecclick} to specify a callback for the double
+##' \code{addHandlerDoubleclick} to specify a callback for the double
 ##' click event on a cell.
 ##' 
 ##' The column names are inherited from the
-##' columnnames of the data frame. Names with spaces will render, but
-##' are not sortable. Use some punctuation, such as an underscore to
-##' get sortability.
+##' columnnames of the data frame. 
 ##' 
 ##' A column of class "Icon" (see
 ##' \code{\link{asIcon}}) will render a css class as an icon. See the
@@ -61,12 +59,15 @@ NULL
 ##' with a list where \code{columnWidths} is specified.
 ##' @return An ExtWidget instance
 ##' @note With \code{width} and/or \code{height} set to \code{NULL},
-##' the default size will likely be unsatisfying. These values are
-##' best set by the programmer. They can be readjusted through the
-##' \code{size<-} method. For \pkg{gWidgetsWWW}, the \code{filter}
-##' functions are not implemented. Rather the \code{filter} method may
-##' be used to filter a named column by a regular expression. See the
-##' example.
+##' the default size will likely be unsatisfying. (And can consume any
+##' space in a box, so items packed in after will not be shown.) As
+##' such, these values are often best set by the programmer. They can
+##' be readjusted through the \code{size<-} method. The \code{size<-}
+##' method can also be used to adjust the columns widths, by passing a
+##' list with a component named \code{columnWidths} containing the
+##' desired widths in pixels.
+##'
+##' The \code{visible<-} method may be used for filtering.
 ##' @export
 ##' @examples
 ##' w <- gwindow("Filtering and table example")
@@ -106,8 +107,7 @@ gtable <- function(items, multiple = FALSE, chosencol = 1,
 }
 
 
-##' A class inherited by GTable and GDf
-##' Comment about \code{visible<-} being implemented partially through \code{$filter}
+## A class inherited by GTable and GDf
 GWidgetGrid <- setRefClass("GWidgetGrid",
                            contains="GWidget",
                            fields=list(
@@ -118,7 +118,7 @@ GWidgetGrid <- setRefClass("GWidgetGrid",
                              ## put common methods here
                              ## set__items is in subclass
                              get_items = function(i, j, ..., drop=TRUE) {
-                               items <- store$proxy$get_data()
+                               items <- store$proxy$get_data(drop_visible=FALSE)
                                items[i,j, ..., drop=drop]
                              },
                              set_items = function(value, i, j, ...) {
@@ -220,8 +220,18 @@ GWidgetGrid <- setRefClass("GWidgetGrid",
 
                              ))
 
-##' base class for gtable
-##' @name gtable-class
+##' \code{GTable} is the base class for gtable
+##'
+##' The table widget is implemented using a proxy. That is, the data
+##' is loaded in a separate AJAX call. This makes things relatively
+##' responsive, but if there is too much data one can turn on paging.
+##'
+##' The widget can filter through the visible method. This basically
+##' passes back the filtered data from the server each time it is
+##' called. To avoid the data transfer, one can use the \code{filter}
+##' reference method, which filters browser side by a regular
+##' expression.
+##' @rdname gtable
 GTable <- setRefClass("GTable",
                       contains="GWidgetGrid",
                       fields=list(
@@ -236,12 +246,15 @@ GTable <- setRefClass("GTable",
                           width=NULL, height=NULL, ext.args=NULL, paging=FALSE,
                           col.widths
                           ) {
+
+                          ## coerceitems
                           if(!is.data.frame(items))
                             items <- as.data.frame(items, stringsAsFactors=FALSE)
-
+                          
                           value <<- NA  # currently selected row(s) or NA
                           multiple <<- multiple
                           chosencol <<- as.integer(chosencol)
+
                           if(is.logical(paging)) {
                             paging <<- paging;
                             page_size <<- 200L ## override through assignment paging=2000
@@ -250,6 +263,18 @@ GTable <- setRefClass("GTable",
                             paging <<- TRUE
                           }
 
+
+                          ## Hack alert
+                          ## set default height/width if missing and needed
+                          if(is(container, "GGroup")) {
+                            expand <- getFromDots("expand", ..., NULL)
+                            if(is.null(expand) || !as.logical(expand)) {
+                              if(container$horizontal)
+                                width <- getWithDefault(width, 300L)
+                              else
+                                height <- getWithDefault(height, 200L)
+                            }
+                          }
 
                           initFields(
                                      store=GWidgetArrayStore$new(container),
@@ -266,14 +291,14 @@ GTable <- setRefClass("GTable",
                             store=String(store$get_id()),
                             columns = String(store$proxy$make_column_model()),
                             stripeRows = TRUE,
-                            enableRowBody = TRUE,
                             frame = FALSE,
                             autoExpandColumn=tail(names(items), n=1),
                             width=width,
-                            height=height
+                            height=height,
+                            sortableColumns=TRUE
                             )
                           if(multiple)
-                            arg_list$selModel <- String("new Ext.selection.RowModel({mode:'MULTIPLE'})")
+                            arg_list$multiSelect <- TRUE
                           
                           if(!paging) {
                             arg_list <- merge.list(arg_list, list(
@@ -294,9 +319,16 @@ GTable <- setRefClass("GTable",
                             cmd <- sprintf("new Ext.PagingToolbar(%s)", toJSObject(paging_options))
                             arg_list[['bbar']] = String(cmd)
                           }
+
+                          ## hacks!
+                          ## issue with height=NULL
+
+                          
                           add_args(arg_list)
                           setup(container, handler, action, ext.args, ...)
 
+
+                          
                           ## set up paging
                           ## if(paging) { ## adjust size
                           ##   cmd <- sprintf("%s.getTotalCount = function() {return %s};",
@@ -325,14 +357,10 @@ GTable <- setRefClass("GTable",
                           if(signal == change_signal) {
                             transport_fun()
                           } else {
-                            ""
+                            "param=null;"
                           }
                         },
-                        prepare_for_handler=function(signal, params) {
-                          if(signal == change_signal) {
-                            process_transport(params)
-                          }
-                        },
+                        
                         get_value = function(index=FALSE, drop=TRUE, ...) {
                           "Return selected value(s)"
 
@@ -360,6 +388,10 @@ GTable <- setRefClass("GTable",
                           }
                           set_index(value)
                         },
+                        clear_selection=function() {
+                          cmd <- sprintf("%s.getSelectionModel().deselectAll()", get_id())
+                          add_js_queue(cmd)
+                        },
                         set_index=function(value, ...) {
                           "Set value where value is row index to select"
                           if(is.logical(value)) {
@@ -367,19 +399,23 @@ GTable <- setRefClass("GTable",
                           } else {
                             value <<- value
                           }
+                          clear_selection()
                           if(base:::length(value) == 0 ||
                              (base:::length(value) == 1 && is.na(value)) ||
                              value[1] <= 0) {
-                                        # clear out
-                            cmd <- paste(sprintf("var sm = %s.getSelectionModel();", get_id()),
-                                         "sm.clearSelections();",
-                                         sep="")
+                            ## nothing
                           } else {
-                            cmd <- paste(sprintf("var sm = %s.getSelectionModel();", get_id()),
-                                         sprintf("sm.selectRows(%s);", toJSArray(value -1)),
-                                         sep="")
+                            tpl <- "
+{{id}}.getSelectionModel().selectRange({{start}},{{end}}, true);
+"
+                            f <- function(start, end) {
+                               cmd <- whisker.render(tpl, list(id=get_id(),
+                                                          start=start-1, end=end-1))
+                               add_js_queue(cmd)
+                            }
+                            ## should figure out runs to shorten this
+                            sapply(value, function(i) f(i,i))
                           }
-                          add_js_queue(cmd)
                         },
                         
                         set_items = function(value, i, j, ...) {
@@ -415,7 +451,7 @@ GTable <- setRefClass("GTable",
                           } else {
                             cmd <- sprintf("%s.filter(%s, RegExp('%s'));",
                                            store$get_id(),
-                                           ourQuote(colname),
+                                           escapeSingleQuote(colname),
                                            regex)
                           }
                           add_js_queue(cmd)

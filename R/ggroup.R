@@ -165,7 +165,8 @@ GGroup <- setRefClass("GGroup",
                                               margins=sprintf("%s %s %s %s", margins[1], margins[2], margins[3], margins[4])
                                               )
                                             )
-                           if(use.scrollwindow) {
+
+                           if(!is.null(use.scrollwindow) && use.scrollwindow) {
                              arg_list[['autoScroll']] <- TRUE
                              if(is.null(height))
                                arg_list[['autoHeight']] <- TRUE

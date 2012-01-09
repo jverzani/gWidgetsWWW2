@@ -72,7 +72,7 @@ GStatusbar <- setRefClass("GStatusbar",
                               arg_list=list(
                                 dock='bottom',
                                 items=String(whisker.render(tpl,list(id=get_id(),
-                                                                     txt=text)))
+                                                                     txt=escapeSingleQuote(text))))
                                 )
                               add_args(arg_list, ext.args)
                               write_constructor()
@@ -93,7 +93,7 @@ GStatusbar <- setRefClass("GStatusbar",
 {{id}}.getComponent(0).setText('<img src=\"{{url}}\" width=16 height=16 />{{msg}}', false);
 {{id}}.doLayout();
 "
-                            cmd <- whisker.render(tpl, list(url=url,id=get_id(), msg=msg))
+                            cmd <- whisker.render(tpl, list(url=url,id=get_id(), msg=escapeSingleQuote(msg)))
                             add_js_queue(cmd)
                             },
                             hide_loading=function() {

@@ -31,14 +31,16 @@ NULL
 ##' g <- gframe("Label", cont=w)
 ##' b <- gbutton("insider frame", cont=g)
 ##' svalue(g) <- "new label"
-gframe <- function(text = "", pos = 0, horizontal=TRUE, spacing=2, container=NULL,...,
+gframe <- function(text = "", pos = 0, horizontal=TRUE, spacing=2,
+                   use.scrollwindow=FALSE,
+                   container=NULL,...,
                    width=NULL, height=NULL, ext.args=NULL
                    ) {
 
   f <- GFrame$new(container, ...)
   f$init(horizontal=horizontal,
          spacing=spacing,
-         use.scrollwindow = FALSE,
+         use.scrollwindow=use.scrollwindow,
          container,
          ...,
          width=width,

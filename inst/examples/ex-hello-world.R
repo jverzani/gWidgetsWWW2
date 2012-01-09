@@ -3,12 +3,12 @@ sb <- gstatusbar("Powered by Rook and gWidgetsWWW2", cont=w)
 
 g <- ggroup(cont=w, horizontal = FALSE, use.scrollwindow=TRUE)
 
+width <- 500
 
 
-
-f <- gframe("gbutton", cont=g)
+f <- gframe("gbutton", expand=TRUE, cont=g)
 gbutton("Click me", cont=f, handler = function(h,...) {
-  galert("hello world", parent = w)
+  gmessage("hello world", parent = w)
 })
 
 
@@ -53,18 +53,21 @@ gslider(value=50, cont=f, width=200, handler=function(h,...) {
   gmessage(sprintf("Hello %s percent of world", svalue(h$obj)), parent=w)
 })
 
-f <- gframe("gspinbox -- not right!", cont=g)
+f <- gframe("gspinbox", cont=g)
 gspinbutton(value=50, cont=f, handler=function(h,...) {
   gmessage(sprintf("Hello %s percent of world", svalue(h$obj)), parent=w)
 })
 
-f <- gframe("gdf, just for show", cont=g)
+
+f <- gframe("gtable", horizontal=FALSE, cont=g)
+m <- data.frame(greeting=rep("hello", 3), who=c("world","planet","country"), stringsAsFactors=FALSE)
+gtable(m, cont=f, multiple=FALSE, height=100, handler=function(h,...) {
+  ind <- svalue(h$obj, index=TRUE)
+  gmessage(sprintf("Hello %s", h$obj[ind,2]), parent=w)
+})
+
+
+f <- gframe("gdf, just for show, no handler", cont=g)
 m <- data.frame(greeting=rep("hello", 3), who=c("world","planet","country"), stringsAsFactors=FALSE)
 gdf(m, cont=f)
 
-f <- gframe("gtable", cont=g)
-m <- data.frame(greeting=rep("hello", 3), who=c("world","planet","country"), stringsAsFactors=FALSE)
-gtable(m, cont=f, multiple=FALSE, handler=function(h,...) {
-   ind <- svalue(h$obj, index=TRUE)
-   gmessage(sprintf("Hello %s", h$obj[ind,2]), parent=w)
-})

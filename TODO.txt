@@ -1,110 +1,62 @@
-DONE * json-rpc javascript method call
-DONE (Gave Example)* document use of such a call (page counter)
-DONE * stuff the_request into toplevel
-* ourQuote -- make better ', but not \' to \'
-* document how to get toplevel object from session_manager (given ID)
-* need hook to add session id to list (by script), so if listen is
-  turned on, one can send info to each client (or by ID)
-* clean up session manager info on page clean up
-DONE * authenticate option in load_app (do_authenticate, authenticate_type)
-DONE * gpanel to embed other objects into gWidgets
-DONE * cookies from create_gui reqeuest are in req, but method to write
-  cookies needed (w$set_cookie(key, value))
+== TODO
 
-* Update roxygen documentation
-* devtools --> load_all working
-* update vignette
+=== nginx
 
-* write unit tests
+=== Documentation
+* roxygen docs
+* vignette
+* load_all -- not working
 
-* work on size issues with radio, check box, groups, windows...
+=== Unit tests
 
-* replace transport with jRpc call -- cut down on complexity
+* add more
 
-* proxy
-* column_xtype should be configurable, as should how dates are passed
-  back by the proxy.
-*JSON_RPC class to subclass. Allows access to R session, not special environments
+=== App
 
+* indexgw.rthml -- do we need this?
+* subclass load app (In Rook already, but might be nicer if google
+  apps like)
+* session manager -- can we make session accessible to local user? can
+  we make ability to broadcast if $listen is done?
 
-* nginx integration; think through load_app  improvements
+=== AJAX calls
 
-* rethink load_app (google app like, i.e. make it require a subclass
-  so we can modify the process)
-* cookies!
-DONE * get_tempfile -- are tmp files working?
+* put javascript into a namespace
+* can replace run_transport with jRpc call 
+* proxy calls: should make configuration of gtable view and gdf view
+  user customizable. WOuld need to add user-defined methods
 
-* Why do we have to use indexgw.html! Uggh
-DONE * factodr out code in indexgw.html -- I want three lines read css, read
-  js, call app
-* put javascript into a namespace (gWidgets.base_url, ...)
-* app structure: Name
-- R file
-- R/filename.R
-- brew/brewname.R
-- images/...
-- css/...
-- javascript/...
+=== Widgets
 
-# containers
-DONE * ggroup -- autoScroll=TRUE (isn't); size issues; menubar statusbar
-DONE * gborderlayout (panel with border layout)
-DONE * gstackwidget
+==== containers
+
 * gformlayout (mebbe)
 
 
-# widgerts
-* gedit "validate.type" -- valid.type?
+===== gWidgets
+
+* gedit "validate.type" -- valid.type, rename
 
 * gcombobox 
 -- cant get templates to work! Ughh. displayTpl is close,
   but no cigar
 -- would like remote queryMode for autocomplete on larger stores
 
-* do demos work?
-
-DONE * checkboxgroup/checkbox svalue inconsistency?
-DONE * names for checkbox (we have [<- are values and svalue selected, but
-why not also names for [?
-
-* fonts -- do we need? Use HTML
-
-DONE * is gedit change signal change or "activate"
-
-DONE? * gcalendar -- way off.
-
-DONE * ginput wasn't done
-
-DONE* codemirror finish onChange handler
-DONE * codemirror -- replace gtext widget with codemirror widget. Better
-change handler
+-- fonts -- do we need? Use HTML
 
 * ggooglevis in a panel? XXX This needs work
-
-DONE * gbutton: actions, icons
-
-DONE * gradio: all of it
-
-DONE * gslider: working, needs tidying of param, transport
-
-DONE * gstatusbar: better? no css
-
-* ggooglemaps handlers are broken.
 
 * galert: no css, too wide. Why? (css missing)
 
 * gcanvas: working, needs documenting
 
-* gstatusbar for ggroup objects
-
-* gtable: checkbox selection; grouping variables (add), means to limit
+* gtable: 
+-- checkbox selection; grouping variables (add), means to limit
   which fields are shown
-* can't be bottom in layout???
+-- an't be bottom in layout???
 
 * gdf: We can add and edit, but can't delete. WOuld like to use Rest proxy, but isn't working iwth Rook, as the request is denied -- not even parsable
 
+* work on size issues with radio, check box
 
 
-DONE* glayout: Need a new algorithm -- is basically broken. work on alignment, spacing around children
-* DONE [ method for glayout
-* align property needs work (issue with glayout)

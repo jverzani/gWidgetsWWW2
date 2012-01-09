@@ -46,7 +46,7 @@ GNotebook <- setRefClass("GNotebook",
                              width=NULL, height=NULL, ext.args=NULL) {
 
                              notebook_children <<- list()
-                             constructor <<- "Ext.TabPanel"
+                             constructor <<- "Ext.tab.Panel"
                              value <<- 1 ## track through
                              closable <<- close.buttons
                              
@@ -89,8 +89,8 @@ GNotebook <- setRefClass("GNotebook",
                              
                              call_Ext("add", list(title=label,
                                                   closable=closable,
-                                                  tabTip = tooltip,
-                                                  items=String(sprintf("['%s']", child$id))
+                                                  tooltip = tooltip,
+                                                  items=String(sprintf("[%s]", child$get_id()))
                                                   ))
                              value <<- length(notebook_children)
                              call_Ext("setActiveTab", value - 1)
@@ -134,7 +134,7 @@ GNotebook <- setRefClass("GNotebook",
                                child <- notebook_children[[i]]
                                child$set_attr("label",value[i])
                                cmd <- paste(sprintf("var tab = %s.getComponent(%s);", get_id(), i-1),
-                                            sprintf("tab.setTitle(%s);", ourQuote(value[i])),
+                                            sprintf("tab.setTitle(%s);", escapeSingleQuote(value[i])),
                                             sep="")
                                add_js_queue(cmd)
                              })

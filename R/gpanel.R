@@ -19,7 +19,19 @@ NULL
 
 ##' A panel to hold other JavaScript things
 ##'
-##' ##' @inheritParams gwidget
+##' This produces a widget holding a "div" tag that other JavaScript
+##' libraries can use to place their content. There are a few
+##' reference class methods that make this possible.  The
+##' \code{div_id} method returns the DOM id of the div object that is
+##' produced. The \code{add_handler_onload} method can be used to call
+##' a handler after the external libraries are loaded. This is an
+##' asynchronous call, so one need not worry that the libraries are
+##' down downloading. This call might require JavaScript commands to
+##' be processed that are not produced by a gWidgetsWWW2 handler. The
+##' \code{add_js_queue} method allows one push such commands back to
+##' the browser. The method \code{load_external} is used to load
+##' external scripts by specifying the appropriate url(s).
+##' @inheritParams gwidget
 ##' @return a \code{GPanel} reference class  object
 ##' @export
 ##' @examples
@@ -98,8 +110,16 @@ GPanel <- setRefClass("GPanel",
                            sprintf("%s_div", id)
                          },
                          load_external=function(url, callback) {
-                           "Url is url of external script. Callback is a string representing a JavaScript function of three variables: data, status, xhr called if the download is successful. The request is asynchronous, so calling commands immediately after may not work,as the script needs to download first."
-                           tpl <- "
+                           "Url is url of external script(s). To call a handler after the scripts are loaded, use add_handler_onload to add handlers or pass in JavaScript funtion to callback argument"
+
+                           if(missing(callback))
+                             callback <- whisker.render("
+function(data, textStatus, jqXHR) {
+      callRhandler('{{id}}', 'onload', null);
+    }
+", list(id=get_id()))
+                           
+                           ajax_tpl <- "
 $.ajax('{{url}}',{
     dataType: 'script',
     type:'GET',
@@ -107,14 +127,35 @@ $.ajax('{{url}}',{
     success: {{fn}}
 });
 "
-                           if(missing(callback))
-                             callback <- "function(data, status, xhr) {}"
 
-                           cmd <- whisker.render(tpl, list(url=url, fn=callback))
-                           add_js_queue(cmd)
+                           fn_template <- "
+function(data, textStatus, jqXHR) {
+  {{fn}}
+}
+"
+
+                           ## work back to front
+                           url <- rev(url)
+                           out <- whisker.render(ajax_tpl, list(url=url[1],
+                                                                fn=callback))
+                           sapply(url[-1], function(i) {
+                             assign("out", whisker.render(ajax_tpl, list(url=i,
+                                                                         fn=whisker.render(fn_template,
+                                                                           list(fn=out)))),
+                                    inherits=TRUE)
+                           })
+                           
+                           add_js_queue(out)
+                         },
+                         add_handler_onload=function(handler, action=NULL,...) {
+                           add_handler("onload", handler, action, ...)
                          }
                          )
                        )
+
+
+
+
 
 ## This worked
 ## Ext.create('Ext.Button', {

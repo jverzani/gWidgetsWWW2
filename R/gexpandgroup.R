@@ -33,9 +33,11 @@ NA
 ##' gbutton("some button", cont=g)
 ##' visible(g) <- FALSE ## to close
 gexpandgroup <- function(text = "", horizontal = TRUE,
-                         spacing=2, 
+                         spacing=2,
+                         use.scrollwindow=FALSE,
+                         container=NULL,
                          handler = NULL, action=NULL,
-                         container=NULL, ...,
+                         ...,
                          width=NULL,
                          height=NULL,
                          ext.args=NULL
@@ -45,7 +47,7 @@ gexpandgroup <- function(text = "", horizontal = TRUE,
   eg$init(text=text,
           horizontal=horizontal,
           spacing=spacing,
-          use.scrollwindow = FALSE,
+          use.scrollwindow=FALSE,
           container,
           ...,
           width=width,

@@ -23,7 +23,7 @@ NULL
                    msg[1],
                    paste(msg[-1], collapse="<br/>")
                    )
-  ourQuote(msg)
+  escapeSingleQuote(msg)
 }
 
 ##' A simple message dialog.
@@ -52,15 +52,15 @@ gmessage <- function(message, title="message",
 
   tpl <- "
 Ext.Msg.show({
-  title:{{title}},
-  msg:{{message}},
+  title:'{{title}}',
+  msg:'{{message}}',
   buttons:Ext.Msg.CANCEL,
   icon:{{icon}},
   animEl:'{{parent_id}}'
 });
 "
   cmd <- whisker.render(tpl,
-                        list(title=ourQuote(title),
+                        list(title=escapeSingleQuote(title),
                              message=.make_message(message),
                              icon=icon,
                              parent_id=parent$id)
@@ -104,8 +104,8 @@ gconfirm <- function(message, title="Confirm",
     
   tpl <- "
 Ext.Msg.show({
-  title:{{title}},
-  msg:{{message}},
+  title:'{{title}}',
+  msg:'{{message}}',
   buttons:Ext.Msg.YESNO,
   icon:Ext.MessageBox.{{icon}},
   animEl:'{{parent_id}}',
@@ -117,7 +117,7 @@ Ext.Msg.show({
 });
 "
   cmd <- whisker.render(tpl,
-                        list(title=ourQuote(title),
+                        list(title=escapeSingleQuote(title),
                              message=.make_message(message),
                              icon=toupper(match.arg(icon,c('info', 'warning', 'error', 'question'))),
                              parent_id=parent$id,
@@ -173,11 +173,11 @@ ginput <- function(message, text="", title="Input",
               sep="")
                              
                                   
-  cmd <- sprintf("Ext.Msg.prompt(%s, %s, %s, this, true, %s);",
-                 ourQuote(title),
+  cmd <- sprintf("Ext.Msg.prompt('%s','%s', %s, this, true, '%s');",
+                 escapeSingleQuote(title),
                  .make_message(message),
                  fn,
-                 ourQuote(text)
+                 escapeSingleQuote(text)
                  )
   dlg$add_js_queue(cmd)
 }
@@ -217,8 +217,8 @@ galert <- function(message, title = "message", delay=3, parent) {
   if(missing(message))
     message <- ""
   
-  cmd <- sprintf("Ext.example.msg(%s, %s, %s);",
-                 ourQuote(title),
+  cmd <- sprintf("Ext.example.msg('%s', '%s', %s);",
+                 escapeSingleQuote(title),
                  .make_message(message),
                  delay)
 

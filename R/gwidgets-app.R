@@ -402,7 +402,7 @@ GWidgetsAppAjax <- setRefClass("GWidgetsAppAjax",
                               ##
                              run_proxy = function(req) {
                                "Call proxy object to return JSON data"
-                               
+
                                l <- req$GET()
                                if(length(l) == 0)
                                  stop("No info to run proxy")

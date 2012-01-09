@@ -129,11 +129,11 @@ column_renderer <- function(x) UseMethod("column_renderer")
 
 ##' Method to render a column in ExtJS Grid
 ##' @param x object to get column class from
-column_renderer.default <- function(x) list()
+column_renderer.default <- function(x) list(sortable=TRUE)
 
 ##' Method to render a column in ExtJS Grid
 ##' @param x object to get column class from
-column_renderer.Icon    <- function(x) list(width=20, renderer=String("gtableIcon"))
+column_renderer.Icon    <- function(x) list(width=20, sortable=FALSE, renderer=String("gtableIcon"))
 
 
 ## This function is use by make_column_model when editing of cells is
@@ -284,6 +284,14 @@ GWidgetArrayProxy <- setRefClass("GWidgetArrayProxy",
                                   add_public_method("remove_row")
                                   write_constructor()
                                 },
+                               get_data=function(drop_visible=TRUE,...) {
+                                 "Return raw data, not JSON encoded"
+                                 DF <- value
+                                 if(drop_visible)
+                                   DF[..visible,, drop=FALSE] ## want a data frame!
+                                 else
+                                   DF
+                               },
                                set_data = function(value, i, j, ...) {
                                  if(missing(i) && missing(j))
                                    value <<- as.data.frame(value, stringsAsFactors=FALSE)
@@ -297,6 +305,7 @@ GWidgetArrayProxy <- setRefClass("GWidgetArrayProxy",
                                  
                                  df <- cbind("id"=seq_len(nrow(value)), value)
                                  df <- df[..visible,]
+
                                  ## do we have paging type request? We do if params$start is not null
                                  if(!is.null(params$start)) {
                                    start <- as.numeric(params$start)
@@ -725,6 +734,7 @@ GWidgetArrayStore <- setRefClass("GWidgetArrayStore",
                            },
                            set_visible=function(value, ...) {
                              proxy$set_visible(value, ...)
+                             load_data()
                            }
                            )
                          )

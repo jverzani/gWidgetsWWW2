@@ -88,7 +88,7 @@ var simple = Ext.create('Ext.form.Panel', {
                                                        list(app_url="/custom/test",
                                                             title="Authenticate",
                                                             session_id=session_id,
-                                                            last_message=last_message
+                                                            last_message=escapeSingleQuote(last_message)
                                                             )
                                                        )
                                  return(out)

@@ -3,6 +3,8 @@
 ## this shows how actions can be enabled/disabled
 
 w <- gwindow("Example of using actions")
+gstatusbar("Powered by Rook and gWidgetsWWW", cont = w)
+
 g <- ggroup(cont=w, horizontal=FALSE)
 l <- glabel("An example of how to manipulate actions", cont=g)
 l <- glabel("(icons aren't yet hooked up)", cont=g) 
@@ -18,7 +20,8 @@ alist = list(
   save = gaction(label="save",icon="save",handler = handler, parent = w),
   save.as = gaction(label="save as...",icon="save as...",handler = handler, parent = w),
   quit = gaction(label="quit",icon="quit",handler = handler, parent = w),
-  cut = gaction(label="cut",icon="cut",handler = handler, parent = w)
+  cut = gaction(label="cut",icon="cut",handler = handler, parent = w),
+  ok = gaction(label="ok", icon="ok", handler=handler, parent=w)
   )
 
 ## menu bar list
@@ -35,10 +38,12 @@ mlist <- list(file = list(
               )
 
 mb <- gmenu(mlist, cont=w)
-l <- glabel("Buttons can take actions too.", cont=g)
-b <- gbutton(action = alist$save, cont = g)
+l <- glabel("Buttons can take actions too (buggy though when sharing!).", cont=g)
+button_group <- ggroup(cont=g)
+
+b <- gbutton(action = alist$ok, cont = button_group)
 gseparator(cont=g)
-b1 <- gbutton("set actions as if a \"no changes yet\" state", cont =g,
+b1 <- gbutton("set actions as if a \"no changes yet\" state", cont =button_group,
               handler = function(h,...) {
                 nms <- names(alist)
                 grayThese <- c("save","save.as","cut")
@@ -48,7 +53,7 @@ b1 <- gbutton("set actions as if a \"no changes yet\" state", cont =g,
                   enabled(alist[[i]]) <- TRUE
               })
 
-b2 <- gbutton("set actions as if \"some change\" is the  state", cont =g,
+b2 <- gbutton("set actions as if \"some change\" is the  state", cont=button_group,
               handler = function(h,...) {
                 nms <- names(alist)
                 grayThese <- c()
@@ -57,9 +62,5 @@ b2 <- gbutton("set actions as if \"some change\" is the  state", cont =g,
                 for(i in setdiff(nms, grayThese))
                   enabled(alist[[i]]) <- TRUE
               })
-
-## show the window
-gstatusbar("Powered by RApache and gWidgetsWWW", cont = w)
-visible(w) <- TRUE
 
 
