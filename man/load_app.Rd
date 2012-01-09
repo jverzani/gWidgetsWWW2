@@ -23,11 +23,11 @@
   hasn't already started.}
 
   \item{authenticator}{Used to specify a subclass of
-  \code{\link{Authenticator}} for doing authentification.
-  Specifying a value of \code{TRUE} will do a trivial
-  authentification. Subclasses of \code{Authenticator}
-  should implement the methods \code{is_valid_cookie} and
-  \code{is_valid_user}.}
+  \code{\link{Authenticator-class}} for doing
+  authentification. Specifying a value of \code{TRUE} will
+  do a trivial authentification. Subclasses of
+  \code{Authenticator} should implement the methods
+  \code{is_valid_cookie} and \code{is_valid_user}.}
 
   \item{...}{passed to \code{brew} call of
   \code{brew_template}}

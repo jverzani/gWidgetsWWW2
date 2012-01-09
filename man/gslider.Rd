@@ -1,5 +1,6 @@
 \name{gslider}
 \alias{gslider}
+\alias{GSlider}
 \title{slider widget}
 \usage{
   gslider(from = 0, to = 100, by = 1, value = from,
@@ -67,6 +68,11 @@
   Use slider to select from a sequence of values, specified
   as with \code{seq}. The sequence steps must be greater
   than 1
+
+  The \code{GSlider} implementation allows one to adjust
+  the formating of the tooltip that indicates the current
+  value of the widget. The \code{tpl} command uses an HTML
+  snippet where the value \code{{0}} does the substitution.
 }
 \examples{
 w <- gwindow()

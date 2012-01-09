@@ -22,8 +22,7 @@ NA
 ##' container. The \code{svalue<-} method can be used to change the
 ##' value.
 ##' @param text text for label
-##' @param container parent window
-##' @param ... ignored
+##' @inheritParams gwidget
 ##' @return an ExtWidget instance
 ##' @export
 ##' @examples

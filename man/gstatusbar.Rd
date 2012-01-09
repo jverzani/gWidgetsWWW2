@@ -2,14 +2,30 @@
 \alias{gstatusbar}
 \title{Status bar for gwindow instances}
 \usage{
-  gstatusbar(text = "", container = NULL, ...)
+  gstatusbar(text = "", container = NULL, ..., ext.args =
+  NULL)
 }
 \arguments{
   \item{text}{text for label}
 
-  \item{container}{parent window}
+  \item{container}{A parent container. In
+  \pkg{gWidgetsWWW2} a parent container is not optional
+  (though it can be substituted with the \code{parent}
+  argument in some circumstances). The parent specifies the
+  widget heirarchy and the \code{...} argument is used to
+  pass along arguments to layout the child component in the
+  parent container. Typically, these are passed to the
+  \code{add} method of the parent container.}
 
-  \item{...}{ignored}
+  \item{...}{Used to pass along argument to the parent
+  container's ode{add} method and possible other arguments
+  to the underlying ference class constructors.}
+
+  \item{ext.args}{The gWidgets' constructors ultimately
+  call an Ext constructor. The options passed to the Ext
+  constructor may be added to or overridden by use of this
+  argument. Values are passed in a named list components
+  and conversions to JavaScript objects}
 }
 \value{
   an ExtWidget instance

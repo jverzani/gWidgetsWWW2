@@ -1,0 +1,59 @@
+\name{GGroup}
+\alias{GGroup}
+\title{\code{GGroup} is the base class for ggroup and all box containers/}
+\description{
+  Box containers pack in child objects in a left to right
+  manner (horizontal) or top to bottom (horizonta=FALSE).
+  In the gWidgets API the space allocated to a child
+  dependsd on the arguments expand, fill and anchor. These
+  have a different interpretation in gWidgetsWWW2, as there
+  are no analogs in Ext's Box layouts.
+}
+\details{
+  Let's discuss vertical box containers, turn this on the
+  side to think about horizontal ones. A vertical box
+  container places its children from top to bottom. When
+  packing each child has its requested height. If the sum
+  of these is less than the height of the box (and no flex
+  values is given) then there is excess space in the bottom
+  of the box. If the sum is greater, the argument
+  \code{use.scrollwindow} should make it so that parent box
+  containers has scrollbars allowing the user to scroll to
+  see the bottom widgets. This has been an issue getting to
+  work though.
+
+  Now, when there is more availabe verticle space than
+  requested space, we can also have the widgets request
+  more availabel space. The expand argument can be a
+  logical indicating if the available space to a widget
+  should expand to fill the possible space. In Ext, this
+  maps to a value of flex, which is a weight so child items
+  with bigger flex values get a weighted amount of space.
+  As such, you can specify a positive number to the expand
+  argument. A logical is simply converted to 0 or 1;
+
+  As for horizontal space, the FILL argument should be used
+  to indicate if a child item should expand in the
+  horizontal space allotted. However, Ext doesn't allow per
+  item sizing of children, rather the 'align' property is a
+  property of the parent container (the box). We set it to
+  'stretch'. This gives similar behaviour as RGtk2, where
+  child components always stretch to fill the direction
+  orthogonal to the packing direction.
+
+  This can lead to large box containers, when a box
+  container is also a child of a parent box container. The
+  size of the child box can be controlled through the width
+  and height arguments. These map to \code{maxWidth} and
+  \code{maxHeight}, not the usual \code{width} and
+  \code{height} which are really requests, but additional
+  space can be allocated.
+
+  The anchor argument is meant to locate the actual widget
+  within the space allocated to the widget. In the gWidgets
+  spec if expand=TRUE, fill=FALSE, then the widget may have
+  additional space to fill than it needs. The anchor
+  specifies in x and y coordinates where it should go
+  values are in {-1,0,1} x {-1, 0, 1}.
+}
+

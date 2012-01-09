@@ -3,7 +3,7 @@
 \title{Menubar implementation}
 \usage{
   gmenu(menulist, popup = FALSE, action = NULL, container =
-  NULL, ...)
+  NULL, ..., ext.args = NULL)
 }
 \arguments{
   \item{menulist}{list of actions. Actions must have parent
@@ -11,12 +11,26 @@
 
   \item{popup}{Logical. ignored for now}
 
-  \item{action}{parameterizes handler in action}
+  \item{action}{Passed to handler to parameterize a call}
 
-  \item{container}{parent container, a \code{gwindow}
-  instance}
+  \item{container}{A parent container. In
+  \pkg{gWidgetsWWW2} a parent container is not optional
+  (though it can be substituted with the \code{parent}
+  argument in some circumstances). The parent specifies the
+  widget heirarchy and the \code{...} argument is used to
+  pass along arguments to layout the child component in the
+  parent container. Typically, these are passed to the
+  \code{add} method of the parent container.}
 
-  \item{...}{passed to add method of parent container}
+  \item{...}{Used to pass along argument to the parent
+  container's ode{add} method and possible other arguments
+  to the underlying ference class constructors.}
+
+  \item{ext.args}{The gWidgets' constructors ultimately
+  call an Ext constructor. The options passed to the Ext
+  constructor may be added to or overridden by use of this
+  argument. Values are passed in a named list components
+  and conversions to JavaScript objects}
 }
 \value{
   an ExtWidget object

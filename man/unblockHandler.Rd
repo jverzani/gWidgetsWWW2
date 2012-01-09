@@ -16,4 +16,8 @@
 \description{
   unblock handler by id
 }
+\note{
+  see the reference method \code{unblock_handlers} to
+  unblock all the handlers for a widget.
+}
 

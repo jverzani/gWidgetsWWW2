@@ -44,7 +44,10 @@
 \details{
   The CodeMirror project (codemirror.net) provides a code
   editor in javascript with an R mode. This widget
-  incorporates that into \pkg{gWidgetsWWW2}.
+  incorporates that into \pkg{gWidgetsWWW2}. This does R
+  syntax highlighting. To use codemirror with gtext (and no
+  highlighting), pass the argument
+  \code{use.codemirror=TRUE} to the \code{gtext} call.
 }
 \author{
   john verzani

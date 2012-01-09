@@ -16,10 +16,11 @@
   tpl = NULL)
 }
 \arguments{
-  \item{items}{a vector of items to choose from. (Not
-  supported, but should be: Or a data frame with 1 column
-  (items), two columns (items, icons), or three columns
-  (items, icons, tooltip))}
+  \item{items}{a vector of items to choose from. Coerced to
+  character class. Use \code{coerce.with} to get a numeric
+  value, say. (Not supported, but should also allow: Or a
+  data frame with 1 column (items), two columns (items,
+  icons), or three columns (items, icons, tooltip))}
 
   \item{selected}{initially selected item, by index. Use
   \code{0L} for none.}

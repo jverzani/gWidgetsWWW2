@@ -57,6 +57,7 @@ NULL
 ##' the default page size.
 ##' @param col.widths width of each column. Also see \code{size<-}
 ##' with a list where \code{columnWidths} is specified.
+##' @inheritParams gwidget
 ##' @return An ExtWidget instance
 ##' @note With \code{width} and/or \code{height} set to \code{NULL},
 ##' the default size will likely be unsatisfying. (And can consume any

@@ -124,7 +124,7 @@ JsonRPCServer <- setRefClass("JsonRPCServer",
 ##' @param url URL to run server under. Defaults to "JSON_RPC", so url would be (without work), "/custom/JSON_RPC"
 ##' @param port Which port to start Rhttpd, if Rhttpd server has not already started.
 ##' @param envir Where to look for JsonRPCObjects, defaults to global environment
-##' @seealso \code{\link{JsonRPCObject}}
+##' @seealso \code{JsonRPCObject}
 ##' @export
 ##' @examples
 ##' ## Create a PageCounter object using JSON_RPC

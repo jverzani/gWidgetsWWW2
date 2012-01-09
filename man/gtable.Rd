@@ -1,11 +1,12 @@
 \name{gtable}
 \alias{gtable}
+\alias{GTable}
 \title{A table widget}
 \usage{
   gtable(items, multiple = FALSE, chosencol = 1, icon.FUN =
   NULL, filter.column = NULL, filter.labels = NULL,
   filter.FUN = NULL, handler = NULL, action = NULL,
-  container = NULL, ..., width = 200, height = 200,
+  container = NULL, ..., width = NULL, height = NULL,
   ext.args = NULL, paging = FALSE, col.widths = rep(20,
   ncol(as.data.frame(items))))
 }
@@ -28,18 +29,6 @@
 
   \item{handler}{single click handlers}
 
-  \item{action}{action passed to handler}
-
-  \item{container}{parent container}
-
-  \item{...}{passed to parent container's \code{add}
-  method}
-
-  \item{width}{width in pixels}
-
-  \item{height}{height in pixels, should be set, otherwise
-  get only 1 row}
-
   \item{ext.args}{additional configuration values to pass
   to constructor}
 
@@ -53,6 +42,28 @@
   \item{col.widths}{width of each column. Also see
   \code{size<-} with a list where \code{columnWidths} is
   specified.}
+
+  \item{action}{Passed to handler to parameterize a call}
+
+  \item{container}{A parent container. In
+  \pkg{gWidgetsWWW2} a parent container is not optional
+  (though it can be substituted with the \code{parent}
+  argument in some circumstances). The parent specifies the
+  widget heirarchy and the \code{...} argument is used to
+  pass along arguments to layout the child component in the
+  parent container. Typically, these are passed to the
+  \code{add} method of the parent container.}
+
+  \item{...}{Used to pass along argument to the parent
+  container's ode{add} method and possible other arguments
+  to the underlying ference class constructors.}
+
+  \item{width}{width in pixels of component. Sizing in
+  \pkg{gWidgetsWWW2} is sometimes necessary as the
+  arguments \code{expand} and \code{fill} are not well
+  implemented.}
+
+  \item{height}{height in pixels of the component.}
 }
 \value{
   An ExtWidget instance
@@ -64,14 +75,17 @@
   "paged", that is given to the browser in bite-sized
   chunks so the lag is lacking.  The change handler is for
   a single click, also used for selection. Use
-  \code{addHandlerDoublecclick} to specify a callback for
+  \code{addHandlerDoubleclick} to specify a callback for
   the double click event on a cell.
+
+  The table widget is implemented using a proxy. That is,
+  the data is loaded in a separate AJAX call. This makes
+  things relatively responsive, but if there is too much
+  data one can turn on paging.
 }
 \details{
   The column names are inherited from the columnnames of
-  the data frame. Names with spaces will render, but are
-  not sortable. Use some punctuation, such as an underscore
-  to get sortability.
+  the data frame.
 
   A column of class "Icon" (see \code{\link{asIcon}}) will
   render a css class as an icon. See the example.
@@ -82,16 +96,26 @@
   effects the initial data frame. Pass a 0-row data frame
   with column names and defined column types at
   construction if no data is known at that point.
+
+  The widget can filter through the visible method. This
+  basically passes back the filtered data from the server
+  each time it is called. To avoid the data transfer, one
+  can use the \code{filter} reference method, which filters
+  browser side by a regular expression.
 }
 \note{
   With \code{width} and/or \code{height} set to
   \code{NULL}, the default size will likely be
-  unsatisfying. These values are best set by the
-  programmer. They can be readjusted through the
-  \code{size<-} method. For \pkg{gWidgetsWWW}, the
-  \code{filter} functions are not implemented. Rather the
-  \code{filter} method may be used to filter a named column
-  by a regular expression. See the example.
+  unsatisfying. (And can consume any space in a box, so
+  items packed in after will not be shown.) As such, these
+  values are often best set by the programmer. They can be
+  readjusted through the \code{size<-} method. The
+  \code{size<-} method can also be used to adjust the
+  columns widths, by passing a list with a component named
+  \code{columnWidths} containing the desired widths in
+  pixels.
+
+  The \code{visible<-} method may be used for filtering.
 }
 \examples{
 w <- gwindow("Filtering and table example")

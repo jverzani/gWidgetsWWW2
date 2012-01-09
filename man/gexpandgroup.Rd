@@ -2,9 +2,10 @@
 \alias{gexpandgroup}
 \title{gexpandgroup is a group with trigger icon and label}
 \usage{
-  gexpandgroup(text = "", horizontal = TRUE, spacing = 5,
-  handler = NULL, action = NULL, container = NULL, ...,
-  width = NULL, height = NULL, ext.args = NULL)
+  gexpandgroup(text = "", horizontal = TRUE, spacing = 2,
+  use.scrollwindow = FALSE, container = NULL, handler =
+  NULL, action = NULL, ..., width = NULL, height = NULL,
+  ext.args = NULL)
 }
 \arguments{
   \item{text}{label text}
@@ -16,7 +17,18 @@
   \item{horizontal}{left or right (default), or top to
   bottom (\code{horizontal=FALSE})}
 
-  \item{spacing}{body spacing}
+  \item{spacing}{Margin around each child component in
+  pixels. Can be a single number, in which case it is equal
+  pixel space around each child. But for gWidgetsWWW2 one
+  can specify a vector with recycling like function(top,
+  right=top, bottom=top, left=right). A typical pattern is
+  c(5,5,0,0), as otherwise there are 10 = 5 + 5 pixels
+  between adjoing children. To get padding just around
+  interior of box, pass in a value through ext.args, as in
+  \code{ext.args=list(bodyPadding=10)}.}
+
+  \item{use.scrollwindow}{logical. If given, scrollbars
+  will appear}
 
   \item{container}{A parent container. In
   \pkg{gWidgetsWWW2} a parent container is not optional
@@ -27,9 +39,7 @@
   parent container. Typically, these are passed to the
   \code{add} method of the parent container.}
 
-  \item{...}{Used to pass along argument to the parent
-  container's ode{add} method and possible other arguments
-  to the underlying ference class constructors.}
+  \item{...}{passed to \code{ggroup}}
 
   \item{width}{width in pixels of component. Sizing in
   \pkg{gWidgetsWWW2} is sometimes necessary as the

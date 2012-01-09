@@ -116,6 +116,6 @@ app_name="page_counter_example"))
 w$add_js_queue(cmd)
 }
 \seealso{
-  \code{\link{JsonRPCObject}}
+  \code{JsonRPCObject}
 }
 

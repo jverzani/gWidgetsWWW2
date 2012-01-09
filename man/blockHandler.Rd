@@ -16,4 +16,8 @@
 \description{
   temporariliy block handler by id
 }
+\note{
+  see the reference method \code{block_handlers} to block
+  all handlers for the widget.
+}
 

@@ -2,8 +2,7 @@
 \name{gWidgetsWWW2-package}
 \alias{GCanvas}
 \alias{GComponent}
-\alias{GEdit}
-\alias{GGroup}
+\alias{GWidget}
 \alias{gWidgetsWWW2-package}
 \alias{GWindow}
 \title{An implementation of the gWidgets API for web programming}
@@ -25,6 +24,10 @@
   reference class objects just those exposed methods which
   must be called as reference methods are mentioned.
 
+  GWidget is the Base class for widget objects. See
+  \code{gcontainer} for the base class for container
+  objects. Both derive from the \code{GComponent} class.
+
   The \code{GWindow} class is used for windows and
   subwindows. Windows in \pkg{gWidgetsWWW2} are rendered to
   parts of the web page. In the simplest case, they are
@@ -32,10 +35,6 @@
   user sees. However, one can render to parts of a window
   as well. This is why we have a \code{renderTo} argument
   in the constructor.
-
-  For \code{GGroup} and its subclasses, boxes are
-  different. For vertical boxes they need to have a height
-  set. We use a default of 200.
 
   The \code{gcanvas} widget provides a canvas for drawing
   on or for displaying graphics produced by the
@@ -48,11 +47,6 @@
   \code{add_handler_mouse_motion}, .... These are passed
   back event information through the \code{h} object. The
   method \code{get_event_params} provides the mapping.
-
-  For the \code{GEdit} class, the change signal is
-  "change". Use the reference class method
-  \code{add_handler_enter} for "enter" key press and
-  \code{addHandlerBlur} for focus out events
 }
 \details{
   The basic interface is meant to be implemented by all
@@ -115,31 +109,6 @@
   initiates this will time out before the process is done.
   One needs only to add the javascript commands to the
   queue.
-
-  The standard expand, fill, anchor arugments are not
-  implemented as they are in RGtk2, say.
-
-  The expand maps to flex which is a weight for stretching
-  the object in the packing direction. That is for a hbox,
-  it will strecth in horizontal direction
-
-  The fill corresponds to the align argument for the
-  container -- not the component. There is no way to fill
-  just one. The fill value of "stretch" will stretch the
-  component in the orthogonal direction to filling. Passing
-  the value "stretchmax" should stretch to the largest
-  child size, but not the max.
-
-  So expand=TRUE, fill=TRUE will will stretch in both
-  directions.
-
-  But wait, the fill value -- since it appears to the
-  container, but is specified by the children can be
-  specified more than once. The last one wins.
-
-  When expand and fill are not used, anchoring should be
-  possible. The CSS class needs to be set up properly
-  though.
 }
 \author{
   John Verzani \email{jverzani@gmail.com}

@@ -31,9 +31,7 @@ NULL
 ##' container would do.
 ##' @param menulist list of actions. Actions must have parent specified
 ##' @param popup Logical. ignored for now
-##' @param action parameterizes handler in action
-##' @param container parent container, a \code{gwindow} instance
-##' @param ... passed to add method of parent container
+##' @inheritParams gwidget
 ##' @return an ExtWidget object
 ##' @export
 ##' @examples

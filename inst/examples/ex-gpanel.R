@@ -48,7 +48,7 @@ states.selectAll("path")
 '
 
 ## states data comes from d3 example page
-states_json <- readLines(system.file("data","states.json", package="gWidgetsWWW2"))
+states_json <- readLines(system.file("ex_data","states.json", package="gWidgetsWWW2"))
 
 ## make the commands
 d3_cmds <- whisker.render(tpl, list(div_id=pan$div_id(),

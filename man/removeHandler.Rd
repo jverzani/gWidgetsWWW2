@@ -16,4 +16,8 @@
 \description{
   Remove handler
 }
+\note{
+  see the reference method \code{remove_handlers} to remove
+  all handlers on a widget.
+}
 

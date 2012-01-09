@@ -40,7 +40,7 @@ NULL
 ##' @param show.log If TRUE, logged information is written to the console
 ##' @param port Initial port for Rhttpd server, provided it hasn't already started.
 ##' @param authenticator Used to specify a subclass of
-##' \code{\link{Authenticator}} for doing authentification. Specifying
+##' \code{\link{Authenticator-class}} for doing authentification. Specifying
 ##' a value of \code{TRUE} will do a trivial
 ##' authentification. Subclasses of \code{Authenticator} should
 ##' implement the methods \code{is_valid_cookie} and

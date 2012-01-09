@@ -1,7 +1,23 @@
 \name{gstatusbar-class}
 \alias{gstatusbar-class}
-\title{base class for gstatusbar}
+\title{\code{GStatusbar}  class for gstatusbar}
 \description{
-  base class for gstatusbar
+  The convenience reference class method \code{clear} will
+  clear the text. This is basically the same as
+  \code{svalue(obj) <- ""}.
+}
+\details{
+  We add in reference methods \code{show_loading} and
+  \code{hide_loading} to allow one to indicate something is
+  loading. Not really that useful though, as is. This is
+  due to how the JavaScript commands come back from the R
+  process in a block so unless the browser takes a long
+  time to process the returning JavaScript, you will likely
+  show the loading for just a bit.
+
+  This class inherits for \code{GContainer}, thereby
+  allowing one to add in widgets in addition to the message
+  by using the status bar as the parent container. This
+  might be useful.
 }
 

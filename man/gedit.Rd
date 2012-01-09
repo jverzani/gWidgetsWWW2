@@ -1,5 +1,6 @@
 \name{gedit}
 \alias{gedit}
+\alias{GEdit}
 \title{gedit widget}
 \usage{
   gedit(text = "", width = 25, coerce.with = NULL,
@@ -63,6 +64,14 @@
 }
 \description{
   No [<- method. This can be done with a combobox though.
+
+  For the \code{GEdit} class, the change signal is "blur"
+  or a focus-out event. Use the reference class method
+  \code{add_handler_enter} for "enter" key press and
+  \code{add_handler_change} for a mix of change events
+  (browser dependent, but for most includes
+  \code{['change', 'input', 'textInput', 'keyup',
+  'dragdrop']}.
 }
 \note{
   The 'change' event varies from browser to browser. To

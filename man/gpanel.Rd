@@ -36,7 +36,20 @@
   a \code{GPanel} reference class object
 }
 \description{
-  ##'
+  This produces a widget holding a "div" tag that other
+  JavaScript libraries can use to place their content.
+  There are a few reference class methods that make this
+  possible.  The \code{div_id} method returns the DOM id of
+  the div object that is produced. The
+  \code{add_handler_onload} method can be used to call a
+  handler after the external libraries are loaded. This is
+  an asynchronous call, so one need not worry that the
+  libraries are down downloading. This call might require
+  JavaScript commands to be processed that are not produced
+  by a gWidgetsWWW2 handler. The \code{add_js_queue} method
+  allows one push such commands back to the browser. The
+  method \code{load_external} is used to load external
+  scripts by specifying the appropriate url(s).
 }
 \examples{
 w <- gwindow("windows and dialogs")
