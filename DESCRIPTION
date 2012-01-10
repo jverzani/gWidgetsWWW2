@@ -11,7 +11,7 @@ Description: Port of the gWidgets API to program dynamic
     The Ext JavaScript libararies (www.extjs.com) are used
     to create and manipulate the widgets dynamically.
 Version: 0.3-0
-URL: http://gwidgets.r-forge.r-project.org/
+URL: https://github.com/jverzani/gWidgetsWWW2
 Depends:
     R (>= 2.13.0),
     methods,

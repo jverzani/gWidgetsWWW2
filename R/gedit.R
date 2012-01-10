@@ -19,7 +19,6 @@ NULL
 
 ##' gedit widget
 ##'
-##' No [<- method. This can be done with a combobox though.
 ##' @param text initial text
 ##' @param width width in characters. Converted to pixels by multiplying by 8.
 ##' @param coerce.with Function to call for coercion from text. If no
@@ -36,8 +35,9 @@ NULL
 ##' @return a \code{GEdit} referece class object
 ##' @export
 ##' @note The 'change' event varies from browser to browser. To catch
-##' just an enter key, the \code{add_handler_enter} reference method
-##' is available.
+##' just an enter key, the \code{add_handler_enter} reference class method
+##' is available.  There is no [<- method to add typeahead
+##' (autocomplete) values. This feature can be done with a combobox though.
 ##' @examples
 ##' w <- gwindow()
 ##' sb <- gstatusbar("Powered by gWidgetsWWW and Rook", cont=w)

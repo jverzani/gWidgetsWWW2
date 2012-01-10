@@ -30,12 +30,13 @@ NULL
 ##' @param selected initially selected item, by index. Use \code{0L} for none.
 ##' @param editable logical. Does combobox allow editing. A bug (or
 ##' package writer's limiations) in extjs do not allow one to set the
-##' value if it is a potential index. Go figure. Use 4.0, not 5 ...
+##' value if it is a potential index (when \code{items} is
+##' integer). Go figure. Use 4.0, not 5 if you want numeric values ...
 ##' @param coerce.with Function. If given, called on value before returning
 ##' @inheritParams gwidget
 ##' @param autocomplete If \code{TRUE}, will hide the trigger and make editable. When the user types the matching values are presented.
 ##' @param initial.msg If \code{selected=0}, then one can assign an initial message here
-##' @param tpl a template for the item (Not working!)
+##' @param tpl a template for the item (Not working! Dang....)
 ##' @return an ExtWidget instance
 ##' @note The \code{tpl} argument is not working as we'd like.
 ##' @export

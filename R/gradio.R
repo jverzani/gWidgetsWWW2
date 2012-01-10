@@ -18,8 +18,8 @@ NA
 
 ##' Radio button group
 ##'
-##' A basic radio button group. Specify the labels through items. The main value is the label or index
-##' @param items Items to choose from
+##' A basic radio button group. Specify the labels through items. The main value is the label or index.
+##' @param items Vector of items to choose one from.
 ##' @param selected index of initially selected item
 ##' @param horizontal logical. Horizontal or vertical layout. (See also columns)
 ##' @inheritParams gwidget

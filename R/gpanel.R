@@ -26,9 +26,9 @@ NULL
 ##' produced. The \code{add_handler_onload} method can be used to call
 ##' a handler after the external libraries are loaded. This is an
 ##' asynchronous call, so one need not worry that the libraries are
-##' down downloading. This call might require JavaScript commands to
+##' done downloading. This call might require JavaScript commands to
 ##' be processed that are not produced by a gWidgetsWWW2 handler. The
-##' \code{add_js_queue} method allows one push such commands back to
+##' \code{add_js_queue} method allows one to push such commands back to
 ##' the browser. The method \code{load_external} is used to load
 ##' external scripts by specifying the appropriate url(s).
 ##' @inheritParams gwidget

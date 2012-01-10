@@ -108,7 +108,7 @@ gwindow <- function(title="",
 ##' long-running process and the handler that initiates this will time
 ##' out before the process is done. One needs only to add the
 ##' javascript commands to the queue.
-##' @rdname gWidgetsWWW2-package
+##' @rdname gwindow
 GWindow <- setRefClass("GWindow",
                        contains="GContainer",
                        fields=list(

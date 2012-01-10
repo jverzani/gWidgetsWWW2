@@ -3,7 +3,7 @@ NULL
 
 ##' Stub for roxygen2 documentation of common arguments for gWidgets contructors
 ##' 
-##' @param handler optional means (to \code{\link{addHandlerChanged}}
+##' @param handler optional means (to \code{\link{addHandlerChanged}})
 ##' to specify a handler for the default signal. A handler is a
 ##' function with signature \code{(h,...)} where \code{h} is a list
 ##' with components \code{obj} referring to the object emitting the
@@ -18,16 +18,17 @@ NULL
 ##' parent container. Typically, these are passed to the \code{add}
 ##' method of the parent container.
 ##' @param ... Used to pass along argument to the parent container's
-##'ode{add} method and possible other arguments to the underlying
+##' \code{add} method and possible other arguments to the underlying
 ##'ference class constructors.
 ##' @param width width in pixels of component. Sizing in
 ##' \pkg{gWidgetsWWW2} is sometimes necessary as the arguments
 ##' \code{expand} and \code{fill} are not well implemented.
 ##' @param height height in pixels of the component.
-##' @param ext.args The gWidgets' constructors ultimately call an Ext
-##' constructor. The options passed to the Ext constructor may be
-##' added to or overridden by use of this argument. Values are passed
-##' in a named list components and conversions to JavaScript objects
+##' @param ext.args The contructors of \pkg{gWidgetsWWW2} ultimately
+##' call an Ext constructor. The options passed to the Ext constructor
+##' may be added to or overridden by use of this argument. Values are
+##' passed in as named list components and with values converted into JavaScript
+##' objects by \code{\link{asJSObject}}.
 ##' @param expand Logical or numeric. Does the child component expand
 ##' to fill the allotted space? If so a \code{flex} value can be
 ##' specified (as a positive integer) that gives weights to all
@@ -41,12 +42,9 @@ NULL
 ##' packing into box containers, child components expand in the
 ##' orthogonal direction (horizontal boxes have vertical, \code{y},
 ##' fill values).
-##' @param anchor 
-#' \code{action} argument, and possible other values.
-#' method of the parent container.
-#' reference class constructors.
-#' \code{expand} and \code{fill} are not well implemented.
-#' are handled by \code{\link{toJSObject}}.
+##' @param anchor specifies where a widget is anchored (using a value
+##' in {-1, 0,1} cross {-1, 0, 1}), in the case the widget
+##' has more space allocated to it then requested.
 gwidget <- function(handler, action=NULL, container=NULL, ...,
                     width=NULL, height=NULL, ext.args=NULL,
                     expand=NULL, fill=NULL, anchor=NULL
@@ -57,8 +55,8 @@ gwidget <- function(handler, action=NULL, container=NULL, ...,
 
 ##' \code{GWidgets} is the base class for widgets
 ##'
-##' GWidget is the Base class for widget objects. See
-##' \code{gcontainer} for the base class for container objects. Both
+##' \code{GWidget} is the base class for widget objects. See
+##' \code{GContainer} for the base class for container objects. Both
 ##' derive from the \code{GComponent} class.
 ##' @rdname gWidgetsWWW2-package
 GWidget <- setRefClass("GWidget",

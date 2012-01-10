@@ -21,16 +21,14 @@ NULL
 ##'
 ##' A widget for editing a data frame. There is no means to change the
 ##' size of the frame being edited or the type of data in each
-##' column. As such, one must plan ahead.
+##' column. As such, one must plan ahead. This implementation allows
+##' one to add a row to the data store, to edit a row (row-by-row),
+##' but there is no means to delete a row.
 ##' @param items data frame to be edited
 ##' @param name name of data frame appearing in titke
 ##' @param do.subset Ignored.
-##' @param container Parent container
-##' @param ... passed to container's \code{add} method
-##' @param width width of widget in pixels
-##' @param height height of widget in pixels
-##' @param ext.args extra arguments to pass to constructor
-##' @return an ExtWidget
+##' @inheritParams gwiget
+##' @return a \code{GDf} reference class object.
 ##' @author john verzani
 gdf <- function(items = NULL, name = deparse(substitute(items)),
                 do.subset = FALSE,
@@ -44,8 +42,7 @@ gdf <- function(items = NULL, name = deparse(substitute(items)),
   gd
 }
 
-##' base class for gdatarframe
-##' @name gdf-class
+## base class for gdatarframe
 GDf <- setRefClass("GDf",
                    contains="GWidgetGrid",
                    fields=list(
@@ -53,8 +50,10 @@ GDf <- setRefClass("GDf",
                      "name" = "character"
                      ),
                    methods=list(
-                     ##' @param page_size size of page request to server. Smaller means faster but more frequent
-                     ##' @param setType type of selection for editing: entire row or single cell
+                     ## @param page_size size of page request to
+                     ## server. Smaller means faster but more frequent
+                     ## @param setType type of selection for editing:
+                     ##entire row or single cell
                      init=function(items, name, container, ..., width=NULL, height=NULL, ext.args=NULL,
                        page_size=200L
                        #, selType=c("rowmodel", "cellmodel")

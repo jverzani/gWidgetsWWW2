@@ -16,10 +16,12 @@
 ##' @include gframe.R
 NA
 
-##' gexpandgroup is a group with trigger icon and label
+##' gexpandgroup A box container which can disclose or hide its
+##' children through a trigger icon.
 ##'
 ##' Use \code{svalue<-} to adjust the title. The \code{visible<-}
-##' method is used to programatically change whether the child componented are displayed.
+##' method is used to programatically change whether the child
+##' components are displayed.
 ##' @param text label text
 ##' @param handler  Called when expanded or closed
 ##' @param action passed to handler

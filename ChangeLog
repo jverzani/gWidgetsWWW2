@@ -1,3 +1,7 @@
+2012-01-10  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gtext.R (gcodemirror): fix to single quote issue in string
+
 2011-06-09  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gradio.R (gradio): fix bug in columns (wrong logic)

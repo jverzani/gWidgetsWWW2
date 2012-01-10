@@ -18,16 +18,17 @@ NULL
 
 ##' Google maps widget
 ##'
-##' Widget to display a google map and expose some of the google maps API through R methods
+##' Widget to display a google map and expose some of the google maps
+##' API through R methods
 ##' @title Google maps widget
 ##' @param center lat/lng pair where map should be centered
 ##' @param zoom zoom level for initial map
 ##' @param maptype Type of map
 ##' @inheritParams gwidget
-##' @return an GWidget object
+##' @return a \code{GGoogleMaps} object
+##' @note The bulk of the functionality is provided through reference class methods.
 ##' @export
 ##' @examples
-##' \dontrun{
 ##' w <- gwindow("hello", renderTo="replaceme")
 ##' sb <- gstatusbar("Powered by gWidgetsWWW and Rook", cont=w)
 ##' 
@@ -67,8 +68,6 @@ NULL
 ##' gcheckbox("Bicycle overlay", checked=FALSE, width=150, cont=g1, handler=function(h,...) {
 ##'   gm$add_bikelayer(svalue(h$obj))
 ##' })
-##'
-##' }
 ggooglemaps <- function(center=c(45,45), zoom=13,
                         maptype="roadmap",
                         container, ...,
@@ -80,6 +79,13 @@ ggooglemaps <- function(center=c(45,45), zoom=13,
   gm
 }
 
+##' Base class for GoogleMaps objects
+##'
+##' The \class{GGoogleMaps} class provides the methods for the
+##' googlemaps widget. As the API for google maps far exceeds the
+##' primitive API of \pkg{gWidgets}, reference class methods are used
+##' to expose the google maps API. See the example for illustrations.
+##' @rdname ggooglemaps
 GGoogleMaps <- setRefClass("GGoogleMaps",
                            contains="GWidget",
                            fields=list(
@@ -301,13 +307,13 @@ var _fDelayed = function() {
 
 ##' Add a marker to the map
 ##'
-##' 
 ##' @param position lat/lng pair for position of mark
 ##' @param title optional tooltip text
 ##' @param icon option icon, stock name or url
 ##' @param map ggooglemaps instance
 ##' @return a GGoogleMapsObject
 ##' @export
+##' @rdname ggooglemaps
 ggooglemaps_marker <- function(position, title=NULL, icon=NULL, map) {
   gmm <- GGoogleMapsMarker$new(map$toplevel)
   gmm$init(position, title, icon, map)
@@ -315,6 +321,11 @@ ggooglemaps_marker <- function(position, title=NULL, icon=NULL, map) {
 }
 
 
+##' Class for markers
+##'
+##' The \code{GGoogleMapsMarker} class provides a class for marker objects on a map.
+##' The main argument is \code{add_handler_clicked}, which allows one to assign a callback when a marker is clicked.
+##' @rdname ggooglemaps
 GGoogleMapsMarker <- setRefClass("GGoogleMapsMarker",
                                  contains="GGoogleMapsObject",
                                  fields=list(

@@ -11,7 +11,7 @@ sapply(seq_along(fs), function(i) {
   g1 <- ggroup(cont=g)
 
   gbutton("Source", cont=g1, action=i, handler=function(h,...) {
-    w1 <- gwindow(sprintf("Source of %s", basefs[i]), width=450, height=400, parent=w)
+    w1 <- gwindow(sprintf("Source of %s", basefs[i]), width=650, height=400, parent=w)
     gw <- ggroup(cont=w1, spacing=0, horizontal=FALSE)
     lns <- readLines(fs[h$action])
     cm <- gcodemirror(paste(lns, collapse="\n"), expand=TRUE,  cont=gw)

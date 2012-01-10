@@ -24,9 +24,8 @@ NULL
 ##' placed. The basic assignment is: \code{tbl[i,j] <- gbutton("asdf",
 ##' cont=tbl)}. The \code{tbl} object is on the right side, so the
 ##' widget has a toplevel and on the left to specify how the layout
-##' will occur. Although one can specify i and j as a range of values,
-##' or even empty, one must be careful that no "holes" would be left
-##' over, as otherwise the layout will not work out correctly.
+##' will occur. One can specify i and j as a range of values,
+##' or even empty
 ##'
 ##' The layout is only finalized after call the \code{visible<-}
 ##' method with a value of \code{TRUE}. One adds all the desired
@@ -50,7 +49,9 @@ NULL
 ##' tbl[2,1, anchor=c(1,0)] <- "Rank"
 ##' tbl[2,2] <- gedit("", cont=tbl)
 ##' tbl[3,2] <- gbutton("click", cont=tbl, handler=function(h,...) {
-##'   galert(sprintf("%s is a %s", svalue(tbl[1,2]), svalue(tbl[2,2])), parent=w)
+##'   msg <- whisker.render("{{name}} is a {{rank}}",
+##'            setNames(lapply(tbl[,2], svalue)[1:2], c("name", "rank")))
+##'   galert(msg, parent=w)
 ##' })
 ##' visible(tbl) <- TRUE ## This line is needed!
 glayout <- function(homogeneous = FALSE, spacing = 2, # 10 is too big here

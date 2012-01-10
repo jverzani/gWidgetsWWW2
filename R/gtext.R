@@ -123,7 +123,7 @@ GCodeMirror <- setRefClass("GCodeMirror",
                                constructor <<- "Ext.ux.CodeMirror"
 #                               transport_signal <<- "change"
                                
-                               arg_list <- list(value=text,
+                               arg_list <- list(
                                                 width=width,
                                                 height=height,
                                                 lineNumbers=TRUE,
@@ -171,7 +171,7 @@ GCodeMirror <- setRefClass("GCodeMirror",
                                if(length(tmp) == 0)
                                  tmp <- ""
                                value <<- tmp
-                               call_Ext("setValue", paste(value, collapse="\n"))
+                               call_Ext("setValue", escapeSingleQuote(paste(value, collapse="\n")))
                              },
                              set_editable=function(val, ...) {
                                "readonly? Then set to FALSE."

@@ -201,7 +201,8 @@ tag.GComponent <- function(x, key) x$get_attr(key)
 ##' @rdname editable_assign
 "editable<-" <- function(x, ..., value) UseMethod("editable<-")
 
-##' assignment method for tag
+##' assignment method for editable
+##' 
 ##' @method "editable<-" GComponent
 ##' @S3method "editable<-" GComponent
 ##' @rdname editable_assign

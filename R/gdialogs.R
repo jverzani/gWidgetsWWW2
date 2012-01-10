@@ -72,17 +72,17 @@ Ext.Msg.show({
 ##' Confirmation dialog
 ##'
 ##' Calls handler when Yes button is clicked. Unlike other gWidgets
-##' implementations, this one does block the R process before
+##' implementations, this one does not block the R process before
 ##' returning a logical indicating the selection. One must use a
 ##' handler to have interactivity.
 ##' @param message message
 ##' @param title title for dialog's window
-##' @param icon icon
+##' @param icon icon. One of 'info', 'warning', 'error', or 'question'.
 ##' @param parent parent container (main window instance)
 ##' @param handler handler passed to dialog if confirmed
 ##' @param action passed to any handler
 ##' @param ... ignored
-##' @return return value ignored, use handler for response
+##' @return return value ignored, use handler for response.
 ##' @export
 ##' @examples
 ##' w <- gwindow()
@@ -138,7 +138,7 @@ Ext.Msg.show({
 ##' @param message message
 ##' @param text initial text for the widget
 ##' @param title title for dialog's window
-##' @param icon icon ignored
+##' @param icon icon ignored here
 ##' @param parent parent container (main window instance)
 ##' @param handler Called if yes is selected, the component
 ##' \code{input} of the first argument holds the user-supplied string.
@@ -200,7 +200,7 @@ GDialog <- setRefClass("GDialog",
 ##' @param message message to display
 ##' @param title title of message
 ##' @param delay delay in seconds
-##' @param parent parent window, typically gwindow instance. Necessary
+##' @param parent parent window, typically gwindow instance. Necessary.
 ##' @return not used
 ##' @export
 ##' @examples

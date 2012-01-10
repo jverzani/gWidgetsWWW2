@@ -19,7 +19,8 @@ NULL
 ##' calendar widget
 ##'
 ##' Basic text box with button to open calendar picker dialog. The
-##' svalue method refers to the date, which depends on the value of format.xf
+##' svalue method refers to the date, which depends on the value of
+##' \code{format}.
 ##' @param text optional inital date as text.
 ##' @param format format of date. Default of Y-m-d.
 ##' @inheritParams gwidget

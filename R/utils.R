@@ -320,6 +320,7 @@ escapeSingleQuote <- function(x) {
   x <- gsub(esc_q, stupid_match,x)
   x <- gsub("'", "\\\\'", x)
   x <- gsub(stupid_match, "\\\\'", x)
+  x <- gsub("\n", "\\\\n", x) 
   ## gsub("'", '"', x)  ## could replace, but escaping seems safer
   #gsub("\\'", "\\\\'", x)
   return(x)

@@ -16,20 +16,20 @@
 ##' @include gcontainer.R
 NULL
 
-##' A "border" layout is a 5-panel layout where "north", "east",
-##' "south", and "west" satellite panels surround a "center" panel. 
+##' A "border" layout is a 5-panel layout where  satellite panels
+##' surround a "center" panel. 
 ##'
 ##' The \code{gborderlayout} container implements a border layout
 ##' where 4 panels surround a main center panel. The panels may be
 ##' configured with a title (like \code{gframe}) and may be
-##' collpasible (like \code{gexpandgroup}). Both configurations are
+##' collapsible (like \code{gexpandgroup}). Both configurations are
 ##' done at construction time. The panels only hold one child, so one
 ##' would add a container to have more complicated layouts.
 ##'
 ##' To add a child component, one specifies a value of \code{where} to
 ##' the \code{add} method (implicitly called by the constructor, so in
 ##' practice this argument is passed through \code{...} by the
-##' constructor). The value of \code{where} if from
+##' constructor). The value of \code{where} is one of
 ##' \code{c("center","north", "south", "east", "west")}. Child
 ##' components are added with the "fit" layout, which is basically the
 ##' same as specifying \code{expand=TRUE} and \code{fill=TRUE}, though those
@@ -40,13 +40,13 @@ NULL
 ##' numeric \code{dimension}. 
 ##' @inheritParams gwidget
 ##' @param title a list  with named components from
-##' \code{c("center","north", "south", "east", "west"))} allowing one
+##' \code{c("center","north", "south", "east", "west")} allowing one
 ##' to specify titles (as length-1 character vectors) of the
 ##' regions. The default is no title. A title may be added later by
 ##' adding a \code{gframe} instance, but that won't work well with a
 ##' collapsible panel.
 ##' @param collapsible a list with  named components from
-##' \code{c("center","north", "south", "east", "west"))} allowing one
+##' \code{c("center","north", "south", "east", "west")} allowing one
 ##' to specify through a logical if the panel will be collapsible,
 ##' similar to \code{gexpandgroup}. The default is \code{FALSE}
 ##' @return a \code{GBorderLayout} reference class object
