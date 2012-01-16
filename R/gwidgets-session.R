@@ -20,18 +20,28 @@ NULL
 SessionManager <- setRefClass("SessionManager",
                               fields=list(
                                 "url" = "character",
-                                "sessions"="list"
+#                                "sessions"="list"
+                                "sessions"="ANY"
                                 ),
                               methods=list(
                                 initialize = function(...) {
-                                  sessions <<- list()
+#                                  sessions <<- list()
+
+                                  ## XXX add in option to set this
+#                                  db_name <- getWithDefault(options("gWidgetsWWW2:db_name"), default="gWidgetsWWW2_session_db")
+                                  db_name <- "gWidgetsWWW2_session_db"
+                                  
+                                  dbCreate(db_name)
+                                  sessions <<- dbInit(db_name)
+                                  
                                   callSuper(...)
                                 },
                                 get_id = function(...) {
                                   "Create a unique new sessionID"
                                   make_ID <- function() paste(sample(LETTERS, 10, replace=TRUE), collapse="")
                                   x <- make_ID()
-                                  while(x %in% names(sessions))
+#                                  while(x %in% names(sessions))
+                                  while(dbExists(sessions, x))
                                     x <- make_ID()
                                   return(x)
                                 },
@@ -59,14 +69,14 @@ SessionManager <- setRefClass("SessionManager",
                                 },
                                 get_session_by_id = function(id="") {
                                   "Get session, an environment. Return NULL if not there"
-                                  if(is.null(id))
-                                    return(NULL)
-                                  rec <- sessions[[id, exact=TRUE]]
-                                  if(is.null(rec)) {
-                                    return(NULL)
-                                  }
-
                                   
+                                  if(is.null(id) || !dbExists(sessions, id))
+                                    return(NULL)
+                                  ##                                  rec <- sessions[[id, exact=TRUE]]
+                                  rec <- sessions[[id]]
+                                  if(is.null(rec))
+                                    return(NULL)
+
                                   rec$last.access <- Sys.time()
                                   sessions[[id]] <<- rec
 
