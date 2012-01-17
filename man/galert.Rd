@@ -12,7 +12,7 @@
   \item{delay}{delay in seconds}
 
   \item{parent}{parent window, typically gwindow instance.
-  Necessary}
+  Necessary.}
 }
 \value{
   not used

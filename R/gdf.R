@@ -27,7 +27,7 @@ NULL
 ##' @param items data frame to be edited
 ##' @param name name of data frame appearing in titke
 ##' @param do.subset Ignored.
-##' @inheritParams gwiget
+##' @inheritParams gwidget
 ##' @return a \code{GDf} reference class object.
 ##' @author john verzani
 gdf <- function(items = NULL, name = deparse(substitute(items)),

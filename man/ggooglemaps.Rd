@@ -1,10 +1,16 @@
 \name{ggooglemaps}
 \alias{ggooglemaps}
+\alias{GGoogleMaps}
+\alias{ggooglemaps_marker}
+\alias{GGoogleMapsMarker}
 \title{Google maps widget}
 \usage{
   ggooglemaps(center = c(45, 45), zoom = 13, maptype =
   "roadmap", container, ..., width = NULL, height = 400,
   ext.args = NULL)
+
+  ggooglemaps_marker(position, title = NULL, icon = NULL,
+  map)
 }
 \arguments{
   \item{center}{lat/lng pair where map should be centered}
@@ -12,6 +18,14 @@
   \item{zoom}{zoom level for initial map}
 
   \item{maptype}{Type of map}
+
+  \item{position}{lat/lng pair for position of mark}
+
+  \item{title}{optional tooltip text}
+
+  \item{icon}{option icon, stock name or url}
+
+  \item{map}{ggooglemaps instance}
 
   \item{container}{A parent container. In
   \pkg{gWidgetsWWW2} a parent container is not optional
@@ -23,8 +37,8 @@
   \code{add} method of the parent container.}
 
   \item{...}{Used to pass along argument to the parent
-  container's ode{add} method and possible other arguments
-  to the underlying ference class constructors.}
+  container's \code{add} method and possible other
+  arguments to the underlying ference class constructors.}
 
   \item{width}{width in pixels of component. Sizing in
   \pkg{gWidgetsWWW2} is sometimes necessary as the
@@ -33,24 +47,43 @@
 
   \item{height}{height in pixels of the component.}
 
-  \item{ext.args}{The gWidgets' constructors ultimately
-  call an Ext constructor. The options passed to the Ext
-  constructor may be added to or overridden by use of this
-  argument. Values are passed in a named list components
-  and conversions to JavaScript objects}
+  \item{ext.args}{The contructors of \pkg{gWidgetsWWW2}
+  ultimately call an Ext constructor. The options passed to
+  the Ext constructor may be added to or overridden by use
+  of this argument. Values are passed in as named list
+  components and with values converted into JavaScript
+  objects by \code{\link{asJSObject}}.}
 }
 \value{
-  an GWidget object
+  a \code{GGoogleMaps} object
+
+  a GGoogleMapsObject
 }
 \description{
   Google maps widget
+
+  The \class{GGoogleMaps} class provides the methods for
+  the googlemaps widget. As the API for google maps far
+  exceeds the primitive API of \pkg{gWidgets}, reference
+  class methods are used to expose the google maps API. See
+  the example for illustrations.
+
+  Add a marker to the map
+
+  The \code{GGoogleMapsMarker} class provides a class for
+  marker objects on a map. The main argument is
+  \code{add_handler_clicked}, which allows one to assign a
+  callback when a marker is clicked.
 }
 \details{
   Widget to display a google map and expose some of the
   google maps API through R methods
 }
+\note{
+  The bulk of the functionality is provided through
+  reference class methods.
+}
 \examples{
-\dontrun{
 w <- gwindow("hello", renderTo="replaceme")
 sb <- gstatusbar("Powered by gWidgetsWWW and Rook", cont=w)
 
@@ -90,7 +123,5 @@ gm$add_trafficlayer(svalue(h$obj))
 gcheckbox("Bicycle overlay", checked=FALSE, width=150, cont=g1, handler=function(h,...) {
 gm$add_bikelayer(svalue(h$obj))
 })
-
-}
 }
 

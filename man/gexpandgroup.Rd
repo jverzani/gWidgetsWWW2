@@ -1,6 +1,7 @@
 \name{gexpandgroup}
 \alias{gexpandgroup}
-\title{gexpandgroup is a group with trigger icon and label}
+\title{gexpandgroup A box container which can disclose or hide its
+children through a trigger icon.}
 \usage{
   gexpandgroup(text = "", horizontal = TRUE, spacing = 2,
   use.scrollwindow = FALSE, container = NULL, handler =
@@ -48,16 +49,17 @@
 
   \item{height}{height in pixels of the component.}
 
-  \item{ext.args}{The gWidgets' constructors ultimately
-  call an Ext constructor. The options passed to the Ext
-  constructor may be added to or overridden by use of this
-  argument. Values are passed in a named list components
-  and conversions to JavaScript objects}
+  \item{ext.args}{The contructors of \pkg{gWidgetsWWW2}
+  ultimately call an Ext constructor. The options passed to
+  the Ext constructor may be added to or overridden by use
+  of this argument. Values are passed in as named list
+  components and with values converted into JavaScript
+  objects by \code{\link{asJSObject}}.}
 }
 \description{
   Use \code{svalue<-} to adjust the title. The
   \code{visible<-} method is used to programatically change
-  whether the child componented are displayed.
+  whether the child components are displayed.
 }
 \examples{
 w <- gwindow()

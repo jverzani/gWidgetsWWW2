@@ -20,7 +20,8 @@ Depends:
     canvas,
     memoise,
     whisker,
-    digest
+    digest,
+    filehash
 LazyLoad: yes
 Collate:
     'gwidgets-package.R'

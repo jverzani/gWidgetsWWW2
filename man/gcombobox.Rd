@@ -27,8 +27,9 @@
 
   \item{editable}{logical. Does combobox allow editing. A
   bug (or package writer's limiations) in extjs do not
-  allow one to set the value if it is a potential index. Go
-  figure. Use 4.0, not 5 ...}
+  allow one to set the value if it is a potential index
+  (when \code{items} is integer). Go figure. Use 4.0, not 5
+  if you want numeric values ...}
 
   \item{coerce.with}{Function. If given, called on value
   before returning}
@@ -40,10 +41,11 @@
   \item{initial.msg}{If \code{selected=0}, then one can
   assign an initial message here}
 
-  \item{tpl}{a template for the item (Not working!)}
+  \item{tpl}{a template for the item (Not working!
+  Dang....)}
 
   \item{handler}{optional means (to
-  \code{\link{addHandlerChanged}} to specify a handler for
+  \code{\link{addHandlerChanged}}) to specify a handler for
   the default signal. A handler is a function with
   signature \code{(h,...)} where \code{h} is a list with
   components \code{obj} referring to the object emitting
@@ -62,8 +64,8 @@
   \code{add} method of the parent container.}
 
   \item{...}{Used to pass along argument to the parent
-  container's ode{add} method and possible other arguments
-  to the underlying ference class constructors.}
+  container's \code{add} method and possible other
+  arguments to the underlying ference class constructors.}
 
   \item{width}{width in pixels of component. Sizing in
   \pkg{gWidgetsWWW2} is sometimes necessary as the
@@ -72,11 +74,12 @@
 
   \item{height}{height in pixels of the component.}
 
-  \item{ext.args}{The gWidgets' constructors ultimately
-  call an Ext constructor. The options passed to the Ext
-  constructor may be added to or overridden by use of this
-  argument. Values are passed in a named list components
-  and conversions to JavaScript objects}
+  \item{ext.args}{The contructors of \pkg{gWidgetsWWW2}
+  ultimately call an Ext constructor. The options passed to
+  the Ext constructor may be added to or overridden by use
+  of this argument. Values are passed in as named list
+  components and with values converted into JavaScript
+  objects by \code{\link{asJSObject}}.}
 }
 \value{
   an ExtWidget instance

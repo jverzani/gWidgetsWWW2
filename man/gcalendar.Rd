@@ -12,7 +12,7 @@
   \item{format}{format of date. Default of Y-m-d.}
 
   \item{handler}{optional means (to
-  \code{\link{addHandlerChanged}} to specify a handler for
+  \code{\link{addHandlerChanged}}) to specify a handler for
   the default signal. A handler is a function with
   signature \code{(h,...)} where \code{h} is a list with
   components \code{obj} referring to the object emitting
@@ -31,8 +31,8 @@
   \code{add} method of the parent container.}
 
   \item{...}{Used to pass along argument to the parent
-  container's ode{add} method and possible other arguments
-  to the underlying ference class constructors.}
+  container's \code{add} method and possible other
+  arguments to the underlying ference class constructors.}
 
   \item{width}{width in pixels of component. Sizing in
   \pkg{gWidgetsWWW2} is sometimes necessary as the
@@ -41,11 +41,12 @@
 
   \item{height}{height in pixels of the component.}
 
-  \item{ext.args}{The gWidgets' constructors ultimately
-  call an Ext constructor. The options passed to the Ext
-  constructor may be added to or overridden by use of this
-  argument. Values are passed in a named list components
-  and conversions to JavaScript objects}
+  \item{ext.args}{The contructors of \pkg{gWidgetsWWW2}
+  ultimately call an Ext constructor. The options passed to
+  the Ext constructor may be added to or overridden by use
+  of this argument. Values are passed in as named list
+  components and with values converted into JavaScript
+  objects by \code{\link{asJSObject}}.}
 }
 \value{
   a \code{GCalendar} instance
@@ -53,7 +54,7 @@
 \description{
   Basic text box with button to open calendar picker
   dialog. The svalue method refers to the date, which
-  depends on the value of format.xf
+  depends on the value of \code{format}.
 }
 \note{
   the \code{svalue} method returns an instance of

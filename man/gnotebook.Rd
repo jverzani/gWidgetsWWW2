@@ -22,8 +22,8 @@
   \code{add} method of the parent container.}
 
   \item{...}{Used to pass along argument to the parent
-  container's ode{add} method and possible other arguments
-  to the underlying ference class constructors.}
+  container's \code{add} method and possible other
+  arguments to the underlying ference class constructors.}
 
   \item{width}{width in pixels of component. Sizing in
   \pkg{gWidgetsWWW2} is sometimes necessary as the
@@ -32,14 +32,15 @@
 
   \item{height}{height in pixels of the component.}
 
-  \item{ext.args}{The gWidgets' constructors ultimately
-  call an Ext constructor. The options passed to the Ext
-  constructor may be added to or overridden by use of this
-  argument. Values are passed in a named list components
-  and conversions to JavaScript objects}
+  \item{ext.args}{The contructors of \pkg{gWidgetsWWW2}
+  ultimately call an Ext constructor. The options passed to
+  the Ext constructor may be added to or overridden by use
+  of this argument. Values are passed in as named list
+  components and with values converted into JavaScript
+  objects by \code{\link{asJSObject}}.}
 }
 \value{
-  a GNotebook reference class object.
+  a \code{GNotebook} reference class object.
 }
 \description{
   Notebook container
@@ -48,5 +49,11 @@
 w <- gwindow()
 nb <- gnotebook(cont=w)
 gbutton("hello", container=nb, label="My label") ## pass in label argument through ... to \\code{add}
+gbutton("page 2", container=nb, label="page 2")
+svalue(nb) <- 1
+}
+\seealso{
+  The \code{\link{gstackwidget}} container is similar, but
+  has no tabs.
 }
 

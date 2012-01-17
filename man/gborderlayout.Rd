@@ -1,7 +1,7 @@
 \name{gborderlayout}
 \alias{gborderlayout}
-\title{A "border" layout is a 5-panel layout where "north", "east",
-"south", and "west" satellite panels surround a "center" panel.}
+\title{A "border" layout is a 5-panel layout where  satellite panels
+surround a "center" panel.}
 \usage{
   gborderlayout(container = NULL, ..., width = NULL, height
   = NULL, ext.args = NULL, title = list(), collapsible =
@@ -9,14 +9,14 @@
 }
 \arguments{
   \item{title}{a list with named components from
-  \code{c("center","north", "south", "east", "west"))}
+  \code{c("center","north", "south", "east", "west")}
   allowing one to specify titles (as length-1 character
   vectors) of the regions. The default is no title. A title
   may be added later by adding a \code{gframe} instance,
   but that won't work well with a collapsible panel.}
 
   \item{collapsible}{a list with named components from
-  \code{c("center","north", "south", "east", "west"))}
+  \code{c("center","north", "south", "east", "west")}
   allowing one to specify through a logical if the panel
   will be collapsible, similar to \code{gexpandgroup}. The
   default is \code{FALSE}}
@@ -31,8 +31,8 @@
   \code{add} method of the parent container.}
 
   \item{...}{Used to pass along argument to the parent
-  container's ode{add} method and possible other arguments
-  to the underlying ference class constructors.}
+  container's \code{add} method and possible other
+  arguments to the underlying ference class constructors.}
 
   \item{width}{width in pixels of component. Sizing in
   \pkg{gWidgetsWWW2} is sometimes necessary as the
@@ -41,11 +41,12 @@
 
   \item{height}{height in pixels of the component.}
 
-  \item{ext.args}{The gWidgets' constructors ultimately
-  call an Ext constructor. The options passed to the Ext
-  constructor may be added to or overridden by use of this
-  argument. Values are passed in a named list components
-  and conversions to JavaScript objects}
+  \item{ext.args}{The contructors of \pkg{gWidgetsWWW2}
+  ultimately call an Ext constructor. The options passed to
+  the Ext constructor may be added to or overridden by use
+  of this argument. Values are passed in as named list
+  components and with values converted into JavaScript
+  objects by \code{\link{asJSObject}}.}
 }
 \value{
   a \code{GBorderLayout} reference class object
@@ -54,7 +55,7 @@
   The \code{gborderlayout} container implements a border
   layout where 4 panels surround a main center panel. The
   panels may be configured with a title (like
-  \code{gframe}) and may be collpasible (like
+  \code{gframe}) and may be collapsible (like
   \code{gexpandgroup}). Both configurations are done at
   construction time. The panels only hold one child, so one
   would add a container to have more complicated layouts.
@@ -64,7 +65,7 @@
   \code{where} to the \code{add} method (implicitly called
   by the constructor, so in practice this argument is
   passed through \code{...} by the constructor). The value
-  of \code{where} if from \code{c("center","north",
+  of \code{where} is one of \code{c("center","north",
   "south", "east", "west")}. Child components are added
   with the "fit" layout, which is basically the same as
   specifying \code{expand=TRUE} and \code{fill=TRUE},

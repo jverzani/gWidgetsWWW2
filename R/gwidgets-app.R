@@ -35,21 +35,34 @@ GWidgetsAppBase <- setRefClass("GWidgetsAppBase",
                                    e <- session_manager$get_session_by_id(sessionID)
                                    return(e)
                                  },
-                                 
-                                 get_toplevel = function(sessionID) {
+                                 store_session=function(id, e) {
+                                   session_manager$store_session(id, e)
+                                 },
+                                 get_toplevel = function(sessionID, e) {
                                    "Return toplevel instance from sessionID"
-                                   e <- get_session(sessionID)
+                                   if(missing(e))
+                                     e <- get_session(sessionID)
                                    e[[".gWidgets_toplevel"]]
                                  },
+                                 ## We bypass here req$GET() and req$POST() as they
+                                 ## have issues with characters like "&" and "+" for various
+                                 ## reasons. We instead pass in JSON encoded objects through the
+                                 ## the Ajax calls and read them directly here. We return a list so
                                  ## that we can use $ for extraction
                                  read_rook_input = function(req) {
                                    "Read rook.input, then convert from JSON"
-                                   req$env[['rook.input']]$rewind()
-                                   input <- req$env[['rook.input']]$read()
-                                   l <- fromJSON(rawToChar(input))
-                                   if(!is.list(l))
-                                     l <- sapply(l, identity, simplify=FALSE)
-                                   l
+                                   if(!is.null(req$env[['parsed.rook.input']])) {
+                                     l <- req$env[['parsed.rook.input']]
+                                   } else if(req$get()) {
+                                     l <- req$GET()
+                                   } else if(req$post()) {
+                                     ## we handle post data ourselves
+                                     raw_input <- req$env[['rook.input']]$read()
+                                     input <- rawToChar(raw_input)
+                                     l <- fromJSON(input)
+                                   }
+                                   req$env[['parsed.rook.input']] <- as.list(l)
+                                   as.list(l)
                                  }
                                  ))
                              
@@ -104,19 +117,18 @@ GWidgetsApp <- setRefClass("GWidgetsApp",
                                                    )
                                assign(".req", req, .GlobalEnv)
 
-                               if(req$get())
-                                 session_id <- req$GET()$session_id
-                               else
-                                 session_id <- read_rook_input(req)$session_id
+                               req_input <-  read_rook_input(req)
+                               req$env[['rook.input']] <- req_input
+                               session_id <- req_input$session_id
                                
-                               out <- try(create_GUI(session_id, req, res), silent=TRUE)
+                               out <- try(create_GUI(session_id, req), silent=TRUE)
                                  
                                if(inherits(out, "try-error")) {
                                  status <- 400L
                                } 
 
                                toplevel <- get_toplevel(session_id)
-                               
+
                                ## write response
                                res$body <- paste(out, collapse="\n")
                                res <- Response$new(status=status,
@@ -130,7 +142,7 @@ GWidgetsApp <- setRefClass("GWidgetsApp",
                                e_cookies <- toplevel$cookies
                                sapply(ls(e_cookies), function(i) res$set_cookie(i, e_cookies[[i]]))
                                toplevel$cookies <- new.env()
-                               
+
                                res$write("")
                                res$finish()
                              },
@@ -140,14 +152,14 @@ GWidgetsApp <- setRefClass("GWidgetsApp",
                                gw_script
                              },
                             
-                             create_GUI = function(session_id, req, res) {
+                             create_GUI = function(session_id, req) {
                                "Run script within a new environment. Return character vector of javascript commands"
 
                                e <- session_manager$get_session_by_id(session_id)
+
                                
                                if(is.null(e)) {
                                  e <- new.env()
-                                 session_manager$store_session(session_id, e)
 
                                  ## create a toplevel element and place within an evaluation environment
                                  toplevel <- GWidgetsTopLevel$new(req)
@@ -158,7 +170,7 @@ GWidgetsApp <- setRefClass("GWidgetsApp",
                                  ## debug
                                  assign(".toplevel", toplevel, .GlobalEnv)
                                } else {
-                                 toplevel <- get_toplevel(session_id)
+                                 toplevel <- get_toplevel(e=e)
                                }
 
                                ## clean up login form if there
@@ -173,7 +185,9 @@ if(tmp) { document.body.removeChild(tmp)}
                                  out <- do_authentification(req, session_id)
                                  if(!is.null(out)) {
                                    toplevel$js_queue_push(out)
-                                   return(toplevel$js_queue$flush())
+                                   out <- toplevel$js_queue$flush()
+                                   store_session(session_id, e)
+                                   return(out)
                                  }
                                }
 
@@ -199,6 +213,8 @@ if(tmp) { document.body.removeChild(tmp)}
                                  x <- sprintf("File '%s' does not exist", the_script)
                                  stop(x)
                                }
+
+                               store_session(session_id, e)
                                return(x)
                              },
                              do_authentification=function(req, session_id) {
@@ -210,7 +226,8 @@ if(tmp) { document.body.removeChild(tmp)}
                                
                                if(!(authenticator$is_valid_cookie(req$cookies()) ||
                                     is_valid_cookie(req$cookies()))) {
-                                 formVals <- read_rook_input(req)
+                                 formVals <- req$env[['rook.input']]
+#                                 formVals <- read_rook_input(req)
                                  user <- getWithDefault(formVals$user_name, "")
                                  pwd <- getWithDefault(formVals$password, "")
 
@@ -275,43 +292,52 @@ GWidgetsAppAjax <- setRefClass("GWidgetsAppAjax",
                                ## value. Depending on the type we
                                ## might return JSON or javascript so
                                ## we may modify the headers
-                               if(grepl("runTransport$", req$path_info())) {
-                                 ## run the transport
-                                 out <- run_transport(req)
-                               } else if(grepl("runHandler$", req$path_info())) {
-                                 ## handler, return javascript queue
-                                 out <- run_handler(req, e_cookies)
-                               } else if(grepl("runProxy", req$path_info())) {
-                                 ## run proxy. The proxy returns JSON code, not html
-                                 if(is.null(req$POST()))
-                                    headers <- list('Content-Type'='application/json')
-                                 out <- run_proxy(req) # run_proxy return JSON
-                               } else if(grepl("fileUploadProxy", req$path_info())) {
-                                 headers <- list('Content-Type'='text/html')                                 
-                                 out <- run_upload(req)
-                                 out <- toJSON(out)
-                               } else if(grepl("runHtmlProxy$", req$path_info())) {
-                                 ## run proxy that returns HTML code.
-                                 headers <- list('Content-Type'='text/html')                                 
-                                 out <- run_proxy(req) # run_proxy returns HTML here, not JSON
-                               } else if(grepl("runComet$", req$path_info())) {
-                                 ## handler, return javascript queue
-                                 out <- run_comet(req)
-                               } else if(grepl("runRpc$", req$path_info())) {
-                                 ## do remote call return javascript queue
-                                 run_rpc(req)
-                                 out <- ""
-                               } else if(grepl("newSessionId$", req$path_info())) {
-                                 ## Create a new session and get the ID. Returns as JSON
-                                  headers <- list('Content-Type'='application/json')
-                                  out <- toJSON(list(id=session_manager$get_id()))
-                                } else if(grepl("closeSession$", req$path_info())) {
-                                  close_session(req)
-                                  out <- ""
-                                } else {
-                                  out <- "call with something"
-                                }
 
+
+                               if(grepl("newSessionId$", req$path_info())) {
+                                 ## Create a new session and get the ID. Returns as JSON
+                                 headers <- list('Content-Type'='application/json')
+                                 out <- toJSON(list(id=session_manager$get_id()))
+                               } else if(grepl("closeSession$", req$path_info())) {
+                                 close_session(req)
+                                 out <- ""
+                               } else {
+                                 ## Here we modify session environment
+                                 l <- read_rook_input(req)
+                                 e <- get_session(l$session_id)
+                                 toplevel <- get_toplevel(e=e)
+                                 
+                                 if(grepl("runTransport$", req$path_info())) {
+                                   ## run the transport
+                                   out <- run_transport(req, toplevel)
+                                   
+                                 } else if(grepl("runHandler$", req$path_info())) {
+                                   ## handler, return javascript queue
+                                   out <- run_handler(req, e_cookies, toplevel)
+                                 } else if(grepl("runProxy", req$path_info())) {
+                                   ## run proxy. The proxy returns JSON code, not html
+                                   if(is.null(req$POST()))
+                                     headers <- list('Content-Type'='application/json')
+                                   out <- run_proxy(req, toplevel) # run_proxy return JSON
+                                 } else if(grepl("fileUploadProxy", req$path_info())) {
+                                   headers <- list('Content-Type'='text/html')                                 
+                                   out <- run_upload(req, toplevel)
+                                   out <- toJSON(out)
+                                 } else if(grepl("runHtmlProxy$", req$path_info())) {
+                                   ## run proxy that returns HTML code.
+                                   headers <- list('Content-Type'='text/html')                                 
+                                   out <- run_proxy(req, toplevel) # run_proxy returns HTML here, not JSON
+                                 } else if(grepl("runComet$", req$path_info())) {
+                                   ## handler, return javascript queue
+                                   out <- run_comet(req, toplevel)
+                                 } else if(grepl("runRpc$", req$path_info())) {
+                                   ## do remote call return javascript queue
+                                   run_rpc(req, toplevel)
+                                   out <- ""
+                                 }
+                                 ## close the session
+                                 store_session(l$session_id, e)
+                               }
                                ## need to populate result
                                res <- Response$new(status=200L,
                                                    headers=headers,
@@ -328,79 +354,57 @@ GWidgetsAppAjax <- setRefClass("GWidgetsAppAjax",
                                e <- session_manager$get_session_by_id(sessionID)
                                return(e)
                              },
-                             get_toplevel = function(sessionID) {
-                               "Return toplevel instance from sessionID"
-                               e <- get_session(sessionID)
-                               e[[".gWidgets_toplevel"]]
-                             },
                              
-                             ## We bypass here req$GET() and req$POST() as they
-                             ## have issues with characters like "&" and "+" for various
-                             ## reasons. We instead pass in JSON encoded objects through the
-                             ## the Ajax calls and read them directly here. We return a list so
-                             ## that we can use $ for extraction
-                             read_rook_input = function(req) {
-                               "Read rook.input, then convert from JSON"
-                               req$env[['rook.input']]$rewind()
-                               input <- req$env[['rook.input']]$read()
-                               l <- fromJSON(rawToChar(input))
-                               if(!is.list(l))
-                                 l <- sapply(l, identity, simplify=FALSE)
-                               l
-                             },
                              
                              ## The run functions (transport, handler, proxy
                              ## These use GET, not POST, although the latter would
                              ## be appropriate for some.
-                             run_transport = function(req) {
+                             run_transport = function(req, toplevel) {
                                "Assign values through transport. Return js commands if needed"
-                               l <- read_rook_input(req)
-                               toplevel <- get_toplevel(l$session_id)
+
+                               l <- read_rook_input(req)                               
                                toplevel$call_transport(l$id, l$param)
-                               
-                               return(toplevel$js_queue$flush())
+                               out <- toplevel$js_queue$flush()
+
+                               return(out)
                              },
 
                              
-                             run_handler = function(req, e_cookies) {
+                             run_handler = function(req, e_cookies, toplevel) {
                                "Run a handler. Return js commands if needed"
 
                                l <- read_rook_input(req)
-                               
-                               ## l has components id, value. Value is json
-                               toplevel <- get_toplevel(l$session_id)
                                toplevel$call_handler(l$id, l$signal, l$value, e_cookies)
+                               out <- toplevel$js_queue$flush()
 
-                               return(toplevel$js_queue$flush())
+                               return(out)
                              },
 
-                             run_comet = function(req) {
+                             run_comet = function(req, toplevel) {
                                "Run a long pull to read from queue. Returns js commands when successful"
-                               l <- req$GET()
-                               if(length(l) == 0)
-                                 stop("No info to run handler")
+                               l <- read_rook_input(req)
                                
-                               ## l has components id
-                               toplevel <- get_toplevel(l$session_id)
-                               return(toplevel$js_queue$flush())
+                               toplevel$call_transport(l$id, l$param)
+                               out <- toplevel$js_queue$flush()
+
+                               return(out)
                              },
                               ##
                               ##
                               ##
-                             run_rpc = function(req) {
+                             run_rpc = function(req, toplevel) {
                                "Simple means to call a method fo a gWidgetsWWW2 object"
 
                                l <- read_rook_input(req)
-                                                              
-                               toplevel <- get_toplevel(l$session_id)
                                toplevel$call_rpc(l$id, l$meth, l$value)
+                               out <- toplevel$js_queue$flush()
 
-                               return(toplevel$js_queue$flush())
+                               return(out)
                              },
                               ##
                               ##
                               ##
-                             run_proxy = function(req) {
+                             run_proxy = function(req, toplevel) {
                                "Call proxy object to return JSON data"
 
                                l <- req$GET()
@@ -418,7 +422,6 @@ GWidgetsAppAjax <- setRefClass("GWidgetsAppAjax",
                                
                                session_id <- l$session_id; l$session_id <- NULL
                                l[['_dc']] <- NULL # ext variable
-                               toplevel <- get_toplevel(session_id)
 
                                if(req$post()){
                                  ##out <- toplevel$call_post_proxy(id, l, req$POST()) # return JSON
@@ -426,12 +429,13 @@ GWidgetsAppAjax <- setRefClass("GWidgetsAppAjax",
                                } else {
                                  out <- toplevel$call_proxy(id, l)
                                }
+
                                return(out)
                              },
                               ##
                               ##
                               ##
-                             run_upload = function(req) {
+                             run_upload = function(req, toplevel) {
                                "Upload file"
                                l <- req$POST()
                                if(length(l) == 0)
@@ -440,8 +444,10 @@ GWidgetsAppAjax <- setRefClass("GWidgetsAppAjax",
                                id <- l$id; l$id <- NULL
                                session_id <- l$session_id; l$session_id <- NULL
                                l[['_dc']] <- NULL # ext variable
-                               toplevel <- get_toplevel(session_id)
+
+
                                out <- toplevel$call_upload(id, l, req$POST()) # return JSON
+
                                return(out)
                              },
                               ##

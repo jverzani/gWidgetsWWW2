@@ -89,7 +89,7 @@ GComponent <- setRefClass("GComponent",
                          fields=list(
                            "toplevel"="ANY",            # toplevel instance
                            "constructor" = "character", # for write_constructor
-                           "args"="ExtArgs",            # for write_constructor
+                           "args"="ANY",            # for write_constructor
                            "prefix"="character",        # really just "o"
                            "id" = "character",          # the actual id, e.g gWidget_ID2
                            "transport_signal"="character", # if given, the signal to initiate transport

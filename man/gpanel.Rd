@@ -16,8 +16,8 @@
   \code{add} method of the parent container.}
 
   \item{...}{Used to pass along argument to the parent
-  container's ode{add} method and possible other arguments
-  to the underlying ference class constructors.}
+  container's \code{add} method and possible other
+  arguments to the underlying ference class constructors.}
 
   \item{width}{width in pixels of component. Sizing in
   \pkg{gWidgetsWWW2} is sometimes necessary as the
@@ -26,11 +26,12 @@
 
   \item{height}{height in pixels of the component.}
 
-  \item{ext.args}{The gWidgets' constructors ultimately
-  call an Ext constructor. The options passed to the Ext
-  constructor may be added to or overridden by use of this
-  argument. Values are passed in a named list components
-  and conversions to JavaScript objects}
+  \item{ext.args}{The contructors of \pkg{gWidgetsWWW2}
+  ultimately call an Ext constructor. The options passed to
+  the Ext constructor may be added to or overridden by use
+  of this argument. Values are passed in as named list
+  components and with values converted into JavaScript
+  objects by \code{\link{asJSObject}}.}
 }
 \value{
   a \code{GPanel} reference class object
@@ -44,10 +45,10 @@
   \code{add_handler_onload} method can be used to call a
   handler after the external libraries are loaded. This is
   an asynchronous call, so one need not worry that the
-  libraries are down downloading. This call might require
+  libraries are done downloading. This call might require
   JavaScript commands to be processed that are not produced
   by a gWidgetsWWW2 handler. The \code{add_js_queue} method
-  allows one push such commands back to the browser. The
+  allows one to push such commands back to the browser. The
   method \code{load_external} is used to load external
   scripts by specifying the appropriate url(s).
 }

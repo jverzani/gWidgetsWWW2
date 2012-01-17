@@ -19,6 +19,17 @@ callRhandler = function(id, signal, value) {
   })
 };
 
+callRhandlerJQUERY=function(id, signal, value) {
+  data = {id: id, signal:signal, value: value, session_id: session_id};
+  $.ajax({
+    url:base_url + "runHandler",
+    data: data,
+    dataType:'script',		  
+    cache: false,
+    type:'POST'
+  });
+};
+
 "Synchronize widget with server's value";
 transportFun = function(id, value) {
    data = {id: id, session_id: session_id, param: value};
@@ -34,6 +45,17 @@ transportFun = function(id, value) {
    })
 };
 
+transportFunJQUEUER=function(id, value) {
+  data = {id: id, session_id: session_id,  value:value };
+  $.ajax({
+    url:base_url + "runTransport",
+    data: data,
+    dataType:'script',		  
+    cache: false,
+    type:'POST'
+  });
+};
+
 
 "Make a simple callback into gWidgetsWWW2. Returns a script -- not json!";
 jRpc =  function(obj, meth, params, callback) {
@@ -44,6 +66,19 @@ jsonData:data,
 success:callback
 })
 };
+
+jRpcJQUERY =  function(obj, meth, params, callback) {
+  data = {id: obj, session_id: session_id, meth:meth, value: params};
+  $.ajax({
+    url:base_url + "runRpc",
+    data: data,
+    dataType:'script',		  
+    cache: false,
+    type:'POST'
+  });
+};
+
+
 
 "Callback into R process an exported JsonRPCObject";
 json_rpc = function(obj_name, meth_name, params, callback, url) {

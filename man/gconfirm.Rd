@@ -10,7 +10,8 @@
 
   \item{title}{title for dialog's window}
 
-  \item{icon}{icon}
+  \item{icon}{icon. One of 'info', 'warning', 'error', or
+  'question'.}
 
   \item{parent}{parent container (main window instance)}
 
@@ -21,11 +22,11 @@
   \item{...}{ignored}
 }
 \value{
-  return value ignored, use handler for response
+  return value ignored, use handler for response.
 }
 \description{
   Calls handler when Yes button is clicked. Unlike other
-  gWidgets implementations, this one does block the R
+  gWidgets implementations, this one does not block the R
   process before returning a logical indicating the
   selection. One must use a handler to have interactivity.
 }

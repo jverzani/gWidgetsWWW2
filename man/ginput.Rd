@@ -12,7 +12,7 @@
 
   \item{title}{title for dialog's window}
 
-  \item{icon}{icon ignored}
+  \item{icon}{icon ignored here}
 
   \item{parent}{parent container (main window instance)}
 

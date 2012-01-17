@@ -127,6 +127,7 @@ JsonRPCServer <- setRefClass("JsonRPCServer",
 ##' @seealso \code{JsonRPCObject}
 ##' @export
 ##' @examples
+##' \dontrun{
 ##' ## Create a PageCounter object using JSON_RPC
 ##' w <- gwindow("PageCounter")
 ##' g <- ggroup(cont=w)
@@ -202,7 +203,7 @@ JsonRPCServer <- setRefClass("JsonRPCServer",
 ##' ## Add the JavaScript command to the queue so that the browser will
 ##' ## get it when the queue is flushed
 ##' w$add_js_queue(cmd)
-##'    
+##' }   
 json_rpc_server <- function(url="JSON_RPC", port=9000, envir=.GlobalEnv) {
   ..json_rpc_server(url=url, port=port, envir=envir)
 }

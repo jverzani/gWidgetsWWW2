@@ -31,7 +31,7 @@
   this is used to notify the user why the type is invalid.}
 
   \item{handler}{optional means (to
-  \code{\link{addHandlerChanged}} to specify a handler for
+  \code{\link{addHandlerChanged}}) to specify a handler for
   the default signal. A handler is a function with
   signature \code{(h,...)} where \code{h} is a list with
   components \code{obj} referring to the object emitting
@@ -50,20 +50,21 @@
   \code{add} method of the parent container.}
 
   \item{...}{Used to pass along argument to the parent
-  container's ode{add} method and possible other arguments
-  to the underlying ference class constructors.}
+  container's \code{add} method and possible other
+  arguments to the underlying ference class constructors.}
 
-  \item{ext.args}{The gWidgets' constructors ultimately
-  call an Ext constructor. The options passed to the Ext
-  constructor may be added to or overridden by use of this
-  argument. Values are passed in a named list components
-  and conversions to JavaScript objects}
+  \item{ext.args}{The contructors of \pkg{gWidgetsWWW2}
+  ultimately call an Ext constructor. The options passed to
+  the Ext constructor may be added to or overridden by use
+  of this argument. Values are passed in as named list
+  components and with values converted into JavaScript
+  objects by \code{\link{asJSObject}}.}
 }
 \value{
   a \code{GEdit} referece class object
 }
 \description{
-  No [<- method. This can be done with a combobox though.
+  gedit widget
 
   For the \code{GEdit} class, the change signal is "blur"
   or a focus-out event. Use the reference class method
@@ -76,7 +77,9 @@
 \note{
   The 'change' event varies from browser to browser. To
   catch just an enter key, the \code{add_handler_enter}
-  reference method is available.
+  reference class method is available.  There is no [<-
+  method to add typeahead (autocomplete) values. This
+  feature can be done with a combobox though.
 }
 \examples{
 w <- gwindow()

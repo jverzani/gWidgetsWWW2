@@ -39,6 +39,7 @@
   urls for the server).
 }
 \examples{
+\dontrun{
 ## Create a PageCounter object using JSON_RPC
 w <- gwindow("PageCounter")
 g <- ggroup(cont=w)
@@ -114,6 +115,7 @@ app_name="page_counter_example"))
 ## Add the JavaScript command to the queue so that the browser will
 ## get it when the queue is flushed
 w$add_js_queue(cmd)
+}
 }
 \seealso{
   \code{JsonRPCObject}

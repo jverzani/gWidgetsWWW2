@@ -145,11 +145,17 @@ function(value) {
                          setup(container, handler, action, ext.args, ...)
                        },
                        transport_fun = function() {
-                         "var param = {value: w.getValue()}"
+                         "var param = Ext.JSON.encode({value: Ext.htmlEncode(w.getValue())})"
+                       },
+                       process_transport=function(value, ...) {
+                         ### XXX should decode url encode here
+                         if(!is.null(value))
+                           value <<- utils:::URLdecode(value)
+
                        },
                        param_defn=function(signal) {
                          if(signal == change_signal) {
-                           "var param = {value: this.getValue()};"
+                           "var param = {value: Ext.htmlEncode(this.getValue())};"
                          } else if(signal == "keyup") {
                            "var param = {key: e.getKey()};"
                          } else {

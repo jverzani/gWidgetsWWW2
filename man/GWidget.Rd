@@ -8,7 +8,7 @@
 }
 \arguments{
   \item{handler}{optional means (to
-  \code{\link{addHandlerChanged}} to specify a handler for
+  \code{\link{addHandlerChanged}}) to specify a handler for
   the default signal. A handler is a function with
   signature \code{(h,...)} where \code{h} is a list with
   components \code{obj} referring to the object emitting
@@ -27,8 +27,8 @@
   \code{add} method of the parent container.}
 
   \item{...}{Used to pass along argument to the parent
-  container's ode{add} method and possible other arguments
-  to the underlying ference class constructors.}
+  container's \code{add} method and possible other
+  arguments to the underlying ference class constructors.}
 
   \item{width}{width in pixels of component. Sizing in
   \pkg{gWidgetsWWW2} is sometimes necessary as the
@@ -37,11 +37,12 @@
 
   \item{height}{height in pixels of the component.}
 
-  \item{ext.args}{The gWidgets' constructors ultimately
-  call an Ext constructor. The options passed to the Ext
-  constructor may be added to or overridden by use of this
-  argument. Values are passed in a named list components
-  and conversions to JavaScript objects}
+  \item{ext.args}{The contructors of \pkg{gWidgetsWWW2}
+  ultimately call an Ext constructor. The options passed to
+  the Ext constructor may be added to or overridden by use
+  of this argument. Values are passed in as named list
+  components and with values converted into JavaScript
+  objects by \code{\link{asJSObject}}.}
 
   \item{expand}{Logical or numeric. Does the child
   component expand to fill the allotted space? If so a
@@ -60,10 +61,9 @@
   child components expand in the orthogonal direction
   (horizontal boxes have vertical, \code{y}, fill values).}
 
-  \item{anchor}{\code{action} argument, and possible other
-  values. method of the parent container. reference class
-  constructors. \code{expand} and \code{fill} are not well
-  implemented. are handled by \code{\link{toJSObject}}.}
+  \item{anchor}{specifies where a widget is anchored (using
+  a value in {-1, 0,1} cross {-1, 0, 1}), in the case the
+  widget has more space allocated to it then requested.}
 }
 \description{
   Stub for roxygen2 documentation of common arguments for

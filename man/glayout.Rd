@@ -20,8 +20,8 @@
   \code{add} method of the parent container.}
 
   \item{...}{Used to pass along argument to the parent
-  container's ode{add} method and possible other arguments
-  to the underlying ference class constructors.}
+  container's \code{add} method and possible other
+  arguments to the underlying ference class constructors.}
 
   \item{width}{width in pixels of component. Sizing in
   \pkg{gWidgetsWWW2} is sometimes necessary as the
@@ -30,11 +30,12 @@
 
   \item{height}{height in pixels of the component.}
 
-  \item{ext.args}{The gWidgets' constructors ultimately
-  call an Ext constructor. The options passed to the Ext
-  constructor may be added to or overridden by use of this
-  argument. Values are passed in a named list components
-  and conversions to JavaScript objects}
+  \item{ext.args}{The contructors of \pkg{gWidgetsWWW2}
+  ultimately call an Ext constructor. The options passed to
+  the Ext constructor may be added to or overridden by use
+  of this argument. Values are passed in as named list
+  components and with values converted into JavaScript
+  objects by \code{\link{asJSObject}}.}
 }
 \value{
   an ExtContainer object
@@ -45,11 +46,8 @@
   should be placed. The basic assignment is: \code{tbl[i,j]
   <- gbutton("asdf", cont=tbl)}. The \code{tbl} object is
   on the right side, so the widget has a toplevel and on
-  the left to specify how the layout will occur. Although
-  one can specify i and j as a range of values, or even
-  empty, one must be careful that no "holes" would be left
-  over, as otherwise the layout will not work out
-  correctly.
+  the left to specify how the layout will occur. One can
+  specify i and j as a range of values, or even empty
 }
 \details{
   The layout is only finalized after call the
@@ -70,7 +68,9 @@ tbl[1,2] <- gedit("", cont=tbl) ## tbl needed on right side too
 tbl[2,1, anchor=c(1,0)] <- "Rank"
 tbl[2,2] <- gedit("", cont=tbl)
 tbl[3,2] <- gbutton("click", cont=tbl, handler=function(h,...) {
-galert(sprintf("\%s is a \%s", svalue(tbl[1,2]), svalue(tbl[2,2])), parent=w)
+msg <- whisker.render("{{name}} is a {{rank}}",
+setNames(lapply(tbl[,2], svalue)[1:2], c("name", "rank")))
+galert(msg, parent=w)
 })
 visible(tbl) <- TRUE ## This line is needed!
 }

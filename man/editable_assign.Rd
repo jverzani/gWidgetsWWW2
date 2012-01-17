@@ -13,6 +13,6 @@
 \description{
   Toggle editability of the object, if supported
 
-  assignment method for tag
+  assignment method for editable
 }
 

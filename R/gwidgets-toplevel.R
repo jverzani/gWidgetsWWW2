@@ -69,20 +69,15 @@ GWidgetsTopLevel <- setRefClass("GWidgetsTopLevel",
                                       out <- obj$before_handler(signal, params)
                                     }
                                     obj$notify_observers(signal=signal, params, out)
-                                    
+
                                     
                                   },
                                   ## transport add javascript
                                   call_transport = function(id, param) {
                                     "Run transport"
-                                    obj <- get_object_by_id(id)
-                                    if(!is.list(param)) {
-                                      l <- list()
-                                      for(i in names(param))
-                                        l[[i]] <- param[i]
-                                      param <- l
-                                    }
 
+                                    param <- as.list(fromJSON(param))
+                                    obj <- get_object_by_id(id)
                                     do.call(obj$process_transport, param)
                                   },
                                   ## call remote procedure call
