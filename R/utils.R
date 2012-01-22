@@ -419,3 +419,34 @@ get_tempfile_url <- function(f) {
 DEBUG <- function(...) print(list(...))
 
 
+##' Make a template for the rapache configuration files
+##'
+##' To use rapache a few locations need to be defined so that ajax
+##' calls and calls to get local files are recognized. This happens in
+##' a configuration file and this function makes a template that will
+##' work, yet allows ucustomization.
+##' @param file passed to \code{cat} function to control what happens to output
+##' @note The resulting file must be placed into the apached directory (/etc/apache2?)
+##' and integrated into the configuration system.
+##' @export
+make_rapache_files <- function(file="") {
+  tpl <- system.file("rapache", "apache.conf", package="gWidgetsWWW2")
+  gWidgetsWWW2_home <- system_file("rapache", package="gWidgetsWWW2")
+  cat(whisker.render(paste(readLines(tpl), collapse="\n"),
+                     list(gWidgetsWWW2_home=gWidgetsWWW2_home)), file=file)
+}
+
+##' Make an apache configuration for a given app
+##'
+##' An rapache gWidgetsWWW2 app needs to integrate within the Rook
+##' system. The template produced by \code{make_rapache_files} shows
+##' how to configure the apache server for an app, but needs to call a
+##' script \code{loadapp.R}. This function produces such a script.
+##' @param file  passed to \code{cat} function to control what happens to output
+##' @note this file is placed into a directory specified in the rapache configuration
+##' @export
+make_rapache_loadapp <- function(file="") {
+  tpl <- system.file("rapache", "loadapp.R", package="gWidgetsWWW2")
+  cat(whisker.render(paste(readLines(tpl), collapse="\n")),
+       file=file)
+}

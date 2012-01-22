@@ -62,11 +62,11 @@
 \description{
   Google maps widget
 
-  The \class{GGoogleMaps} class provides the methods for
-  the googlemaps widget. As the API for google maps far
-  exceeds the primitive API of \pkg{gWidgets}, reference
-  class methods are used to expose the google maps API. See
-  the example for illustrations.
+  The \code{GGoogleMaps} class provides the methods for the
+  googlemaps widget. As the API for google maps far exceeds
+  the primitive API of \pkg{gWidgets}, reference class
+  methods are used to expose the google maps API. See the
+  example for illustrations.
 
   Add a marker to the map
 

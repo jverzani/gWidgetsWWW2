@@ -1,0 +1,22 @@
+\name{make_rapache_loadapp}
+\alias{make_rapache_loadapp}
+\title{Make an apache configuration for a given app}
+\usage{
+  make_rapache_loadapp(file = "")
+}
+\arguments{
+  \item{file}{passed to \code{cat} function to control what
+  happens to output}
+}
+\description{
+  An rapache gWidgetsWWW2 app needs to integrate within the
+  Rook system. The template produced by
+  \code{make_rapache_files} shows how to configure the
+  apache server for an app, but needs to call a script
+  \code{loadapp.R}. This function produces such a script.
+}
+\note{
+  this file is placed into a directory specified in the
+  rapache configuration
+}
+

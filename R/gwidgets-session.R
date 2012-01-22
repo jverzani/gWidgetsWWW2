@@ -16,87 +16,126 @@
 ##' @include gwidgets-toplevel.R
 NULL
 
-##' Session manager for gWidgetsWWW2 apps
+## Session manager for gWidgetsWWW2 apps
+## Can use object in global workspace (for running under Rook) or filehash -- if running under RApache
 SessionManager <- setRefClass("SessionManager",
                               fields=list(
                                 "url" = "character",
 #                                "sessions"="list"
-                                "sessions"="ANY"
+                                "sessions"="ANY",
+                                use_filehash="logical"
                                 ),
                               methods=list(
-                                initialize = function(...) {
-#                                  sessions <<- list()
-
-                                  ## XXX add in option to set this
-#                                  db_name <- getWithDefault(options("gWidgetsWWW2:db_name"), default="gWidgetsWWW2_session_db")
-                                  db_name <- "gWidgetsWWW2_session_db"
-                                  
-                                  dbCreate(db_name)
-                                  sessions <<- dbInit(db_name)
-                                  
+                                initialize = function(use_filehash=FALSE, ...) {
+                                  initFields(use_filehash = use_filehash)
+                                  if(use_filehash) {
+                                    ## filehash allows us to use rapache and multiple
+                                    ## R processes. It is *much* slower.
+                                    require(filehash)
+                                    db_name <- getOption("gWidgetsWWW2:db_name")
+                                    if(is.null(db_name))
+                                      db_name <- "/tmp/gWidgetsWWW2_session_db"
+                                    dbCreate(db_name)
+                                    sessions <<- dbInit(db_name)
+                                  } else {
+                                    ## If using Rook (and perhaps nginx to proxy) a single process then
+                                    ## a list suffices
+                                    sessions <<- list()
+                                  }
                                   callSuper(...)
                                 },
                                 get_id = function(...) {
                                   "Create a unique new sessionID"
                                   make_ID <- function() paste(sample(LETTERS, 10, replace=TRUE), collapse="")
                                   x <- make_ID()
-#                                  while(x %in% names(sessions))
-                                  while(dbExists(sessions, x))
-                                    x <- make_ID()
+                                  if(use_filehash)
+                                    while(dbExists(sessions, x))
+                                      x <- make_ID()
+                                  else
+                                    while(x %in% names(sessions))
+                                      x <- make_ID()
                                   return(x)
                                 },
                                 store_session = function(id, e) {
                                   "store session"
+
+                                  if(is.null(id))
+                                    return()
+
                                   rec <- list(e=e,
                                               last.access=Sys.time())
-                                  ## XXX
-                                  if(!is.null(id))
+                                  if(use_filehash) {
+                                    done <- FALSE; ctr <- 1
+                                    while(!done && ctr < 10) {
+                                      out <- try(dbInsert(sessions, id, rec), silent=TRUE)
+                                      if(!inherits(out, "try-error"))
+                                        done <- TRUE
+                                      ctr <- ctr + 1
+                                    }
+                                    if(!done)
+                                      stop(out)
+                                  } else {
                                     sessions[[id]] <<- rec
+                                  }
                                 },
                                 clear_session = function(id) {
                                   "clean up session, called when page is closed"
-                                  sessions[[id]] <<- NULL
+                                  if(use_filehash) {
+                                    done <- FALSE;; ctr <- 1
+                                    while(!done && ctr < 10) {
+                                      out <- try(dbInsert(sessions, id, NULL), silent=TRUE)
+                                      if(!inherits(out, "try-error"))
+                                        done <- TRUE
+                                      ctr <- ctr + 1
+                                    }
+                                    if(!done)
+                                      stop(out)
+                                  } else {
+                                    sessions[[id]] <<- NULL
+                                  }
                                 },
-                                ## Not used!!!
                                 new_session = function() {
                                   "Create new session, return the ID"
                                   id <- get_id()
                                   e <- new.env()
-                                  ## JV ??? Why isn't toplevel stored anywhere?
-                                  toplevel <- GWidgetsTopLevel$new(id)
                                   store_session(id, e)
                                   return(id)
                                 },
                                 get_session_by_id = function(id="") {
                                   "Get session, an environment. Return NULL if not there"
                                   
-                                  if(is.null(id) || !dbExists(sessions, id))
-                                    return(NULL)
-                                  ##                                  rec <- sessions[[id, exact=TRUE]]
-                                  rec <- sessions[[id]]
-                                  if(is.null(rec))
-                                    return(NULL)
+                                  if(is.null(id))
+                                     return(NULL)
 
-                                  rec$last.access <- Sys.time()
-                                  sessions[[id]] <<- rec
-
-                                  e <- rec$e
-                                  if(!is.environment(e)) {
-                                    ## e has been serialized
-                                    e <- get_serialized_session(id)
+                                  if(use_filehash) {
+                                    ## using filehash
+                                    if(!dbExists(sessions, id))
+                                      return()
+                                    
+                                    done <- FALSE; ctr <- 1
+                                    while(!done && ctr < 10) {
+                                      rec <- try(dbFetch(sessions, id), silent=TRUE)
+                                      if(!inherits(rec, "try-error"))
+                                        done <- TRUE
+                                      ctr <- ctr + 1
+                                    }
+                                    if(!done)
+                                      stop(rec)
+                                    
+                                    if(is.null(rec))
+                                      return(NULL)
+                                  } else {
+                                    ## using a list
+                                    rec <- sessions[[id]]
                                   }
+                                  
+                                  e <- rec$e
                                   return(e)
-                                },
-                                get_serialized_session = function(id) {
-                                  "Get serialized session by id"
-                                  ## use filehash, ...
-                                  cat("XXX imlement me")
                                 }
-
                                 ))
 
-make_session_manager <- memoise(function() {
-  SessionManager$new()
+make_session_manager <- memoise(function(...) {
+  SessionManager$new(...)
 })
 
 
