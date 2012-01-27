@@ -61,8 +61,9 @@ Serving pages through a web server, nginx
 The package uses the `Rook` package of J. Horner to serve web pages
 through `R`'s internal web server (for serving help pages). This can be
 exposed to the wider world, or a proxy can be used. To configure the
-`nginx` server to proxy, is as easy as adding the following
-configuration to `nginx.conf`
+`nginx` server to proxy, require two steps. These are for an Ubuntu istallation:
+
+In /etc/nginx/sites-enabled, add this to the "default" file in the `server` configuration
 
 
 	location /custom {
@@ -70,10 +71,33 @@ configuration to `nginx.conf`
         }
 
 
+In /etc/nginx.conf, add this to in the `http` configuration
+
+
+	upstream rookapp {
+        	 server localhost:9000;
+	}
+
+Then start R with port 9000 and load the apps you want.
+
+
 The `custom` path name is from the internal help server and could be
 changed in the location directive. The above uses port 9000, the
 default. For more information on using nginx in front of Rook, see
 this post: https://gist.github.com/6d09536d871c1a648a84
+
+The example in the gist starts 3 R processes. If you are going to do
+that, you should use the filehash options for the session manager, as
+this allows the session environements to be shared.
+
+
+RApache
+-------
+
+As of RApache 1.1.15 there is now support for Rook apps. At some point
+this should be integrated into that framework, but initial attempts
+were thwarted by two issues: handling of POST requests and more
+importantly speed issues. 
 
 Graphics
 --------

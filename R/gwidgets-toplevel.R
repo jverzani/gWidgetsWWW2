@@ -75,8 +75,7 @@ GWidgetsTopLevel <- setRefClass("GWidgetsTopLevel",
                                   ## transport add javascript
                                   call_transport = function(id, param) {
                                     "Run transport"
-
-                                    param <- as.list(fromJSON(param))
+                                    param <- as.list(param)
                                     obj <- get_object_by_id(id)
                                     do.call(obj$process_transport, param)
                                   },
@@ -90,8 +89,7 @@ GWidgetsTopLevel <- setRefClass("GWidgetsTopLevel",
                                     "Run proxy, return JSON encoded object"
                                     ## post might be NULL or a list where the names are important
                                     obj <- get_object_by_id(id)
-                                    if(!is.list(param))
-                                      param <- list(param)
+                                    param <- as.list(param)
 
                                     ## obj should be GWidgetProxy
                                     out <- ""
@@ -99,17 +97,12 @@ GWidgetsTopLevel <- setRefClass("GWidgetsTopLevel",
                                        out <- do.call(obj$get_json_data, param)
                                     return(out)
                                   },
-                                  call_post_proxy = function(id, param, post=NULL) {
+                                  call_post_proxy = function(id, param) {
                                     "Run proxy, return JSON encoded object"
                                     ## post might be NULL or a list where the names are important
-                                    obj <- get_object_by_id(id)
-                                    if(!is.list(param))
-                                      param <- list(param)
 
-                                    ## for grid editing autosync the values get passed back in this awkward way
-                                    if(!is.null(post)) {
-                                      param$post_data <- fromJSON(names(post)[1])
-                                    }
+                                    obj <- get_object_by_id(id)
+                                    param <- as.list(param)
                                     
                                     ## obj should be GWidgetProxy
                                     out <- ""
@@ -121,9 +114,10 @@ GWidgetsTopLevel <- setRefClass("GWidgetsTopLevel",
                                   ## upload a file
                                   call_upload = function(id, param, post_data) {
                                     "process a file upload, sets value via svalue if file exists"
+
+                                    ## XXX we need to work on the handling of post data and rapache
                                     obj <- get_object_by_id(id)
 
-#                                    post_data <- req$POST()
                                     l <- Filter(is.list, post_data)
                                     ## list with tempfile, filename
                                     fname <- l[[1]]$tempfile

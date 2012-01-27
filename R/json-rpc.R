@@ -86,7 +86,7 @@ JsonRPCServer <- setRefClass("JsonRPCServer",
                          read_rook_input = function(req) {
                            "Read rook.input, then convert from JSON"
                            ## Ext.Ajax.request passes in values oddly to rook. Here we take advantage of how.
-                           req$env[['rook.input']]$rewind()
+                           ## XXX This needs tweaking with rapache usage
                            input <- req$env[['rook.input']]$read()
                            l <- fromJSON(rawToChar(input))
                            if(!is.list(l))

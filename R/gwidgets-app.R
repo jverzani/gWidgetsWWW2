@@ -44,23 +44,32 @@ GWidgetsAppBase <- setRefClass("GWidgetsAppBase",
                                      e <- get_session(sessionID)
                                    e[[".gWidgets_toplevel"]]
                                  },
-                                 ## We bypass here req$GET() and req$POST() as they
+                                 ## We bypass here req$POST() as they
                                  ## have issues with characters like "&" and "+" for various
                                  ## reasons. We instead pass in JSON encoded objects through the
                                  ## the Ajax calls and read them directly here. We return a list so
                                  ## that we can use $ for extraction
+                                 ##
+                                 ## use read_rook_input() in place of req$GET() and req$POST()
                                  read_rook_input = function(req) {
                                    "Read rook.input, then convert from JSON"
+                                   
                                    if(!is.null(req$env[['parsed.rook.input']])) {
+                                     ## we have cached the input
                                      l <- req$env[['parsed.rook.input']]
+                                     
                                    } else if(req$get()) {
+                                     ## we just do the GET
                                      l <- req$GET()
+                                     
                                    } else if(req$post()) {
                                      ## we handle post data ourselves
                                      raw_input <- req$env[['rook.input']]$read()
                                      input <- rawToChar(raw_input)
                                      l <- fromJSON(input)
                                    }
+
+                                   ## store the results
                                    req$env[['parsed.rook.input']] <- as.list(l)
                                    as.list(l)
                                  }
@@ -85,13 +94,13 @@ GWidgetsApp <- setRefClass("GWidgetsApp",
                              cookie_salt="character"
                              ),
                            methods=list(
-                             initialize=function(url="", app_name="", script="", authenticator=NULL, ...) {
+                             initialize=function(url="", app_name="", script="", authenticator=NULL, session_manager=make_session_manager(), ...) {
                                
                                initFields(
                                           url=paste("^", url, sep=""),
                                           app_name=app_name,
                                           gw_script=script,
-                                          session_manager=make_session_manager(),
+                                          session_manager=session_manager,
                                           ##
                                           authenticator=authenticator,
                                           login_cookie=character(0),
@@ -271,9 +280,9 @@ GWidgetsAppAjax <- setRefClass("GWidgetsAppAjax",
                               session_manager="ANY"
                               ),
                             methods=list(
-                              initialize=function( ...) {
+                              initialize=function(session_manager=make_session_manager(), ...) {
                                 initFields(
-                                           session_manager=make_session_manager()
+                                           session_manager=session_manager
                                           )
                                callSuper(...)
                              },
@@ -316,7 +325,7 @@ GWidgetsAppAjax <- setRefClass("GWidgetsAppAjax",
                                    out <- run_handler(req, e_cookies, toplevel)
                                  } else if(grepl("runProxy", req$path_info())) {
                                    ## run proxy. The proxy returns JSON code, not html
-                                   if(is.null(req$POST()))
+                                   if(req$post())
                                      headers <- list('Content-Type'='application/json')
                                    out <- run_proxy(req, toplevel) # run_proxy return JSON
                                  } else if(grepl("fileUploadProxy", req$path_info())) {
@@ -407,24 +416,26 @@ GWidgetsAppAjax <- setRefClass("GWidgetsAppAjax",
                              run_proxy = function(req, toplevel) {
                                "Call proxy object to return JSON data"
 
-                               l <- req$GET()
-                               if(length(l) == 0)
-                                 stop("No info to run proxy")
-                               
-                               if(req$post()) {
-                                 ## We bypass the whole parsing in ROok, as we pass in a JSON encoded string
-                                 l$post_data <- read_rook_input(req)
-                               } 
+                               l <- read_rook_input(req)
 
                                ## l has components session_id, id, params, param is json
                                id <- l$id; l$id <- NULL
-
-                               
                                session_id <- l$session_id; l$session_id <- NULL
                                l[['_dc']] <- NULL # ext variable
 
+
+                               
                                if(req$post()){
-                                 ##out <- toplevel$call_post_proxy(id, l, req$POST()) # return JSON
+                                 ## The editing values in gdf get passed back in a funny way
+                                 ## as the use GET to pass back session_id, an did and POST to pass
+                                 ## in arguments. Here we check if the toplevel found above
+                                 ## is NULL, and if so we work a bit.
+                                 if(is.null(toplevel)) {
+                                   tmp <- req$GET()
+                                   e <- get_session(tmp$session_id)
+                                   toplevel <- get_toplevel(e=e)
+                                   id <- tmp$id # both post and get used in this call by gdf widget
+                                 }
                                  out <- toplevel$call_post_proxy(id, l) # return JSON
                                } else {
                                  out <- toplevel$call_proxy(id, l)
@@ -432,12 +443,10 @@ GWidgetsAppAjax <- setRefClass("GWidgetsAppAjax",
 
                                return(out)
                              },
-                              ##
-                              ##
-                              ##
+
                              run_upload = function(req, toplevel) {
                                "Upload file"
-                               l <- req$POST()
+                               l <- read_rook_input(req)
                                if(length(l) == 0)
                                  stop("No info to run file upload")
                                ## l has components session_id, id, 
@@ -445,8 +454,8 @@ GWidgetsAppAjax <- setRefClass("GWidgetsAppAjax",
                                session_id <- l$session_id; l$session_id <- NULL
                                l[['_dc']] <- NULL # ext variable
 
-
-                               out <- toplevel$call_upload(id, l, req$POST()) # return JSON
+                               ## XXX cleam this up
+                               out <- toplevel$call_upload(id, l, l) # return JSON
 
                                return(out)
                              },

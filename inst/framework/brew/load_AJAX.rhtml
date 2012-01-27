@@ -1,4 +1,3 @@
-
 var session_id = null;
 var base_url = "/custom/gwappAJAX/";
 var proxy_url = base_url + "runProxy";
@@ -19,14 +18,14 @@ callRhandler = function(id, signal, value) {
   })
 };
 
-callRhandlerJQUERY=function(id, signal, value) {
+callRhandlerJQuery=function(id, signal, value) {
   data = {id: id, signal:signal, value: value, session_id: session_id};
   $.ajax({
     url:base_url + "runHandler",
     data: data,
     dataType:'script',		  
     cache: false,
-    type:'POST'
+    type:'GET'
   });
 };
 
@@ -45,14 +44,14 @@ transportFun = function(id, value) {
    })
 };
 
-transportFunJQUEUER=function(id, value) {
-  data = {id: id, session_id: session_id,  value:value };
+transportFunJQuery=function(id, value) {
+  data = {id: id, session_id: session_id,  param: value };
   $.ajax({
     url:base_url + "runTransport",
     data: data,
     dataType:'script',		  
     cache: false,
-    type:'POST'
+    type:'GET'
   });
 };
 
@@ -67,14 +66,14 @@ success:callback
 })
 };
 
-jRpcJQUERY =  function(obj, meth, params, callback) {
+jRpcJQuery =  function(obj, meth, params, callback) {
   data = {id: obj, session_id: session_id, meth:meth, value: params};
   $.ajax({
     url:base_url + "runRpc",
     data: data,
     dataType:'script',		  
     cache: false,
-    type:'POST'
+    type:'GET'
   });
 };
 
@@ -141,6 +140,13 @@ listen = function() {
     });
 };
 
-$(window).unload(function() {
-  $.ajax({url: base_url + "closeSession", data: {session_id: session_id}, timeout:1000});
-});
+"Clean up sessions once we are done with the page";
+close_session = function() {
+  $.ajax({url: base_url + "closeSession", 
+          type:'GET',
+          data: {session_id: session_id}, 
+          timeout:1000
+        });
+};
+$(window).unload(close_session);
+

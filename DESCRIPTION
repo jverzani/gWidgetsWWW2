@@ -20,7 +20,8 @@ Depends:
     canvas,
     memoise,
     whisker,
-    digest,
+    digest
+Suggests:
     filehash
 LazyLoad: yes
 Collate:

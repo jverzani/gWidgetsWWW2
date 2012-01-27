@@ -281,7 +281,7 @@ GWidgetArrayProxy <- setRefClass("GWidgetArrayProxy",
                                                                 )
                                                               ))
                                   add_args(arg_list)
-                                  add_public_method("remove_row")
+                                  add_public_method(c("add_row", "remove_row"))
                                   write_constructor()
                                 },
                                get_data=function(drop_visible=TRUE,...) {
@@ -302,8 +302,8 @@ GWidgetArrayProxy <- setRefClass("GWidgetArrayProxy",
                                  "Return JSON array [[],[],] ... *or* handle post data!"
 
                                  params <- list(...)
-                                 
-                                 df <- cbind("id"=seq_len(nrow(value)), value)
+
+                                 df <- cbind("row_id"=seq_len(nrow(value)), value)
                                  df <- df[..visible,]
 
                                  ## do we have paging type request? We do if params$start is not null
@@ -321,32 +321,32 @@ GWidgetArrayProxy <- setRefClass("GWidgetArrayProxy",
                                },
                                post_json_data=function(param) {
                                  "A post request from updating a store"
-                                 l <- param$post_data
-                                 ## in form l$id, and rest
-                                 ## update store
+                                 l <- param
+                                 ## in form l$row_id, and rest
 
                                  ## JV: check where id is! this makes a big deal whether we are
                                  ## inserting or replacing data. Nothing else passed in as far as I can tell
-                                 multi <- is.null(l$id)
+                                 
+                                 multi <- is.null(l$row_id)
                                  if(multi) {
                                    ind <- sapply(l, function(i) {
-                                     value[i$id, ] <<- i[-1]
+                                     value[i$row_id, ] <<- lapply(i[-1], function(j) ifelse(is.null(j), NA, j))
                                      i$id
                                    })
                                  } else {
                                    ## if id is 0 we are inserting at end
                                    ## sychronize with javascript code in gdf
-                                   if(l$id==0) {
+                                   if(l$row_id==0) {
                                      ind <- nrow(value) + 1
                                    } else {
-                                     ind <- l$id
+                                     ind <- l$row_id
                                    }
-                                   value[ind,] <<- l[-1]
+                                   value[ind,] <<- lapply(l[-1], function(i) ifelse(is.null(i), NA, i))
                                  }
                                  ## Return value for record, incase we want to make local changes to push
                                  ## back to client
                                  vals <- seq_len(nrow(value))
-                                 df <- cbind("id"=vals[ind], value[ind,])
+                                 df <- cbind("row_id"=vals[ind], value[ind,])
                                  String(toJSArray(df))
                                },
                                get_json_object_data=function(...) {
@@ -358,6 +358,9 @@ GWidgetArrayProxy <- setRefClass("GWidgetArrayProxy",
                                  }
                                  
                                  return(ret)
+                               },
+                               add_row=function(row, ...) {
+                                 value[unlist(row),] <<- rep(NA, ncol(value)) # add new?
                                },
                                remove_row=function(i) {
                                  "Remove the row"
@@ -374,7 +377,7 @@ GWidgetArrayProxy <- setRefClass("GWidgetArrayProxy",
                                get_fields=function() {
                                  "Return fields mapping from name to type"
                                  if(nrow(value)) {
-                                   df <- cbind("id"=seq_len(nrow(value)), value)
+                                   df <- cbind("row_id"=seq_len(nrow(value)), value)
                                    makeFields(df)
                                  } else {
                                    ""
@@ -504,8 +507,8 @@ GWidgetTreeProxy <- setRefClass("GWidgetTreeProxy",
                                 
                                 ## we make first 3 id, leaf, iconCls and make sure id not otherwised used
                                 names(children)[2:3] <- c("leaf","iconCls") # mean something to extjs
-                                if(names(children)[1] == "id") names(children)[1] <- "ID"
-                                names(children)[names(children) == "id"] <- sapply(seq_len(sum(names(children)=="id")), function(i) sprintf("id_%s",i))
+                                if(names(children)[1] == "row_id") names(children)[1] <- "ID"
+                                names(children)[names(children) == "row_id"] <- sapply(seq_len(sum(names(children)=="row_id")), function(i) sprintf("id_%s",i))
                                 
                                 ids <- sprintf("%s:%s", node, gsub(":","_",children[,1]))
                                 ochildren <- cbind(id=ids, children[2], children[3], children[1], children[-(1:3)])

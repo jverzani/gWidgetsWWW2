@@ -529,14 +529,26 @@ server is basically a proxy, routing requests to the underlying
 \end{quotation}
 
 A basic configuration for \pkg{nginx} simple reroutes calls to the
-Rook process. The \code{load\_app} call opens up port 9000 by default,
-so a configuration  in \code{nginx.conf} like:
+Rook process. The \code{load\_app} call opens up port 9000 by default.
+
+
+We need to make two configurations. In the
+\code{/etc/nginx.conf/sites-enabled/default} file add this in the
+\code{server} configuration
 
 \begin{verbatim}
 location /custom { 
   proxy_pass http://localhost:9000/custom; 
 }
 \end{verbatim}
+
+And in the \code{/etc/nginx/nginx.conf} file add
+\begin{verbatim}
+upstream rookapp {
+	 server localhost:9000;
+}
+\end{verbatim}
+
 will route all urls \url{http://you.domain.com/custom/XXX} to the
 \code{Rook} process. Jeffrey Horner has more details in a gist at
 \url{https://gist.github.com/6d09536d871c1a648a84}.

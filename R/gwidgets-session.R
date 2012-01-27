@@ -31,7 +31,6 @@ SessionManager <- setRefClass("SessionManager",
                                   if(use_filehash) {
                                     ## filehash allows us to use rapache and multiple
                                     ## R processes. It is *much* slower.
-                                    require(filehash)
                                     db_name <- getOption("gWidgetsWWW2:db_name")
                                     if(is.null(db_name))
                                       db_name <- "/tmp/gWidgetsWWW2_session_db"

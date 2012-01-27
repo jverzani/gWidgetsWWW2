@@ -1,6 +1,14 @@
 == TODO
 
+* gdf seems broken (add)
+* why so slow? (Reference class methods?)
+
 === nginx
+* better example: need 3 things change to server, change to http and R
+  start up script
+* load_app for loading many apps in startup script
+
+=== apache proxy
 
 === Documentation
 * roxygen docs

@@ -65,9 +65,6 @@ GStackWidget <- setRefClass("GStackWidget",
                              
                              
                            },
-                           transport_fun = function() {
-                             ""
-                           },
                            process_transport = function(value) {
                              value <<- value
                            },

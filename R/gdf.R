@@ -96,24 +96,57 @@ GDf <- setRefClass("GDf",
 #                       cmd <- sprintf("new Ext.PagingToolbar(%s)", toJSObject(paging_options))
 #                       arg_list[['bbar']] = String(cmd)
                        arg_list[['bbar']] <- String(paging_id())
-                       add_cmd <- paste("function() {",
-                                    sprintf("%s.cancelEdit();", roweditor_id()),
-                                    sprintf("var r=Ext.create('%s',{});", store$model_id()),
-                                    sprintf("var count=%s.getTotalCount();", store$get_id()),
-                                    sprintf("%s.insert(count, r);", store$get_id()),
-                                    sprintf("%s.totalCount = count + 1;", store$get_id()),
-                                    sprintf("%s.doRefresh();", paging_id()),
-                                    sprintf("%s.startEdit(count+1,0);", roweditor_id()),
-                                    "}", sep="")
-                       remove_cmd <- paste("function() {",
-                                           sprintf("var selection=%s.getSelectionModel().getSelection()[0];", get_id()),
-                                           sprintf("if(selection) {"),
-                                           sprintf("rowidx=selection.raw[0];"),
-                                           sprintf("jRpc('%s','remove_row',{row:rowidx},function() {", store$proxy$get_id()),
-                                           sprintf("%s.suspendEvents(false);%s.remove(selection);%s.resumeEvents();});", store$proxy$get_id(), store$get_id(), store$proxy$get_id()),
-                                           sprintf("%s.doRefresh();", paging_id()),
-                                           "}}",
-                                           sep="")
+
+##       {{store}}.insert(count, r);
+                       
+                       add_tpl <- "
+function() {
+  {{row}}.cancelEdit();
+  var r = Ext.create('{{model}}', {});
+  var count = {{store}}.getTotalCount();
+  {{store}}.totalCount = count + 1;
+  jRpc('{{proxy}}', 'add_row', {row:count + 1}, function() {
+      {{page}}.doRefresh();
+      {{row}}.startEdit(count+1, 0);
+    })
+}
+"
+                       add_cmd <- whisker.render(add_tpl, list(row=roweditor_id(), proxy=store$proxy$get_id(), model=store$model_id(), store=store$get_id(), page=paging_id()))
+                       ## add_cmd <- paste("function() {",
+                       ##              sprintf("%s.cancelEdit();", roweditor_id()),
+                       ##              sprintf("var r=Ext.create('%s',{});", store$model_id()),
+                       ##              sprintf("var count=%s.getTotalCount();", store$get_id()),
+                       ##              sprintf("%s.insert(count, r);", store$get_id()),
+                       ##              sprintf("%s.totalCount = count + 1;", store$get_id()),
+                       ##              sprintf("%s.doRefresh();", paging_id()),
+                       ##              sprintf("%s.startEdit(count+1,0);", roweditor_id()),
+                       ##              "}", sep="")
+                       remove_tpl <- "
+function() {
+  var selection={{id}}.getSelectionModel().getSelection()[0];
+  if(selection) {
+    var rowidx = selection.raw[0];
+    jRpc('{{proxy}}', 'remove_row', {row:rowidx}, function() {
+      {{proxy}}.suspendEvents();
+      {{store}}.remove(selection);
+      {{proxy}}.resumeEvents();
+      {{page}}.doRefresh();
+    })
+  }
+}
+"
+                      remove_cmd <- whisker.render(list(id=get_id(), proxy=store$proxy$get_id(),
+                                                        store=store$get_id(), page=paging_id()))
+
+         ## remove_cmd <- paste("function() {",
+         ##                                   sprintf("var selection=%s.getSelectionModel().getSelection()[0];", get_id()),
+         ##                                   sprintf("if(selection) {"),
+         ##                                   sprintf("rowidx=selection.raw[0];"),
+         ##                                   sprintf("jRpc('%s','remove_row',{row:rowidx},function() {", store$proxy$get_id()),
+         ##                                   sprintf("%s.suspendEvents(false);%s.remove(selection);%s.resumeEvents();});", store$proxy$get_id(), store$get_id(), store$proxy$get_id()),
+         ##                                   sprintf("%s.doRefresh();", paging_id()),
+         ##                                   "}}",
+         ##                                   sep="")
                        ## We only had add -- not remove
 #                       arg_list[['tbar']] <- String(sprintf("[{text:'Add', handler:%s}, {text:'Remove',handler:%s,id:'%s_delete', disabled: true}]", add_cmd, remove_cmd, get_id()))
                        arg_list[['tbar']] <- String(sprintf("[{text:'%s', handler:%s}]", gettext("Add row"), add_cmd))

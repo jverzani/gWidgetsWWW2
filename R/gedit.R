@@ -145,7 +145,7 @@ function(value) {
                          setup(container, handler, action, ext.args, ...)
                        },
                        transport_fun = function() {
-                         "var param = Ext.JSON.encode({value: Ext.htmlEncode(w.getValue())})"
+                         "var param = {value: w.getValue()}"
                        },
                        process_transport=function(value, ...) {
                          ### XXX should decode url encode here

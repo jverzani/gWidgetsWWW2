@@ -45,6 +45,8 @@ NULL
 ##' authentification. Subclasses of \code{Authenticator} should
 ##' implement the methods \code{is_valid_cookie} and
 ##' \code{is_valid_user}.
+##' @param session_manager an instance of \code{make_session_manager}
+##' @param open_page logical. If \code{TRUE} call \code{browseURL} to open the app.
 ##' @param ... passed to \code{brew} call of \code{brew_template}
 ##' @export
 ##' @examples
@@ -64,10 +66,12 @@ load_app <- function(script_name,
                      show.log=FALSE,
                      port=9000,
                      authenticator=NULL,
+                     session_manager=make_session_manager(),
+                     open_page=TRUE,
                      ...
                          ) {
 
-  load_once(port=port)
+  load_once(port=port, session_manager)
 
   options("Rhttpd_debug"=as.logical(show.log))
   
@@ -85,12 +89,9 @@ load_app <- function(script_name,
                                 extra_html_code = paste(extra_html_code, collapse="\n"),
                                 ...
                                 )
-                                        #  R$add(RhttpdApp$new(brewery, name="gwbrew"))
-
-  
   ## an application
   gwapp <- GWidgetsApp$new(url="/gwapp", app_name=app_name, script=script_name,
-                           session_manager=make_session_manager(),
+                           session_manager=session_manager,
                            authenticator=authenticator
                            )
   app <- Rook::Builder$new(
@@ -101,24 +102,20 @@ load_app <- function(script_name,
                                              ),
                            ## brew files
                            brewery,
-                           ## Rook:::Brewery$new(
-                           ##                    url=sprintf("%s/brew", app_name),
-                           ##                    root='.'
-                           ##                    ),
-                           ## why do I need this?
-#                           tmpApp,
                            gwapp,
                            ## why does this fail?
                            Rook:::Redirect$new(sprintf("http://127.0.0.1:%s/custom/%s/indexgw.rhtml", tools:::httpdPort, app_name))
                            )
   
   R$add(RhttpdApp$new(app, name=app_name))
+
+  if(open_page)
+    browseURL(sprintf("http://127.0.0.1:%s/custom/%s/indexgw.rhtml", tools:::httpdPort, app_name))
   
-  browseURL(sprintf("http://127.0.0.1:%s/custom/%s/indexgw.rhtml", tools:::httpdPort, app_name))
   invisible(gwapp)
 }
 
-.load_once <- function(port=9000, ...) {
+.load_once <- function(port=9000, session_manager, ...) {
   
   R <- Rhttpd$new()
   try(R$start(port=port), silent=TRUE)
@@ -137,11 +134,12 @@ load_app <- function(script_name,
                              urls=c("/tmp"),
                              root=tempdir()
                              )
+  
   R$add(RhttpdApp$new(tmpApp, name="tmp"))
   
 
   ## This handles the AJAX calls
-  R$add(GWidgetsAppAjax$new(session_manager=make_session_manager()), name="gwappAJAX")
+  R$add(GWidgetsAppAjax$new(session_manager=session_manager), name="gwappAJAX")
 
 }
 
