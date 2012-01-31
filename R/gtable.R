@@ -345,7 +345,7 @@ GTable <- setRefClass("GTable",
                           ## transport back row. Fine for multiple or not. Use id here, as sorting can
                           ## otherwise mess up relationship between index and data in R data frame
 ##                          "var param={value: Ext.pluck(this.getSelectionModel().getSelection(),'id')}"
-                          "var param={value: selected.map(function(rec) {return rec.get('id')})}"
+                          "var param={value: selected.map(function(rec) {return(rec.index + 1)})}"
                           
                         },
                         process_transport = function(value, ...) {

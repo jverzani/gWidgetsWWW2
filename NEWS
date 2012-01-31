@@ -4,7 +4,9 @@ NEWS for gWidgetsWWW2
 
 Changes for 0.3
 -------------------
- 
+
+* now use Ext-4.1-beta-2. 
+
 * We use Ext-4.1-beta so that certain layouts work. A **major
   drawback** is the fact that it doesn't work with IE! Oh well, try
   chrome for now. When 4.1 is out of beta it should be back to normal

@@ -115,6 +115,58 @@ load_app <- function(script_name,
   invisible(gwapp)
 }
 
+##' Load an app in a directory
+##'
+##' @param dirname The directory name (with full path). We make several assuptions:
+##' 1) \code{dir/*.R} has one answer, or we take \code{index.R}, or we take first alphabetically;
+##' 2) \code{app_name} is \code{basename(dir_name)};
+##' 3) \code{brew/*rhtml} is empty (fullscreen), has one value, or has \code{index.rhtml} or we take first alphabetically;
+##' 4) authenticator (XXX to be determined, for now calls \code{make_session_manager})
+##' @export
+##' @return creates the app
+load_dir <- function(dir_name, ...) {
+  sep <- .Platform$file.sep
+  dir_name <- gsub(sprintf("%s*$", sep), "", dir_name)
+
+  app_name <- basename(dir_name)
+  
+  r_files <- Sys.glob(sprintf("%s%s*.R", dir_name, sep)) 
+  if(length(r_files) == 0) {
+    stop(gettext(sprintf("No R files found in %s", dir_name)))
+  } else if(length(r_files) == 1) {
+    r_file <- r_files
+  } else {
+    ind <- match("index.R", basename(r_files))
+    r_file <- ifelse(is.na(ind), r_files[1], r_files[ind])
+  }
+  
+  brew_files <- Sys.glob(sprintf("%s%sbrew%s*.rhtml", dir_name, sep, sep))
+  if(length(brew_files) <= 1) {
+    brew_file <- ""
+  } else {
+    ind <- match("index.rhtml", basename(brew_files))
+    brew_file <- ifelse(is.na(ind), brew_files[1], brew_files[ind])
+  }
+
+  ## How to do make_session
+  ## how to do Authenticator
+
+#  cur_dir <- getwd()
+#  on.exit(setwd(cur_dir))
+  setwd(dir_name)
+  
+  
+  load_app(
+           script_name=r_file,
+           app_name=app_name,
+           brew_template = brew_file,
+           ...
+           )
+  
+
+
+}
+
 .load_once <- function(port=9000, session_manager, ...) {
   
   R <- Rhttpd$new()

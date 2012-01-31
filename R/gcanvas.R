@@ -116,17 +116,18 @@ gcanvas <- function(f=NULL, width=480, height=400,
 
 ##' class for gcanvas
 ##'
-##' The \code{gcanvas} widget provides a canvas for drawing on or for
-##' displaying graphics produced by the \pkg{canvas} device. The
-##' drawing is supported through a series of low-level primitives:
-##' \code{polygon}, \code{lines}, \code{rect}, \code{circle}. Others
-##' are possible. These are reference class methods of the gcanvas object. In
-##' addition, there are additional handlers:
-##' \code{add_handler_clicked}, \code{add_handler_mouse_motion},
-##' .... These are passed back event information through the \code{h}
-##' object. The method \code{get_event_params} provides the mapping.
+##' The \code{GCanvas} class is the base class for the \code{gcanvas}
+##' widget, which  provides an HTML5 canvas widget for drawing on or
+##' for displaying graphics produced by the \pkg{canvas} device. The
+##' drawing is supported through a series of low-level primitives
+##' (reference class methods): \code{polygon}, \code{lines},
+##' \code{rect}, \code{circle}. Others are possible.  In addition,
+##' there are additional handlers: \code{add_handler_clicked},
+##' \code{add_handler_mouse_motion}, .... These are passed back event
+##' information through the \code{h} object. The method
+##' \code{get_event_params} provides the mapping.
 ##' 
-##' @rdname gWidgetsWWW2-package
+##' @rdname gcanvas
 GCanvas <- setRefClass("GCanvas",
                        contains="GWidget",
                        fields=list(
