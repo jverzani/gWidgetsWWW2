@@ -20,18 +20,21 @@ NULL
 ##' A widget for editing a data frame
 ##'
 ##' A widget for editing a data frame This implementation allows the
-##' user to edit a row (row-by-row). The user can add a new row or
-##' remove the currently selected row (if more than 1 is present). The
-##' hidden argument \code{do_add_remove_buttons} can be set to
-##' \code{FALSE} to prevent this option. For large data sets, paging
-##' is used. the hidden argument \code{page_size} (with default of
-##' 200) can be set to adjust the size of each page.
+##' user to edit a row (row-by-row). Change handlers are called
+##' after an edit is performed. The user can add a new row or remove
+##' the currently selected row (if more than 1 is present). The hidden
+##' argument \code{do_add_remove_buttons} can be set to \code{FALSE}
+##' to prevent this option. For large data sets, paging is used. the
+##' hidden argument \code{page_size} (with default of 200) can be set
+##' to adjust the size of each page.
 ##' @param items data frame to be edited
 ##' @inheritParams gwidget
 ##' @param name name of data frame appearing in title
 ##' @return a \code{GDf} reference class object.
 ##' @author john verzani
-gdf <- function(items = NULL, 
+gdf <- function(items = NULL,
+                handler=NULL,
+                action=NULL,
                 container = NULL, ...,
                 width=300, height=200,   # gWidgetsWWW defaults
                 ext.args = NULL,
@@ -39,11 +42,10 @@ gdf <- function(items = NULL,
                 ) {
 
   gd <- GDf$new(container$toplevel)
-  gd$init(items, name, container, ..., width=width, height=height, ext.args=ext.args)
+  gd$init(items, name, handler, action, container, ..., width=width, height=height, ext.args=ext.args)
   gd
 }
 
-## base class for gdatarframe
 GDf <- setRefClass("GDf",
                    contains="GWidgetGrid",
                    fields=list(
@@ -55,7 +57,7 @@ GDf <- setRefClass("GDf",
                      ## server. Smaller means faster but more frequent
                      ## @param setType type of selection for editing:
                      ##entire row or single cell
-                     init=function(items, name, container, ..., width=NULL, height=NULL, ext.args=NULL,
+                     init=function(items, name, handler, action, container, ..., width=NULL, height=NULL, ext.args=NULL,
                        page_size=200L, do_add_remove_buttons=TRUE
                        #, selType=c("rowmodel", "cellmodel")
                        ) {
@@ -154,18 +156,19 @@ function() {
                        cmd <- sprintf("var %s=Ext.create('Ext.grid.plugin.RowEditing', {clicksToMoveEditor: 1,autoCancel: false});", roweditor_id())
                        add_js_queue(cmd)
                        
-                       setup(container, NULL, NULL, ext.args, ...)
+                       setup(container, handler, action, ext.args, ...)
 
                        ## delete if a selection and more than 1 row
-                       cmd <- whisker.render("
+                       if(do_add_remove_buttons) {
+                         cmd <- whisker.render("
 {{id}}.getSelectionModel().on('selectionchange', function(selModel, selections) {
   ( {{id}}.getStore().getTotalCount() > 1 ) &&
   {{id}}.down('#{{id}}_delete').setDisabled(selections.length === 0)
 });
 ",
-                        list(id=get_id()))
-                       add_js_queue(cmd)
-
+                          list(id=get_id()))
+                          add_js_queue(cmd)
+                       }
                        
                        ## XXX This is annoying. For somer reason after
                        ## editing a new row is left repeating the
@@ -178,7 +181,9 @@ function() {
                                     sep="")
                        add_js_queue(cmd)
                        
-                       
+                       ## handler
+
+
                        ## load data
                        store$load_data()
                      },

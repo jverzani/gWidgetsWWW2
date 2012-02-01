@@ -366,6 +366,30 @@ dispose <- function(x,...) UseMethod("dispose")
 ##' @S3method dispose GComponent
 dispose.GComponent <- function(x,...) x$dispose(...)
 
+##' Add a spring to push additionnal child objects to far end of packing
+##'
+##' For box Containers only
+##' @param x a box container (e.g., \code{ggroup})
+##' @return NULL
+##' @export
+addSpring <- function(x) UseMethod("addSpring")
+
+##' Method for addSpring
+##' 
+##' @inheritParams addSpring
+##' @method addSpring default
+##' @S3method addSpring default
+addSpring.default <- function(x) {}
+  
+##' Method for addSpring
+##' 
+##' @inheritParams addSpring
+##' @method addSpring GGroup
+##' @S3method addSpring GGroup
+addSpring.GGroup <- function(x) {
+  ## just expand an empty label
+  glabel(" ", cont=x, expand=TRUE)
+}
 
 ##################################################
 ## Handler calls
