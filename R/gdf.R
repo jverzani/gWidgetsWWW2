@@ -19,22 +19,23 @@ NULL
 
 ##' A widget for editing a data frame
 ##'
-##' A widget for editing a data frame. There is no means to change the
-##' size of the frame being edited or the type of data in each
-##' column. As such, one must plan ahead. This implementation allows
-##' one to add a row to the data store, to edit a row (row-by-row),
-##' but there is no means to delete a row.
+##' A widget for editing a data frame This implementation allows the
+##' user to edit a row (row-by-row). The user can add a new row or
+##' remove the currently selected row (if more than 1 is present). The
+##' hidden argument \code{do_add_remove_buttons} can be set to
+##' \code{FALSE} to prevent this option. For large data sets, paging
+##' is used. the hidden argument \code{page_size} (with default of
+##' 200) can be set to adjust the size of each page.
 ##' @param items data frame to be edited
-##' @param name name of data frame appearing in titke
-##' @param do.subset Ignored.
 ##' @inheritParams gwidget
+##' @param name name of data frame appearing in title
 ##' @return a \code{GDf} reference class object.
 ##' @author john verzani
-gdf <- function(items = NULL, name = deparse(substitute(items)),
-                do.subset = FALSE,
+gdf <- function(items = NULL, 
                 container = NULL, ...,
                 width=300, height=200,   # gWidgetsWWW defaults
-                ext.args = NULL
+                ext.args = NULL,
+                name = deparse(substitute(items))
                 ) {
 
   gd <- GDf$new(container$toplevel)
@@ -55,7 +56,7 @@ GDf <- setRefClass("GDf",
                      ## @param setType type of selection for editing:
                      ##entire row or single cell
                      init=function(items, name, container, ..., width=NULL, height=NULL, ext.args=NULL,
-                       page_size=200L
+                       page_size=200L, do_add_remove_buttons=TRUE
                        #, selType=c("rowmodel", "cellmodel")
                        ) {
 
@@ -93,11 +94,9 @@ GDf <- setRefClass("GDf",
                                                    emptyMsg= gettext("No rows to display")
                                                    )
                          )
-#                       cmd <- sprintf("new Ext.PagingToolbar(%s)", toJSObject(paging_options))
-#                       arg_list[['bbar']] = String(cmd)
                        arg_list[['bbar']] <- String(paging_id())
 
-##       {{store}}.insert(count, r);
+
                        
                        add_tpl <- "
 function() {
@@ -127,23 +126,23 @@ function() {
   }
 }
 "
-
-    ## jRpc('{{proxy}}', 'remove_row', {row:rowidx}, function() {
-    ##   {{proxy}}.suspendEvents();
-    ##   {{store}}.totalCount = count - 1;
-    ##   {{proxy}}.resumeEvents();
-    ##   {{page}}.doRefresh();
-    ## })
+                       ## bonepile -- remove if not needed
+                       ## jRpc('{{proxy}}', 'remove_row', {row:rowidx}, function() {
+                       ##   {{proxy}}.suspendEvents();
+                       ##   {{store}}.totalCount = count - 1;
+                       ##   {{proxy}}.resumeEvents();
+                       ##   {{page}}.doRefresh();
+                       ## })
+                       ##       {{store}}.insert(count, r);
 
                        remove_cmd <- whisker.render(remove_tpl,
                                                    list(id=get_id(), proxy=store$proxy$get_id(),
                                                         store=store$get_id(), page=paging_id()))
 
-                       ## We only had add -- not remove
+                       ## put in add and remove buttons
+                       if(do_add_remove_buttons)
+                         arg_list[['tbar']] <- String(sprintf("[{text:'Add', handler:%s}, {text:'Remove', handler:%s,id:'%s_delete', disabled: true}]", add_cmd, remove_cmd, get_id()))
 
-                       arg_list[['tbar']] <- String(sprintf("[{text:'Add', handler:%s}, {text:'Remove', handler:%s,id:'%s_delete', disabled: true}]", add_cmd, remove_cmd, get_id()))
-
-                       ## arg_list[['tbar']] <- String(sprintf("[{text:'%s', handler:%s}]", gettext("Add row"), add_cmd))
                        
                        add_args(arg_list)
                        store$page_size <<- as.integer(page_size)
