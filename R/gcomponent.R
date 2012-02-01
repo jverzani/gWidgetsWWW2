@@ -376,6 +376,35 @@ E.g. var param = {value: this.getText()}"
                                process_transport(params)
                              }
                            },
+                           ## delayed call
+                           add_async_javascript_callback = function(url, callback,  data=list(), data_type=c("json","xml", "html", "script", "text")) {
+                             "
+##' add ajax call complete with handler to call
+##'
+##' @param url url to call
+##' @param callback string containing javascript callback. Might be
+##' callRhandler to work with gWidgets. Arguments are data, textStatus
+##' and jqXHR.
+##' @param data named list of values to pass back to ajax call
+##' @param data_type type of data coming back
+"
+                             tpl <- "
+$.ajax('{{url}}', {
+       dataType: '{{data_type}}',
+       data: {{data}},
+       type:'GET',
+       cache:false,
+       success: {{callback}}
+});
+"
+                             out <- whisker.render(tpl, list(url=url,
+                                                             data_type=match.arg(data_type),
+                                                             data=toJSObject(merge.list(
+                                                               list(session_id=String("session_id")),
+                                                               data)),
+                                                             callback=callback))
+                             add_js_queue(out)
+                           },
                            ## block and unblock
                            block_handlers=function() {
                              "Block all handlers."
