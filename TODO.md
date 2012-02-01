@@ -20,7 +20,7 @@ TODO
 
 * gcodemirror -- put in text proxy, not stripping off of '. Can use add_async_javascript_callback or jRpc stuff.
 
-* gdf seems broken (add, remove can be done now -- see index)
+* <del>gdf seems broken (add, remove can be done now -- see index)</del>
 
 * <del> gfile is broken</del>
 
@@ -111,9 +111,9 @@ gWidgets
 - checkbox selection; grouping variables (add), means to limit
   which fields are shown
 
-- an't be bottom in layout???
+- <del>an't be bottom in layout???</del>
 
-* gdf: We can add and edit, but can't delete. WOuld like to use Rest proxy, but isn't working iwth Rook, as the request is denied -- not even parsable
+* <del>gdf: We can add and edit, but can't delete. WOuld like to use Rest proxy, but isn't working iwth Rook, as the request is denied -- not even parsable</del>
 
 * work on size issues with radio, check box
 

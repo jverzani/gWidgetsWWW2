@@ -1,0 +1,23 @@
+\name{load_dir}
+\alias{load_dir}
+\title{Load an app in a directory}
+\usage{
+  load_dir(dir_name, ...)
+}
+\arguments{
+  \item{dirname}{The directory name (with full path). We
+  make several assuptions: 1) \code{dir/*.R} has one
+  answer, or we take \code{index.R}, or we take first
+  alphabetically; 2) \code{app_name} is
+  \code{basename(dir_name)}; 3) \code{brew/*rhtml} is empty
+  (fullscreen), has one value, or has \code{index.rhtml} or
+  we take first alphabetically; 4) authenticator (XXX to be
+  determined, for now calls \code{make_session_manager})}
+}
+\value{
+  creates the app
+}
+\description{
+  Load an app in a directory
+}
+

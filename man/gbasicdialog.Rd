@@ -1,0 +1,33 @@
+\name{gbasicdialog}
+\alias{gbasicdialog}
+\title{Stub for a basic dialog}
+\usage{
+  gbasicdialog(...)
+}
+\value{
+  NULL
+}
+\description{
+  There is no gbasicdialog in \pkg{gWidgetsWWW2}. There is
+  a workaround though. In a subwindow pass in the argument
+  \code{ext.args=list(modal=TRUE)}. This will make the
+  floating subwindow modal. There is not need to call
+  \code{visible} -- in fact it wont work -- but you need to
+  define the window and its child components within a
+  single call back.
+}
+\examples{
+\dontrun{
+w <- gwindow("Parent")
+b <- gbutton("click", cont=w, handler=function(h,...) {
+w1 <- gwindow("modal subwindow", parent=w, ext.args=list(modal=TRUE))
+g <- ggroup(cont=w1, horizontal=FALSE)
+glabel("Some label", cont=g, expand=TRUE)
+bg <- ggroup(cont=g)
+addSpring(bg)
+gbutton("ok", cont=bg) ## add your own handler
+gbutton("dismiss", cont=bg, handler=function(...) dispose(w1))
+})
+}
+}
+

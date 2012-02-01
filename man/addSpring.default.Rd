@@ -1,0 +1,13 @@
+\name{addSpring.default}
+\alias{addSpring.default}
+\title{Method for addSpring}
+\usage{
+  \method{addSpring}{default} (x)
+}
+\arguments{
+  \item{x}{a box container (e.g., \code{ggroup})}
+}
+\description{
+  Method for addSpring
+}
+
