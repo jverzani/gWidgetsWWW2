@@ -318,7 +318,11 @@ GWidgetArrayProxy <- setRefClass("GWidgetArrayProxy",
                                      df <- df[ind,,drop=FALSE]
                                    }
                                  }
-                                 toJSArray(df)
+
+                                 if(nrow(df))
+                                   toJSArray(df)
+                                 else
+                                   ""
                                },
                                post_json_data=function(param) {
                                  "A post request from updating a store"
@@ -350,23 +354,18 @@ GWidgetArrayProxy <- setRefClass("GWidgetArrayProxy",
                                  df <- cbind("row_id"=vals[ind], value[ind,])
                                  String(toJSArray(df))
                                },
-                               get_json_object_data=function(...) {
-                                 "The params determine what to pass back. "
-                                 ## Default is just to return array of objects
-                                 if(is.data.frame(value)) {
-                                   out <- sapply(seq_len(nrow(value)), function(i) toJSObject(value[i,]))
-                                   ret <- sprintf("[%s]", paste(out, collapse=","))
-                                 }
-                                 
-                                 return(ret)
-                               },
                                add_row=function(row, ...) {
                                  value[unlist(row),] <<- rep(NA, ncol(value)) # add new?
                                },
-                               remove_row=function(i) {
+                               remove_row=function(param) {
                                  "Remove the row"
-                                 cat("remove row", i, "\n")
-                                 value <<- value[-as.numeric(i),]
+                                 if(nrow(value) > 1) {
+                                   row <- as.numeric(unlist(param))
+                                   value <<- value[-row,, drop=FALSE]
+                                   ..visible <<- ..visible[-row]
+                                 } else {
+                                   ## can't remove last row?
+                                 }
                                },
                                get_visible=function(...) {
                                  ..visible

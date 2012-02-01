@@ -112,44 +112,38 @@ function() {
 }
 "
                        add_cmd <- whisker.render(add_tpl, list(row=roweditor_id(), proxy=store$proxy$get_id(), model=store$model_id(), store=store$get_id(), page=paging_id()))
-                       ## add_cmd <- paste("function() {",
-                       ##              sprintf("%s.cancelEdit();", roweditor_id()),
-                       ##              sprintf("var r=Ext.create('%s',{});", store$model_id()),
-                       ##              sprintf("var count=%s.getTotalCount();", store$get_id()),
-                       ##              sprintf("%s.insert(count, r);", store$get_id()),
-                       ##              sprintf("%s.totalCount = count + 1;", store$get_id()),
-                       ##              sprintf("%s.doRefresh();", paging_id()),
-                       ##              sprintf("%s.startEdit(count+1,0);", roweditor_id()),
-                       ##              "}", sep="")
+
+                       ## remove from store, then refresh. Do not remove via remove JS method
                        remove_tpl <- "
 function() {
   var selection={{id}}.getSelectionModel().getSelection()[0];
   if(selection) {
     var rowidx = selection.raw[0];
+    var count = {{store}}.getTotalCount();
     jRpc('{{proxy}}', 'remove_row', {row:rowidx}, function() {
-      {{proxy}}.suspendEvents();
-      {{store}}.remove(selection);
-      {{proxy}}.resumeEvents();
       {{page}}.doRefresh();
     })
+
   }
 }
 "
-                      remove_cmd <- whisker.render(list(id=get_id(), proxy=store$proxy$get_id(),
+
+    ## jRpc('{{proxy}}', 'remove_row', {row:rowidx}, function() {
+    ##   {{proxy}}.suspendEvents();
+    ##   {{store}}.totalCount = count - 1;
+    ##   {{proxy}}.resumeEvents();
+    ##   {{page}}.doRefresh();
+    ## })
+
+                       remove_cmd <- whisker.render(remove_tpl,
+                                                   list(id=get_id(), proxy=store$proxy$get_id(),
                                                         store=store$get_id(), page=paging_id()))
 
-         ## remove_cmd <- paste("function() {",
-         ##                                   sprintf("var selection=%s.getSelectionModel().getSelection()[0];", get_id()),
-         ##                                   sprintf("if(selection) {"),
-         ##                                   sprintf("rowidx=selection.raw[0];"),
-         ##                                   sprintf("jRpc('%s','remove_row',{row:rowidx},function() {", store$proxy$get_id()),
-         ##                                   sprintf("%s.suspendEvents(false);%s.remove(selection);%s.resumeEvents();});", store$proxy$get_id(), store$get_id(), store$proxy$get_id()),
-         ##                                   sprintf("%s.doRefresh();", paging_id()),
-         ##                                   "}}",
-         ##                                   sep="")
                        ## We only had add -- not remove
-#                       arg_list[['tbar']] <- String(sprintf("[{text:'Add', handler:%s}, {text:'Remove',handler:%s,id:'%s_delete', disabled: true}]", add_cmd, remove_cmd, get_id()))
-                       arg_list[['tbar']] <- String(sprintf("[{text:'%s', handler:%s}]", gettext("Add row"), add_cmd))
+
+                       arg_list[['tbar']] <- String(sprintf("[{text:'Add', handler:%s}, {text:'Remove', handler:%s,id:'%s_delete', disabled: true}]", add_cmd, remove_cmd, get_id()))
+
+                       ## arg_list[['tbar']] <- String(sprintf("[{text:'%s', handler:%s}]", gettext("Add row"), add_cmd))
                        
                        add_args(arg_list)
                        store$page_size <<- as.integer(page_size)
@@ -163,10 +157,15 @@ function() {
                        
                        setup(container, NULL, NULL, ext.args, ...)
 
-##                        ## delete if a selection.
-##                        cmd <- sprintf("%s.getSelectionModel().on('selectionchange', function(selModel, selections){
-## %s.down('#%s_delete').setDisabled(selections.length === 0)});", get_id(),get_id(), get_id())
-##                        add_js_queue(cmd)
+                       ## delete if a selection and more than 1 row
+                       cmd <- whisker.render("
+{{id}}.getSelectionModel().on('selectionchange', function(selModel, selections) {
+  ( {{id}}.getStore().getTotalCount() > 1 ) &&
+  {{id}}.down('#{{id}}_delete').setDisabled(selections.length === 0)
+});
+",
+                        list(id=get_id()))
+                       add_js_queue(cmd)
 
                        
                        ## XXX This is annoying. For somer reason after
@@ -206,41 +205,3 @@ function() {
                        
                      ))
 
-
-## We need to coerce a value from string to ..
-
-
-## ##' Generic to coerce value before assigning into data frame
-## ##' @param x what value will go into
-## ##' @param value to set into x
-## coerceValue <- function(x, value) UseMethod("coerceValue")
-
-## ##' method to coerce value before assigning into data frame
-## ##' @param x what value will go into
-## ##' @param value to set into x
-## coerceValue.default <- function(x, value) format(value)
-
-## ##' method to coerce value before assigning into data frame
-## ##' @param x what value will go into
-## ##' @param value to set into x
-## coerceValue.character <- function(x, value) as.character(value)
-
-## ##' method to coerce value before assigning into data frame
-## ##' @param x what value will go into
-## ##' @param value to set into x
-## coerceValue.integer <- function(x, value) as.integer(value)
-
-## ##' method to coerce value before assigning into data frame
-## ##' @param x what value will go into
-## ##' @param value to set into x
-## coerceValue.numeric <- function(x, value) as.numeric(value)
-
-## ##' method to coerce value before assigning into data frame
-## ##' @param x what value will go into
-## ##' @param value to set into x
-## coerceValue.logical <- function(x, value)  as.logical(toupper(value))
-
-## ##' method to coerce value before assigning into data frame
-## ##' @param x what value will go into
-## ##' @param value to set into x
-## coerceValue.factor <- function(x, value) ifelse(value %in% levels(x), value, NA)
