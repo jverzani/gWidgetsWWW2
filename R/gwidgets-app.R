@@ -63,10 +63,14 @@ GWidgetsAppBase <- setRefClass("GWidgetsAppBase",
                                      l <- req$GET()
                                      
                                    } else if(req$post()) {
-                                     ## we handle post data ourselves
-                                     raw_input <- req$env[['rook.input']]$read()
-                                     input <- rawToChar(raw_input)
-                                     l <- fromJSON(input)
+                                     ## we handle post data ourselves -- if we can
+                                     if(grepl("^multipart/.*boundary", .req$env$CONTENT_TYPE)) {
+                                       l <- req$POST()
+                                     } else {
+                                       raw_input <- req$env[['rook.input']]$read()
+                                       input <- rawToChar(raw_input)
+                                       l <- fromJSON(input)
+                                     }
                                    }
 
                                    ## store the results

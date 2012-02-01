@@ -67,42 +67,51 @@ GFile <- setRefClass("GFile",
                                           frame=TRUE,
                                           fileUpload=TRUE,
                                           bodyPadding="2 2 0",
-                                          url= String("file_url"),
                                           method="POST",
                                           defaults = list(
                                             anchor="100%",
                                             allowBlank=FALSE
                                             ),
                                           items=String(sprintf("[%s]",
-                                            toJSObject(list(xtype="fileuploadfield",
+                                            toJSObject(list(xtype="filefield",
                                                             id=sprintf("%s_upload", get_id()),
                                                             emptyText =text,
                                                             hideLabel = TRUE,
-                                                            buttonText="Browse...",
-                                                            buttonConfig=list(iconClass="update-icon")
+                                                            buttonText=gettext("Browse..."),
+                                                            buttonConfig=list(iconClass="upload-icon")
                                                             )))),
                                           buttons = String(sprintf("[%s]",
                                             toJSObject(list(text=sprintf("%s",gettext("Upload")),
-                                                            handler= String(paste("function () {",
-                                                              sprintf("var form = %s.getForm();",get_id()),
-                                                              "if(form.isValid()){",
-                                                              "form.submit(",
-                                                              toJSObject(list(
-                                                                              waitMsg="Uploading...",
-                                                                              success=String(sprintf("function(fp,o) {callRhandler('%s','%s')}", get_id(), "fileuploaded")),
-                                                                              failure=String(sprintf("function(fp,o) {alert('')}", gettext("Upload failed"))),
-                                                                              params=list(
-                                                                                id=get_id(),
-                                                                                session_id=String("session_id")
-                                                                                )
-                                                                              )),
-                                                              ")}}",
-                                                              sep=" "))))
-                                                                                
-                                                                      
-                                            ))
+                                                            handler=String(whisker.render("
+function() {
+  var form = {{id}}.getForm();
+  if(form.isValid()) {
+    form.submit({
+      url:{{url}},
+      waitMsg:'{{wait_message}}',
+      success:function(fp, o) {
+        callRhandler('{{id}}', 'fileuploaded', null);
+      },
+      failure:function(fp, o) {
+        alert('{{fail_message}}');
+      },
+      params:{
+       id:'{{id}}',
+       session_id:session_id
+      }
+    })
+  }
+}
+",
+                                                              list(id=get_id(),
+                                                                   url= "base_url + 'fileUploadProxy'",
+                                                                   wait_message=gettext("Uploading..."),
+                                                                   fail_message=gettext("Upload failed")
+                                                                   )
+                                                              ))
+                                                            )))
+                                            )
                                           )
-                
                          add_args(arg_list)
 
                          setup(container, NULL, NULL, ext.args, ...)

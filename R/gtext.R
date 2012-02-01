@@ -165,13 +165,25 @@ GCodeMirror <- setRefClass("GCodeMirror",
                                "We store character vector of lines, so we need to paste on return"
                                paste(value, collapse="\n")
                              },
+                             get_json_data=function(...) {
+                               toJSON(get_value())
+                             },
                              set_value=function(val, ...) {
                                "Set as character vector of lines"
                                tmp <- unlist(strsplit(val, "\\n"))
                                if(length(tmp) == 0)
                                  tmp <- ""
                                value <<- tmp
-                               call_Ext("setValue", escapeSingleQuote(paste(value, collapse="\n")))
+                               ### Old call_Ext("setValue", escapeSingleQuote(paste(value, collapse="\n")))
+                               callback <- "
+function(data, textStatus, jqXHR) {
+  {{id}}.setValue(data[0])
+}
+"
+                               add_async_javascript_callback("/custom/gwappAJAX/runProxy",
+                                                             whisker.render(callback, list(id=get_id())),
+                                                             data=list(id=get_id()))
+                               
                              },
                              set_editable=function(val, ...) {
                                "readonly? Then set to FALSE."

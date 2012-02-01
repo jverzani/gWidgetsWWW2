@@ -107,6 +107,9 @@ GButton <- setRefClass("GButton",
                          },
                          set_tooltip = function(tip) {
                            call_Ext("setTooltip", tip)
+                         },
+                         add_handler_clicked=function(handler, action=NULL, ...) {
+                           add_handler_changed(handler, action, ...)
                          }
                         
                          )

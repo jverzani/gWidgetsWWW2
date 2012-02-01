@@ -281,7 +281,7 @@ init = function(title, parent, handler, action, ..., renderTo=NULL,width=NULL, h
                            if(!is.null(handler))
                              add_handler_changed(handler, action)
 
-                           call_Ext("render")
+#                           call_Ext("render")
                            call_Ext("show")
                            
                          }

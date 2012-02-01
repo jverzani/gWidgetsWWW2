@@ -95,6 +95,8 @@ GWidgetsTopLevel <- setRefClass("GWidgetsTopLevel",
                                     out <- ""
                                     if(is(obj, "GWidgetProxy"))
                                        out <- do.call(obj$get_json_data, param)
+                                    else
+                                      out <- obj$get_json_data(param) # try anyways
                                     return(out)
                                   },
                                   call_post_proxy = function(id, param) {

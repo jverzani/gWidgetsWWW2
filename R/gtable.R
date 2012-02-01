@@ -164,47 +164,44 @@ GWidgetGrid <- setRefClass("GWidgetGrid",
                                  base:::length(x)
                              },
                              ## Some column methods
-                             call_column_method = function(meth, ...) {
+                             call_column_method = function(meth, ind, ...) {
                                "Call a method of the column model, like call_Ext"
                                l <- list(...)
                                out <- sapply(l, coerceToJSString)
-                               cmd <- sprintf("%s.colModel.%s(%s);",
+                               cmd <- sprintf("%s.columns[%s].%s(%s);",
                                               get_id(),
+                                              ind - 1,
                                               meth,
                                               paste(out, collapse=","))
-                               cmd
                                add_js_queue(cmd)
                              },
-                             set_column_name = function(value, column) {
-                               call_column_method("setColumnHeader", column - 1, value)
+                             set_column_name = function(column, value) {
+                               call_column_method("setText", column, value)
                              },
                              get_names = function() {
                                nms
                              },
                              set_names = function(value) {
                                nms <<- value
-                               sapply(seq_along(value), function(i) {
-                                 set_column_name(value[i], i)
-                               })
+                               mapply(.self$set_column_name,seq_along(value), value)
                              },
-                             set_column_width = function(value, column) {
-                               call_column_method("setColumnWidth", column - 1, value)
+                             set_column_width = function(column, value) {
+                               call_column_method("setWidth", column, value)
                              },
                              set_column_widths = function(value) {
-                               sapply(seq_along(value), function(i) {
-                                 set_column_width(value[i], i)
-                               })
+                               mapply(.self$set_column_width, seq_along(value), value)
                              },
-                             set_column_tooltip = function(value, column) {
-                               "Set tooltop for specified column"
-                               call_column_method("setColumnTooltip", column - 1, value)
-                             },
-                             set_column_tooltips = function(value) {
-                               "Set tooltips for entire set of header columns"
-                               sapply(seq_along(value), function(i) {
-                                 set_column_tooltip(value[i], i)
-                               })
-                             },
+                             ## Not there in ExtJS 4.1?
+                             ## set_column_tooltip = function(value, column) {
+                             ##   "Set tooltop for specified column"
+                             ##   call_column_method("setColumnTooltip", column - 1, value)
+                             ## },
+                             ## set_column_tooltips = function(value) {
+                             ##   "Set tooltips for entire set of header columns"
+                             ##   sapply(seq_along(value), function(i) {
+                             ##     set_column_tooltip(value[i], i)
+                             ##   })
+                             ## },
                              ## ## handlers
                              add_handler_clicked = function(...) {
                                add_handler("cellclick", ...)
@@ -258,7 +255,11 @@ GTable <- setRefClass("GTable",
 
                           if(is.logical(paging)) {
                             paging <<- paging;
-                            page_size <<- 200L ## override through assignment paging=2000
+                            if(paging) {
+                              page_size <<- 200L ## override through assignment paging=2000
+                            } else {
+                              page_size <<- nrow(items)
+                            }
                           } else {
                             page_size <<- as.integer(paging)
                             paging <<- TRUE
@@ -306,7 +307,7 @@ GTable <- setRefClass("GTable",
                                                                   loadMask=TRUE
                                                                   #,verticalScrollerType='paginggridscroller'
                                                                   #,invalidateScrollerOnRefresh=FALSE
-#                                                                  ,disableSelection=TRUE
+                                                                  #,disableSelection=TRUE
                                                                   ))
                           } else if(paging) {
                             store$page_size <<- as.integer(page_size)
@@ -331,11 +332,11 @@ GTable <- setRefClass("GTable",
 
                           
                           ## set up paging
-                          ## if(paging) { ## adjust size
-                          ##   cmd <- sprintf("%s.getTotalCount = function() {return %s};",
-                          ##                  store$get_id(), nrow(store$get_data()))
-                          ##   add_js_queue(cmd)
-                          ## }
+                          if(paging) { ## adjust size
+                            cmd <- sprintf("%s.getTotalCount = function() {return %s};",
+                                           store$get_id(), nrow(store$get_data()))
+                            add_js_queue(cmd)
+                          }
                           
                           ## load data
                           store$load_data()
@@ -421,24 +422,27 @@ GTable <- setRefClass("GTable",
                         
                         set_items = function(value, i, j, ...) {
                           callSuper(value, i, j, ...)
+
+                            cmd <- paste(sprintf("%s.getTotalCount = function() {return %s}",
+                                                 store$get_id(), nrow(store$get_data())),
+                                         sep="")
+                            add_js_queue(cmd)
                           
                           if(paging) {
                             ## need to notify grid that the total
                             ## count has increased or decreased. This
                             ## is done thorugh the getTotalCount JS
                             ## function
-                            ## cmd <- paste(sprintf("%s.getTotalCount = function() {return %s}",
-                            ##                      store$get_id(), nrow(store$get_data())),
-                            ##              sep="")
-                            ## add_js_queue(cmd)
                           } else {
-#                            cmd <- sprintf("%s.getUpdater().update(%s)",
-#                                           get_id(),
-#                                           toJSObject(store$proxy$get_url_list())
+                            ## cmd <- sprintf("%s.getUpdater().update(%s)",
+                            ##                get_id(),
+                            ##                toJSObject(store$proxy$get_url_list())
+                            ##                )
                             ## cmd <- sprintf("%s.doRequest(%s_);",
                             ##                store$get_id(),
                             ##                toJSObject(store$proxy$get_url_list()))
-                            ## 
+                            ## add_js_queue(cmd)
+                            
                           }
 
                         },

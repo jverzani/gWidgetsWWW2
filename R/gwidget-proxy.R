@@ -297,6 +297,7 @@ GWidgetArrayProxy <- setRefClass("GWidgetArrayProxy",
                                    value <<- as.data.frame(value, stringsAsFactors=FALSE)
                                  else
                                    value[i,] <<- value
+                                 ..visible <<- rep(TRUE, nrow(value))
                                },
                                get_json_data=function(...) {
                                  "Return JSON array [[],[],] ... *or* handle post data!"
@@ -689,7 +690,6 @@ GWidgetArrayStore <- setRefClass("GWidgetArrayStore",
 
                              constructor <<- "Ext.data.ArrayStore"
                              arg_list <- list(
-                                              
                                               pageSize=page_size,
                                               proxy = String(.self$proxy$get_id())
                                               ,autoLoad=FALSE
