@@ -303,13 +303,13 @@ GWidgetArrayProxy <- setRefClass("GWidgetArrayProxy",
                                  "Return JSON array [[],[],] ... *or* handle post data!"
 
                                  params <- list(...)
-
+                                 
                                  df <- cbind("row_id"=seq_len(nrow(value)), value)
-                                 df <- df[..visible,]
+                                 df <- df[..visible, ,drop=FALSE]
 
                                  ## do we have paging type request? We do if params$start is not null
                                  if(!is.null(params$start)) {
-                                   start <- as.numeric(params$start)
+                                   start <- as.numeric(params$start) + 1
                                    limit <- as.numeric(params$limit)
                                    m <- nrow(df)
                                    
@@ -319,10 +319,7 @@ GWidgetArrayProxy <- setRefClass("GWidgetArrayProxy",
                                    }
                                  }
 
-                                 if(nrow(df))
-                                   toJSArray(df)
-                                 else
-                                   ""
+                                 toJSArray(df)
                                },
                                post_json_data=function(param) {
                                  "A post request from updating a store"
@@ -356,6 +353,7 @@ GWidgetArrayProxy <- setRefClass("GWidgetArrayProxy",
                                },
                                add_row=function(row, ...) {
                                  value[unlist(row),] <<- rep(NA, ncol(value)) # add new?
+                                 ..visible[unlist(row)] <<- TRUE
                                },
                                remove_row=function(param) {
                                  "Remove the row"
