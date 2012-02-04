@@ -22,6 +22,13 @@ NULL
 ##' The \code{svalue<-} method is used to specify value by name or by
 ##' index. The \code{[<-} method can be used to update the data to
 ##' select from.
+##'
+##' The default change handler differs depending whether the field is
+##' editable. If not, then the handler is called before the selection
+##' is finalized. Otherwise, the handler is called on the "change"
+##' event, which is to track "user-initiated change is detected in the
+##' value of the field." This does not always fire on selection by an
+##' item. To force that, use the \code{add_handler_select} method.
 ##' @param items a vector of items to choose from. Coerced to
 ##' character class. Use \code{coerce.with} to get a numeric value,
 ##' say. (Not supported, but should also allow: Or a data frame with 1 column
@@ -34,7 +41,8 @@ NULL
 ##' integer). Go figure. Use 4.0, not 5 if you want numeric values ...
 ##' @param coerce.with Function. If given, called on value before returning
 ##' @inheritParams gwidget
-##' @param autocomplete If \code{TRUE}, will hide the trigger and make editable. When the user types the matching values are presented.
+##' @param autocomplete If \code{TRUE}, will hide the trigger and make
+##' editable. When the user types the matching values are presented.
 ##' @param initial.msg If \code{selected=0}, then one can assign an initial message here
 ##' @param tpl a template for the item (Not working! Dang....)
 ##' @return an ExtWidget instance
@@ -107,7 +115,7 @@ GCombobox <- setRefClass("GCombobox",
                              initFields(
                                         constructor="Ext.form.field.ComboBox",
                                         change_signal=ifelse(editable, "change", "beforeselect"),
-                                        transport_signal=ifelse(editable, "change", "beforeselect")
+                                        transport_signal=if(editable) c("change","beforeselect") else "beforeselect"
                                         )
                              
                              if(is.null(tpl))
@@ -230,7 +238,7 @@ GCombobox <- setRefClass("GCombobox",
                              add_handler("blur", handler, action)
                            },
                            add_handler_select = function(handler, action=NULL) {
-                             add_handler("select", handler, action)
+                             add_handler("beforeselect", handler, action)
                            },
                            add_handler_change = function(handler, action=NULL) {
                              add_handler("change", handler, action)

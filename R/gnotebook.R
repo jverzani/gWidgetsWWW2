@@ -78,8 +78,6 @@ GNotebook <- setRefClass("GNotebook",
                              "param={value: this.items.indexOf(tab) + 1};" # id, not index
                            },
                            process_transport = function(value) {
-                             message("process transport")
-                             print(value)
                              value <<- value
                            },
                            add = function(child, label="tab", tooltip=NULL, ...) {

@@ -63,6 +63,7 @@ GWidgetsTopLevel <- setRefClass("GWidgetsTopLevel",
                                     "lookup widget by id, notify any observer of this signal"
                                     cookies <<- e_cookies
                                     obj <- get_object_by_id(id)
+
                                     out <- NULL
                                     if(!missing(params)) {
                                       ## XXX do this to stuff in things like value, index, ..

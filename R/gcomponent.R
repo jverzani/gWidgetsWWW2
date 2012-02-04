@@ -265,18 +265,24 @@ E.g. var param = {value: this.getText()}"
                            write_transport = function() {
                              "Writes out JavaScript for transport function"
                              ## param ? Ext.JSON.encode(param) : null
-                             cmd <- sprintf("%s.on('%s', function(%s) {%s; transportFun('%s', param)}, null, {delay:100, buffer:100, single:false});",
-                                            get_id(),
-                                            transport_signal,
-                                            getWithDefault(.ext_callback_arguments[[transport_signal]], ""),
-                                            transport_fun(),
-                                            get_id()
-                                            )
-                             add_js_queue(cmd)
+                             f <- function(t_signal) {
+                               if(t_signal == "") return()
+                               cmd <- sprintf("%s.on('%s', function(%s) {%s; transportFun('%s', param)}, null, {delay:100, buffer:100, single:false});",
+                                              get_id(),
+                                              t_signal,
+                                              getWithDefault(.ext_callback_arguments[[t_signal]], ""),
+                                              transport_fun(),
+                                              get_id()
+                                              )
+                               add_js_queue(cmd)
+                             }
+                                   
+                             sapply(transport_signal, f)
                            },
                            write_change_transport = function() {
                              "Write change handler, instead of transport"
-                             add_handler(change_signal, NULL, NULL)
+                             if(change_signal != "")
+                               add_handler(change_signal, NULL, NULL)
                            },
                            process_transport = function(value, ...) {
                              "R Function to process the transport. Typically just sets 'value', but may do more. In the above example, where var param = {value: this.getText()} was from transport_fun we would get the text for value"
@@ -498,20 +504,22 @@ $.ajax('{{url}}', {
                              if(!is.null(ext.args))
                                args$extend(ext.args)
 
+                             if(missing(container) || is.null(container)) {
+                               message(gettext("No empty containers are allowed"))
+                               stop()
+                             }
                              container$add_dots(.self, ...)
                              write_constructor()
-                             if(!is.null(container))
-                               container$add(.self, ...)
+                             container$add(.self, ...)
 
                              
                              ## if transport & change are identical, we cut down
                              ##  by one with this.
-                             if(nchar(transport_signal)) {
-                               if(transport_signal == change_signal)
-                                 write_change_transport()
-                               else
-                                 write_transport()
-                             }
+                             if(length(transport_signal) == 1 &&
+                                transport_signal == change_signal)
+                               write_change_transport()
+                             else
+                               write_transport()
 
                              if(!missing(handler)  & !is.null(handler))
                                add_handler_changed(handler, action)

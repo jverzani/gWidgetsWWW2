@@ -61,56 +61,44 @@ NULL
 ##' if(interactive()) load_app(gw_script, "MultipleApp",  brew_template)
 ##' 
 load_app <- function(script_name,
-                     app_name="test",
+                     app_name=gsub("\\..*", "", basename(script_name)),
+                     session_manager=make_session_manager(),
+                     R_httpd=Rhttpd$new(),
+                     open_page=TRUE,
                      brew_template = "",
                      show.log=FALSE,
-                     port=9000,
                      authenticator=NULL,
-                     session_manager=make_session_manager(),
-                     open_page=TRUE,
                      ...
                          ) {
 
-  load_once(port=port, session_manager)
-
   options("Rhttpd_debug"=as.logical(show.log))
-  
-  R <- Rhttpd$new()
-  try(R$start(port=port), silent=TRUE)
 
-  ## extra html code googlemaps, ace?, ...
-  extra_html_code <- character(0)
-                         
-  ## brew index
-  brewery <- Rook:::Brewery$new(url="/",
-                                root=system.file("framework/brew", package="gWidgetsWWW2"),
-                                app_name = app_name,
-                                brew_template=brew_template,
-                                extra_html_code = paste(extra_html_code, collapse="\n"),
-                                ...
-                                )
-  ## an application
-  gwapp <- GWidgetsApp$new(url="/gwapp", app_name=app_name, script=script_name,
-                           session_manager=session_manager,
-                           authenticator=authenticator
-                           )
-  app <- Rook::Builder$new(
-                           ## app specific static files
-                           Rook:::Static$new(
-                                             urls = c('/css','/images','/javascript'), 
-                                             root = '.'
-                                             ),
-                           ## brew files
-                           brewery,
-                           gwapp,
-                           ## why does this fail?
-                           Rook:::Redirect$new(sprintf("http://127.0.0.1:%s/custom/%s/indexgw.rhtml", tools:::httpdPort, app_name))
-                           )
-  
-  R$add(RhttpdApp$new(app, name=app_name))
+  ## Make the page
+  page <-WebPage$new(url="/", app_name=app_name)
+  ## how to subclass to put in brew_template
+  if(file.exists(brew_template)) {
+     BrewPage <- setRefClass("BrewPage",
+                             contains="WebPage",
+                             fields=c("brew_template"),
+                             methods=list(
+                               body=function() {
+                                 brew_template
+                               }
+                               ))$new(url="/", app_name=app_name, renderer="brew", brew_template=brew_template)
+   }
+  R_httpd$add(RhttpdApp$new(page, name=app_name))
 
+  print(list("*** making app ***", app_name))
+  
+  ## Make the app
+  gwapp <- gWidgetsWWW2:::GWidgetsApp$new(url="/",
+                                          app_name=app_name,
+                                          script=script_name,
+                                          session_manager=session_manager)
+  R_httpd$add(RhttpdApp$new(gwapp, name=sprintf("app_%s", app_name)))
+  
   if(open_page)
-    browseURL(sprintf("http://127.0.0.1:%s/custom/%s/indexgw.rhtml", tools:::httpdPort, app_name))
+    browseURL(sprintf("http://127.0.0.1:%s/custom/%s", tools:::httpdPort, app_name))
   
   invisible(gwapp)
 }
@@ -167,33 +155,61 @@ load_dir <- function(dir_name, ...) {
 
 }
 
-.load_once <- function(port=9000, session_manager, ...) {
-  
-  R <- Rhttpd$new()
-  try(R$start(port=port), silent=TRUE)
+SetupGWApps <- setRefClass("SetupGwApps",
+                           fields=list(
+                             "R"="ANY",
+                             "port"="numeric",
+                             "session_manager"="ANY",
+                             "loaded"="logical"
+                             ),
+                           methods=list(
+                             initialize=function(port=9000, session_manager, ...) {
+                               initFields(
+                                          R=Rhttpd$new(),
+                                          port=port,
+                                          session_manager=session_manager,
+                                          loaded=FALSE)
+                               callSuper(...)
+                             },
+                             start=function() {
+                               try(R$start(port=port), silent=TRUE)
+                             },
+                             init_gw=function() {
+                               if(loaded)
+                                 return
 
+                               ## gWidgetsWWW, static files
+                               gWidgetsWWW <- Rook::Static$new(
+                                                               urls = c("/images", "/javascript", "/css"),
+                                                               root = system.file("base", package="gWidgetsWWW2")
+                                                               )
+                               if(is.null(R$appList[["gWidgetsWWW2"]]))
+                                  R$add(RhttpdApp$new(gWidgetsWWW, name="gWidgetsWWW2"))
   
+                               ## tmpdir
+                               tmpApp <- Rook::Static$new(
+                                                          urls=c("/tmp"),
+                                                          root=tempdir()
+                                                          )
+                               if(is.null(R$appList[["tmp"]]))
+                                  R$add(RhttpdApp$new(tmpApp, name="tmp"))
   
-  ## gWidgetsWWW, static files
-  gWidgetsWWW <- Rook::Static$new(
-                                  urls = c("/images", "/javascript", "/css"),
-                                  root = system.file("base", package="gWidgetsWWW2")
-                                  )
-  R$add(RhttpdApp$new(gWidgetsWWW, name="gWidgetsWWW2"))
-  
-  ## tmpdir
-  tmpApp <- Rook::Static$new(
-                             urls=c("/tmp"),
-                             root=tempdir()
-                             )
-  
-  R$add(RhttpdApp$new(tmpApp, name="tmp"))
-  
+                               ## This handles the AJAX calls
+                               if(is.null(R$appList[["gwappAJAX"]]))
+                                 R$add(GWidgetsAppAjax$new(session_manager=session_manager), name="gwappAJAX")
 
-  ## This handles the AJAX calls
-  R$add(GWidgetsAppAjax$new(session_manager=session_manager), name="gwappAJAX")
+                               loaded <<- TRUE
+                             }
+                             ))
 
-}
 
 ## internal helper function to load static files for gWdigetsWWW2
-load_once <- memoize(.load_once)
+
+.load_gwidgets_base <- function(port=9000L, session_manager=session_manager()) {
+  Rk <- SetupGWApps$new(port=port, session_manager=session_manager)
+  Rk$start()
+  Rk$init_gw()
+  Rk
+}
+
+load_gwidgets_base <- memoize(.load_gwidgets_base) 

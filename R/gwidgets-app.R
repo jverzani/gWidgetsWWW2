@@ -118,6 +118,8 @@ GWidgetsApp <- setRefClass("GWidgetsApp",
                              call = function(env) {
                                "Main method. Job is to create_GUI, but may need to authentiate first"
 
+                               message("Create GUI")
+                               
                                ## Main router function. Here we dispatch based on path_info to
                                headers <- list('Content-Type'='application/javascript')
                                status <- 200L
@@ -129,9 +131,9 @@ GWidgetsApp <- setRefClass("GWidgetsApp",
                                                    headers=headers
                                                    )
                                assign(".req", req, .GlobalEnv)
-
+                               assign("app", .self, .GlobalEnv)
+                               
                                req_input <-  read_rook_input(req)
-                               req$env[['rook.input']] <- req_input
                                session_id <- req_input$session_id
                                
                                out <- try(create_GUI(session_id, req), silent=TRUE)
@@ -293,6 +295,8 @@ GWidgetsAppAjax <- setRefClass("GWidgetsAppAjax",
                              call = function(env) {
                                "Main method. We set up dispatch on path_info here"
 
+                               message("AJAX call")
+                               
                                ## Main router function. Here we dispatch based on path_info to
                                ## the appropirate method
                                req <- Request$new(env)
@@ -387,6 +391,7 @@ GWidgetsAppAjax <- setRefClass("GWidgetsAppAjax",
                                "Run a handler. Return js commands if needed"
 
                                l <- read_rook_input(req)
+
                                toplevel$call_handler(l$id, l$signal, l$value, e_cookies)
                                out <- toplevel$js_queue$flush()
 
