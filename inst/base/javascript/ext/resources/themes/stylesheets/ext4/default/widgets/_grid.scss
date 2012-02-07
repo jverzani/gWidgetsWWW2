@@ -9,9 +9,9 @@
             border-top-color: $grid-header-background-color;
         }
 
-        // Still needs left and right border even if it's not visible so that its available width can be calculated correctly
+        // Hide using visibility so that its available width can be calculated correctly
         .#{$prefix}grid-header-ct-hidden {
-            border-top-width: 0 !important;
+            visibility: hidden;
         }
     }
 
@@ -52,13 +52,16 @@
         padding: 0;
         border: 1px solid $panel-body-border-color;
 
+        // Body border provided by headerCt only when in accordion layout.
+        border-bottom-color: $grid-header-background-color;
+
         @if $supports-gradients or $compile-all {
             @include background-gradient($grid-header-background-color, $grid-header-background-gradient);
         }
     }
 
     .#{$prefix}accordion-item .#{$prefix}grid-header-ct {
-        border: 0 none;
+        border-width: 0 0 1px 0!important;
     }
 
     .#{$prefix}column-header {
@@ -306,8 +309,7 @@
 
     .#{$prefix}ie6,
     .#{$prefix}ie7,
-    .#{$prefix}quirks .#{$prefix}ie8,
-    .#{$prefix}strict .#{$prefix}ie8 {
+    .#{$prefix}quirks .#{$prefix}ie8 {
         .#{$prefix}grid-header-row {
             position: absolute;
         }
@@ -355,6 +357,11 @@
     }
 
     .#{$prefix}property-grid {
+      
+        .#{$prefix}grid-row .#{$prefix}grid-cell-inner {
+            padding: 3px 6px 5px;
+        }
+      
         .#{$prefix}grid-row .#{$prefix}grid-property-name .#{$prefix}grid-cell-inner,
         .#{$prefix}grid-row-over .#{$prefix}grid-property-name .#{$prefix}grid-cell-inner {
             padding-left: 12px;
@@ -808,7 +815,7 @@
         padding: 4px;
         height: 32px;
 
-        .#{$prefix}strict & {
+        .#{$prefix}strict .#{$prefix}ie7m & {
             width: 192px;
             height: 24px;
         }

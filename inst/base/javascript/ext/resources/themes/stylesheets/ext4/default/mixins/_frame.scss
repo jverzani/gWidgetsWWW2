@@ -178,10 +178,10 @@
                 }
             }
 
-            $padding-top: $padding-top - $frame-top;
-            $padding-right: $padding-right - $frame-right;
-            $padding-bottom: $padding-bottom - $frame-bottom;
-            $padding-left: $padding-left - $frame-left;
+            $padding-top: $padding-top - $frame-top + top($border-width);
+            $padding-right: $padding-right - $frame-right + right($border-width);
+            $padding-bottom: $padding-bottom - $frame-bottom + bottom($border-width);
+            $padding-left: $padding-left - $frame-left + left($border-width);
             
             
             @if $padding-top < 0 {
