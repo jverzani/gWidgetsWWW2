@@ -35,9 +35,9 @@ SessionManager <- setRefClass("SessionManager",
                                     if(is.null(db_name))
                                       db_name <- "/tmp/gWidgetsWWW2_session_db"
                                     dbCreate(db_name)
-                                    sessions <<- dbInit(db_name)
+                                    sessions <<- dbInit(db_name, type="RDS")
                                   } else {
-                                    ## If using Rook (and perhaps nginx to proxy) a single process then
+                                    ## If using Rook (and perhaps nginx to proxy) -- a single process -- then
                                     ## a list suffices
                                     sessions <<- list()
                                   }

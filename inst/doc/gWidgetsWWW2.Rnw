@@ -33,6 +33,7 @@
 \newcommand{\code}[1]{\texttt{#1}}
 \newcommand{\proglang}[1]{\code{#1}}
 \newcommand{\R}{\proglang{R}}
+\newcommand{\javascript}{\proglang{JavaScript}}
 
 \newenvironment{rargs}{\begin{list}{}{}}{\end{list}}
 
@@ -56,7 +57,7 @@ power for relative simplicity and has proven useful for writing small
 to moderately complicated GUIs. The \pkg{gWidgetsWWW2} package
 (\url{https://github.com/jverzani/gWidgetsWWW2}) implements much of
 the API for programming GUIs for the web. It uses the Ext JS
-JavaScript libraries (\url{(www.sencha.com}) to provide the toolkit
+\javascript{} libraries (\url{(www.sencha.com}) to provide the toolkit
 and the \pkg{Rook} package of Jeffrey Horner to integrate with \R's
 local web server. The \code{nginx} web proxy can be used to serve
 pages to a public audience.
@@ -72,27 +73,34 @@ internally  uses \R's reference classes -- not the \pkg{proto} package
 \section{Overview}
 
 A modern set of web tools includes three primary domains: HTML for
-markup of the text, CSS for the layout of the page, and JavaScript to
+markup of the text, CSS for the layout of the page, and \javascript{} to
 manipulate the page. In addition, often there is a back end language,
 such as \proglang{python}, for server-side programming. The combined
 set of pre-requisites can be daunting, though clearly many have
-succeeded in mastering them. The goal of this package is for the R
+succeeded in mastering them. The goal of this package is for the \R{}
 programmer to avoid nearly all of these considerations, yet still be
 able to produce interactive web sites powered by \R.
 
 This package leverages a popular javascript library (ext from
 \url{www.sencha.com}) to provide a consistent look (the CSS part) and
-the javascript interactivity. \R\/ is used for the ``server-side''
+the javascript interactivity. \R{} is used for the ``server-side''
 programming, and \R's internal web server is used for serving pages,
 through the \pkg{Rook} package of Jeffrey Horner.
 
-The primary contribution of the package is a) a means to create
-JavaScript from \R\/ code (from the \pkg{gWidgets} API) and b) a means
-to easily incorporate this into a web page.  These web pages are not
-centered around displaying content, but rather for creating
-interactive controls. However, if desired, the package can be used to
-integrate in with an existing web page, such as those provided through
-\pkg{brew} templates.
+The primary contribution of the package is
+\begin{enumerate}
+\item a means to create \javascript{}
+\item a means to create the \javascript{} to produce the controls and
+widgets to create the interactive GUI
+\items a means to callback into the \R{} session in response to events
+and return \javascript{} to manipulate the state of the page
+\item a means to easily incorporate this into a web page.  These web
+  pages are not centered around displaying content, but rather for
+  creating interactive controls. However, if desired, the package can
+  be used to integrate in with an existing web page, such as those
+  provided through \pkg{brew} templates.
+\end{enumerate}
+
 
 To make a GUI in \pkg{gWidgets} requires two steps: writing a script
 and calling that script within some web page.
@@ -116,7 +124,7 @@ b <- gbutton("click me", cont = g, handler = function(h,...) {
 
 
 If called correctly, the package translates these commands into
-JavaScript commands to manipulate a web page:
+\javascript{} commands to manipulate a web page:
 
 <<>>=
 out <- w$dump()
@@ -146,8 +154,8 @@ to callback into the \R\/ process from the web server to further
 manipulate the page. The ``handler'' in the definition of the button,
 \code{b} above, is called through an AJAX call when the button is
 pressed. In this case, the \code{gmessage} call produces additional
-JavaScript that causes a modal message dialog to be produced. The
-handlers are written in R -- not JavaScript. This makes them easier to
+\javascript{} that causes a modal message dialog to be produced. The
+handlers are written in R -- not \javascript{}. This makes them easier to
 write, but slower to process, as their use requires a round trip to
 the server from the web page. This process of communication between
 client and server happens more often than this, as the state of the
@@ -188,7 +196,7 @@ constructor requires a specification of the widget heirarchy through a
 parent container (with the \code{container}) or if the widget is not
 in the heirarchy, a \code{parent} argument. This toplevel instance is
 stores references to each created object, process the outgoing
-JavaScript queue, and is used to route incoming callback requests. The
+\javascript{} queue, and is used to route incoming callback requests. The
 callbacks are all evaluated within an enviroment that is also stored
 within the toplevel object.  As the toplevel instance is created each
 time a page is loaded, this evaluation environment is not persistent.
@@ -200,7 +208,7 @@ time a page is loaded, this evaluation environment is not persistent.
 
 %% basic gWidgets containers
 The \pkg{gWidgetsWWW2} package implements the basic widgets of the
-\pkg{gWidgets} APIL:
+\pkg{gWidgets} API:
 \begin{itemize}
 \item the top-level container \code{gwindow} and subwindows
 also constructed through \code{gwindow} (use a parent argument);
@@ -223,10 +231,10 @@ provides some other containers:
   areas to place components: a ``center'', and 4 satellites: north,
   south, east and west. As with \code{gexpandgroup}, a user can resize
   the space allocated to each area.
-\item[gpanel] The gpanel widget is a container for other JavaScript
+\item[gpanel] The gpanel widget is a container for other \javascript{}
   libraries. Basically it creates a \code{DIV} tag, which can be
-  overwritten by external JavaScript calls. An example shows how the
-  \code{d3} JavaScript libraries
+  overwritten by external \javascript{} calls. An example shows how the
+  \code{d3} \javascript{} libraries
   (\url{http://mbostock.github.com/d3/}) can be incorporated.
 \end{description}
 
@@ -277,21 +285,22 @@ The standard widgets of \pkg{gWidgets} are implemented:
 \begin{itemize}
 \item Buttons and labels with \code{gbutton} and \code{glabel};
 \item The widgets to select from a vector of values:
-  \code{gcheckbox}, \code{gcheckboxgroup}, \code{gradio}, \code{gcomobox};
+  \code{gcheckbox}, \code{gcheckboxgroup}, \code{gradio}, \code{gcombobox};
 \item The widgets to select from a range of values: \code{gslider} and \code{gspinbutton};
 \item The text widgets \code{gedit}, for single-line edit boxes and
   \code{gtext}, for multi-line text areas;
 \item The table selection widget \code{gtable};
 \item The tree widget \code{gtree}
 \item The data frame editor \code{gdf};
-\item Images can be viewd through \code{gimage} -- the image is a url
+\item Images can be viewed through \code{gimage} -- the image is a url
 \item menu bars but not toolbars with \code{gmenu} and statusbars
   (\code{gstatusbar});
 \item File uploads can be incorporated through \code{gfile}.
 \end{itemize}
 
 
-The basic dialogs are implemented except \code{gbasicdialog}). These
+The basic dialogs are implemented (except \code{gbasicdialog}, though
+there is a workaround for that functionality). These
 include \code{galert}, \code{gmessage}, \code{ginput}, and
 \code{gcalendar}.  All require a \code{parent} argument.
 
@@ -323,9 +332,17 @@ variety of non-interactive devices and an accompanying widget.
 
 These include:
 \begin{itemize}
-\item  the \pkg{canvas} device along with the \code{gcanvas} widget. This device writes out JavaScript commands and uses an underlying canvas object on the web page. This requires an HTML5 compliant browser. There is some support for mouse events.
-\item The \code{gsvg} widget can be used to display svg graphics, as produced by the \code{svg} driver or the \pkg{RSVGTipsDevice} driver.
-\item The \code{gimage} widget can be used to display graphics produced by the \code{png} driver, among others.
+\item the \pkg{canvas} device along with the \code{gcanvas}
+  widget. This device writes out \javascript{} commands and uses an
+  underlying canvas object on the web page. This requires an HTML5
+  compliant browser. There is some support for mouse events. As well,
+  the \code{gcanvas} widget itself, can be used independent of the
+  \code{canvas} device.
+\item The \code{gsvg} widget can be used to display svg graphics, as
+  produced by the \code{svg} driver or the \pkg{RSVGTipsDevice}
+  driver.
+\item The \code{gimage} widget can be used to display graphics
+  produced by the \code{png} driver, among others.
 \end{itemize}
 
 Both the last two require both a file and a url, the file to write to,
@@ -407,7 +424,9 @@ method. (For example, \code{svalue} looks for \code{get\_value} and
 \code{get\_index}, whereas
 the assignment method looks for \code{set\_value} or
 \code{set\_index}.) Reference class methods are called using \R's
-object oriented notation.
+object oriented notation. For widgets where some functionality was
+easy to implement, though a corresponding \pkg{gWidgets} method does
+not exist, just the reference class method was written.
 
 %% toplevel things
 
@@ -437,10 +456,10 @@ w$toplevel$the_request$path_info()
 \label{sec:toplevel-window}
 
 
-The toplevel object holds a queue of JavaScript commands to send back
+The toplevel object holds a queue of \javascript{} commands to send back
 to the browser. One can add to this queue, if desired. For
 convenience, each component has the method \code{add\_js\_queue} to do
-so. One specifies a string of JavaScript to passback, for example:
+so. One specifies a string of \javascript{} to passback, for example:
 <<>>=
 w$add_js_queue("alert('hello world');")
 @ 
@@ -464,13 +483,13 @@ these are from when the page is created.)
 \subsection{Ext}
 
 The underlying constructors and handlers basically do just one thing:
-write out JavaScript code for the \code{ExtJS} libraries to interpret
+write out \javascript{} code for the \code{ExtJS} libraries to interpret
 at the browser. Some features allow one to do this directly, if desired.
 
 First, the constructors have the argument \code{ext.args} to specify
 additional arguments to the \code{Ext} constructor. These are
 specified through a named list and the package will do a conversion to
-a JavaScript object.
+a \javascript{} object.
 
 Next, the objects have a few methods. The \code{call\_Ext} method
 takes a method name and other arguments and calls the corresponding
@@ -490,8 +509,8 @@ Finding bugs can be tedious, as they can appear in different places:
 \item[R issues] Issues with R code can be detected b trying to run the
   script at the R console (\code{source}, say). One can also run the
   script locally, and see if any errors are logged at the console.
-\item[JavaScript issuse] These are more subtle. Most browsers have
-  some JavaScript debugging tools built in, or easily added (e.g.,
+\item[\javascript{} issuse] These are more subtle. Most browsers have
+  some \javascript{} debugging tools built in, or easily added (e.g.,
   firebug for Mozilla). The debugger for Chrome allows one to see what
   is requested and what the response is. 
 \end{description}
@@ -499,7 +518,7 @@ It is important to realize that just looking at the source will not
 help. The source for a script loaded with \code{load\_app} simply
 loads some external packages and then issues a call to populate the
 page. This call does not appear in the page source, but rather is a
-response to an AJAX request. The JavaScript debugger can show you this.
+response to an AJAX request. The \javascript{} debugger can show you this.
 
 
 
@@ -549,6 +568,11 @@ upstream rookapp {
 }
 \end{verbatim}
 
+
+The file \code{Rook.sh} in \code{nginx} directory provides a sample
+script to run to start \R{} and \pkg{Rook}. This can easily be modified.
+
+
 will route all urls \url{http://you.domain.com/custom/XXX} to the
 \code{Rook} process. Jeffrey Horner has more details in a gist at
 \url{https://gist.github.com/6d09536d871c1a648a84}.
@@ -557,6 +581,35 @@ will route all urls \url{http://you.domain.com/custom/XXX} to the
 Each app enabled by \code{load\_app} has an option for an
 ``\code{app\_name}'' and this maps to the URL:
 \url{http://you.domain.com/custom/app\_name/indexgw.rhtml}.
+
+
+\subsubsection{single or multi threaded}
+\label{sec:single-or-multi}
+
+The \pkg{Rook} package uses \R's httpd server, which is single
+threaded and blocking. This simplicity avoids issues common in web
+programming where shared resources can be accessed out of order. The
+simplest use of \pkg{gWidgetsWWW2} uses a session manager which simply
+keeps an internal list of environments for each requested page that
+has not been closed or reloaded. For a single threaded setup this is
+fine, but not for a multi-threaded setup as the different processes
+could not easily share this list. 
+
+For a multi-threaded setup (such as the three processes started in the
+Rook example referenced above) the session manager must be told to
+share the evaluation environments. To do this, the \pkg{filehash}
+package is used to store the, to a directory specified to
+\code{getOption("gWidgetsWWW2:db_name")}. This usage is significantly
+slower to both create the page and to handle any callbacks into the R process.
+
+\subsubsection{RApache}
+\label{sec:rapache}
+
+As of \code{rapache} version {1.1.15}, one can integrate \pkg{Rook} applications
+within \code{rapache}. However, this package does not play along so
+nicely. There are issues with \code{POST} requests getting processed
+properly and issues with overall speed. This is an area where some
+progress needs to be made before it is useful.
 
 
 

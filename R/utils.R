@@ -450,3 +450,25 @@ make_rapache_loadapp <- function(file="") {
   cat(whisker.render(paste(readLines(tpl), collapse="\n")),
        file=file)
 }
+
+
+
+## Singleton pattern
+Singleton <- setRefClass("Singleton",
+                             fields=list(
+                               Class="ANY",
+                               instance="ANY"
+                               ),
+                            methods=list(
+                              initialize=function(...) {
+                                "Override this by defining Class"
+                                instance <<- NULL
+                                 callSuper(...)
+                               },
+                               get_instance=function(...) {
+                                 "Get a unique instance of the class defined in the subclasses initialize method"
+                                 if(is.null(instance)) 
+                                   instance <<- Class$new(...)
+                                 instance
+                               }
+                               ))

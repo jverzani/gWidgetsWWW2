@@ -1,6 +1,5 @@
 \docType{package}
 \name{gWidgetsWWW2-package}
-\alias{GCanvas}
 \alias{GComponent}
 \alias{GWidget}
 \alias{gWidgetsWWW2-package}
@@ -16,20 +15,37 @@
   \code{GWidget} is the base class for widget objects. See
   \code{GContainer} for the base class for container
   objects. Both derive from the \code{GComponent} class.
-
-  The \code{gcanvas} widget provides a canvas for drawing
-  on or for displaying graphics produced by the
-  \pkg{canvas} device. The drawing is supported through a
-  series of low-level primitives: \code{polygon},
-  \code{lines}, \code{rect}, \code{circle}. Others are
-  possible. These are reference class methods of the
-  gcanvas object. In addition, there are additional
-  handlers: \code{add_handler_clicked},
-  \code{add_handler_mouse_motion}, .... These are passed
-  back event information through the \code{h} object. The
-  method \code{get_event_params} provides the mapping.
 }
 \details{
+  Installation:
+
+  There is a choice of web server. For serving local pages,
+  the Rook package can use R's httpd server.
+
+  For serving pages to a wider world one can
+
+  * open R's httpd server's port to the wider world (not
+  recommended)
+
+  Just call the load_app command on a script and the page
+  will render.
+
+  * proxy this through something, like nginx
+
+  We follow the steps in J Horner's gist
+  (https://gist.github.com/6d09536d871c1a648a84)
+
+  1) install nginx: sudo apt-get install nginx 2) configure
+  nginx by adding this to /etc/nginx/sites-enabled/default
+  (in the servef bit)
+
+  location /custom { proxy_pass
+  http://localhost:9000/custom; }
+
+  * run scripts under rapache
+
+  For nginx
+
   The basic setup of gWidgetsWWW2 involves a set of
   constructors and S3 methods for manipulating the
   constructed objects. The constructors return a reference
