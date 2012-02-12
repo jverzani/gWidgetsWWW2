@@ -57,7 +57,11 @@ This sets up a directory `/var/FastRWeb/` where we will need to do several thing
 
 
 
-* Test is out. Save the following code in the file `/var/FastRWeb/gw_app/test.R`:
+* Test is out. 
+
+- First start `FastRWeb` and `Rserve` with the script `/var/FastRWeb/code/start`.
+
+- Then create and app by saving the following code in the file `/var/FastRWeb/gw_app/test.R`:
 
     w <- gwindow("Hello")
     g <- ggroup(cont=w)
@@ -66,7 +70,8 @@ This sets up a directory `/var/FastRWeb/` where we will need to do several thing
       gmessage("Hello world", parent=w) 
     })
 
-Then open the url `http://localhost/cgi-bin/R/app?app=test`. This calls the `app.R` script in `/var/FastRWeb/web.R`. These urls can be prettified through an apache Alias directive. Of course `localhost` can be replaced by an external ip for deploying to the wider internet.
+- Then open the url `http://localhost/cgi-bin/R/app?app=test`. This calls the `app.R` script in `/var/FastRWeb/web.R`. These urls can be prettified through an apache Alias directive. Of course `localhost` can be replaced by an external IP for deploying to the wider internet.
+
 
 For now, the setup only handles full screen apps. Use an `iframe` to embed in a web page.
 
