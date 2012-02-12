@@ -12,7 +12,7 @@ most simple gWidgets scripts will just work.
 Example
 -------
 
-To use `gWidgetsWWW2`, one writes scripts to be executed by Rook.
+To use `gWidgetsWWW2` locally, one writes scripts to be executed by Rook.
 The basic "Hello World" app with a window, container, button and
 callback is created in a script `hello.R` and contains:
 
@@ -39,7 +39,9 @@ The "PORT" will be that for R's internal help server. The `port`
 argument can pass in a value if that has not yet been started, with a
 default of 9000.
 
-The "hello" in the url matches that given by the `app_name` argument.
+The "hello" in the url matches that given by the `app_name` argument. 
+
+Read on for notes on deployment beyond the local computer.
 
 
 Installation
@@ -85,8 +87,8 @@ canvas object in the web page:
     })
 
 
-Deploying pages
-===============
+Deploying pages to the internet
+===============================
 
 Deploying pages to the internet can be done in a few manners:
 
@@ -99,7 +101,7 @@ Deploying pages to the internet can be done in a few manners:
 * Currently, the package is not integrated in with `rapache`.
 
 Of these, the `FastRWeb` solution is suggested. Details for the
-necessary setup are in the `FastRWeb` sub directory of package's
+necessary setup are in the `FastRWeb` sub directory of the package's
 `inst/` directory.
 
 
