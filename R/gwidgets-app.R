@@ -118,8 +118,6 @@ GWidgetsApp <- setRefClass("GWidgetsApp",
                              call = function(env) {
                                "Main method. Job is to create_GUI, but may need to authentiate first"
 
-                               message("Create GUI")
-                               
                                ## Main router function. Here we dispatch based on path_info to
                                headers <- list('Content-Type'='application/javascript')
                                status <- 200L
@@ -295,7 +293,6 @@ GWidgetsAppAjax <- setRefClass("GWidgetsAppAjax",
                              call = function(env) {
                                "Main method. We set up dispatch on path_info here"
 
-                               message("AJAX call")
                                
                                ## Main router function. Here we dispatch based on path_info to
                                ## the appropirate method

@@ -79,7 +79,6 @@ SessionManager <- setRefClass("SessionManager",
                                 },
                                 clear_session = function(id) {
                                   "clean up session, called when page is closed"
-                                  message("clear session: ", id)
                                   
                                   if(use_filehash) {
                                     done <- FALSE;; ctr <- 1
@@ -101,15 +100,11 @@ SessionManager <- setRefClass("SessionManager",
                                   e <- new.env()
                                   store_session(id, e)
 
-                                  message("created id: ", id)
-                                  
                                   return(id)
                                 },
                                 get_session_by_id = function(id="") {
                                   "Get session, an environment. Return NULL if not there"
 
-                                  message("get sessison by id: ", id)
-                                  
                                   if(is.null(id))
                                      return(NULL)
 

@@ -30,6 +30,7 @@ NULL
 ##' @param items data frame to be edited
 ##' @inheritParams gwidget
 ##' @param name name of data frame appearing in title
+##' @export
 ##' @return a \code{GDf} reference class object.
 ##' @author john verzani
 gdf <- function(items = NULL,
@@ -179,7 +180,7 @@ function() {
                                     sprintf("%s.doRefresh();", paging_id()),
                                     sprintf("});"),
                                     sep="")
-                       add_js_queue(cmd)
+#                       add_js_queue(cmd)
                        
                        ## handler
 

@@ -2,9 +2,10 @@
 \alias{load_app}
 \title{Load a web app defined by a gWidgetsWWW2 script}
 \usage{
-  load_app(script_name, app_name = "test", brew_template =
-  "", show.log = FALSE, port = 9000, authenticator = NULL,
-  ...)
+  load_app(script_name, app_name = gsub("\\..*", "",
+  basename(script_name)), session_manager =
+  make_session_manager(), open_page = TRUE, brew_template =
+  "", show.log = FALSE, authenticator = NULL, ...)
 }
 \arguments{
   \item{script_name}{path to gWidgetssWWW2 script}
@@ -28,6 +29,12 @@
   do a trivial authentification. Subclasses of
   \code{Authenticator} should implement the methods
   \code{is_valid_cookie} and \code{is_valid_user}.}
+
+  \item{session_manager}{an instance of
+  \code{make_session_manager}}
+
+  \item{open_page}{logical. If \code{TRUE} call
+  \code{browseURL} to open the app.}
 
   \item{...}{passed to \code{brew} call of
   \code{brew_template}}

@@ -92,6 +92,16 @@
   The name gdroplist is an alternative (not encouraged) for
   gcomobbox
 }
+\details{
+  The default change handler differs depending whether the
+  field is editable. If not, then the handler is called
+  before the selection is finalized. Otherwise, the handler
+  is called on the "change" event, which is to track
+  "user-initiated change is detected in the value of the
+  field." This does not always fire on selection by an
+  item. To force that, use the \code{add_handler_select}
+  method.
+}
 \note{
   The \code{tpl} argument is not working as we'd like.
 }

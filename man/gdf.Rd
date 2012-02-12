@@ -2,16 +2,24 @@
 \alias{gdf}
 \title{A widget for editing a data frame}
 \usage{
-  gdf(items = NULL, name = deparse(substitute(items)),
-  do.subset = FALSE, container = NULL, ..., width = 300,
-  height = 200, ext.args = NULL)
+  gdf(items = NULL, handler = NULL, action = NULL,
+  container = NULL, ..., width = 300, height = 200,
+  ext.args = NULL, name = deparse(substitute(items)))
 }
 \arguments{
   \item{items}{data frame to be edited}
 
-  \item{name}{name of data frame appearing in titke}
+  \item{name}{name of data frame appearing in title}
 
-  \item{do.subset}{Ignored.}
+  \item{handler}{optional means (to
+  \code{\link{addHandlerChanged}}) to specify a handler for
+  the default signal. A handler is a function with
+  signature \code{(h,...)} where \code{h} is a list with
+  components \code{obj} referring to the object emitting
+  the signal, \code{action} containing values passed to the
+  \code{action} argument, and possible other values.}
+
+  \item{action}{Passed to handler to parameterize a call}
 
   \item{container}{A parent container. In
   \pkg{gWidgetsWWW2} a parent container is not optional
@@ -44,12 +52,15 @@
   a \code{GDf} reference class object.
 }
 \description{
-  A widget for editing a data frame. There is no means to
-  change the size of the frame being edited or the type of
-  data in each column. As such, one must plan ahead. This
-  implementation allows one to add a row to the data store,
-  to edit a row (row-by-row), but there is no means to
-  delete a row.
+  A widget for editing a data frame This implementation
+  allows the user to edit a row (row-by-row). Change
+  handlers are called after an edit is performed. The user
+  can add a new row or remove the currently selected row
+  (if more than 1 is present). The hidden argument
+  \code{do_add_remove_buttons} can be set to \code{FALSE}
+  to prevent this option. For large data sets, paging is
+  used. the hidden argument \code{page_size} (with default
+  of 200) can be set to adjust the size of each page.
 }
 \author{
   john verzani

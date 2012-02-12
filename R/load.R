@@ -25,7 +25,7 @@ R_http <- setRefClass("R_http",
                                                                )
                                                     callSuper(...)
                                                   },
-                                                  start=function(port) {
+                                                  start=function(port=9000) {
                                                     if(started)
                                                       return()
                                                     cur_port <- tools:::httpdPort
@@ -38,7 +38,7 @@ R_http <- setRefClass("R_http",
                                                     try(R$start(port=port), silent=TRUE)
                                                     started <<- TRUE
                                                   },
-                                                  load_gw=function(session_managerr=make_session_manager()) {
+                                                  load_gw=function(session_manager=make_session_manager()) {
                                                     if(loaded) return()
                                                      ## gWidgetsWWW, static files
                                                          gWidgetsWWW <- Rook::Static$new(
@@ -155,7 +155,7 @@ R_http <- setRefClass("R_http",
                         }
                         ))$new()
 ## put this in zzz.R
-r_http <- R_http$get_instance()
+r_httpd <- R_http$get_instance()
 
 
 
@@ -218,6 +218,7 @@ r_http <- R_http$get_instance()
 ##' 
 load_app <- function(script_name,
                      app_name=gsub("\\..*", "", basename(script_name)),
+                     port=9000L,
                      session_manager=make_session_manager(),
                      open_page=TRUE,
                      brew_template = "",
@@ -226,6 +227,10 @@ load_app <- function(script_name,
                      ...
                          ) {
 
+  r_httpd <- R_http$get_instance()
+  r_httpd$start(port)                   # if not started
+  r_httpd$load_gw(session_manager)
+  ## now load app
   r_httpd$load_app(script_name, app_name, session_manager, open_page, brew_template, show.log, authenticator, ...)
 }
 
@@ -239,5 +244,6 @@ load_app <- function(script_name,
 ##' @export
 ##' @return creates the app
 load_dir <- function(dir_name, ...) {
-  r_http$load_dir(dir_name, ...)
+  r_httpd <- R_http$get_instance()
+  r_httpd$load_dir(dir_name, ...)
 }

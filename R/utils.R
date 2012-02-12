@@ -431,7 +431,7 @@ DEBUG <- function(...) print(list(...))
 ##' @export
 make_rapache_files <- function(file="") {
   tpl <- system.file("rapache", "apache.conf", package="gWidgetsWWW2")
-  gWidgetsWWW2_home <- system_file("rapache", package="gWidgetsWWW2")
+  gWidgetsWWW2_home <- system.file("rapache", package="gWidgetsWWW2")
   cat(whisker.render(paste(readLines(tpl), collapse="\n"),
                      list(gWidgetsWWW2_home=gWidgetsWWW2_home)), file=file)
 }

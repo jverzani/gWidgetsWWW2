@@ -55,3 +55,8 @@ NULL
 ##' @keywords package
 NULL
 
+.onLoad <- function(...) {
+  ## this is needed for local files, we need an initial instance
+  r_httpd <- R_http$get_instance()
+
+}

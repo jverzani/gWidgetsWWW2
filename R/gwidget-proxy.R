@@ -343,7 +343,10 @@ GWidgetArrayProxy <- setRefClass("GWidgetArrayProxy",
                                    } else {
                                      ind <- l$row_id
                                    }
+                                   l$id <- NULL # don't insert this
                                    value[ind,] <<- lapply(l[-1], function(i) ifelse(is.null(i), NA, i))
+
+
                                  }
                                  ## Return value for record, incase we want to make local changes to push
                                  ## back to client
@@ -352,7 +355,8 @@ GWidgetArrayProxy <- setRefClass("GWidgetArrayProxy",
                                  String(toJSArray(df))
                                },
                                add_row=function(row, ...) {
-                                 value[unlist(row),] <<- rep(NA, ncol(value)) # add new?
+                                 value <<- rbind(value, rep(NA, ncol(value))) # add new?
+                                 ##   value[unlist(row),] <<- rep(NA, ncol(value)) # add new?
                                  ..visible[unlist(row)] <<- TRUE
                                },
                                remove_row=function(param) {

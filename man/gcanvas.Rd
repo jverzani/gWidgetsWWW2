@@ -1,5 +1,6 @@
 \name{gcanvas}
 \alias{gcanvas}
+\alias{GCanvas}
 \title{Widget containing a canvas element.}
 \usage{
   gcanvas(f = NULL, width = 480, height = 400, container =
@@ -44,6 +45,18 @@
   has been used by the \code{canvas} device driver to store
   the JavaScript commands representing the graphic. The
   basic use is in an example below.
+
+  The \code{GCanvas} class is the base class for the
+  \code{gcanvas} widget, which provides an HTML5 canvas
+  widget for drawing on or for displaying graphics produced
+  by the \pkg{canvas} device. The drawing is supported
+  through a series of low-level primitives (reference class
+  methods): \code{polygon}, \code{lines}, \code{rect},
+  \code{circle}. Others are possible.  In addition, there
+  are additional handlers: \code{add_handler_clicked},
+  \code{add_handler_mouse_motion}, .... These are passed
+  back event information through the \code{h} object. The
+  method \code{get_event_params} provides the mapping.
 }
 \details{
   The canvas widget can listen for mouse events, notably
