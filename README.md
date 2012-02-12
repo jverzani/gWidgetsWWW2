@@ -24,7 +24,7 @@ callback is created in a script `hello.R` and contains:
       galert("Hello World", parent=w)
     })
     
-This script is turned into a web page through the +load_app+ function:
+This script is turned into a web page through the `load_app` function:
     
     require(gWidgetsWWW2)
     load_app("hello.R", app_name="hello")
