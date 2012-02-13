@@ -191,6 +191,24 @@ tag.GComponent <- function(x, key) x$get_attr(key)
   x
 }
 
+##' Set a tooltip for the widget
+##'
+##' @param value character tooltip value
+##' @export
+##' @usage tooltip(obj) <- value
+##' @rdname tooltip
+"tooltip<-" <- function(obj, value) UseMethod("tooltip<-")
+
+##' Basic S3 method for tooltip<-
+##'
+##' @export
+##' @rdname tooltip
+##' @method tooltip<- default
+##' @S3method tooltip<- default
+"tooltip<-.default" <- function(obj, value) {
+  obj$set_tooltip(paste(value, collapse="\n"))
+  obj
+}
 
 ##' Toggle editability of the object, if supported
 ##'
@@ -264,6 +282,8 @@ names.GComponent <- function(x) x$get_names()
   x$set_names(value)
   x
 }
+
+
 
 ##' length method for GComponent's
 ##'
