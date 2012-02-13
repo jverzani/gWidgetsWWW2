@@ -104,4 +104,3 @@ Of these, the `FastRWeb` solution is suggested. Details for the
 necessary setup are in the `FastRWeb` sub directory of the package's
 `inst/` directory.
 
-
