@@ -39,7 +39,6 @@ run <- function(session_id, app, ...) {
 
 
   out(paste(x, collapse="\n"))
-  
   done()
   
 }

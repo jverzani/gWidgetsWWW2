@@ -41,6 +41,8 @@ run <- function(app, ...) {
   <link rel='stylesheet' type='text/css' href='http://localhost/cgi-bin/R/gWidgetsWWW2?name=css/gWidgetsWWW2.css' />
   <script type='text/javascript' src='http://localhost/cgi-bin/R/load_AJAX'></script>
 
+  <style type='text/css'>{{ stock_icons }} </style>
+
 </head>
 <body>
 <script type='text/javascript'>
@@ -60,7 +62,10 @@ $(document).ready(function() {
 </html>
 "
 
-  txt <- whisker.render(txt, list(base_url="/cgi-bin/R/gwappAJAX/", app_url="/cgi-bin/R/gwappAJAX/createGUI", app=app))
+  txt <- whisker.render(txt, list(base_url="/cgi-bin/R/gwappAJAX/",
+                                  app_url="/cgi-bin/R/gwappAJAX/createGUI",
+                                  stock_icons=paste(make_stock_icons(), collapse="\n"),
+                                  app=app))
   out(txt)
   done()
   

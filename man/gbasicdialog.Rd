@@ -4,6 +4,9 @@
 \usage{
   gbasicdialog(...)
 }
+\arguments{
+  \item{...}{ignored}
+}
 \value{
   NULL
 }

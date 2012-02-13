@@ -6,14 +6,9 @@ run <- function(...) {
   
   e <- session_manager$get_session_by_id(l$session_id)
   on.exit(session_manager$store_session(l$session_id, e))
-  
-  toplevel <- e[[".gWidgets_toplevel"]]
-  
-  value <- try(fromJSON(l$value, asText=TRUE), silent=TRUE)
 
-  print(list(l$id, l$signal, l$value))
-  
   toplevel <- e[[".gWidgets_toplevel"]]
+  value <- try(fromJSON(l$value, asText=TRUE), silent=TRUE)
   toplevel$call_handler(l$id, l$signal, l$value, new.env())
   
   txt <- toplevel$js_queue$flush()

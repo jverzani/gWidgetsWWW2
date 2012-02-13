@@ -1,6 +1,8 @@
 TODO
 ----
 
+* decouple gWidgetsWWW2 and the deployment parts so both FastRWeb and Rook can be used (check that urls are not embedded, ...)
+
 * in ex-gcanvas-motin - error o eventX eventY. Chrome warning
 
 * <del>tkdensity examples -- are comboboxes broken? Seems they stop calling "change" handler...</del>
@@ -26,6 +28,15 @@ TODO
 
 * why so slow? (Reference class methods?)
 
+FastRWeb
+--------
+
+* work in tempfiles (gsvg say) and tmp url
+
+* integrate session manager and `self.ctrlEval`
+
+* 
+
 
 nginx
 -----
@@ -39,6 +50,7 @@ apache proxy
 ------------
 
 * give example of proxyPassReverse - not rApache
+
 
 Documentation
 --------------

@@ -1,4 +1,6 @@
 ## Append this to the end of the rserve.R file
+options("gWidgetsWWW2:FastRWeb"=TRUE)
+
 require(Rserve)
 require(gWidgetsWWW2)
 require(filehash)

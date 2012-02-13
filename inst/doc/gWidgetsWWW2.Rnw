@@ -84,8 +84,11 @@ able to produce interactive web sites powered by \R.
 This package leverages a popular javascript library (ext from
 \url{www.sencha.com}) to provide a consistent look (the CSS part) and
 the javascript interactivity. \R{} is used for the ``server-side''
-programming, and \R's internal web server is used for serving pages,
-through the \pkg{Rook} package of Jeffrey Horner.
+programming.  For serving local scripts \R's internal web server is used,
+through the \pkg{Rook} package of Jeffrey Horner. For serving pages to
+the greater wide world web, one can proxy the \pkg{Rook} server or
+integrate the framework within Simon Urbanek's \pkg{FastRWeb} cgi-bin
+interface to his \pkg{Rserve} package.
 
 The primary contribution of the package is
 \begin{enumerate}
@@ -537,7 +540,28 @@ used to turn a script into a web page.
 
 
 At this point the package can be intergrated in with
-\pkg{nginx}, say, to serve pages to the public. The \pkg{nginx} web
+\pkg{nginx}, say, to serve pages to the public, or with the
+\pkg{FastRWeb} package to serve pages from an \pkg{Rserve} package.
+
+\subsubsection{Using \pkg{FastRWeb}}
+\label{sec:using-pkgfastrweb}
+
+The web pages may be viewed through a web stack of apache (or any
+other web server with cgi-bin capabilies), \pkg{FastRWeb} (to provide
+the cgi-bin script to interface}, and \pkg{Rserve}.
+
+Installation details are in the \code{FastRWeb} directory of the package.
+
+The responsiveness is just okay, but likely can be sped up if the
+session management can be.
+
+
+\subsubsection{Using \pkg{nginx}}
+\label{sec:using-pkgnginx}
+
+
+
+The \pkg{nginx} web
 server is basically a proxy, routing requests to the underlying
 \pkg{Rook} process. 
 \begin{quotation}
@@ -599,7 +623,7 @@ For a multi-threaded setup (such as the three processes started in the
 Rook example referenced above) the session manager must be told to
 share the evaluation environments. To do this, the \pkg{filehash}
 package is used to store the, to a directory specified to
-\code{getOption("gWidgetsWWW2:db_name")}. This usage is significantly
+\code{getOption("gWidgetsWWW2:db\_name")}. This usage is significantly
 slower to both create the page and to handle any callbacks into the R process.
 
 \subsubsection{RApache}

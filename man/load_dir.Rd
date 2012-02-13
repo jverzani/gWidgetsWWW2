@@ -5,7 +5,7 @@
   load_dir(dir_name, ...)
 }
 \arguments{
-  \item{dirname}{The directory name (with full path). We
+  \item{dir_name}{The directory name (with full path). We
   make several assuptions: 1) \code{dir/*.R} has one
   answer, or we take \code{index.R}, or we take first
   alphabetically; 2) \code{app_name} is

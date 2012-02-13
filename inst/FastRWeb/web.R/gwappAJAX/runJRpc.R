@@ -3,14 +3,10 @@ run <- function(...) {
   body <- rawToChar(request$body)
   l <- as.list(fromJSON(body))
 
-  print(list("run jrpc", body=l, dots=list(...)))
-
-  
   e <- session_manager$get_session_by_id(l$session_id)
   on.exit(session_manager$store_session(l$session_id, e))
   
   toplevel <- e[[".gWidgets_toplevel"]]
-
   toplevel$call_rpc(l$id, l$meth, l$value)
   txt <- toplevel$js_queue$flush()
 

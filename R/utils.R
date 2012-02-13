@@ -394,9 +394,14 @@ asURL <- function(x) {
 ##' f <- get_tempfile(ext=".svg")
 ##' get_tempfile_url(f)
 get_tempfile <- function(ext=".txt") {
-  dir.create(sprintf("%s%s%s",tempdir(), .Platform$file.sep, "tmp"), showWarnings=FALSE)
   f <- tempfile(pattern="gWidgetsWWW", tmpdir="", fileext=ext)
-  f <- sprintf("%s/tmp%s", tempdir(), f)
+
+  if(!is.null(getOption("gWidgetsWWW2:FastRWeb"))) {
+    f <- sprintf("/var/FastRWeb/tmp/%s", f)
+  } else {
+    dir.create(sprintf("%s%s%s",tempdir(), .Platform$file.sep, "tmp"), showWarnings=FALSE)
+    f <- sprintf("%s/tmp%s", tempdir(), f)
+  }
   class(f) <- c("StaticTempFile", class(f))
   f
 }
@@ -413,7 +418,10 @@ get_tempfile_url <- function(f) {
   if(!is(f, "StaticTempFile"))
     return(f)
   ## This should be configurable! (The first tmp anyways)
-  asURL(sprintf("/custom/tmp/tmp/%s", basename(f)))
+  if(!is.null(getOption("gWidgetsWWW2:FastRWeb")))
+    asURL(sprintf("/cgi-bin/R/tmp?file=%s", basename(f)))
+  else
+    asURL(sprintf("/custom/tmp/tmp/%s", basename(f)))
 }
 
 DEBUG <- function(...) print(list(...))

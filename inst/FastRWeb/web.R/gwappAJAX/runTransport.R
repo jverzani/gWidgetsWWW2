@@ -1,5 +1,4 @@
-##' run the handlers
-##'
+##' transport is meant to send data from client to R process
 
 run <- function(...) {
   body <- rawToChar(request$body)
@@ -19,10 +18,7 @@ run <- function(...) {
   }
   param <- as.list(param)
 
-  print(list("runTransport", l$param, param))
-
   do.call(obj$process_transport, param)
-
   
   txt <- toplevel$js_queue$flush()
   out(txt)

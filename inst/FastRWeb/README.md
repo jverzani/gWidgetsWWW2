@@ -52,6 +52,11 @@ This sets up a directory `/var/FastRWeb/` where we will need to do several thing
     d <- system.file("base",  "javascript", package="gWidgetsWWW2")
     system(sprintf("cp -Ra %s /var/FastRWeb/web/javascript", d))
 
+- Similarly copy the `gWidgetsWWW2` images libraries to the `web` directory. These *R* commands will do so:
+
+    d <- system.file("base",  "images", package="gWidgetsWWW2")
+    system(sprintf("cp -Ra %s /var/FastRWeb/web/images, d))
+
 - copy the contents of the `web.R` directory to the `/var/FastRWeb/web.R` directory. 
 
 

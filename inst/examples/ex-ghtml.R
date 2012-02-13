@@ -27,6 +27,7 @@ mpgLabel <- glabel(as.character(floor(min(mpg))), cont=g2)
 
 sl <- gslider(min(mpg), max(mpg), by=1, cont = g2, width=100,
               handler = function(h,...) {
+                require(hwriter)        # needed with remote call, unless loaded globally
                 curValue <- svalue(sl)
                 svalue(mpgLabel) <- curValue
                 out <- gsub("\n","", hwrite(mtcars[mpg >= as.numeric(curValue), ]))

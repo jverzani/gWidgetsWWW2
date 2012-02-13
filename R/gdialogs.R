@@ -235,7 +235,7 @@ galert <- function(message, title = "message", delay=3, parent) {
 ##' subwindow modal. There is not need to call \code{visible} -- in
 ##' fact it wont work -- but you need to define the window and its
 ##' child components within a single call back.
-##' @params ... ignored
+##' @param ... ignored
 ##' @return NULL
 ##' @export
 ##' @examples

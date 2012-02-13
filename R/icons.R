@@ -69,7 +69,10 @@ make_stock_icons <- function() {
   fs <- list.files(system.file("base/images", package="gWidgetsWWW2"), full=TRUE)
   bs <- basename(fs)
   bs_noexts <- sapply(fs, .our_basename)
-  urls <- sprintf("/custom/gWidgetsWWW2/images/%s", bs)
+  if(!is.null(getOption("gWidgetsWWW2:FastRWeb")))
+    urls <- sprintf("/cgi-bin/R/gWidgetsWWW2?name=images/%s", bs)
+  else
+    urls <- sprintf("/custom/gWidgetsWWW2/images/%s", bs)
   css <- Array$new(mapply(.make_icon_class, fs, urls, SIMPLIFY=FALSE))
 
   css$each(function(i, key, value) {

@@ -387,7 +387,7 @@ E.g. var param = {value: this.getText()}"
                              "
 ##' add ajax call complete with handler to call
 ##'
-##' @param url url to call
+##' @param url url to call. Quote it if it is a string
 ##' @param callback string containing javascript callback. Might be
 ##' callRhandler to work with gWidgets. Arguments are data, textStatus
 ##' and jqXHR.
@@ -395,7 +395,7 @@ E.g. var param = {value: this.getText()}"
 ##' @param data_type type of data coming back
 "
                              tpl <- "
-$.ajax('{{url}}', {
+$.ajax({{url}}, {
        dataType: '{{data_type}}',
        data: {{data}},
        type:'GET',

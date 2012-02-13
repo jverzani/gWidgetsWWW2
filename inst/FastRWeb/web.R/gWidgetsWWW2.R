@@ -1,20 +1,8 @@
 ##' Serve up js/css/png files from the gWidgetsWWW2 package
 
 content_types <- function(x) {
-  if(grepl("png$", x))
-    "image/png"
-  else if(grepl("gif$", x))
-    "image/gif"
-  else if(grepl("css$", x))
-    "text/css"
-  else if(grepl("js$", x))
-    "text/javascript"
-  else if(grepl("html$", x))
-    "text/html"
-  else
-    "text/html"
+  Rook:::Mime$mime_type(Rook:::Mime$file_extname(x))
 }
-
 
 run <- function(name, ...) {
   x <- system.file("base", name, package="gWidgetsWWW2")

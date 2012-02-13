@@ -87,7 +87,10 @@ GStatusbar <- setRefClass("GStatusbar",
                               set_value("")
                             },
                             show_loading=function(msg="") {
-                               url <- "/custom/gWidgetsWWW2/images/ajax-loader.gif"
+                               if(!is.null(getOption("gWidgetsWWW2:FastRWeb")))
+                                 url <- "/cgi-bin/R/gWidgetsWWW2?name=images/ajax-loader.gif"
+                               else
+                                 url <- "/custom/gWidgetsWWW2/images/ajax-loader.gif"
                                tpl <- "
 {{id}}.getComponent(0).setText('<img src=\"{{url}}\" width=16 height=16 />{{msg}}', false);
 {{id}}.doLayout();

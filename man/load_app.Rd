@@ -3,7 +3,7 @@
 \title{Load a web app defined by a gWidgetsWWW2 script}
 \usage{
   load_app(script_name, app_name = gsub("\\..*", "",
-  basename(script_name)), session_manager =
+  basename(script_name)), port = 9000L, session_manager =
   make_session_manager(), open_page = TRUE, brew_template =
   "", show.log = FALSE, authenticator = NULL, ...)
 }
