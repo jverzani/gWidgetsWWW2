@@ -9,7 +9,7 @@ run <- function(session_id, app, ...) {
   the_script <- paste(app_dir, .Platform$file.sep,  app, ".R", sep="")
   
   e <- session_manager$get_session_by_id(session_id)
-  on.exit(store_session(session_id, e))
+  on.exit(session_manager$store_session(session_id, e))
   
   if(is.null(e)) {
     e <- new.env()

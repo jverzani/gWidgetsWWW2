@@ -17,6 +17,9 @@ Here are the steps:
     require(devtools)
     install_github("gWidgetsWWW2", "jverzani")
     
+* install 'filehash'. This is only suggested by the package, so may not install automatically above.
+
+    install.packages("filehash")
 * Install [Rserve](http://www.rforge.net/Rserve/). The easiest thing to do is:
 
     install.packages("Rserve",,"http://rforge.net/",type="source")
@@ -35,7 +38,7 @@ is helpful.
 
 > For unix systems, FastRWeb privides a sample script install.sh that sets up the environment -- you can run it somewhat like this:
 > 
-> cd `echo 'cat(system.file(package="FastRWeb"))' | R --slave`
+> cd `echo 'cat(system.file(package="FastRWeb"))' | R --slave`;
 > sh install.sh
 > 
 
@@ -45,22 +48,29 @@ This sets up a directory `/var/FastRWeb/` where we will need to do several thing
 
 - append the contents of `rserve.conf` to the file `/var/FastRWeb/code/rserve.conf`
 
-- create the directory `gw_apps` (or whatever you want to call it) to hold your apps
+- create the directory `gw_apps` (or whatever you want to call it) to
+  hold your apps, but this is referenced in the `web.R/app.R` handler.
 
 - copy the `gWidgetsWWW2` *JavaScript* libraries to the `web` directory. These *R* commands will do so:
 
-    d <- system.file("base",  "javascript", package="gWidgetsWWW2")
+    d <- system.file("base",  "javascript", package="gWidgetsWWW2");
     system(sprintf("cp -Ra %s /var/FastRWeb/web/javascript", d))
 
 - Similarly copy the `gWidgetsWWW2` images libraries to the `web` directory. These *R* commands will do so:
 
-    d <- system.file("base",  "images", package="gWidgetsWWW2")
-    system(sprintf("cp -Ra %s /var/FastRWeb/web/images, d))
+    d <- system.file("base",  "images", package="gWidgetsWWW2");
+    system(sprintf("cp -Ra %s /var/FastRWeb/web/images", d))
 
 - copy the contents of the `web.R` directory to the `/var/FastRWeb/web.R` directory. 
 
 
+* create a directory to hold the session information. This should be writeable by the server process. These shell commands will do som though you might want to tighten up permissions
 
+   mkdir /tmp/gWidgetsWWW2_session_db/;
+   chmod 777 /tmp/gWidgetsWWW2_session_db/;
+
+While tightening up permissions, do read Jay Emerson's post linked to above.
+    
 
 * Test is out. 
 
@@ -68,9 +78,9 @@ This sets up a directory `/var/FastRWeb/` where we will need to do several thing
 
 - Then create and app by saving the following code in the file `/var/FastRWeb/gw_app/test.R`:
 
-    w <- gwindow("Hello")
-    g <- ggroup(cont=w)
-    b <- gbutton("Click for a message", cont=g)
+    w <- gwindow("Hello");
+    g <- ggroup(cont=w);
+    b <- gbutton("Click for a message", cont=g);
     addHandlerClicked(b, handler=function(...) {
       gmessage("Hello world", parent=w) 
     })
