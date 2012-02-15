@@ -34,7 +34,7 @@ SessionManager <- setRefClass("SessionManager",
                                     db_name <- getOption("gWidgetsWWW2:db_name")
                                     if(is.null(db_name))
                                       db_name <- "/tmp/gWidgetsWWW2_session_db"
-                                    dbCreate(db_name)
+                                    dbCreate(db_name, type="RDS")
                                     sessions <<- dbInit(db_name, type="RDS")
                                   } else {
                                     ## If using Rook (and perhaps nginx to proxy) -- a single process -- then
@@ -94,13 +94,33 @@ SessionManager <- setRefClass("SessionManager",
                                     sessions[[id]] <<- NULL
                                   }
                                 },
-                                new_session = function() {
-                                  "Create new session, return the ID"
-                                  id <- get_id()
+                                ## new_session = function() {
+                                ##   "Create new session, return the ID"
+                                ##   id <- get_id()
+                                ##   e <- new.env()
+                                ##   store_session(id, e)
+                                  
+                                ##   return(id)
+                                ## },
+                                new_session = function(id) {
+                                  "Create new session for id"
+                                  ## XX I don't like this, we coupld session management and toplevel here
                                   e <- new.env()
-                                  store_session(id, e)
 
-                                  return(id)
+                                  toplevel <- gWidgetsWWW2:::GWidgetsTopLevel$new()
+                                  toplevel$set_e(e)
+                                  assign(".gWidgets_toplevel", toplevel, env=e)
+                                  lockBinding(".gWidgets_toplevel", env=e)
+                                  store_session(id, e)
+                                },
+                                is_session_id =  function(id) {
+                                  "Is id a valid sessin id?"
+                                  if(use_filehash) {
+                                    dbExists(sessions, id)
+                                  } else {
+                                    !is.null(sessions[[id]])
+                                  }
+
                                 },
                                 get_session_by_id = function(id="") {
                                   "Get session, an environment. Return NULL if not there"
