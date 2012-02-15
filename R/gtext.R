@@ -180,7 +180,7 @@ function(data, textStatus, jqXHR) {
   {{id}}.setValue(data[0])
 }
 "
-                               add_async_javascript_callback("baseurl + 'runProxy'",
+                               add_async_javascript_callback("base_url + 'runProxy'",
                                                              whisker.render(callback, list(id=get_id())),
                                                              data=list(id=get_id()))
                                
