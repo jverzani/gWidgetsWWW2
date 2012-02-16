@@ -28,6 +28,8 @@ Here are the steps:
 
     install.packages("FastRWeb",,"http://rforge.net/",type="source")
 
+For both `Rserve` and `FastRWeb` the development versions are needed (as of 2/15/12).
+
 * Copy the `Rcgi` script of `FastRWeb` to apache's cgi-bin directory, renaming to `R`. To find this file, the *R* command
 
     system.file("cgi-bin", package="FastRWeb")
@@ -54,12 +56,12 @@ This sets up a directory `/var/FastRWeb/` where we will need to do several thing
 - copy the `gWidgetsWWW2` *JavaScript* libraries to the `web` directory. These *R* commands will do so:
 
     d <- system.file("base",  "javascript", package="gWidgetsWWW2");
-    system(sprintf("cp -Ra %s /var/FastRWeb/web/javascript", d))
+    system(sprintf("/bin/cp -Ra %s /var/FastRWeb/web/javascript", d))
 
 - Similarly copy the `gWidgetsWWW2` images libraries to the `web` directory. These *R* commands will do so:
 
     d <- system.file("base",  "images", package="gWidgetsWWW2");
-    system(sprintf("cp -Ra %s /var/FastRWeb/web/images", d))
+    system(sprintf("/bin/cp -Ra %s /var/FastRWeb/web/images", d))
 
 - copy the contents of the `web.R` directory to the `/var/FastRWeb/web.R` directory. 
 
@@ -74,7 +76,13 @@ While tightening up permissions, do read Jay Emerson's post linked to above.
 
 * Test is out. 
 
-- First start `FastRWeb` and `Rserve` with the script `/var/FastRWeb/code/start`.
+- First start `FastRWeb` and `Rserve` with the script 
+
+    `/var/FastRWeb/code/start`. 
+
+The following may be used to kill the script:
+
+     killall -INT Rserve
 
 - Then create and app by saving the following code in the file `/var/FastRWeb/gw_app/test.R`:
 
