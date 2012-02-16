@@ -1,13 +1,19 @@
 TODO
 ----
 
-* decouple gWidgetsWWW2 and the deployment parts so both FastRWeb and Rook can be used (check that urls are not embedded, ...)
+* in ex-gcanvas-motion - error o eventX eventY. Chrome warning
 
-* in ex-gcanvas-motin - error o eventX eventY. Chrome warning
+* gfile has bad styling, not sure why the button goes where it does.
+
+* ggooglemmaps no e3 object found. (This is buggy, was fixed, now not ...)
+
+* why so slow? (Reference class methods?)
+
+* <del>decouple gWidgetsWWW2 and the deployment parts so both FastRWeb and Rook can be used (check that urls are not embedded, ...)</del>
+
 
 * <del>tkdensity examples -- are comboboxes broken? Seems they stop calling "change" handler...</del>
 
-* <del>ggooglem maps no e3 object found</del>
 
 * <del>gtable:</del>
   - <del>paging is broken</del>
@@ -24,9 +30,6 @@ TODO
 
 * <del>gdf seems broken (add, remove can be done now see index)</del>
 
-* <del>gfile is broken</del>
-
-* why so slow? (Reference class methods?)
 
 FastRWeb
 --------
