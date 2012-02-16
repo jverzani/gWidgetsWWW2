@@ -41,11 +41,11 @@ R_http <- setRefClass("R_http",
                                                   load_gw=function(session_manager=make_session_manager()) {
                                                     if(loaded) return()
                                                      ## gWidgetsWWW, static files
-                                                    ## gWidgetsWWW <- Rook::Static$new(
-                                                    ##                                 urls = c("/images", "/javascript", "/css"),
-                                                    ##                                 root = system.file("base", package="gWidgetsWWW2")
-                                                    ##                                 )
-                                                    ## R$add(RhttpdApp$new(gWidgetsWWW, name="gWidgetsWWW2"))
+                                                    gWidgetsWWW <- Rook::Static$new(
+                                                                                    urls = c("/images", "/javascript", "/css"),
+                                                                                    root = system.file("base", package="gWidgetsWWW2")
+                                                                                    )
+                                                    R$add(RhttpdApp$new(gWidgetsWWW, name="gWidgetsWWW2"))
                                                          
                                                     ## tmpdir
                                                     tmpApp <- Rook::Static$new(

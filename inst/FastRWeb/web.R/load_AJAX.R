@@ -125,15 +125,12 @@ listen = function() {
 };
 
 'Clean up sessions once we are done with the page';
-close_session = function() {
+close_session = function(id) {
   $.ajax({url: base_url + 'closeSession', 
           type:'GET',
-          data: {session_id: session_id}, 
-          timeout:1000
+          data: {session_id:id}
         });
 };
-$(window).unload(close_session);
-
 "
 
   out(txt)

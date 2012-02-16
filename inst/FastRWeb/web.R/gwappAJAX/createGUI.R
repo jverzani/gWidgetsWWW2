@@ -34,6 +34,15 @@ run <- function(session_id, app, ...) {
 
   cmd <- sprintf("var session_id='%s';", session_id)
   toplevel$js_queue$push(cmd)
+  
+  tpl <- "
+Ext.EventManager.on(window, 'unload', function() {close_session('{{id}}')}, this);
+"
+  cmd <- whisker.render(tpl, list(id=session_id))
+  toplevel$js_queue$push(cmd)
+  
+  
+  
   ## returns javascript commands
   x <- toplevel$js_queue$flush()
 
