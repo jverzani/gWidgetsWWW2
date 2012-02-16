@@ -141,13 +141,12 @@ listen = function() {
     });
 };
 
-"Clean up sessions once we are done with the page";
-close_session = function() {
+"Clean up sessions once we are done with the page. Called in create_GUI";
+close_session = function(id) {
   $.ajax({url: base_url + "closeSession", 
           type:'GET',
-          data: {session_id: session_id}, 
+          data: {session_id: id}, 
           timeout:1000
         });
 };
-$(window).unload(close_session);
 

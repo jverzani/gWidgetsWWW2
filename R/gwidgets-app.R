@@ -135,7 +135,9 @@ GWidgetsApp <- setRefClass("GWidgetsApp",
                                session_id <- req_input$session_id
                                
                                out <- try(create_GUI(session_id, req), silent=TRUE)
-                                 
+
+
+                               
                                if(inherits(out, "try-error")) {
                                  status <- 400L
                                } 
@@ -218,6 +220,11 @@ if(tmp) { document.body.removeChild(tmp)}
                                  } else {
                                    cmd <- sprintf("var session_id='%s';", session_id)
                                    toplevel$js_queue$push(cmd)
+                                   tpl <- "
+Ext.EventManager.on(window, 'beforeunload', function(e) {close_session('{{session_id}}')}, this);
+"
+                                   toplevel$js_queue$push(whisker.render(tpl, list(session_id=session_id)))
+                                   
                                    ## returns javascript commands
                                    x <- toplevel$js_queue$flush()
                                  }
