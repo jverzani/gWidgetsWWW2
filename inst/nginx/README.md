@@ -17,3 +17,16 @@ Unless needed, one should only start with one port and specify `multiple_instanc
 
 The  urls of the form `http://ip.address/custom/someApp` are sent through to the `Rook` process running on port 9000.
 
+
+
+Using apache to do the same
+---------------------------
+
+Apache can be used to do the same. Here are some sample directives:
+    
+    ProxyPass  /custom http://127.0.0.1:9000/custom
+    ProxyPassReverse /custom http://127.0.0.1:9000/custom
+    ProxyPreserveHost On
+    
+
+
