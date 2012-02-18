@@ -48,7 +48,7 @@ $(document).ready(function() {
 });
 
 </script>
-  <script  type='text/javascript' src='http://localhost/cgi-bin/R/gWidgetsWWW2?name=javascript/ext/ext-all.js'></script>
+  <script  type='text/javascript' src='/cgi-bin/R/gWidgetsWWW2?name=javascript/ext/ext-all.js'></script>
 
   <script type='text/javascript' src='/cgi-bin/R/gWidgetsWWW2?name=javascript/gw-gtable.js'></script>
   <script type='text/javascript' src='/cgi-bin/R/gWidgetsWWW2?name=javascript/ext.ux.canvas.js'></script>
@@ -66,7 +66,7 @@ $(document).ready(function() {
   <script type='text/javascript' src='/cgi-bin/R/gWidgetsWWW2?name=javascript/CodeMirror/r.js'></script>
   <script type='text/javascript' src='/cgi-bin/R/gWidgetsWWW2?name=javascript/CodeMirror/emacs.js'></script>
 
-  <script type='text/javascript' src='http://localhost/cgi-bin/R/load_AJAX'></script>
+  <script type='text/javascript' src='/cgi-bin/R/load_AJAX'></script>
 
   <style type='text/css'>{{ stock_icons }} </style>
 
