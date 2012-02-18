@@ -23,7 +23,7 @@ session_manager <- setRefClass("SessionManager",
                                  ),
                                methods=list(
                                  initialize=function(d="/tmp/sessions", ...) {
-                                   if(length(list.dir(d)) == 0)
+                                   if(length(list.dirs(d)) == 0)
                                      dir.create(d)
                                    initFields(session_dir = d)
                                    callSuper(...)
