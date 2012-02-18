@@ -25,7 +25,7 @@ R_http <- setRefClass("R_http",
                                                                )
                                                     callSuper(...)
                                                   },
-                                                  start=function(port=9000) {
+                                                  start=function(port=9000, ...) {
                                                     if(started)
                                                       return()
                                                     cur_port <- tools:::httpdPort
@@ -35,7 +35,8 @@ R_http <- setRefClass("R_http",
                                                       started <<- TRUE
                                                       return()
                                                     }
-                                                    try(R$start(port=port), silent=TRUE)
+                                                    ## pass in listen="external.ip"
+                                                    try(R$start(port=port, ...), silent=TRUE)
                                                     started <<- TRUE
                                                   },
                                                   load_gw=function(session_manager=make_session_manager()) {
