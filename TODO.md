@@ -9,6 +9,12 @@ TODO
 
 * why so slow? (Reference class methods?)
 
+* move session code into package bypassing filehash
+
+* json-rpc server for FastRWeb
+
+* work on cacheing JavaScript files for Rook (apache config?)
+
 * <del>decouple gWidgetsWWW2 and the deployment parts so both FastRWeb and Rook can be used (check that urls are not embedded, ...)</del>
 
 
@@ -36,8 +42,6 @@ FastRWeb
 
 * work in tempfiles (gsvg say) and tmp url
 
-* integrate session manager and `self.ctrlEval`
-
 * 
 
 
@@ -52,7 +56,7 @@ nginx
 apache proxy
 ------------
 
-* give example of proxyPassReverse - not rApache
+* <del>give example of proxyPassReverse - not rApache</del>
 
 
 Documentation

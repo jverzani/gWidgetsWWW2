@@ -29,4 +29,12 @@ Apache can be used to do the same. Here are some sample directives:
     ProxyPreserveHost On
     
 
+    # cache static files                                                            
+    <IfModule mod_rewrite.c>
+     <Location /custom/gWidgetsWWW2/>
+        Header Set Cache-Control "public, s-maxage=3600, max-age=3600, must-revalidate"
+     </Location>
+    </IfModule>
+    
+
 

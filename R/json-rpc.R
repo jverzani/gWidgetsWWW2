@@ -275,8 +275,9 @@ JsonRPCObject <- setRefClass("JsonRPCObject",
                              methods=list(
                                initialize=function(methods=character(0),
                                  ...) {
-                                 
-                                 exported <<- methods
+
+                                 if(length(methods))
+                                   exported <<- methods
 
                                  callSuper(...)
                                },

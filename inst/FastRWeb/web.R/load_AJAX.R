@@ -66,11 +66,11 @@ success:callback
 'Callback into R process an exported JsonRPCObject';
 json_rpc = function(obj_name, meth_name, params, callback, url) {
     if(!url) {
-	url = 'JSON_RPC'
+	url = base_url + 'jsonRPCHandler';
     };
 
     Ext.Ajax.request({
-	url: json_rpc_base_url + url,
+	url: url
 	jsonData: [{
 	    obj:obj_name,
 	    meth:meth_name,

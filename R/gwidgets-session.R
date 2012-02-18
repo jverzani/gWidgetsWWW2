@@ -21,26 +21,13 @@ NULL
 SessionManager <- setRefClass("SessionManager",
                               fields=list(
                                 "url" = "character",
-#                                "sessions"="list"
-                                "sessions"="ANY",
-                                use_filehash="logical"
+                                "sessions"="list"
                                 ),
                               methods=list(
-                                initialize = function(use_filehash=FALSE, ...) {
-                                  initFields(use_filehash = use_filehash)
-                                  if(use_filehash) {
-                                    ## filehash allows us to use rapache and multiple
-                                    ## R processes. It is *much* slower.
-                                    db_name <- getOption("gWidgetsWWW2:db_name")
-                                    if(is.null(db_name))
-                                      db_name <- "/tmp/gWidgetsWWW2_session_db"
-                                    dbCreate(db_name, type="RDS")
-                                    sessions <<- dbInit(db_name, type="RDS")
-                                  } else {
-                                    ## If using Rook (and perhaps nginx to proxy) -- a single process -- then
-                                    ## a list suffices
-                                    sessions <<- list()
-                                  }
+                                initialize = function(...) {
+                                  ## If using Rook (and perhaps nginx to proxy) -- a single process -- then
+                                  ## a list suffices
+                                  sessions <<- list()
                                   callSuper(...)
                                 },
                                 get_id = function(...) {
@@ -63,64 +50,16 @@ SessionManager <- setRefClass("SessionManager",
 
                                   rec <- list(e=e,
                                               last.access=Sys.time())
-                                  if(use_filehash) {
-                                    done <- FALSE; ctr <- 1
-                                    while(!done && ctr < 10) {
-                                      out <- try(dbInsert(sessions, id, rec), silent=TRUE)
-                                      if(!inherits(out, "try-error"))
-                                        done <- TRUE
-                                      ctr <- ctr + 1
-                                    }
-                                    if(!done)
-                                      stop(out)
-                                  } else {
-                                    sessions[[id]] <<- rec
-                                  }
+                                  sessions[[id]] <<- rec
                                 },
                                 clear_session = function(id) {
                                   "clean up session, called when page is closed"
                                   
-                                  if(use_filehash) {
-                                    done <- FALSE;; ctr <- 1
-                                    while(!done && ctr < 10) {
-                                      out <- try(dbInsert(sessions, id, NULL), silent=TRUE)
-                                      if(!inherits(out, "try-error"))
-                                        done <- TRUE
-                                      ctr <- ctr + 1
-                                    }
-                                    if(!done)
-                                      stop(out)
-                                  } else {
-                                    sessions[[id]] <<- NULL
-                                  }
-                                },
-                                ## new_session = function() {
-                                ##   "Create new session, return the ID"
-                                ##   id <- get_id()
-                                ##   e <- new.env()
-                                ##   store_session(id, e)
-                                  
-                                ##   return(id)
-                                ## },
-                                new_session = function(id) {
-                                  "Create new session for id"
-                                  ## XX I don't like this, we coupld session management and toplevel here
-                                  e <- new.env()
-
-                                  toplevel <- gWidgetsWWW2:::GWidgetsTopLevel$new()
-                                  toplevel$set_e(e)
-                                  assign(".gWidgets_toplevel", toplevel, env=e)
-                                  lockBinding(".gWidgets_toplevel", env=e)
-                                  store_session(id, e)
+                                  sessions[[id]] <<- NULL
                                 },
                                 is_session_id =  function(id) {
                                   "Is id a valid sessin id?"
-                                  if(use_filehash) {
-                                    dbExists(sessions, id)
-                                  } else {
-                                    !is.null(sessions[[id]])
-                                  }
-
+                                  !is.null(sessions[[id]])
                                 },
                                 get_session_by_id = function(id="") {
                                   "Get session, an environment. Return NULL if not there"
@@ -128,35 +67,89 @@ SessionManager <- setRefClass("SessionManager",
                                   if(is.null(id))
                                      return(NULL)
 
-                                  if(use_filehash) {
-                                    ## using filehash
-                                    if(!dbExists(sessions, id))
-                                      return()
-                                    
-                                    done <- FALSE; ctr <- 1
-                                    while(!done && ctr < 10) {
-                                      rec <- try(dbFetch(sessions, id), silent=TRUE)
-                                      if(!inherits(rec, "try-error"))
-                                        done <- TRUE
-                                      ctr <- ctr + 1
-                                    }
-                                    if(!done)
-                                      stop(rec)
-                                    
-                                    if(is.null(rec))
-                                      return(NULL)
-                                  } else {
-                                    ## using a list
-                                    rec <- sessions[[id]]
-                                  }
-                                  
+                                  rec <- sessions[[id]]
+
                                   e <- rec$e
                                   return(e)
                                 }
                                 ))
 
-make_session_manager <- memoise(function(...) {
-  SessionManager$new(...)
+## Instead of using filehash, we borrow its ideas.
+## This gives a slight speed up in a place where we really need it
+SessionManagerFile <- setRefClass("SessionManagerFile",
+                                  fields=list(
+                                    session_dir="character"
+                                    ),
+                                  methods=list(
+                                    initialize=function(d="/tmp/sessions", ...) {
+                                      if(length(list.dirs(d)) == 0)
+                                        dir.create(d)
+                                      initFields(session_dir = d)
+                                      callSuper(...)
+                                    },
+                                    make_file = function(id) {
+                                      sprintf("%s%s%s", session_dir, .Platform$file.sep, id)
+                                    },
+                                    lock_file_name = function(id) {
+                                      sprintf("%s_lock", make_file(id))
+                                    },
+                                    is_locked = function(id) {
+                                      file.exists(lock_file_name(id))
+                                    },
+                                    lock_file = function(id) {
+                                      cat("lock", file=lock_file_name(id))
+                                    },
+                                    unlock_file = function(id) {
+                                      unlink(lock_file_name(id))
+                                    },
+                                    id_exists=function(id) {
+                                      file.exists(make_file(id))
+                                    },
+                                    get_id=function() {
+                                      id <- paste(sample(c(LETTERS,0:9), 10, replace=TRUE), collapse="")
+                                      id ## check for repeats
+                                    },
+                                    get_session_by_id=function(id) {
+                                      if(!id_exists(id))
+                                        return(NULL)
+                                      
+                                      if(!is_locked(id)) {
+                                        lock_file(id)
+                                        out <- try(readRDS(make_file(id)), silent=TRUE)
+                                        return(out)
+                                      }
+                                      ## else we work
+                                      ctr <- 0; MAX_CT <- 10000 # how high should this be?
+                                   while(is_locked(id) && ctr < MAX_CT) {
+                                     Sys.sleep(0.1)
+                                     ctr <- ctr + 1
+                                   }
+                                      if(ctr >= MAX_CT) {
+                                     logger("*** Failed to get lock after ***", ctr)
+                                     NULL
+                                   } else {
+                                     lock_file(id)
+                                     readRDS(make_file(id))
+                                   }
+                                 },
+                                 store_session=function(id, e) {
+                                   on.exit(unlock_file(id))
+                                   saveRDS(e, make_file(id))
+                                 },
+                                 clear_session=function(id) {
+                                   unlink(make_file(id))
+                                   unlock_file(id)
+                                 }
+                                 ))
+
+
+
+make_session_manager <- memoise(function(use.filehash=FALSE, ...) {
+  if(use.filehash) {
+    SessionManagerFile$new(...)
+  } else {
+    SessionManager$new(...)
+  }
 })
 
 

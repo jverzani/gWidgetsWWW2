@@ -30,7 +30,7 @@ port <- as.numeric(commandArgs(trailingOnly=TRUE))
 
 ## Rk is our Rook instance
 Rk <- gWidgetsWWW2:::R_http$get_instance()
-Rk$start(port)
+Rk$start(port) ## Rk$start(port, listen="external.ip") ## for an external ip
 Rk$load_gw()
 
 
