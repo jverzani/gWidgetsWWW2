@@ -17,9 +17,12 @@ Here are the steps:
     require(devtools)
     install_github("gWidgetsWWW2", "jverzani")
     
-* install 'filehash'. This is only suggested by the package, so may not install automatically above.
+* create a directory to hold the sessions. This should be cleared out
+  periodically, as the clear session callback from the browser is not
+  reliably called. The default directory is `/tmp/sessions`. To change
+  this, modify the code in `rserve.R` to specify the appropirate
+  directory.
 
-    install.packages("filehash")
 * Install [Rserve](http://www.rforge.net/Rserve/). The easiest thing to do is:
 
     install.packages("Rserve",,"http://rforge.net/",type="source")
@@ -102,9 +105,17 @@ For now, the setup only handles full screen apps. Use an `iframe` to embed in a 
 Notes
 -----
 
-The response is a bit slower than it could be. One area of speedup is in how sessions are handled. There is code in `Rserve` that should allows this to be handled faster, but this has not been exploited yet. 
+The response is a bit slower than it could be. If it is untolerable,
+you might try `nginx` and `Rook`, though that may have other issues.
 
-As of now, sessions are stored in a directory on the server, by default `/tmp/gWidgetsWWW2_session_db`. This must be writable by the `Rserve` process. The location can be configured through an option, which would be set in the `rserve.R` file. Sessions are deleted when a page is unloaded, though one may want to make sure this directory is cleaned out periodically, as the session files can be large.
+As of now, sessions are stored in a directory on the server, by
+default `/tmp/sessions`. This must be writable by the `Rserve`
+process. The location can be configured in the `rserve.R`
+file. Sessions are *supposed to be* deleted when a page is unloaded, though one may
+want to make sure this directory is cleaned out periodically, as the
+session files can be large.
 
-This is all experimental. Please let me know if there are any issues.
+This is all experimental. Please let me know if there are any
+issues. In particular, the heuristics to specify how often to try and
+for how many times, when a file is locked may need tweaking.
  
