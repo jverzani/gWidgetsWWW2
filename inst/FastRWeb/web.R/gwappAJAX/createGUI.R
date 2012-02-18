@@ -34,12 +34,18 @@ run <- function(session_id, app, ...) {
 
   cmd <- sprintf("var session_id='%s';", session_id)
   toplevel$js_queue$push(cmd)
-  
-  tpl <- "
-Ext.EventManager.on(window, 'unload', function() {close_session('{{id}}')}, this);
+
+tpl <- "
+Ext.EventManager.on(window, 'beforeunload', function() {
+    close_session(session_id);
+});
+
+Ext.EventManager.on(window, 'unload', function() {
+    close_session(session_id);
+});
 "
-  cmd <- whisker.render(tpl, list(id=session_id))
-  toplevel$js_queue$push(cmd)
+  
+  toplevel$js_queue$push(tpl)
   
   
   

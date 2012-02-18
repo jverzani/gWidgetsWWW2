@@ -23,8 +23,9 @@ session_manager <- setRefClass("SessionManager",
                                  ),
                                methods=list(
                                  initialize=function(d="/tmp/sessions", ...) {
-                                   initFields(session_dir = d
-                                              )
+                                   if(length(list.dir(d)) == 0)
+                                     dir.create(d)
+                                   initFields(session_dir = d)
                                    callSuper(...)
                                  },
                                  make_file = function(id) {
