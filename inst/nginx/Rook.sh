@@ -5,8 +5,11 @@
 # Rook.sh 9001 &
 # Rook.sh 9002 &
 
+## If using more than one port, then one must use the use.filehash=TRUE option below
+
 ## what directory to scan
-app_dir <- "~/pmg/GW-refactor/gWidgetsWWW2/inst/examples/"
+## CHange to something appropriate
+app_dir <- system.file("examples", package="gWidgetsWWW2")
 
 ## do you want multiple instances?
 ## Multiple instances are much slower due to the need to lookup the evaluation
@@ -18,8 +21,7 @@ multiple_instances <- FALSE
 
 require(gWidgetsWWW2)
 session_manager <- if(multiple_instances) {
-  require(filehash) ## not loaded by default
-  gWidgetsWWW2:::make_session_manager(use_filehash=TRUE)
+  gWidgetsWWW2:::make_session_manager(use.filehash=TRUE)
 } else {
   gWidgetsWWW2:::make_session_manager()
 }
