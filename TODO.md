@@ -9,11 +9,11 @@ TODO
 
 * why so slow? (Reference class methods?)
 
-* move session code into package bypassing filehash
+* <del>move session code into package bypassing filehash</del>
 
-* json-rpc server for FastRWeb
+* <del>json-rpc server for FastRWeb</del>
 
-* work on cacheing JavaScript files for Rook (apache config?)
+* <del>work on cacheing JavaScript files for Rook (apache config?). Done through apache config</del>
 
 * <del>decouple gWidgetsWWW2 and the deployment parts so both FastRWeb and Rook can be used (check that urls are not embedded, ...)</del>
 
@@ -48,10 +48,7 @@ FastRWeb
 nginx
 -----
 
-* better example: need 3 things change to server, change to http and R
-  start up script
-
-* load_app for loading many apps in startup script
+* <done>load_app for loading many apps in startup script. See Rook.sh</del>
 
 apache proxy
 ------------
@@ -66,8 +63,6 @@ Documentation
 
 * vignette
 
-* load_all -- not working
-
 
 
 Unit tests
@@ -77,11 +72,6 @@ Unit tests
 
 App
 ---
-
-* indexgw.rthml -- do we need this?
-
-* subclass load app (In Rook already, but might be nicer if google
-  apps like)
 
 * session manager -- can we make session accessible to local user? can
   we make ability to broadcast if $listen is done?
