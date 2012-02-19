@@ -17,7 +17,7 @@
 NULL
 
 ## Session manager for gWidgetsWWW2 apps
-## Can use object in global workspace (for running under Rook) or filehash -- if running under RApache
+## Can use object in global workspace (for running under Rook) or filehash (well filehash inspired) -- if running under RApache
 SessionManager <- setRefClass("SessionManager",
                               fields=list(
                                 "url" = "character",
@@ -34,13 +34,8 @@ SessionManager <- setRefClass("SessionManager",
                                   "Create a unique new sessionID"
                                   make_ID <- function() paste(sample(LETTERS, 10, replace=TRUE), collapse="")
                                   x <- make_ID()
-                                  if(use_filehash)
-                                    while(dbExists(sessions, x))
+                                  while(x %in% names(sessions))
                                       x <- make_ID()
-                                  else
-                                    while(x %in% names(sessions))
-                                      x <- make_ID()
-                                  return(x)
                                 },
                                 store_session = function(id, e) {
                                   "store session"
