@@ -21,8 +21,6 @@ Depends:
     memoise,
     whisker,
     digest
-Suggests:
-    filehash
 LazyLoad: yes
 Collate:
     'gwidgets-package.R'
