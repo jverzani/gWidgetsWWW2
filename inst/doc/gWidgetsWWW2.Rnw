@@ -556,13 +556,11 @@ The responsiveness is just okay, but likely can be sped up if the
 session management can be.
 
 
-\subsubsection{Using \pkg{nginx}}
+\subsubsection{Using \pkg{nginx} or \pkg{apache} as a proxy for \pkg{Rook}}
 \label{sec:using-pkgnginx}
 
-
-
-The \pkg{nginx} web
-server is basically a proxy, routing requests to the underlying
+We can use the \pkg{nginx} web
+server or \pkg{apache} to a proxy requests to the underlying
 \pkg{Rook} process. 
 \begin{quotation}
   \textbf{No claim is made that this is industrial grade}. For that,
@@ -570,6 +568,7 @@ server is basically a proxy, routing requests to the underlying
   moderate usage, though there are many areas where scaling will just
   plain fail.
 \end{quotation}
+
 
 A basic configuration for \pkg{nginx} simple reroutes calls to the
 Rook process. The \code{load\_app} call opens up port 9000 by default.
@@ -607,6 +606,25 @@ Each app enabled by \code{load\_app} has an option for an
 \url{http://you.domain.com/custom/app\_name/indexgw.rhtml}.
 
 
+To configure \pkg{apache} one can modify the following directives to
+suit their needs. If one uses something other than the localhost to
+listen, then Rook should be started listening to that ip.
+
+\begin{verbatim}
+    ProxyPass  /custom http://127.0.0.1:9000/custom
+    ProxyPassReverse /custom http://127.0.0.1:9000/custom
+    ProxyPreserveHost On
+    
+
+    # cache static files                                                            
+    <IfModule mod_rewrite.c>
+     <Location /custom/gWidgetsWWW2/>
+        Header Set Cache-Control "public, s-maxage=3600, max-age=3600, must-revalidate"
+     </Location>
+    </IfModule>
+    
+\end{verbatim}
+
 \subsubsection{single or multi threaded}
 \label{sec:single-or-multi}
 
@@ -621,10 +639,11 @@ could not easily share this list.
 
 For a multi-threaded setup (such as the three processes started in the
 Rook example referenced above) the session manager must be told to
-share the evaluation environments. To do this, the \pkg{filehash}
-package is used to store the, to a directory specified to
-\code{getOption("gWidgetsWWW2:db\_name")}. This usage is significantly
-slower to both create the page and to handle any callbacks into the R process.
+share the evaluation environments. To do this, files are used to store
+the evaluation environment. One passes a \code{TRUE} value to
+\code{use.filehash} and optionally specifies a directory to hold the
+sessions.
+
 
 \subsubsection{RApache}
 \label{sec:rapache}
