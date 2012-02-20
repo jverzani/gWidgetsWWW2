@@ -327,7 +327,7 @@ GWidgetsAppAjax <- setRefClass("GWidgetsAppAjax",
                                  l <- read_rook_input(req)
                                  e <- get_session(l$session_id)
                                  toplevel <- get_toplevel(e=e)
-                                 
+
                                  if(grepl("runTransport$", req$path_info())) {
                                    ## run the transport
                                    out <- run_transport(req, toplevel)

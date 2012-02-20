@@ -36,6 +36,7 @@ SessionManager <- setRefClass("SessionManager",
                                   x <- make_ID()
                                   while(x %in% names(sessions))
                                       x <- make_ID()
+                                  x
                                 },
                                 store_session = function(id, e) {
                                   "store session"
@@ -102,6 +103,8 @@ SessionManagerFile <- setRefClass("SessionManagerFile",
                                     },
                                     get_id=function() {
                                       id <- paste(sample(c(LETTERS,0:9), 10, replace=TRUE), collapse="")
+                                      while(id %in% file.exists(make_file(id)))
+                                        id <- make_ID()
                                       id ## check for repeats
                                     },
                                     get_session_by_id=function(id) {
