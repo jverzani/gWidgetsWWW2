@@ -86,10 +86,11 @@ GHtml <- setRefClass("GHtml",
                             file.exists(x[1])) {
                            x <- readLines(x)
                          }
-                         proxy$set_value(paste(x, collapse=""))
+                         proxy$set_value(paste(x, collapse="\n"))
 
                          ## notify panel to update
-                         cmd <- sprintf("%s.update('%s', %s)", get_id(), x, toJSObject(update_url))
+#                         cmd <- sprintf("%s.update('%s', %s)", get_id(), x, toJSObject(update_url))
+                         cmd <- sprintf("%s.getLoader().load();", get_id())
                          add_js_queue(cmd)
                          parent$do_layout()
                        },

@@ -69,7 +69,11 @@ GWidgetsAppBase <- setRefClass("GWidgetsAppBase",
                                      } else {
                                        raw_input <- req$env[['rook.input']]$read()
                                        input <- rawToChar(raw_input)
-                                       l <- fromJSON(input)
+                                       l <- try(fromJSON(input), silent=TRUE)
+                                       if(inherits(l, "try-error")) {
+                                         req$env[['rook.input']]$rewind()
+                                         l <- req$POST()
+                                       }
                                      }
                                    }
 
@@ -347,7 +351,7 @@ GWidgetsAppAjax <- setRefClass("GWidgetsAppAjax",
                                  } else if(grepl("runHtmlProxy$", req$path_info())) {
                                    ## run proxy that returns HTML code.
                                    headers <- list('Content-Type'='text/html')                                 
-                                   out <- run_proxy(req, toplevel) # run_proxy returns HTML here, not JSON
+                                   out <- run_html_proxy(req, toplevel) # run_proxy returns HTML here, not JSON
                                  } else if(grepl("runComet$", req$path_info())) {
                                    ## handler, return javascript queue
                                    out <- run_comet(req, toplevel)
@@ -443,6 +447,8 @@ GWidgetsAppAjax <- setRefClass("GWidgetsAppAjax",
                                  ## as the use GET to pass back session_id, an did and POST to pass
                                  ## in arguments. Here we check if the toplevel found above
                                  ## is NULL, and if so we work a bit.
+
+                                 ## do we have what we need?
                                  if(is.null(toplevel)) {
                                    tmp <- req$GET()
                                    e <- get_session(tmp$session_id)
@@ -456,7 +462,18 @@ GWidgetsAppAjax <- setRefClass("GWidgetsAppAjax",
 
                                return(out)
                              },
+                              run_html_proxy = function(req, toplevel) {
+                                "Run the HTML proxy"
+                                l <- read_rook_input(req)
 
+                                ## l has components session_id, id, params, param is json
+                                id <- l$id; l$id <- NULL
+                                session_id <- l$session_id; l$session_id <- NULL
+                                l[['_dc']] <- NULL # ext variable
+                                out <- toplevel$call_proxy(id, l) # return HTML
+
+                                return(out)
+                              },
                              run_upload = function(req, toplevel) {
                                "Upload file"
                                l <- read_rook_input(req)
