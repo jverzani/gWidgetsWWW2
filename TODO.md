@@ -1,6 +1,12 @@
 TODO
 ----
 
+* gdf expand=TRUE, npt same as gtable. Odd
+
+* gcheckboxgroup + use.table
+
+*
+
 * in ex-gcanvas-motion - error o eventX eventY. Chrome warning
 
 * gfile has bad styling, not sure why the button goes where it does.

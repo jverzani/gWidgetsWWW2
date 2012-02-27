@@ -34,11 +34,11 @@
     }
     
     //panel header
-    .#{$prefix}panel-header {
+    .#{$prefix}panel-header-horizontal {
         padding: $panel-header-padding;
-        &.#{$prefix}vertical {
-            padding: $panel-header-vertical-padding;
-        }
+    }
+    .#{$prefix}panel-header-vertical {
+        padding: $panel-header-vertical-padding;
     }
     
     .#{$prefix}panel-header-icon,
@@ -138,6 +138,14 @@
         .#{$prefix}panel-header-collapsed-border-left {
             border-right-width: $panel-header-border-width !important;
         }
+
+        // hide all docked items except for header when panel is collapsed
+        .#{$prefix}docked {
+            visibility: hidden;
+        }
+        .#{$prefix}panel-header {
+            visibility: visible;
+        }
     }
 
     @if not $supports-gradients or $compile-all {
@@ -188,7 +196,8 @@
             $ui-body-color: $panel-body-color,
             $ui-body-border-color: $panel-body-border-color,
             $ui-body-border-width: 0,
-            $ui-body-background-color: $panel-frame-background-color
+            $ui-body-background-color: $panel-frame-background-color,
+            $ui-image-label-with-border-radius: 'default'
         );
     }
 
@@ -228,7 +237,10 @@
     $ui-body-border-style: solid,
     $ui-body-background-color: null,
     $ui-body-font-size: null,
-    $ui-body-font-weight: null
+    $ui-body-font-weight: null,
+    // optional image label to use when background header images are required (no linear-gradient),
+    // but border-radius is supported (no framing els) e.g. IE9.
+    $ui-image-label-with-border-radius: null
 ){
     @if $ui-base-color != null {
         @if $ui-border-color == null { $ui-border-color: $ui-base-color; }
@@ -284,6 +296,38 @@
 
             .#{$prefix}nlg .#{$prefix}panel-header-#{$ui-label}-right {
                 background-image: theme-background-image($theme-name, 'panel-header/panel-header-#{$ui-label}-right-bg.gif');
+            }
+
+            .#{$prefix}nlg .#{$prefix}panel-header-#{$ui-label}-right {
+                background-position: top right;
+            }
+
+            .#{$prefix}nlg .#{$prefix}panel-header-#{$ui-label}-bottom {
+                background-position: bottom left;
+            }
+ 
+
+            @if $ui-image-label-with-border-radius != null {
+                // IE9 strict, Opera < 11.10, and Safari 3 are the only currently supported browsers that support border-radius, but do not support linear-gradient.
+                .#{$prefix}strict .#{$prefix}ie9,
+                .#{$prefix}nlg.#{$prefix}opera,
+                .#{$prefix}nlg.#{$prefix}safari {
+                    .#{$prefix}panel-header-#{$ui-label}-top {
+                        background-image: theme-background-image($theme-name, 'panel-header/panel-header-#{$ui-image-label-with-border-radius}-top-bg.gif');
+                    }
+                    
+                    .#{$prefix}panel-header-#{$ui-label}-bottom {
+                        background-image: theme-background-image($theme-name, 'panel-header/panel-header-#{$ui-image-label-with-border-radius}-bottom-bg.gif');
+                    }
+
+                    .#{$prefix}panel-header-#{$ui-label}-left {
+                        background-image: theme-background-image($theme-name, 'panel-header/panel-header-#{$ui-image-label-with-border-radius}-left-bg.gif');
+                    }
+
+                    .#{$prefix}panel-header-#{$ui-label}-right {
+                        background-image: theme-background-image($theme-name, 'panel-header/panel-header-#{$ui-image-label-with-border-radius}-right-bg.gif');
+                    }
+                }
             }
         }
     }
@@ -384,10 +428,7 @@
             }
         }
         
-        .#{$prefix}nlg .#{$prefix}panel-header-#{$ui-label}-right {
-            background-position: top right;
-        }
-        
+       
         .#{$prefix}panel-header-#{$ui-label}-top {
             @include inner-border(1px 0 0 0, $ui-header-inner-border-color);
         }
@@ -427,9 +468,9 @@
         }
         
         @include x-frame('panel-header', '#{$ui-label}-collapsed-top',    top($ui-border-radius) right($ui-border-radius) bottom($ui-border-radius) left($ui-border-radius), $ui-border-width, $panel-header-padding, $ui-header-background-color, $ui-header-background-gradient);
-        @include x-frame('panel-header', '#{$ui-label}-collapsed-right',  top($ui-border-radius) right($ui-border-radius) bottom($ui-border-radius) left($ui-border-radius), $ui-border-width, $panel-header-padding, $ui-header-background-color, $ui-header-background-gradient, false, right);
+        @include x-frame('panel-header', '#{$ui-label}-collapsed-right',  top($ui-border-radius) right($ui-border-radius) bottom($ui-border-radius) left($ui-border-radius), $ui-border-width, $panel-header-vertical-padding, $ui-header-background-color, $ui-header-background-gradient, false, right);
         @include x-frame('panel-header', '#{$ui-label}-collapsed-bottom', top($ui-border-radius) right($ui-border-radius) bottom($ui-border-radius) left($ui-border-radius), $ui-border-width, $panel-header-padding, $ui-header-background-color, $ui-header-background-gradient);
-        @include x-frame('panel-header', '#{$ui-label}-collapsed-left',   top($ui-border-radius) right($ui-border-radius) bottom($ui-border-radius) left($ui-border-radius), $ui-border-width, $panel-header-padding, $ui-header-background-color, $ui-header-background-gradient, false, right);
+        @include x-frame('panel-header', '#{$ui-label}-collapsed-left',   top($ui-border-radius) right($ui-border-radius) bottom($ui-border-radius) left($ui-border-radius), $ui-border-width, $panel-header-vertical-padding, $ui-header-background-color, $ui-header-background-gradient, false, right);
     }
     
     //background positioning of images

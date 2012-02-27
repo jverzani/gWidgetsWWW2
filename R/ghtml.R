@@ -92,7 +92,7 @@ GHtml <- setRefClass("GHtml",
 #                         cmd <- sprintf("%s.update('%s', %s)", get_id(), x, toJSObject(update_url))
                          cmd <- sprintf("%s.getLoader().load();", get_id())
                          add_js_queue(cmd)
-                         parent$do_layout()
+#                         parent$do_layout()
                        },
                        set_index=function(value, ...) {
                          set_value(value)

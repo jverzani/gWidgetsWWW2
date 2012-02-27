@@ -129,6 +129,7 @@ GCombobox <- setRefClass("GCombobox",
                                               ## instead use valueField and displayField defaults
                                               #displayTpl=tpl,
                                               valueField="id",
+                                              valueNotFoundText="NA",
                                               displayField="name",
                                               ##
                                               width=width,

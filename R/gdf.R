@@ -71,6 +71,18 @@ GDf <- setRefClass("GDf",
 
                        name <<- name
                        nms <<- names(items)
+
+                       ## Hack alert
+                       ## set default height/width if missing and needed
+                       if(is(container, "GGroup")) {
+                         expand <- getFromDots("expand", ..., NULL)
+                         if(is.null(expand) || !as.logical(expand)) {
+                           if(container$horizontal)
+                             width <- getWithDefault(width, 300L)
+                           else
+                             height <- getWithDefault(height, 200L)
+                         }
+                       }
                        
                        constructor <<- "Ext.grid.Panel"
                        ## Transport is handled by Ext through the Ajax proxy, no need here
@@ -203,6 +215,10 @@ function() {
                        sapply(column, function(col) {
                          call_column_method("setEditable", col - 1, value)
                        })
+                     },
+                     set_title=function(value) {
+                      "Refrence method to set title naming data frame"
+                      call_Ext("setTitle", value)
                      },
                      ## bypass, connected to "edit" signal above
                      add_R_callback=function(...) {}
