@@ -113,8 +113,12 @@ SessionManagerFile <- setRefClass("SessionManagerFile",
                                       
                                       if(!is_locked(id)) {
                                         lock_file(id)
-                                        out <- try(readRDS(make_file(id)), silent=TRUE)
-                                        return(out)
+                                        e <- try(readRDS(make_file(id)), silent=TRUE)
+                                        if(!inherits(out, "try-error")) {
+                                          pkgs <- e$.sessionInfo$otherPkgs
+                                          sapply(names(pkgs), require, character.only=TRUE)
+                                        }
+                                        return(e)
                                       }
                                       ## else we work
                                       ctr <- 0; MAX_CT <- 10000 # how high should this be?
@@ -127,11 +131,16 @@ SessionManagerFile <- setRefClass("SessionManagerFile",
                                      NULL
                                    } else {
                                      lock_file(id)
-                                     readRDS(make_file(id))
+                                     e <- readRDS(make_file(id))
+                                     ## read in packages. Idea from sessionTools of Matthew D. Furia <matt.furia@sagebase.org> 
+                                     pkgs <- e$.sessionInfo$otherPkgs
+                                     sapply(names(pkgs), require, character.only=TRUE)
+                                     e
                                    }
                                  },
                                  store_session=function(id, e) {
                                    on.exit(unlock_file(id))
+                                   e$.sessionInfo <- sessionInfo()
                                    saveRDS(e, make_file(id))
                                  },
                                  clear_session=function(id) {
