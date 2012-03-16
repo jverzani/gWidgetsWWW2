@@ -98,6 +98,15 @@ SessionManagerFile <- setRefClass("SessionManagerFile",
                                     unlock_file = function(id) {
                                       unlink(lock_file_name(id))
                                     },
+                                    pkg_info=function() {
+                                      "List loaded pakages. From sessionInfo()"
+                                      package <- grep("^package:", search(), value = TRUE)
+                                      keep <- sapply(package, function(x) x == "package:base" || 
+                                                     !is.null(attr(as.environment(x), "path")))
+                                      package <- sub("^package:", "", package[keep])
+                                      pkgDesc <- sapply(package, packageDescription, simplify=FALSE)
+                                      names(Filter(function(i) is.null(i$Priority) || i$Priority != "base", pkgDesc))
+                                    },
                                     id_exists=function(id) {
                                       file.exists(make_file(id))
                                     },
@@ -115,7 +124,7 @@ SessionManagerFile <- setRefClass("SessionManagerFile",
                                         lock_file(id)
                                         e <- try(readRDS(make_file(id)), silent=TRUE)
                                         if(!inherits(out, "try-error")) {
-                                          pkgs <- e$.sessionInfo$otherPkgs
+                                          pkgs <- e$.sessionInfo
                                           sapply(names(pkgs), require, character.only=TRUE)
                                         }
                                         return(e)
@@ -133,14 +142,14 @@ SessionManagerFile <- setRefClass("SessionManagerFile",
                                      lock_file(id)
                                      e <- readRDS(make_file(id))
                                      ## read in packages. Idea from sessionTools of Matthew D. Furia <matt.furia@sagebase.org> 
-                                     pkgs <- e$.sessionInfo$otherPkgs
+                                     pkgs <- e$.sessionInfo
                                      sapply(names(pkgs), require, character.only=TRUE)
                                      e
                                    }
                                  },
                                  store_session=function(id, e) {
                                    on.exit(unlock_file(id))
-                                   e$.sessionInfo <- sessionInfo()
+                                   e$.sessionInfo <- pkg_info()
                                    saveRDS(e, make_file(id))
                                  },
                                  clear_session=function(id) {
