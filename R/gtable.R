@@ -153,7 +153,7 @@ GWidgetGrid <- setRefClass("GWidgetGrid",
                                else
                                  callSuper(c(width, height))
                              },
-                             dim = function() {
+                             get_dim = function() {
                                base:::dim(get_items())
                              },
                              len = function(x) {
