@@ -297,6 +297,17 @@ names.GComponent <- function(x) x$get_names()
 ##' @S3method length GComponent
 length.GComponent <- function(x, ...) x$len(...)
 
+
+##' dim method for GComponent's
+##'
+##' Return size of component, when rectangular size makes sense
+##' @param x object
+##' @param ... passed along to \code{len} method
+##' @return dim of object, loosely interpreted
+##' @method dim GComponent
+##' @S3method dim GComponent
+dim.GComponent <- function(x, ...) x$get_dim(...)
+
 ##' method for update
 ##' @param object object
 ##' @param ... passed along
