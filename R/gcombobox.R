@@ -20,9 +20,11 @@ NULL
 ##' combobox implementation
 ##'
 ##' The \code{svalue<-} method is used to specify value by name or by
-##' index. The \code{[<-} method can be used to update the data to
-##' select from.
+##' index.  (THIS IS BROKEN, LIKELY A BUG IN EXTJS CODE, BUT [<- DOES
+##' NOT WORK The \code{[<-} method can be used to update the data to
+##' select from.)
 ##'
+##' 
 ##' The default change handler differs depending whether the field is
 ##' editable. If not, then the handler is called before the selection
 ##' is finalized. Otherwise, the handler is called on the "change"
@@ -42,11 +44,14 @@ NULL
 ##' @param coerce.with Function. If given, called on value before returning
 ##' @inheritParams gwidget
 ##' @param autocomplete If \code{TRUE}, will hide the trigger and make
-##' editable. When the user types the matching values are presented.
+##' editable. When the user types the matching values are
+##' presented. (This is also the default behaviour, but if the object
+##' is not editable, only valid values are stored.)
 ##' @param initial.msg If \code{selected=0}, then one can assign an initial message here
 ##' @param tpl a template for the item (Not working! Dang....)
 ##' @return an ExtWidget instance
-##' @note The \code{tpl} argument is not working as we'd like.
+##' @note The \code{[<-} method is note working. The \code{tpl}
+##' argument is not working as we'd like.
 ##' @export
 ##' @examples
 ##' w <- gwindow()
@@ -122,22 +127,51 @@ GCombobox <- setRefClass("GCombobox",
                                tpl <- .make_tpl(items)
 
                              arg_list <- list(store=String(store$get_id()),
-                                              queryMode="local", ## would like "remote" for larger stores, but whatevs for now
-                                              triggerAction="all",
-                                              lastQuery='',
+                                              displayField="name",
+                                              valueField="row_id",
+                                              valueNotFoundText="NA",
+
+                                              
+                                              forceSelection=!editable,
+                                              typeAhead=TRUE,
+                                              ## triggerAction="query",
+                                              ## mode="local", ##  queryMode? would like "remote" for larger stores, but whatevs for now
+                                              loadingText=gettext("Loading..."),
+                                              ## selectOnFocus=TRUE,
+                                              ## lastQuery='',
                                               ## Want to use templates here, but can't get to work
                                               ## instead use valueField and displayField defaults
                                               #displayTpl=tpl,
-                                              valueField="id",
-                                              valueNotFoundText="NA",
-                                              displayField="name",
+#                                              listConfig=list(
+#                                                getInnerTpl=String("function() {retur#n '<div data-qtip=\"{name}.\">{name} ({row_id})</div>';}")
+#                                                ),
                                               ##
                                               width=width,
-                                              height=height,
-                                              editable=editable,
-                                              loadingText=gettext("Loading..."),
-                                              typeAhead=TRUE
+                                              height=height
                                               )
+
+
+                              ## ## hard code store data here.
+                             ## ## See http://skirtlesden.com/articles/extjs-comboboxes-part-1 for some commentary on this
+
+                             if(is.data.frame(items))
+                               items <- items[,1]
+                             data_objects <- sprintf("[%s]",
+                                                     paste(shQuote(items, type="cmd"),
+                                                           collapse=","))
+                             
+                              arg_list <- list(store=String(data_objects),
+#                                               displayField="name",
+#                                               valueField="row_id",
+#                                               valueNotFoundText="NA",
+                                               forceSelection=!editable,
+                                               typeAhead=TRUE,
+                                               ## triggerAction="query", confusing, filters drop down list
+                                               width=width,
+                                               height=height
+                                               )
+
+                             
                              if(autocomplete) {
                                arg_list[['hideTrigger']] <- TRUE
                                arg_list[['editable']] <- TRUE
