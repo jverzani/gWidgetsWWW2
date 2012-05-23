@@ -15,6 +15,7 @@ R_http <- setRefClass("R_http",
                           Class <<- setRefClass("Class",
                                                 fields=list(
                                                   "R"="ANY",
+                                                  "port"="numeric",
                                                   "started"="logical",
                                                   "loaded"="logical"),
                                                 methods=list(
@@ -30,14 +31,21 @@ R_http <- setRefClass("R_http",
                                                       return()
                                                     cur_port <- tools:::httpdPort
                                                     if(cur_port > 0) {
-                                                      if(cur_port != port)
+                                                      if(cur_port != port) {
                                                         message(sprintf("Web server already started on port %s", cur_port))
+                                                        assign("port", tools:::httpdPort, .self)
+                                                      }
                                                       started <<- TRUE
-                                                      return()
+                                                    } else {
+                                                      ## pass in listen="external.ip"
+                                                      message(sprintf("Starting server on port %s", port))
+                                                      out <- try(R$start(port=port, ...), silent=TRUE)
+                                                      if(inherits(out, "try-error")) {
+                                                        message("can't open port", out)
+                                                      }
+                                                      assign("port", port, .self)
+                                                      started <<- TRUE
                                                     }
-                                                    ## pass in listen="external.ip"
-                                                    try(R$start(port=port, ...), silent=TRUE)
-                                                    started <<- TRUE
                                                   },
                                                   load_gw=function(session_manager=make_session_manager()) {
                                                     if(loaded) return()
@@ -73,7 +81,7 @@ R_http <- setRefClass("R_http",
                                                     options("Rhttpd_debug"=as.logical(show.log))
 
                                                     ## Make the page
-                                                    page <-WebPage$new(url="/", app_name=app_name)
+                                                    page <-WebPage$new(url="/", app_name=app_name, ...)
                                                     ## how to subclass to put in brew_template
                                                     if(file.exists(brew_template)) {
                                                       BrewPage <- setRefClass("BrewPage",
@@ -88,7 +96,7 @@ R_http <- setRefClass("R_http",
                                                     }
                                                     R$add(RhttpdApp$new(page, name=app_name))
                                                     
-                                                    print(list("*** making app ***", app_name))
+                                                    message(list("*** making app ***", app_name))
                                                     
                                                     ## Make the app
                                                     gwapp <- gWidgetsWWW2:::GWidgetsApp$new(url="/",
@@ -97,8 +105,10 @@ R_http <- setRefClass("R_http",
                                                                                             session_manager=session_manager)
                                                     R$add(RhttpdApp$new(gwapp, name=sprintf("app_%s", app_name)))
                                                     
-                                                    if(open_page)
-                                                      browseURL(sprintf("http://127.0.0.1:%s/custom/%s", tools:::httpdPort, app_name))
+                                                    if(open_page) {
+                                                      message("load page, port:", port, "app name: ", app_name)
+                                                      browseURL(sprintf("http://127.0.0.1:%s/custom/%s", port, app_name))
+                                                    }
                                                     invisible(gwapp)
                                                   },
                                                   load_dir=function(
@@ -165,7 +175,7 @@ r_httpd <- R_http$get_instance()
 ##'
 ##' There are two basic tasks that gWidgetsWWW2 does: a) create the
 ##' javascript to populate a page (or part of the page) and b) create
-##' an means for AJAX requests between the web browser and the R
+##' a means for AJAX requests between the web browser and the R
 ##' process. For b) there isn't much to say except that it is supposed
 ##' to just work.
 ##'
@@ -179,11 +189,8 @@ r_httpd <- R_http$get_instance()
 ##' There are other cases one might want. An app can run within a web
 ##' page. The web template can be passed through the
 ##' \code{brew_template} argument with the \code{...} parameters
-##' passed along.
-##'
-##' One might even be able to copy the provided indexgw.rhtml file and
-##' modify that. When using either of these approaches, pass a DOM id
-##' to the \code{renderTo} argument of the \code{gwindow} instance.
+##' passed along. Pass a DOM id to the \code{renderTo} argument of the
+##' \code{gwindow} instance.
 ##'
 ##' Apps can require authentification. By default, this is not
 ##' validated. One can write a subclass of \code{Authenticator} to do
@@ -204,14 +211,17 @@ r_httpd <- R_http$get_instance()
 ##' \code{is_valid_user}.
 ##' @param session_manager an instance of \code{make_session_manager}
 ##' @param open_page logical. If \code{TRUE} call \code{browseURL} to open the app.
-##' @param ... passed to \code{brew} call of \code{brew_template}
+##' @param ... Passed to brew call when a template is given. As well,
+##' passed to WebPage object. Named arguments \code{body} and
+##' \code{head} can be used to insert information into each, such as
+##' loading of style sheets etc. through \code{head}.
 ##' @export
 ##' @examples
 ##' ## open an app that takes the entire page
 ##' gw_script <-  system.file("examples/hello-world.R", package="gWidgetsWWW2")
-##' if(interactive()) load_app(gw_script, "HelloApp",  use.google=FALSE)
+##' if(interactive()) load_app(gw_script, "HelloApp")
 ##' ## open an app using googlemaps
-##' if(interactive()) load_app(system.file("examples/ggooglemaps.R", package="gWidgetsWWW2"),  "GoogleMapApp", use.google=TRUE)
+##' if(interactive()) load_app(system.file("examples/ggooglemaps.R", package="gWidgetsWWW2"),  "GoogleMapApp")
 ##' ## open an app embedded in another page
 ##' gw_script <- system.file("examples/ex-multiple-gwindow.R", package="gWidgetsWWW2")
 ##' brew_template <- system.file("framework/brew/custom.rhtml", package="gWidgetsWWW2")
