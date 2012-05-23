@@ -9,7 +9,9 @@ WebPage <- setRefClass("WebPage",
                          "url"="character",
                          "app_name"="character",
                          "renderer"="character",
-                         "data"="list" # for evaluation
+                         "data"="list", # for evaluation
+                         .body="character",
+                         .head="character"
                          ),
                        methods=list(
                          initialize=function(
@@ -17,6 +19,8 @@ WebPage <- setRefClass("WebPage",
                            app_name="test",
                            renderer=c("whisker", "brew", "none"),
                            data=list(),
+                           body=" ",
+                           head="<title></title>",
                            ...) {
                            
                            initFields(url=url,
@@ -24,6 +28,17 @@ WebPage <- setRefClass("WebPage",
                                       renderer=match.arg(renderer),
                                       data=data
                                     )
+
+                           if(is.function(body)) 
+                             .body <<- body()
+                           else
+                             .body <<- body
+
+                           if(is.function(head))
+                             .head <<- head()
+                           else
+                             .head <<- head
+                           
                            
                            callSuper(...)
                          },
@@ -35,11 +50,11 @@ WebPage <- setRefClass("WebPage",
                          },
                          head=function() {
                            "Add additional head content"
-                           "<title></title>"
+                           .head
                          },
                          body=function() {
                            "Insert additional body code here"
-                           " "
+                           .body
                          },
                          ### 
                          render=function() {
