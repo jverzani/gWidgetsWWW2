@@ -1,11 +1,15 @@
 TODO
 ----
 
-* gdf expand=TRUE, npt same as gtable. Odd
+PASS * gformlayout-- simplify forms; pass for now
+
+* webpage, authenticator, need polish ROauth (httr)
+
+* gdf expand=TRUE, not same as gtable. Odd
 
 * gcheckboxgroup + use.table
 
-*
+* gmarkdown (markdown package -> ghtml)
 
 * in ex-gcanvas-motion - error o eventX eventY. Chrome warning
 

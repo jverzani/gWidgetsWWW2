@@ -19,11 +19,14 @@ pan$add_handler_onload(function(h,...) {
   pan$add_js_queue(d3_cmds)
 })
 
-## load_external can download a series of scripts
-d3_url <- "http://mbostock.github.com/d3/d3.js?2.7.1"
-d3_geo_url = "http://mbostock.github.com/d3/d3.geo.js?2.7.1"
+## load_external can download a series of scripts, this
+## worked before d3 went monolithic
+#d3_url <- "http://mbostock.github.com/d3/d3.js?2.7.1"
+#d3_geo_url = "http://mbostock.github.com/d3/d3.geo.js?2.7.1"
+#pan$load_external(c(d3_url, d3_geo_url))
 
-pan$load_external(c(d3_url, d3_geo_url))
+d3_url <- "http://d3js.org/d3.v2.js"
+pan$load_external(d3_url)
 
 
 ## template for d3_cmds. The only feature here is the use of #{{div_id}} for the

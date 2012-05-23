@@ -66,7 +66,7 @@ ggroup <- function(
   g
 }
 
-##' Shortcut for vertical box containers. Specific to gWidgetsWWW2.
+##' Shortcut for vertical box containers. 
 ##'
 ##' @param ... passed to \code{ggroup}
 ##' @export

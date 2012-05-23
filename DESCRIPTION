@@ -21,6 +21,8 @@ Depends:
     memoise,
     whisker,
     digest
+Suggests:
+    markdown
 LazyLoad: yes
 Collate:
     'gwidgets-package.R'
