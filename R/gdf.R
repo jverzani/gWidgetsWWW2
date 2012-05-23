@@ -220,6 +220,9 @@ function() {
                       "Refrence method to set title naming data frame"
                       call_Ext("setTitle", value)
                      },
+                     hide_title=function(value) {
+                       
+                     },
                      ## bypass, connected to "edit" signal above
                      add_R_callback=function(...) {}
                     

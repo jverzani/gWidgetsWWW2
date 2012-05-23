@@ -92,7 +92,8 @@ GGoogleMaps <- setRefClass("GGoogleMaps",
                              stub="ANY"
                              ),
                            methods=list(
-                             init = function(center, zoom,
+                             init = function(center,
+                               zoom,
                                maptype,
                                container, ...,
                                width=NULL, height=NULL, ext.args=NULL) {
@@ -100,12 +101,18 @@ GGoogleMaps <- setRefClass("GGoogleMaps",
                                initFields(
                                           constructor="Ext.ux.GMapPanel"
                                           )
+
+                               map_type <- c("roadmap"="map",
+                                             "satellite"="G_SATELLITE_MAP",
+                                             "hybrid"="G_HYBRID_MAP",
+                                             "terrain"="G_PHYSICAL_MAP")
+                                             
                                arg_list <- list(
                                                 setCenter=list(
                                                   lat=center[1],
                                                   lng=center[2]
                                                   ),
-                                                gmapType="map",
+                                                gmapType=map_type,
                                                 zoomLevel=zoom,
                                                 width=width,
                                                 height=height
