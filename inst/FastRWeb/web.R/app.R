@@ -20,6 +20,8 @@ run <- function(app, ...) {
 
   <link rel='stylesheet' type='text/css' href='/cgi-bin/R/gWidgetsWWW2?name=javascript/ext/resources/css/ext-all-gray.css'/>
   <link rel='stylesheet' type='text/css' href='/cgi-bin/R/gWidgetsWWW2?name=css/gWidgetsWWW2.css' />
+  <link rel='stylesheet' type='text/css' href='/cgi-bin/R/gWidgetsWWW2?name=css/bootstrap/css/bootstrap.css' />
+  <link rel='stylesheet' type='text/css' href='/cgi-bin/R/gWidgetsWWW2?name=css/bootstrap/css/bootstrap-responsive.css' />
   <link rel='stylesheet' type='text/css' href='/cgi-bin/R/gWidgetsWWW2?name=javascript/CodeMirror/codemirror.css'  />
   <style type='text/css'>{{ stock_icons }} </style>
 

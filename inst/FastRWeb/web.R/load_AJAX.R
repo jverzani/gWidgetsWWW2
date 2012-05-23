@@ -70,7 +70,7 @@ json_rpc = function(obj_name, meth_name, params, callback, url) {
     };
 
     Ext.Ajax.request({
-	url: url
+	url: url,
 	jsonData: [{
 	    obj:obj_name,
 	    meth:meth_name,
