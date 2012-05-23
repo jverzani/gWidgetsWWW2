@@ -29,7 +29,24 @@ NULL
 ##' @export
 ##' @examples
 ##' w <- gwindow()
-##' h <- ghtml("<b>this is bold</b>", cont=w)
+##' g <- ggroup(cont=w, horizontal=FALSE)
+##' h <- ghtml("<b>this is bold</b>", cont=g)
+##' ## using a source
+##' email <- "ruser@gmail.com"
+##' u <- sprintf("http://www.gravatar.com/avatar/%s",digest(tolower(email)))
+##' ghtml(sprintf("<img src='%s' />", u), cont=g)
+##' ## using markdown package
+##' if(require(markdown)) {
+##' x <- "
+##' Header
+##' ======
+##'
+##' * item 1
+##' * item 2
+##'
+##' "
+##' ghtml(markdownToHTML(x), cont=g)
+##' }
 ghtml <- function(x, container = NULL,  ...,
                   width=NULL, height=NULL, ext.args=NULL
                   ) {
