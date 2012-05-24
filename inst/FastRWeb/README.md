@@ -49,7 +49,9 @@ Here are the steps:
 
 * Install [FastRWeb](http://www.rforge.net/FastRWeb/). Again, the easiest thing to do is:
 
+```
     install.packages("FastRWeb",,"http://rforge.net/",type="source")
+```
 
 For both `Rserve` and `FastRWeb` the development versions are needed (as of 2/15/12).
 
@@ -66,6 +68,7 @@ is helpful.
 > For unix systems, FastRWeb privides a sample script install.sh that sets up the environment -- you can run it somewhat like this:
 > 
 > cd `echo 'cat(system.file(package="FastRWeb"))' | R --slave`;
+> 
 > sh install.sh
 > 
 
@@ -84,6 +87,7 @@ several things. The files are in this directory.
 * create a directory to hold the session information. This should be writeable by the server process. These shell commands will do som though you might want to tighten up permissions
 
 >  mkdir /tmp/gWidgetsWWW2_session_db/;
+>
 >  chmod 777 /tmp/gWidgetsWWW2_session_db/;
 
 While tightening up permissions, do read Jay Emerson's post linked to above.
