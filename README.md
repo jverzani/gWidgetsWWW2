@@ -98,15 +98,15 @@ Deploying pages to the internet
 
 Deploying pages to the internet can be done in a few manners:
 
+* with `FastRWeb` one can use `R` through `Rserve`
+
 * with `Rook` one can listen to an external IP
 
 * with `nginx` (a web server) one can proxy external requests to a local `Rook` application
 
-* with `FastRWeb` one can use `R` through `Rserve`
-
 * Currently, the package is not integrated in with `rapache`.
 
 Of these, the `FastRWeb` solution is suggested. Details for the
-necessary setup are in the `FastRWeb` sub directory of the package's
+necessary setup are in the `FastRWeb` subdirectory of the package's
 `inst/` directory.
 
