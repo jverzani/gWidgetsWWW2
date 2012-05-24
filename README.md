@@ -17,22 +17,24 @@ The basic "Hello World" app with a window, container, button and
 callback is created in a script `hello.R` and contains:
 
 
-    
+```    
     w <- gwindow("Hello world example")
     g <- ggroup(cont=w, width=300, height=300)
     b <- gbutton("click me", cont=g, handler=function(h,...) {
       galert("Hello World", parent=w)
     })
+```
     
 This script is turned into a web page through the `load_app` function:
     
+```
     require(gWidgetsWWW2)
     load_app("hello.R", app_name="hello")
-    
+```    
 
 The app is then mapped to the url
 
-     http://127.0.0.1:PORT/custom/hello/indexgw.rhtml
+>     http://127.0.0.1:PORT/custom/hello/indexgw.rhtml
 
 
 The "PORT" will be that for R's internal help server. The `port`
@@ -50,9 +52,10 @@ Installation
 Installing the package from GitHub is made easy if the `devtools`
 package of H. Wickham is installed:
 
+```
     library(devtools)
     install_github("gWidgetsWWWW2", "jverzani")
-    
+```    
 
 Otherwise, a) install git, b) clone the project c) use +R CMD
 INSTALL+, or some such to install from a local set of files.
@@ -68,7 +71,7 @@ through the `gsvg` widget. The basic use is all similar. Here is an
 example for the canvas device, which writes `JavaScript` to an HTML5
 canvas object in the web page:
 
-
+```
     require(canvas) 
     w <- gwindow("Test")
     gstatusbar("Powered by gWidgetsWWW2 and Rook", cont=w)
@@ -85,7 +88,10 @@ canvas object in the web page:
     btn <- gbutton("new graph", cont=g, handler=function(h,...) {
       svalue(cnv) <- make_plot()
     })
+```
 
+The `addHandlerClicked` method can be used to add a callback to the
+click event, allowing interactivity ala the `location` function.
 
 Deploying pages to the internet
 ===============================
