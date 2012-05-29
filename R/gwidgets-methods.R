@@ -156,14 +156,14 @@ tag.GComponent <- function(x, key) x$get_attr(key)
 ##' @param x the widget
 ##' @param ... passed to \code{get_value} method. May include arguments \code{index} or \code{drop}
 ##' @export
-"svalue" <- function(x, index=NULL, drop=FALSE,...) UseMethod("svalue")
+"svalue" <- function(x, index=NULL, drop=NULL,...) UseMethod("svalue")
 
 ##' svalue method
 ##' @param x the widget
 ##' @param ... passed to \code{get_value} method. May include arguments \code{index} or \code{drop}
 ##' @method svalue GComponent
 ##' @S3method svalue GComponent
-"svalue.GComponent" <- function(x, index=NULL, drop=FALSE, ...) {
+"svalue.GComponent" <- function(x, index=NULL, drop=NULL, ...) {
   if(is.logical(index) && index)
     x$get_index(drop=drop, ...)
   else
@@ -437,6 +437,17 @@ addSpring.GGroup <- function(x) {
 ##' \code{action}, holding the action value, and possibly others.
 ##' @export
 addHandlerChanged <- function(x, ...) x$add_handler_changed(...)
+
+##' Assign handler to a change of selection event
+##'
+##' Some widgets have selection, this allows a callback to be changed when that occurs
+##' @param x the object
+##' @param ... Used to pass through \code{handler}, and \code{action}
+##' values. The handler is a function whose first argument is a list
+##' that contains components \code{obj} to return the object and
+##' \code{action}, holding the action value, and possibly others.
+##' @export
+addHandlerSelectionChanged <- function(x, ...) x$add_handler_selection_changed(...)
 
 ##' Assign handler to click event
 ##'
