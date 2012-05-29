@@ -213,7 +213,7 @@ column_editor.factor <- function(x, ...) {
   ##                        editable=FALSE,
   ##                        triggerAction = "all",
   ##                        store = String(sprintf("[%s]", paste(sapply(levels(x), ourQuote),collapse=","))),
-  ##                        lazyRender=TRUE,
+  ##                        lazyRender=qTRUE,
   ##                        listClass="x-combo-list-small"
   ##                        )))))
 }
@@ -298,13 +298,16 @@ GWidgetArrayProxy <- setRefClass("GWidgetArrayProxy",
                                  else
                                    value[i,] <<- value
                                  ..visible <<- rep(TRUE, nrow(value))
+
+                                 
                                },
                                get_json_data=function(...) {
                                  "Return JSON array [[],[],] ... *or* handle post data!"
 
                                  params <- list(...)
                                  
-                                 df <- cbind("row_id"=seq_len(nrow(value)), value)
+                                 df <- cbind("row_id"=seq_len(nrow(.self$value)),
+                                             .self$value)
                                  df <- df[..visible, ,drop=FALSE]
 
                                  ## do we have paging type request? We do if params$start is not null
@@ -324,6 +327,7 @@ GWidgetArrayProxy <- setRefClass("GWidgetArrayProxy",
                                },
                                post_json_data=function(param) {
                                  "A post request from updating a store"
+
                                  l <- param
                                  ## in form l$row_id, and rest
 
@@ -453,44 +457,6 @@ GWidgetArrayProxy <- setRefClass("GWidgetArrayProxy",
                                
                                ))
 
-
-GWidgetsJSONObjectProxy <- setRefClass("GWidgetsJSONObjectProxy",
-                                       contains="GWidgetArrayProxy",
-                                       methods=list(
-                                         init=function(value, ...) {
-                                           value <<- value
-                                           constructor <<- "Ext.data.proxy.Rest"
-
-                                           arg_list <- get_url_list()
-                                           arg_list <- merge.list(arg_list,
-                                                                  method="GET",
-                                                                  reader="json",
-                                                                  extraParams=list(
-                                                                    session_id=String("session_id"),
-                                                                    id=get_id(),
-                                                                    total=nrow(value)
-                                                                    )
-                                                                  )
-                                           add_args(arg_list)
-                                           write_constructor()
-                                         },
-                                         get_data=function(...) {
-                                           "Return raw data not JSON encode"
-                                           value
-                                         },
-                                         get_json_data=function(...) {
-                                           "Return JSON array of JavaScript objects [{},{}, ..., {}]"
-                                           params <- list(...)
-                                           ### XXX work with params
-                                           gsub("\\n", "",sprintf("[%s]",paste(apply(value, 1, toJSON),collapse=",")))
-                                         },
-                                         set_data=function(value, i, j, ...) {
-                                           if(missing(i))
-                                             value <<- value
-                                           else
-                                             value[i, ] <<- value
-                                         }
-                                         ))
 
 
 ## tree proxy is all we need for gtree
@@ -731,14 +697,14 @@ GWidgetArrayStore <- setRefClass("GWidgetArrayStore",
 
                              constructor <<- "Ext.data.ArrayStore"
                              arg_list <- list(
-                                              pageSize=page_size,
-                                              proxy = String(.self$proxy$get_id())
+                                              pageSize=page_size
                                               ,autoLoad=FALSE
                                               ,storeId=get_id()
                                               ,idIndex= 0
+                                              ,proxy = String(.self$proxy$get_id())
                                               ##
                                               ,model=String(model_id())
-                                              ,buffered=TRUE
+##                                              ,buffered=TRUE
                                               ,autoSync=TRUE
                                            )
 
@@ -784,23 +750,6 @@ GWidgetArrayStore <- setRefClass("GWidgetArrayStore",
                          )
 
 
-GWidgetJSONObjectStore <- setRefClass("GWidgetJSONObjectStore",
-                                      contains="GWidgetArrayStore",
-                                      methods=list(
-                                        init=function(...) {
-                                          constructor <<- "Ext.data.Store"
-                                          arg_list <- list( proxy = String(.self$proxy$get_id()),
-                                                           ,autoLoad=FALSE
-                                                           ,storeId=get_id()
-                                                           ,idIndex= 0
-                                                           ##
-                                                           ,model=String(model_id())
-                                                           ,buffered=TRUE
-                                                           ,autoSync=TRUE
-                                                           )
-                                        }
-                                        )
-                                      )
 
 GWidgetTreeStore <- setRefClass("GWidgetTreeStore",
                                 contains="GWidgetStore",
