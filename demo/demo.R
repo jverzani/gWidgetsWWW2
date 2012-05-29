@@ -27,7 +27,7 @@ sapply(seq_along(fs), function(i) {
       brew_template <- system.file("framework/brew/custom.rhtml", package="gWidgetsWWW2")
       load_app( fs[h$action], gsub("-", "_", basefs[h$action]),  brew_template)
     } else {
-      load_app(fs[h$action], gsub("-", "_", basefs[h$action]),  use.googlemap=TRUE)
+      load_app(fs[h$action], gsub("-", "_", basefs[h$action]))
     }
   })
 
