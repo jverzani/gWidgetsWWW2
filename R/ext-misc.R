@@ -25,9 +25,8 @@ NULL
                                 bodyresize = "w, width, height",
                                 bodyscroll = "scrollLeft, scrollRight",
                                 cellcontextmenu = "w, rowIndex, cellIndex, e",
-                                cellclick = "w, rowIndex, columnIndex, e", # grid
-                                celldblclick = "w, rowIndex, columnIndex, e", # grid
-                                cellmousedown = "w, rowIndex, columnIndex, e", # grid
+                                cellclick = "w, td, cellIndex, rec, tr, rowIndex, e, opts", # grid
+                                celldblclick = "w, td, cellIndex, rec, tr, rowIndex, e, opts", # grid
                                 change="w, newValue, oldValue, eOpts",
                                 beforechange = "w, newValue, oldValue",
                                 check = "w, checked",
@@ -50,6 +49,8 @@ NULL
                                 headermousedown = "w, columnIndex, e", # grid       
                                 hide = "w", beforehide = "w",
                                 invalid = "w",
+                                itemclick="view, rec, item, index, event, opts",
+                                itemdblclick="view, rec, item, index, event, opts",
                                 keydown = "w,e",                 # e Ext.EventObject
                                 keypress = "w,e",
                                 keyup = "w,e",
@@ -63,8 +64,9 @@ NULL
                                 rowcontextmenu = "w, rowIndex, e", # grid
                                 rowdblclick = "w, rowIndex, e", # grid
                                 rowmousedown = "w, rowIndex, e", # grid       
-                                select = "w,record,index", beforeselect = "w, record, index",
-                                selectionchange = "selModel, selected, opts",    # gcheckboxgrouptable
+                                select = "selModel,record,index,opts",
+                                beforeselect = "selModel, record, index",
+                                selectionchange = "selModel, selected, opts",    # gcheckboxgrouptable, gtable
                                 show = "w", beforeshow = "w", 
                                 specialkey = "w, e",
                                 tabchange = "w, tab", # notebook
