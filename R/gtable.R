@@ -203,6 +203,9 @@ GWidgetGrid <- setRefClass("GWidgetGrid",
                              ##   })
                              ## },
                              ## ## handlers
+                             add_handler_selection_changed=function(...) {
+                               add_handler("selectionchange", ...)
+                             },
                              add_handler_clicked = function(...) {
                                add_handler("cellclick", ...)
                              },
@@ -241,7 +244,7 @@ GTable <- setRefClass("GTable",
                       methods=list(
                         ##' @param col.widths vector with column widths
                         init=function(items, multiple, chosencol, icon.FUN, handler, action, container,...,
-                          width=NULL, height=NULL, ext.args=NULL, paging=FALSE,
+                          width=NULL, height=NULL, ext.args=NULL, paging=nrow(items) > 200,
                           col.widths
                           ) {
 
@@ -253,17 +256,27 @@ GTable <- setRefClass("GTable",
                           multiple <<- multiple
                           chosencol <<- as.integer(chosencol)
 
+                          ## Paging is used when the store has many rows. ideally
+                          ## we would like to use the infinite scrolling feature,
+                          ## but this isn't working for us.
+                          ## The issue below is when paging is FALSE. We can't
+                          ## set the page size dynamically, so we just crank up
+                          ## a big one.
+                          ## This is only an issue if items is initially small but
+                          ## will be swapped out with something big.
+                          def_page_size <- 200L
                           if(is.logical(paging)) {
                             paging <<- paging;
                             if(paging) {
-                              page_size <<- 200L ## override through assignment paging=2000
+                              page_size <<- def_page_size ## override through assignment paging=2000
                             } else {
-                              page_size <<- nrow(items)
+                              page_size <<- 2000L
                             }
                           } else {
                             page_size <<- as.integer(paging)
                             paging <<- TRUE
                           }
+
 
 
                           ## Hack alert
@@ -293,6 +306,7 @@ GTable <- setRefClass("GTable",
                             store=String(store$get_id()),
                             columns = String(store$proxy$make_column_model()),
                             stripeRows = TRUE,
+                            ## selType="rowmodel",
                             frame = FALSE,
                             autoExpandColumn=tail(names(items), n=1),
                             width=width,
@@ -303,23 +317,24 @@ GTable <- setRefClass("GTable",
                             arg_list$multiSelect <- TRUE
                           
                           if(!paging) {
-                            arg_list <- merge.list(arg_list, list(
-                                                                  loadMask=TRUE
-                                                                  #,verticalScrollerType='paginggridscroller'
-                                                                  #,invalidateScrollerOnRefresh=FALSE
-                                                                  #,disableSelection=TRUE
+                            arg_list <- merge.list(arg_list, list(autoLoad=FALSE
+                                                                  ,verticalScroller=list(
+                                                                    trailingBufferZone=200,
+                                                                    leadingBufferZone=500
+                                                                    )
                                                                   ))
                           } else if(paging) {
                             store$page_size <<- as.integer(page_size)
                             paging_options <- list(
                                                    pageSize= as.integer(page_size),
-                                                   store= String(store$get_id()),
                                                    displayInfo=TRUE,
                                                    displayMsg= gettext("Displaying rows {0} - {1} of {2}"),
                                                    emptyMsg= gettext("No rows to display")
                                                    )
                             cmd <- sprintf("new Ext.PagingToolbar(%s)", toJSObject(paging_options))
-                            arg_list[['bbar']] = String(cmd)
+
+                            arg_list$dockedItems=String(sprintf("[{xtype:'pagingtoolbar', store:%s,dock:'bottom',displayInfo:true}]", store$get_id()))
+##                            arg_list[['bbar']] = String(cmd)
                           }
 
                           ## hacks!
@@ -346,7 +361,7 @@ GTable <- setRefClass("GTable",
                           ## transport back row. Fine for multiple or not. Use id here, as sorting can
                           ## otherwise mess up relationship between index and data in R data frame
 ##                          "var param={value: Ext.pluck(this.getSelectionModel().getSelection(),'id')}"
-                          "var param={value: selected.map(function(rec) {return(rec.index + 1)})}"
+                          "var param={value: selected.map(function(rec) {return(rec.get('row_id'))})}"
                           
                         },
                         process_transport = function(value, ...) {
@@ -358,7 +373,17 @@ GTable <- setRefClass("GTable",
                         param_defn=function(signal) {
                           if(signal == change_signal) {
                             transport_fun()
-                          } else {
+                          } else if(signal == "cellclick" ||
+                                    signal == "celldblclick") {
+                            "param={row_index:rec.get('row_id'), column_index:cellIndex + 1};"
+                          } else if(signal == "headerclick" ||
+                                    signal == "headerdblclick") {
+                            "param = {column_index:columnIndex + 1};"
+                          } else if(signal == "itemclick" ||
+                                    signal == "itemdblclick") {
+                            "param = {value:rec.get('row_id')};"
+                          }
+                          else {
                             "param=null;"
                           }
                         },
@@ -371,7 +396,12 @@ GTable <- setRefClass("GTable",
 
                           items <- store$get_data()
                           drop <- getWithDefault(drop, TRUE)
-                          return(items[value, chosencol, drop=drop])
+                          message("get_value")
+                          print(list(drop=drop))
+                          if(drop)
+                            items[value, chosencol, drop=TRUE]
+                          else
+                            items[value, , drop=FALSE]
                         },
                         get_index=function(...) {
                           if(length(value) ==1 && is.na(value))
@@ -467,7 +497,4 @@ GTable <- setRefClass("GTable",
                         set_visible=function(value, ...) {
                           store$set_visible(value, ...)
                         }
-#                        add_handler_changed = function(...) {
-#                          add_handler_clicked(...)                          
-#                        }
                         ))
