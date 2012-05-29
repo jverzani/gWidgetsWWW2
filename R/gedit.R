@@ -22,7 +22,8 @@ NULL
 ##' @param text initial text
 ##' @param width width in characters. Converted to pixels by multiplying by 8.
 ##' @param coerce.with Function to call for coercion from text. If no
-##' coercion be careful when using the values, as the user can potentiall type in malicious things.
+##' coercion be careful when using the values, as the user can
+##' potentialy type in malicious things.
 ##' @param initial.msg initial message to user, in greyed out text
 ##' @param validate.type pre-defined validation type:
 ##' \code{c("alpha","alphanum","numeric",
@@ -40,7 +41,7 @@ NULL
 ##' (autocomplete) values. This feature can be done with a combobox though.
 ##' @examples
 ##' w <- gwindow()
-##' sb <- gstatusbar("Powered by gWidgetsWWW and Rook", cont=w)
+##' sb <- gstatusbar("Powered by gWidgetsWWW2 and Rook", cont=w)
 ##' g <- ggroup(cont=w, horizontal=FALSE)
 ##' e <- gedit("initial text", cont=g)
 ##' addHandlerChanged(e, handler=function(h,...) {
