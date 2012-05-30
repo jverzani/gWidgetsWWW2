@@ -137,8 +137,16 @@ WebPage <- setRefClass("WebPage",
 "
                                  },
                        load_css=function() {
-                         x <- system.file('framework', 'brew', 'load_css.rhtml', package='gWidgetsWWW2')
-                         paste(readLines(x), collapse="\n")
+                         "
+<link rel='stylesheet' type='text/css' href='/custom/gWidgetsWWW2/javascript/ext/resources/css/ext-sandbox.css' />
+
+<link rel='stylesheet' type='text/css' href='/custom/gWidgetsWWW2/javascript/ext/resources/css/ext-all-gray.css' />
+
+<link rel='stylesheet' type='text/css' href='/custom/gWidgetsWWW2/css/gWidgetsWWW2.css'    />
+
+
+<link rel='stylesheet' type='text/css' href='/custom/gWidgetsWWW2/javascript/CodeMirror/codemirror.css'  />
+"
                        },
                        make_icons=function() {
                          paste("<style type='text/css'>\n",
@@ -154,15 +162,23 @@ WebPage <- setRefClass("WebPage",
 "
                        },
                        load_AJAX=function() {
-                         x <- system.file('framework', 'brew', 'load_AJAX.rhtml', package='gWidgetsWWW2')
+                         ## "/custom                        "
+                         ## x <- system.file('framework', 'brew', 'load_AJAX.rhtml', package='gWidgetsWWW2')
 
-                         paste("<script type='text/javascript'>",
-                               sprintf("var MyApp = '%s';", app_name),
-                               "var app_url = '/custom/' + MyApp + '/gwapp/';",
-                               "var app_url = '/custom/app_' + MyApp + '/';",
-                               paste(readLines(x), collapse="\n"),
-                               "</script>",
-                               sep="\n")
+                         ## paste("<script type='text/javascript'>",
+                         ##       sprintf("var MyApp = '%s';", app_name),
+                         ##       "var app_url = '/custom/' + MyApp + '/gwapp/';",
+                         ##       "var app_url = '/custom/app_' + MyApp + '/';",
+                         ##       paste(readLines(x), collapse="\n"),
+                         ##       "</script>",
+                         ##       sep="\n")
+
+                         x <- system.file('framework', 'templates', 'default_ajax.js', package='gWidgetsWWW2')
+                         sprintf("<script type='text/javascript'>%s</script>",
+                                 whisker.render(paste(readLines(x), collapse="\n"),
+                                                list(base_url="/custom")))
+                                                     
+
                        },
                        on_ready=function() {
                          tpl <- "
@@ -176,16 +192,21 @@ $(document).ready(function() {
     success: function(data) {
       session_id = data.id;
       $('#load_app').innerHTML='Loading app... ';
-      createGUI(app_url)
+      createGUI('{{app_url}}')
     }
   })
 });
   </script>
 "
-                        tpl
+                        whisker.render(tpl, list(app_url=sprintf("/custom/app_%s/",
+                                                   app_name)))
                        },
                        load_gw_js=function() {
                          x <- system.file("framework", "brew", "load_js.rhtml", package="gWidgetsWWW2")
                          paste(readLines(x), collapse="\n")
+
+                         x <- system.file("framework", "templates", "load_js.html", package="gWidgetsWWW2")
+                         whisker.render(paste(readLines(x), collapse="\n"),
+                                                list(base_url="/custom"))
                        }
 ))
