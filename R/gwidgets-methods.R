@@ -154,7 +154,8 @@ tag.GComponent <- function(x, key) x$get_attr(key)
 ##' Return main value associated with a widget
 ##'
 ##' @param x the widget
-##' @param ... passed to \code{get_value} method. May include arguments \code{index} or \code{drop}
+##' @param ... passed to \code{get_value} or \code{get_index}
+##' method. May include arguments \code{index} or \code{drop}
 ##' @export
 "svalue" <- function(x, index=NULL, drop=NULL,...) UseMethod("svalue")
 
