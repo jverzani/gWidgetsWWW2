@@ -95,14 +95,16 @@ GWidgetsApp <- setRefClass("GWidgetsApp",
                              "app_name"="character",
                              session_manager="ANY",
                              ##
-                             authenticator="ANY",
+                             ## authenticator="ANY",
                              ##
                              login_cookie="character",
                              login_cookie_expiry="numeric",
                              cookie_salt="character"
                              ),
                            methods=list(
-                             initialize=function(url="", app_name="", script="", authenticator=NULL, session_manager=make_session_manager(), ...) {
+                             initialize=function(url="", app_name="", script="",
+                               ##authenticator=NULL,
+                               session_manager=make_session_manager(), ...) {
                                
                                initFields(
                                           url=paste("^", url, sep=""),
@@ -110,7 +112,7 @@ GWidgetsApp <- setRefClass("GWidgetsApp",
                                           gw_script=script,
                                           session_manager=session_manager,
                                           ##
-                                          authenticator=authenticator,
+                                          ### authenticator=authenticator,
                                           login_cookie=character(0),
                                           login_cookie_expiry=1,
                                           cookie_salt="replace me"
@@ -199,16 +201,16 @@ if(tmp) { document.body.removeChild(tmp)}
 "
                                toplevel$js_queue_push(cmd)
                                
-                               ## really should check if authenticator is there
-                               if(!is.null(authenticator)) {
-                                 out <- do_authentification(req, session_id)
-                                 if(!is.null(out)) {
-                                   toplevel$js_queue_push(out)
-                                   out <- toplevel$js_queue$flush()
-                                   store_session(session_id, e)
-                                   return(out)
-                                 }
-                               }
+                               ## ## really should check if authenticator is there
+                               ## if(!is.null(authenticator)) {
+                               ##   out <- do_authentification(req, session_id)
+                               ##   if(!is.null(out)) {
+                               ##     toplevel$js_queue_push(out)
+                               ##     out <- toplevel$js_queue$flush()
+                               ##     store_session(session_id, e)
+                               ##     return(out)
+                               ##   }
+                               ## }
 
                                
                                the_script <- script()
@@ -240,49 +242,49 @@ Ext.EventManager.on(window, 'beforeunload', function(e) {close_session('{{sessio
 
                                store_session(session_id, e)
                                return(x)
-                             },
-                             do_authentification=function(req, session_id) {
-                               "Take care of authentification issues"
-                               ## create authentification instance
-                               if(!is(authenticator, "Authenticator")) {
-                                 authenticator <<- Authenticator$new(app_name)
-                               }
+                             }
+##                              do_authentification=function(req, session_id) {
+##                                "Take care of authentification issues"
+##                                ## create authentification instance
+##                                if(!is(authenticator, "Authenticator")) {
+##                                  authenticator <<- Authenticator$new(app_name)
+##                                }
                                
-                               if(!(authenticator$is_valid_cookie(req$cookies()) ||
-                                    is_valid_cookie(req$cookies()))) {
-                                 formVals <- req$env[['rook.input']]
-#                                 formVals <- read_rook_input(req)
-                                 user <- getWithDefault(formVals$user_name, "")
-                                 pwd <- getWithDefault(formVals$password, "")
+##                                if(!(authenticator$is_valid_cookie(req$cookies()) ||
+##                                     is_valid_cookie(req$cookies()))) {
+##                                  formVals <- req$env[['rook.input']]
+## #                                 formVals <- read_rook_input(req)
+##                                  user <- getWithDefault(formVals$user_name, "")
+##                                  pwd <- getWithDefault(formVals$password, "")
 
                                  
-                                 if(!authenticator$is_valid_user(user, pwd )) {
-                                   out <- authenticator$create_login(session_id)
-                                   return(out)
-                                 } else {
-                                   login_cookie <<- create_login_cookie(user)
-                                   return(NULL)
-                                 }
-                               } else {
-                                 return(NULL)
-                               }                               
-                             },
-                             ##
-                             create_login_cookie=function(user) {
-                               l <- list("user"=user,
-                                         time=as.numeric(julian(Sys.time())),
-                                         value=digest(paste(user, cookie_salt))
-                                         )
-                               ## use JSON to serialize a list to a character
-                               toJSON(l)
-                             },
-                             is_valid_cookie=function(cookie) {
-                               "is the gWidgetsWWW2 cookie valid?"
-                               l <- fromJSON(cookie$gWidgetsWWW2Login)
-                               ifelse(digest(paste(l$user, cookie_salt)) == l$value &&
-                                      as.numeric(julian(Sys.time())) - l$time < login_cookie_expiry,
-                                      TRUE, FALSE)
-                             }
+##                                  if(!authenticator$is_valid_user(user, pwd )) {
+##                                    out <- authenticator$create_login(session_id)
+##                                    return(out)
+##                                  } else {
+##                                    login_cookie <<- create_login_cookie(user)
+##                                    return(NULL)
+##                                  }
+##                                } else {
+##                                  return(NULL)
+##                                }                               
+##                              },
+##                              ##
+##                              create_login_cookie=function(user) {
+##                                l <- list("user"=user,
+##                                          time=as.numeric(julian(Sys.time())),
+##                                          value=digest(paste(user, cookie_salt))
+##                                          )
+##                                ## use JSON to serialize a list to a character
+##                                toJSON(l)
+##                              },
+##                              is_valid_cookie=function(cookie) {
+##                                "is the gWidgetsWWW2 cookie valid?"
+##                                l <- fromJSON(cookie$gWidgetsWWW2Login)
+##                                ifelse(digest(paste(l$user, cookie_salt)) == l$value &&
+##                                       as.numeric(julian(Sys.time())) - l$time < login_cookie_expiry,
+##                                       TRUE, FALSE)
+##                              }
                              ))
 
 
@@ -351,7 +353,7 @@ GWidgetsAppAjax <- setRefClass("GWidgetsAppAjax",
                                  } else if(grepl("runHtmlProxy$", req$path_info())) {
                                    ## run proxy that returns HTML code.
                                    headers <- list('Content-Type'='text/html')                                 
-                                   out <- run_html_proxy(req, toplevel) # run_proxy returns HTML here, not JSON
+                                   out <- run_html_proxy(req, toplevel) # qurun_proxy returns HTML here, not JSON
                                  } else if(grepl("runComet$", req$path_info())) {
                                    ## handler, return javascript queue
                                    out <- run_comet(req, toplevel)
