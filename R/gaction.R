@@ -24,9 +24,16 @@ NULL
 ##' mouse events. The \code{visible<-} method can adjust if objects
 ##' proxying the action are visible. The \code{set_icon} reference
 ##' class method can be used to set the icon (no S3 method)
+##'
+##' See the method \code{add_keybinding} to add a simple keybinding to
+##' initiate this action.
 ##' @param label Text for action
 ##' @param tooltip tooltip. Ignored for this toolkit
 ##' @param icon action icon class
+##' @param key.accel keyboard accelerator. Single key, e.g. "X",
+##' "LEFT" (arrow), "PAGE_UP", "Ctrl-n", "Alt-X". Use "Shift" to force
+##' that. List of key events is given here:
+##' \code{http://docs.sencha.com/ext-js/4-1/#!/api/Ext.EventObject}.
 ##' @param handler function called when action is invoked
 ##' @param parent toplevel window of action (where it can be
 ##' called). Required here
@@ -40,9 +47,10 @@ NULL
 ##' enabled(a) <- FALSE
 ##' svalue(a) <- "new text"
 ##' #
-gaction <- function(label, tooltip=label, icon=NULL, handler, parent, ...) {
+gaction <- function(label, tooltip=label, icon=NULL, key.accel=NULL,
+                    handler, parent, ...) {
   a <- GAction$new(parent=parent)
-  a$init(label, tooltip, icon, handler, parent, ...)
+  a$init(label, tooltip, icon, key.accel, handler, parent, ...)
   a
 }
 
@@ -54,7 +62,8 @@ GAction <- setRefClass("GAction",
                          handler_id = "list"
                          ),
                        method=list(
-                         init = function(label, tooltip=label, icon=NULL, handler, parent, ...) {
+                         init = function(label, tooltip=label, icon=NULL,
+                           key.accel, handler, parent, ...) {
 
                            add_handler("action", handler)
                            value <<- label
@@ -74,6 +83,9 @@ GAction <- setRefClass("GAction",
                            add_args(arg_list)
                            write_constructor()
 
+                           if(!is.null(key.accel))
+                             add_keybinding(key.accel)
+
 
                                                       
                          },
@@ -88,6 +100,28 @@ GAction <- setRefClass("GAction",
                            "Set whether widgets proxying action are visible"
                            ..visible <<- as.logical(value)
                            callExt("setHidden", as.logical(value))
+                         },
+                         add_keybinding=function(key) {
+                           "Add keybinding to document for this action. Key is value for Ext.EventObject: http://docs.sencha.com/ext-js/4-1/#!/api/Ext.EventObject. Use Ctrl-X, Alt-X of Shift-X indicate keys"
+                           tpl <- "
+var map = new Ext.util.KeyMap(document, {
+    key: Ext.EventObject.{{key}},
+    handler: function() {callRhandler('{{id}}', 'action', null)},
+    shift: {{shift}},
+    control: {{control}},
+    alt: {{alt}},
+    scope: this,
+
+});
+"
+                           add_js_queue(whisker.render(tpl,
+                                                       list(id=get_id(),
+                                                            shift=ifelse(grepl("Shift", key), "true", "false"),
+                                                            control=ifelse(grepl("Ctrl", key), "true", "false"),
+                                                            alt=ifelse(grepl("Alt", key), "true", "false"),
+                                                            key=toupper(tail(strsplit(key,"-")[[1]], n=1))
+
+                                                            )))
                          }
                          ))
                          
