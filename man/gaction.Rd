@@ -3,7 +3,7 @@
 \title{gaction implementation}
 \usage{
   gaction(label, tooltip = label, icon = NULL, handler,
-  parent, ...)
+    parent, ...)
 }
 \arguments{
   \item{label}{Text for action}

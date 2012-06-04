@@ -2,9 +2,10 @@
 \alias{gfile}
 \title{File selection form}
 \usage{
-  gfile(text = "Choose a file", type = c("open"), filter =
-  NULL, handler = NULL, action = NULL, container = NULL,
-  ..., width = NULL, height = NULL, ext.args = NULL)
+  gfile(text = "Choose a file", type = c("open"),
+    filter = NULL, handler = NULL, action = NULL,
+    container = NULL, ..., width = NULL, height = NULL,
+    ext.args = NULL)
 }
 \arguments{
   \item{text}{Instructional text.}
@@ -68,7 +69,7 @@
 w <- gwindow()
 gstatusbar("Powered by gWidgetsWWW2 and Rook", cont=w)
 f <- gfile("Choose a file for upload", cont=w, handler=function(h,...) {
-galert(paste("You uploaded", svalue(h$obj)), parent=w)
+  galert(paste("You uploaded", svalue(h$obj)), parent=w)
 })
 }
 

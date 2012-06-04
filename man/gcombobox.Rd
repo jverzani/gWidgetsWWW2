@@ -4,16 +4,16 @@
 \title{combobox implementation}
 \usage{
   gcombobox(items, selected = 1, editable = FALSE,
-  coerce.with = NULL, handler = NULL, action = NULL,
-  container = NULL, ..., width = NULL, height = NULL,
-  ext.args = NULL, autocomplete = FALSE, initial.msg = "",
-  tpl = NULL)
+    coerce.with = NULL, handler = NULL, action = NULL,
+    container = NULL, ..., width = NULL, height = NULL,
+    ext.args = NULL, autocomplete = FALSE,
+    initial.msg = "", tpl = NULL)
 
   gdroplist(items, selected = 1, editable = FALSE,
-  coerce.with = NULL, handler = NULL, action = NULL,
-  container = NULL, ..., width = NULL, height = NULL,
-  ext.args = NULL, autocomplete = FALSE, initial.msg = "",
-  tpl = NULL)
+    coerce.with = NULL, handler = NULL, action = NULL,
+    container = NULL, ..., width = NULL, height = NULL,
+    ext.args = NULL, autocomplete = FALSE,
+    initial.msg = "", tpl = NULL)
 }
 \arguments{
   \item{items}{a vector of items to choose from. Coerced to
@@ -36,7 +36,9 @@
 
   \item{autocomplete}{If \code{TRUE}, will hide the trigger
   and make editable. When the user types the matching
-  values are presented.}
+  values are presented. (This is also the default
+  behaviour, but if the object is not editable, only valid
+  values are stored.)}
 
   \item{initial.msg}{If \code{selected=0}, then one can
   assign an initial message here}
@@ -86,8 +88,9 @@
 }
 \description{
   The \code{svalue<-} method is used to specify value by
-  name or by index. The \code{[<-} method can be used to
-  update the data to select from.
+  name or by index.  (THIS IS BROKEN, LIKELY A BUG IN EXTJS
+  CODE, BUT [<- DOES NOT WORK The \code{[<-} method can be
+  used to update the data to select from.)
 
   The name gdroplist is an alternative (not encouraged) for
   gcomobbox
@@ -103,7 +106,8 @@
   method.
 }
 \note{
-  The \code{tpl} argument is not working as we'd like.
+  The \code{[<-} method is note working. The \code{tpl}
+  argument is not working as we'd like.
 }
 \examples{
 w <- gwindow()
@@ -116,6 +120,6 @@ galert(paste("You selected ", svalue(h$obj), sep=""), parent=w)
 ## initial message
 gcombobox(state.name, cont=g, selected=0, initial.msg="Choose a state...")
 ## autocomplete
-cb <- gcombobox(state.name, cont=g, autocomplete=TRUE)
+ cb <- gcombobox(state.name, cont=g, autocomplete=TRUE)
 }
 

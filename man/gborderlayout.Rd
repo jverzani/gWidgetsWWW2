@@ -3,9 +3,9 @@
 \title{A "border" layout is a 5-panel layout where  satellite panels
 surround a "center" panel.}
 \usage{
-  gborderlayout(container = NULL, ..., width = NULL, height
-  = NULL, ext.args = NULL, title = list(), collapsible =
-  list())
+  gborderlayout(container = NULL, ..., width = NULL,
+    height = NULL, ext.args = NULL, title = list(),
+    collapsible = list())
 }
 \arguments{
   \item{title}{a list with named components from
@@ -79,13 +79,13 @@ surround a "center" panel.}
 w <- gwindow("border layout")
 #
 bl <- gborderlayout(cont=w,
-title=list(center="State facts (state.x77)", west="Select a state"),
-collapsible=list(west=TRUE)
-)
+                    title=list(center="State facts (state.x77)", west="Select a state"),
+                    collapsible=list(west=TRUE)
+                    )
 #
 tbl <- gtable(data.frame(states=rownames(state.x77), stringsAsFactors=FALSE),
-multiple=FALSE,
-cont=bl, where="west")
+              multiple=FALSE,
+              cont=bl, where="west")
 size(tbl) <- c("100\%", "100\%")
 bl$set_panel_size("west", 200)
 #
@@ -93,19 +93,19 @@ g <- ggroup(cont=bl, where="center", horizontal=FALSE, height=500, width=500)
 nms <- colnames(state.x77)
 
 labs <- lapply(seq_along(nms), function(i) {
-g1 <- ggroup(cont=g, width=500)
-glabel(sprintf("<b>\%s</b>",nms[i]), cont=g1)
-glabel("", cont=g1)
+  g1 <- ggroup(cont=g, width=500)
+  glabel(sprintf("<b>\%s</b>",nms[i]), cont=g1)
+  glabel("", cont=g1)
 })
 #
 update_state_info=function(h,...) {
-nm <- svalue(h$obj)
-nm <- sample(rownames(state.x77),1)
-facts <- state.x77[nm,]
-sapply(seq_along(facts), function(i) {
-lab <- labs[[i]]
-svalue(lab) <- facts[i]
-})
+  nm <- svalue(h$obj)
+  nm <- sample(rownames(state.x77),1)
+  facts <- state.x77[nm,]
+  sapply(seq_along(facts), function(i) {
+    lab <- labs[[i]]
+    svalue(lab) <- facts[i]
+  })
 }
 addHandlerChanged(tbl, handler=update_state_info)
 }

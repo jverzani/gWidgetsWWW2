@@ -2,8 +2,8 @@
 \alias{gmessage}
 \title{A simple message dialog.}
 \usage{
-  gmessage(message, title = "message", icon = NULL, parent
-  = NULL, ...)
+  gmessage(message, title = "message", icon = NULL,
+    parent = NULL, ...)
 }
 \arguments{
   \item{message}{main message.}

@@ -147,7 +147,8 @@ GCombobox <- setRefClass("GCombobox",
 #                                                ),
                                               ##
                                               width=width,
-                                              height=height
+                                              height=height,
+                                              fieldLabel=list(...)$label
                                               )
 
 
@@ -168,7 +169,8 @@ GCombobox <- setRefClass("GCombobox",
                                                typeAhead=TRUE,
                                                ## triggerAction="query", confusing, filters drop down list
                                                width=width,
-                                               height=height
+                                               height=height,
+                                               fieldLabel=list(...)$label
                                                )
 
                              

@@ -396,8 +396,6 @@ GTable <- setRefClass("GTable",
 
                           items <- store$get_data()
                           drop <- getWithDefault(drop, TRUE)
-                          message("get_value")
-                          print(list(drop=drop))
                           if(drop)
                             items[value, chosencol, drop=TRUE]
                           else

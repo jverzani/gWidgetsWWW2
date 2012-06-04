@@ -2,9 +2,10 @@
 \alias{gcheckbox}
 \title{checkbox widget}
 \usage{
-  gcheckbox(text = "", checked = FALSE, use.togglebutton =
-  FALSE, handler = NULL, action = NULL, container = NULL,
-  ..., width = NULL, height = NULL, ext.args = NULL)
+  gcheckbox(text = "", checked = FALSE,
+    use.togglebutton = FALSE, handler = NULL,
+    action = NULL, container = NULL, ..., width = NULL,
+    height = NULL, ext.args = NULL)
 }
 \arguments{
   \item{text}{character. text label for checkbox.}

@@ -9,9 +9,7 @@ gstatusbar("Powered by gWidgetsWWW2 and Rook", cont=w)
 
 d <- mtcars[1:3, 1:6]
 
-
-g <- ggroup(cont=w, horizontal=FALSE, use.scrollwindow=TRUE, height=1600)
-glabel(svalue(w), cont=g)
+g <- ggroup(cont=w, horizontal = FALSE, use.scrollwindow=TRUE)
 
 ## single vector
 f <- gframe("Works with single column, but can feed data frame too. (Default size)",
@@ -68,7 +66,7 @@ addHandlerChanged(cb, handler=function(h,...) {
     h$action$set_visible(cyls %in% val)
 }, action=tbl)
 
-## Paging -- XXX
-f <- gframe("Example of paging for handling large data sets", expand=TRUE,  cont=g)
-library(MASS)
-tbl <- gtable(Aids2, paging=TRUE, cont=f)
+## ## Paging -- XXX
+## f <- gframe("Example of paging for handling large data sets", expand=TRUE,  cont=g)
+## library(MASS)
+## tbl <- gtable(Aids2, paging=TRUE, cont=f)

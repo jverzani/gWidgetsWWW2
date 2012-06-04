@@ -1,6 +1,9 @@
 \name{[<-.GComponent}
 \alias{[<-.GComponent}
 \title{assignment method for "["}
+\usage{
+  \method{"["}{GComponent} (x, i, j, ..., value) <- value
+}
 \arguments{
   \item{x}{objecct}
 

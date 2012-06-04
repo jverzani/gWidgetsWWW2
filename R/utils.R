@@ -397,7 +397,8 @@ get_tempfile <- function(ext=".txt") {
   f <- tempfile(pattern="gWidgetsWWW", tmpdir="", fileext=ext)
 
   if(!is.null(getOption("gWidgetsWWW2:FastRWeb"))) {
-    f <- sprintf("/var/FastRWeb/tmp/%s", f)
+    f <- tempfile(pattern="gWidgetsWWW", tmpdir="/var/FastRWeb/tmp/", fileext=ext)
+#    f <- sprintf("/var/FastRWeb/tmp/%s", f)
   } else {
     dir.create(sprintf("%s%s%s",tempdir(), .Platform$file.sep, "tmp"), showWarnings=FALSE)
     f <- sprintf("%s/tmp%s", tempdir(), f)

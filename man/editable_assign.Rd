@@ -2,6 +2,11 @@
 \alias{editable<-}
 \alias{editable<-.GComponent}
 \title{Toggle editability of the object, if supported}
+\usage{
+  editable(x, ..., value) <- value
+
+  \method{"editable"}{GComponent} (x, ..., value) <- value
+}
 \arguments{
   \item{x}{object. Calls objects \code{set_editable}
   method}

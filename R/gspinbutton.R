@@ -64,7 +64,8 @@ GSpinbutton <- setRefClass("GSpinbutton",
                              maxValue=to,
                              step=by,
                              value=value,
-                             accelerate=TRUE
+                             accelerate=TRUE,
+                             fieldLabel=list(...)$label
                              )
                            add_args(arg_list)
 

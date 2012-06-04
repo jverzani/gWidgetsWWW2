@@ -4,6 +4,8 @@
 \title{Set a tooltip for the widget}
 \usage{
   tooltip(obj) <- value
+
+  \method{tooltip}{default} (obj, value) <- value
 }
 \arguments{
   \item{value}{character tooltip value}

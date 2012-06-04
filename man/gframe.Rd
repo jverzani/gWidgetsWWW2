@@ -2,9 +2,10 @@
 \alias{gframe}
 \title{gframe is a title-decorated ggroup box container}
 \usage{
-  gframe(text = "", pos = 0, horizontal = TRUE, spacing =
-  2, use.scrollwindow = FALSE, container = NULL, ..., width
-  = NULL, height = NULL, ext.args = NULL)
+  gframe(text = "", pos = 0, horizontal = TRUE,
+    spacing = 2, use.scrollwindow = FALSE,
+    container = NULL, ..., width = NULL, height = NULL,
+    ext.args = NULL)
 }
 \arguments{
   \item{text}{label text}

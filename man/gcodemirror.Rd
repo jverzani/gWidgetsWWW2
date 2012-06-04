@@ -2,8 +2,8 @@
 \alias{gcodemirror}
 \title{codemirror}
 \usage{
-  gcodemirror(text = "", container = NULL, ..., width =
-  NULL, height = NULL, ext.args = list())
+  gcodemirror(text = "", container = NULL, ...,
+    width = NULL, height = NULL, ext.args = list())
 }
 \arguments{
   \item{text}{initial text.}

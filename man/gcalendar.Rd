@@ -3,8 +3,8 @@
 \title{calendar widget}
 \usage{
   gcalendar(text = "", format = NULL, handler = NULL,
-  action = NULL, container = NULL, ..., width = NULL,
-  height = NULL, ext.args = NULL)
+    action = NULL, container = NULL, ..., width = NULL,
+    height = NULL, ext.args = NULL)
 }
 \arguments{
   \item{text}{optional inital date as text.}

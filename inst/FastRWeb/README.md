@@ -84,7 +84,11 @@ several things. The files are in this directory.
 
 - copy the contents of the `web.R` directory to the `/var/FastRWeb/web.R` directory. 
 
-* create a directory to hold the session information. This should be writeable by the server process. These shell commands will do som though you might want to tighten up permissions
+- make the tmp directory writable by the Rserve process
+
+* create a directory to hold the session information. This should be
+  writeable by the server process. These shell commands will do some
+  though you might want to tighten up permissions
 
 >  mkdir /tmp/gWidgetsWWW2_session_db/;
 >
@@ -111,7 +115,7 @@ While tightening up permissions, do read Jay Emerson's post linked to above.
 
 
 
-* Test is out. 
+* Test it out. 
 
 - First start `FastRWeb` and `Rserve` with the script 
 

@@ -2,10 +2,10 @@
 \alias{gradio}
 \title{Radio button group}
 \usage{
-  gradio(items, selected = 1, horizontal = FALSE, handler =
-  NULL, action = NULL, container = NULL, ..., width = NULL,
-  height = NULL, ext.args = NULL, columns =
-  ifelse(horizontal, length(items), 1))
+  gradio(items, selected = 1, horizontal = FALSE,
+    handler = NULL, action = NULL, container = NULL, ...,
+    width = NULL, height = NULL, ext.args = NULL,
+    columns = ifelse(horizontal, length(items), 1))
 }
 \arguments{
   \item{items}{Vector of items to choose one from.}
@@ -71,7 +71,7 @@ w <- gwindow()
 sb <- gstatusbar("Powered by gWidgetsWWW and Rook", cont=w)
 rb <- gradio(state.name[1:4], cont=w)
 addHandlerChanged(rb, handler=function(h,...) {
-galert(paste("You clicked", svalue(h$obj)), parent=w)
+  galert(paste("You clicked", svalue(h$obj)), parent=w)
 })
 svalue(rb, index=TRUE) <- 1 # by index
 svalue(rb) <- state.name[2] # by value

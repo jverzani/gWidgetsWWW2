@@ -3,12 +3,13 @@
 \alias{GTable}
 \title{A table widget}
 \usage{
-  gtable(items, multiple = FALSE, chosencol = 1, icon.FUN =
-  NULL, filter.column = NULL, filter.labels = NULL,
-  filter.FUN = NULL, handler = NULL, action = NULL,
-  container = NULL, ..., width = NULL, height = NULL,
-  ext.args = NULL, paging = FALSE, col.widths = rep(20,
-  ncol(as.data.frame(items))))
+  gtable(items, multiple = FALSE, chosencol = 1,
+    icon.FUN = NULL, filter.column = NULL,
+    filter.labels = NULL, filter.FUN = NULL,
+    handler = NULL, action = NULL, container = NULL, ...,
+    width = NULL, height = NULL, ext.args = NULL,
+    paging = FALSE,
+    col.widths = rep(20, ncol(as.data.frame(items))))
 }
 \arguments{
   \item{items}{data frame of items to display}
@@ -137,6 +138,6 @@ b <- gbutton("click", cont=g, handler=function(h,...) galert(svalue(tbl, index=F
 m <- mtcars[1:3, 1:4]
 ## add icons as css class
 m[,1] <- asIcon(c("up","up","down"))
-gtable(m, cont=g)
+ gtable(m, cont=g)
 }
 

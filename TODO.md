@@ -3,13 +3,11 @@ TODO
 
 PASS * gformlayout-- simplify forms; pass for now
 
-* webpage, authenticator, need polish ROauth (httr)
 
 * gdf expand=TRUE, not same as gtable. Odd
 
 * gcheckboxgroup + use.table
 
-* gmarkdown (markdown package -> ghtml)
 
 * in ex-gcanvas-motion - error o eventX eventY. Chrome warning
 
@@ -18,6 +16,14 @@ PASS * gformlayout-- simplify forms; pass for now
 * ggooglemmaps no e3 object found. (This is buggy, was fixed, now not ...)
 
 * why so slow? (Reference class methods?)
+
+* Can use template for FastRWeb/load_AJAX.R, but don't
+
+* <del>gmarkdown (markdown package -> ghtml)</del>
+
+* <del> REMOVED webpage, authenticator, need polish ROauth (httr)</del>
+
+* <del>add_handler (clear up, gtable needs selection/changed tidied up)</del>
 
 * <del>move session code into package bypassing filehash</del>
 

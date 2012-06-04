@@ -2,8 +2,8 @@
 \alias{json_rpc_server}
 \title{Start a json RPC server}
 \usage{
-  json_rpc_server(url = "JSON_RPC", port = 9000, envir =
-  .GlobalEnv)
+  json_rpc_server(url = "JSON_RPC", port = 9000,
+    envir = .GlobalEnv)
 }
 \arguments{
   \item{url}{URL to run server under. Defaults to
@@ -50,53 +50,53 @@ page_ctr <- glabel("replace me below...", cont=g)
 ## It sets up the PageCounter JsonRPCObject and starts the server
 where <- .GlobalEnv ## where to look for objects
 if(!exists("PageCounter", where)) {
-json_rpc_server(envir=where)
-PageCounter <- setRefClass("PageCounter",
-contains="JsonRPCObject",
-fields=list(
-ctr="list"
-),
-methods=list(
-initialize=function(...) {
-ctr <<- list()
-to_export <- c("value") # exported methods
-callSuper(to_export, ...)
-},
-get_count = function(page, ...) {
-## could do something with a file here
-## should do file locking though!
-## f <- "/tmp/ctr.txt"
-## if(file.exists(f)) {
-##   ctr <- read.table(f, colClasses=c("character", "integer"), header=TRUE)
-## } else {
-##   ctr <- data.frame(page=character(0), count=integer(0), stringsAsFactors=FALSE)
-## }
-## if(!is.na(ind <- match(page,ctr[,1]))) {
-##   count <- ctr[ind,2] + 1
-##   ctr[ind,2] <- count
-## } else {
-##   count <- 1
-##   ctr[nrow(ctr) + 1, ] <- list(page, count)
-## }
-## write.table(ctr, file=f, row.names=FALSE)
-return(count)
+  json_rpc_server(envir=where)
+  PageCounter <- setRefClass("PageCounter",
+                             contains="JsonRPCObject",
+                             fields=list(
+                               ctr="list"
+                               ),
+                             methods=list(
+                               initialize=function(...) {
+                                 ctr <<- list()
+                                 to_export <- c("value") # exported methods
+                                 callSuper(to_export, ...)
+                               },
+                               get_count = function(page, ...) {
+                                 ## could do something with a file here
+                                 ## should do file locking though!
+                                 ## f <- "/tmp/ctr.txt"
+                                 ## if(file.exists(f)) {
+                                 ##   ctr <- read.table(f, colClasses=c("character", "integer"), header=TRUE)
+                                 ## } else {
+                                 ##   ctr <- data.frame(page=character(0), count=integer(0), stringsAsFactors=FALSE)
+                                 ## }
+                                 ## if(!is.na(ind <- match(page,ctr[,1]))) {
+                                 ##   count <- ctr[ind,2] + 1
+                                 ##   ctr[ind,2] <- count
+                                 ## } else {
+                                 ##   count <- 1
+                                 ##   ctr[nrow(ctr) + 1, ] <- list(page, count)
+                                 ## }
+                                 ## write.table(ctr, file=f, row.names=FALSE)
+                                 return(count)
 
 
-if(is.null(ctr[[page]]))
-count <- 1
-else
-count <- ctr[[page]] + 1
-ctr[[page]] <<- count
-return(count)
-},
-value=function(page, ...) {
-val <- sprintf("Page accessed \%s times", get_count(page))
-print(val)
-toJSON(list(text=val))
-}
-))$new()
-## JsonRPCObjects are found in the global environment by default
-assign("PageCounter", PageCounter, where)
+                                 if(is.null(ctr[[page]]))
+                                   count <- 1
+                                 else
+                                   count <- ctr[[page]] + 1
+                                 ctr[[page]] <<- count
+                                 return(count)
+                               },
+                               value=function(page, ...) {
+                                 val <- sprintf("Page accessed \%s times", get_count(page))
+                                 print(val)
+                                 toJSON(list(text=val))
+                               }
+                             ))$new()
+  ## JsonRPCObjects are found in the global environment by default
+  assign("PageCounter", PageCounter, where)
 }
 
 ## Now add json_rpc call to javascript queue setText method for a
@@ -105,12 +105,12 @@ assign("PageCounter", PageCounter, where)
 tpl <- "
 json_rpc('PageCounter', 'value',{page: '{{app_name}}' },
 function(response) {
-txt = Ext.JSON.decode(response.responseText);
-{{id}}.setText(txt.text);
+  txt = Ext.JSON.decode(response.responseText);
+  {{id}}.setText(txt.text);
 });
 "
 cmd <- whisker.render(tpl, list(id=page_ctr$get_id(),
-app_name="page_counter_example"))
+                                app_name="page_counter_example"))
 
 ## Add the JavaScript command to the queue so that the browser will
 ## get it when the queue is flushed

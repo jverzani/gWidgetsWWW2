@@ -2,9 +2,9 @@
 \alias{gimage}
 \title{Container for an image}
 \usage{
-  gimage(filename = "", dirname = "", size = NULL, handler
-  = NULL, action = NULL, container = NULL, ..., width =
-  NULL, height = NULL, ext.args = NULL)
+  gimage(filename = "", dirname = "", size = NULL,
+    handler = NULL, action = NULL, container = NULL, ...,
+    width = NULL, height = NULL, ext.args = NULL)
 }
 \arguments{
   \item{filename}{A url or file from \code{get_tempfile}.}
@@ -77,11 +77,11 @@ dev.off()
 
 i <- gimage(f, container=g)
 b <- gbutton("click", cont=g, handler=function(h,...) {
-f <- get_tempfile(ext=".png")
-png(f)
-hist(rnorm(100))
-dev.off()
-svalue(i) <- f
+  f <- get_tempfile(ext=".png")
+  png(f)
+  hist(rnorm(100))
+  dev.off()
+  svalue(i) <- f
 })
 }
 

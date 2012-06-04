@@ -2,8 +2,9 @@
 \alias{glayout}
 \title{A table container}
 \usage{
-  glayout(homogeneous = FALSE, spacing = 2, container =
-  NULL, ..., width = NULL, height = NULL, ext.args = NULL)
+  glayout(homogeneous = FALSE, spacing = 2,
+    container = NULL, ..., width = NULL, height = NULL,
+    ext.args = NULL)
 }
 \arguments{
   \item{homogeneous}{equal sized columns/rows?}
@@ -68,9 +69,9 @@ tbl[1,2] <- gedit("", cont=tbl) ## tbl needed on right side too
 tbl[2,1, anchor=c(1,0)] <- "Rank"
 tbl[2,2] <- gedit("", cont=tbl)
 tbl[3,2] <- gbutton("click", cont=tbl, handler=function(h,...) {
-msg <- whisker.render("{{name}} is a {{rank}}",
-setNames(lapply(tbl[,2], svalue)[1:2], c("name", "rank")))
-galert(msg, parent=w)
+  msg <- whisker.render("{{name}} is a {{rank}}",
+           setNames(lapply(tbl[,2], svalue)[1:2], c("name", "rank")))
+  galert(msg, parent=w)
 })
 visible(tbl) <- TRUE ## This line is needed!
 }

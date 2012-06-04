@@ -3,7 +3,7 @@
 \title{Notebook container}
 \usage{
   gnotebook(tab.pos = 3, close.buttons = FALSE, container,
-  ..., width = NULL, height = NULL, ext.args = NULL)
+    ..., width = NULL, height = NULL, ext.args = NULL)
 }
 \arguments{
   \item{tab.pos}{where to place tabs. A value of 1 is the

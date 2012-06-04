@@ -3,8 +3,8 @@
 \title{A label widget}
 \usage{
   glabel(text = "", markup = FALSE, editable = FALSE,
-  handler = NULL, action = NULL, container = NULL, ...,
-  width = NULL, height = NULL, ext.args = NULL)
+    handler = NULL, action = NULL, container = NULL, ...,
+    width = NULL, height = NULL, ext.args = NULL)
 }
 \arguments{
   \item{text}{text for label. Main property. Use

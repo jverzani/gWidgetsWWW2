@@ -3,7 +3,7 @@
 \title{A panel to hold other JavaScript things}
 \usage{
   gpanel(container, ..., width = NULL, height = NULL,
-  ext.args = NULL)
+    ext.args = NULL)
 }
 \arguments{
   \item{container}{A parent container. In
@@ -63,23 +63,23 @@ d3_url <- "http://mbostock.github.com/d3/d3.js?2.7.1"
 ## div_id comes from pan$div_id()
 tpl <- "
 function(data, status, xhr) {
-d3.select('#{{div_id}}').html('Look ma HTML');
+  d3.select('#{{div_id}}').html('Look ma HTML');
 }
 "
 ## more complicated example to draw a line
 tpl2 <- "
 function(data, status, xhr) {
 var chart = d3.select('#{{div_id}}').append('svg')
-.attr('class', 'chart')
-.attr('width', 200)
-.attr('height', 200);
+    .attr('class', 'chart')
+    .attr('width', 200)
+    .attr('height', 200);
 
 chart.append('line')
-.attr('x1', 25)
-.attr('x2', 200 - 25)
-.attr('y1', 100)
-.attr('y2', 100)
-.style('stroke', '#000');
+    .attr('x1', 25)
+    .attr('x2', 200 - 25)
+    .attr('y1', 100)
+    .attr('y2', 100)
+    .style('stroke', '#000');
 }
 "
 

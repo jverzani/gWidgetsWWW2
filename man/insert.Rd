@@ -3,7 +3,7 @@
 \title{Insert text into \code{gtext}}
 \usage{
   insert(obj, value, where = "end", font.attr = NULL,
-  do.newline = TRUE, ...)
+    do.newline = TRUE, ...)
 }
 \arguments{
   \item{obj}{object}

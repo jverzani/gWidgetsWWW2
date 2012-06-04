@@ -3,8 +3,8 @@
 \title{Basic spinbutton}
 \usage{
   gspinbutton(from = 0, to = 100, by = 1, value = from,
-  handler = NULL, action = NULL, container = NULL, ...,
-  width = NULL, height = NULL, ext.args = NULL)
+    handler = NULL, action = NULL, container = NULL, ...,
+    width = NULL, height = NULL, ext.args = NULL)
 }
 \arguments{
   \item{from}{from value}

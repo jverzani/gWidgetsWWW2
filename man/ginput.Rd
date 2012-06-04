@@ -3,7 +3,7 @@
 \title{input dialog.}
 \usage{
   ginput(message, text = "", title = "Input", icon = NULL,
-  parent = NULL, handler = NULL, action = NULL, ...)
+    parent = NULL, handler = NULL, action = NULL, ...)
 }
 \arguments{
   \item{message}{message}
@@ -36,9 +36,9 @@
 \examples{
 w <- gwindow()
 gbutton("click me for a message", cont=w, handler=function(h,...) {
-ginput("What is your name?", parent=w, handler=function(h,...) {
-galert(paste("Hello", h$input), parent=w)
-})
+  ginput("What is your name?", parent=w, handler=function(h,...) {
+    galert(paste("Hello", h$input), parent=w)
+  })
 })
 }
 

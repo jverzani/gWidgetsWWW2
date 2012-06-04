@@ -4,9 +4,9 @@
 children through a trigger icon.}
 \usage{
   gexpandgroup(text = "", horizontal = TRUE, spacing = 2,
-  use.scrollwindow = FALSE, container = NULL, handler =
-  NULL, action = NULL, ..., width = NULL, height = NULL,
-  ext.args = NULL)
+    use.scrollwindow = FALSE, container = NULL,
+    handler = NULL, action = NULL, ..., width = NULL,
+    height = NULL, ext.args = NULL)
 }
 \arguments{
   \item{text}{label text}

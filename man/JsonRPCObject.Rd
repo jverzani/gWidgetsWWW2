@@ -15,39 +15,39 @@
 }
 \examples{
 ## a subclass to return a data set
-DataSets <- setRefClass("DataSets",
-contains="JsonRPCObject",
-fields=list(
-ctr="list"
-),
-methods=list(
-initialize=function(...) {
-ctr <<- list()
-to_export <- c("get_data") # exported methods
-callSuper(to_export, ...)
-},
-get_data = function(name, column_mapping=list(), ...) {
-"return data frame, possibly changing column names"
-x <- get(name)
-if(!is(x, "data.frame"))
-stop("trying to access a non-data frame")
+ DataSets <- setRefClass("DataSets",
+                          contains="JsonRPCObject",
+                          fields=list(
+                            ctr="list"
+                            ),
+                          methods=list(
+                            initialize=function(...) {
+                              ctr <<- list()
+                              to_export <- c("get_data") # exported methods
+                              callSuper(to_export, ...)
+                            },
+                            get_data = function(name, column_mapping=list(), ...) {
+                              "return data frame, possibly changing column names"
+                              x <- get(name)
+                              if(!is(x, "data.frame"))
+                                stop("trying to access a non-data frame")
 
-nms <- names(x)
-for(i in names(column_mapping)) {
-if(!is.na(ind <- match(i, nms)))
-names(x)[ind] <- column_mapping[[i]]
-}
-toJSON(list(data=x))
-}
-))$new()
+                              nms <- names(x)
+                              for(i in names(column_mapping)) {
+                                if(!is.na(ind <- match(i, nms)))
+                                  names(x)[ind] <- column_mapping[[i]]
+                              }
+                              toJSON(list(data=x))
+                            }
+                            ))$new()
 ## Call with something like this:
 w <- gwindow("JSON-RPC test")
 ## Now add json_rpc call to javascript queue
 cmd <- "
 json_rpc('DataSets', 'get_data',{name: 'morley', column_mapping:{'Expt':'Experiment'}},
 function(response) {
-value = Ext.JSON.decode(response.responseText);
-alert('There are ' + value.data.Run.length + ' observations.');
+  value = Ext.JSON.decode(response.responseText);
+  alert('There are ' + value.data.Run.length + ' observations.');
 });
 "
 ## Add the JavaScript command to the queue so that the browser will

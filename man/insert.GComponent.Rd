@@ -3,7 +3,7 @@
 \title{method for insert}
 \usage{
   \method{insert}{GComponent} (obj, value, where = "end",
-  font.attr = NULL, do.newline = TRUE, ...)
+    font.attr = NULL, do.newline = TRUE, ...)
 }
 \arguments{
   \item{obj}{object}

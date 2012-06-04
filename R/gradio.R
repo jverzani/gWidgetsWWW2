@@ -73,8 +73,8 @@ GRadio <- setRefClass("GRadio",
                                             height = height,
                                             autoHeight=TRUE,
                                             autoWidth=TRUE,
-                                            columns=columns, vertical=!horizontal
-                                            )
+                                            columns=columns, vertical=!horizontal,
+                                            fieldLabel=list(...)$label                                            )
                            
                            add_args(arg_list, ext.args)
 

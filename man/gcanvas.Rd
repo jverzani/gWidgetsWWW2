@@ -3,8 +3,8 @@
 \alias{GCanvas}
 \title{Widget containing a canvas element.}
 \usage{
-  gcanvas(f = NULL, width = 480, height = 400, container =
-  NULL, ...)
+  gcanvas(f = NULL, width = 480, height = 400,
+    container = NULL, ...)
 }
 \arguments{
   \item{f}{Optional. A file name containing output
@@ -101,11 +101,11 @@ dev.off()
 cnv <- gcanvas(f, container=w, width=width, height=height)
 ## make a new new graphic
 gbutton("refresh", cont=w, handler=function(h,...) {
-f <- svalue(cnv)
-canvas(f, width=width, height=height)
-hist(rnorm(100))
-dev.off()
-svalue(cnv) <- f
+  f <- svalue(cnv)
+  canvas(f, width=width, height=height)
+  hist(rnorm(100))
+  dev.off()
+  svalue(cnv) <- f
 })
 
 ## Using canvas for drawing area using lower level canvas methods
@@ -118,21 +118,21 @@ cnv <- gcanvas(width=width, height=height, cont=g)
 
 started <-FALSE
 cnv$add_handler_mouse_down(handler=function(h,...) {
-cnv$call_method("beginPath")
-cnv$call_method("moveTo", h$X, h$Y)
-started <<- TRUE
+  cnv$call_method("beginPath")
+  cnv$call_method("moveTo", h$X, h$Y)
+  started <<- TRUE
 })
 
 
 cnv$add_handler_mouse_move(handler=function(h,...) {
-if(started) {
-cnv$call_method("lineTo", h$X, h$Y)
-cnv$call_method("stroke")
-}
+  if(started) {
+    cnv$call_method("lineTo", h$X, h$Y)
+    cnv$call_method("stroke")
+  }
 })
 
 cnv$add_handler_mouse_up(handler=function(h,...) {
-started <<- FALSE
+  started <<- FALSE
 })
 }
 

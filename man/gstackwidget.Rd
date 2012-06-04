@@ -3,7 +3,7 @@
 \title{stack widget is a "card" container. Use \code{gnotebook} methods to change cards}
 \usage{
   gstackwidget(container, ..., width = NULL, height = NULL,
-  ext.args = NULL)
+    ext.args = NULL)
 }
 \arguments{
   \item{container}{A parent container. In

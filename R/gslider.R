@@ -94,7 +94,8 @@ GSlider <- setRefClass("GSlider",
                                             tipText=String(tipText),
                                             enableKeyEvents=TRUE,
                                             width = width,
-                                            height = height
+                                            height = height,
+                                            fieldLabel=list(...)$label
                                             )
                            
                            add_args(arg_list)

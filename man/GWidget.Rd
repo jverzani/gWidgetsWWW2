@@ -3,8 +3,8 @@
 \title{Stub for roxygen2 documentation of common arguments for gWidgets contructors}
 \usage{
   gwidget(handler, action = NULL, container = NULL, ...,
-  width = NULL, height = NULL, ext.args = NULL, expand =
-  NULL, fill = NULL, anchor = NULL)
+    width = NULL, height = NULL, ext.args = NULL,
+    expand = NULL, fill = NULL, anchor = NULL)
 }
 \arguments{
   \item{handler}{optional means (to

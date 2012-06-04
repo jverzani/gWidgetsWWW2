@@ -3,9 +3,9 @@
 \alias{GWindow}
 \title{Main window constructor}
 \usage{
-  gwindow(title = "", parent = NULL, handler = NULL, action
-  = NULL, ..., renderTo = NULL, width = NULL, height =
-  NULL, ext.args = NULL)
+  gwindow(title = "", parent = NULL, handler = NULL,
+    action = NULL, ..., renderTo = NULL, width = NULL,
+    height = NULL, ext.args = NULL)
 }
 \arguments{
   \item{title}{Window title}
@@ -78,9 +78,9 @@
 w <- gwindow("Top level", renderTo="replaceme") ## no parent, so main one
 g <- ggroup(cont=w)
 b <- gbutton("click me for a subwindow", cont=g, handler=function(h,...) {
-w1 <- gwindow("subwindow -- no renderTo", renderTo=NULL, parent=w)
-g <- ggroup(cont=w1)
-gbutton("dispose", cont=g, handler=function(h,...) dispose(w1))
+  w1 <- gwindow("subwindow -- no renderTo", renderTo=NULL, parent=w)
+  g <- ggroup(cont=w1)
+  gbutton("dispose", cont=g, handler=function(h,...) dispose(w1))
 })
 w2 <- gwindow("render elsewhere", parent=w, renderTo="replacemetoo") ## renderst to part of page
 }

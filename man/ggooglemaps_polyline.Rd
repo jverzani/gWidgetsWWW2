@@ -2,8 +2,9 @@
 \alias{ggooglemaps_polyline}
 \title{A method to write a polyline to a map}
 \usage{
-  ggooglemaps_polyline(path, stroke = list(color =
-  "#0000FF", opacity = 1, weight = 2), map, ...)
+  ggooglemaps_polyline(path,
+    stroke = list(color = "#0000FF", opacity = 1, weight = 2),
+    map, ...)
 }
 \arguments{
   \item{path}{a matrix or data frame of lat/lng pairs}

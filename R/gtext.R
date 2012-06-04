@@ -73,7 +73,9 @@ GText <- setRefClass("GText",
                                           width=width,
                                           height=height,
                                           selectOnFocus = TRUE,
-                                          enableKeyEvents=TRUE)
+                                          enableKeyEvents=TRUE,
+                                          fieldLabel=list(...)$label
+                                          )
 
                          add_args(arg_list)
                          setup(container, handler, action, ext.args, ...)

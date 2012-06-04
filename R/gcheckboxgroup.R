@@ -91,7 +91,8 @@ GCheckboxGroup <- setRefClass("GCheckboxGroup",
                                             width = width,
                                             height = height,
                                             columns=columns,
-                                            vertical=!horizontal
+                                            vertical=!horizontal,
+                                            fieldLabel=list(...)$label
                                             )
                            add_args(arg_list)
 
@@ -206,7 +207,8 @@ GCheckbox <- setRefClass("GCheckbox",
 
                              arg_list <- list(items=String(items_as_array()),
                                               width = width,
-                                              height = height
+                                              height = height,
+                                              fieldLabel=list(...)$label
                                               )
                              add_args(arg_list)
 

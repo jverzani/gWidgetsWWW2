@@ -2,10 +2,10 @@
 \alias{gcheckboxgroup}
 \title{A group of checkboxes}
 \usage{
-  gcheckboxgroup(items, checked = FALSE, horizontal =
-  FALSE, use.table = FALSE, handler = NULL, action = NULL,
-  container = NULL, ..., width = NULL, height = NULL,
-  ext.args = NULL)
+  gcheckboxgroup(items, checked = FALSE,
+    horizontal = FALSE, use.table = FALSE, handler = NULL,
+    action = NULL, container = NULL, ..., width = NULL,
+    height = NULL, ext.args = NULL)
 }
 \arguments{
   \item{items}{vector of items to select from}

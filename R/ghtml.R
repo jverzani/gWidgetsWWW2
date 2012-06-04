@@ -16,6 +16,24 @@
 ##' @include gwidget-proxy.R
 NULL
 
+## These crash roxygen2, not sure why
+## ## using a source
+## email <- "ruser@gmail.com"
+## u <- sprintf("http://www.gravatar.com/avatar/%s",digest(tolower(email)))
+## ghtml(sprintf("<img src='%s' />", u), cont=g)
+## ## using markdown package
+## if(require(markdown)) {
+## x <- "
+## Header
+## ======
+##
+## * item 1
+## * item 2
+##
+## "
+## ghtml(markdownToHTML(x), cont=g)
+## }
+
 ##' widget to render HTML text pages
 ##'
 ##' 
@@ -31,22 +49,6 @@ NULL
 ##' w <- gwindow()
 ##' g <- ggroup(cont=w, horizontal=FALSE)
 ##' h <- ghtml("<b>this is bold</b>", cont=g)
-##' ## using a source
-##' email <- "ruser@gmail.com"
-##' u <- sprintf("http://www.gravatar.com/avatar/%s",digest(tolower(email)))
-##' ghtml(sprintf("<img src='%s' />", u), cont=g)
-##' ## using markdown package
-##' if(require(markdown)) {
-##' x <- "
-##' Header
-##' ======
-##'
-##' * item 1
-##' * item 2
-##'
-##' "
-##' ghtml(markdownToHTML(x), cont=g)
-##' }
 ghtml <- function(x, container = NULL,  ...,
                   width=NULL, height=NULL, ext.args=NULL
                   ) {

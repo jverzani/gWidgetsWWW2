@@ -23,13 +23,13 @@
 \dontrun{
 w <- gwindow("Parent")
 b <- gbutton("click", cont=w, handler=function(h,...) {
-w1 <- gwindow("modal subwindow", parent=w, ext.args=list(modal=TRUE))
-g <- ggroup(cont=w1, horizontal=FALSE)
-glabel("Some label", cont=g, expand=TRUE)
-bg <- ggroup(cont=g)
-addSpring(bg)
-gbutton("ok", cont=bg) ## add your own handler
-gbutton("dismiss", cont=bg, handler=function(...) dispose(w1))
+  w1 <- gwindow("modal subwindow", parent=w, ext.args=list(modal=TRUE))
+  g <- ggroup(cont=w1, horizontal=FALSE)
+  glabel("Some label", cont=g, expand=TRUE)
+  bg <- ggroup(cont=g)
+  addSpring(bg)
+  gbutton("ok", cont=bg) ## add your own handler
+  gbutton("dismiss", cont=bg, handler=function(...) dispose(w1))
 })
 }
 }

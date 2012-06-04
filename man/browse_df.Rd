@@ -2,8 +2,8 @@
 \alias{browse_df}
 \title{Browse a data frame in the global environment using gtable}
 \usage{
-  browse_df(d, width = 800, height = 500, paging = nrow(d)
-  > 200, ...)
+  browse_df(d, width = 800, height = 500,
+    paging = nrow(d) > 200, ...)
 }
 \arguments{
   \item{d}{data frame}

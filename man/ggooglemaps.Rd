@@ -5,12 +5,12 @@
 \alias{GGoogleMapsMarker}
 \title{Google maps widget}
 \usage{
-  ggooglemaps(center = c(45, 45), zoom = 13, maptype =
-  "roadmap", container, ..., width = NULL, height = 400,
-  ext.args = NULL)
+  ggooglemaps(center = c(45, 45), zoom = 13,
+    maptype = "roadmap", container, ..., width = NULL,
+    height = 400, ext.args = NULL)
 
   ggooglemaps_marker(position, title = NULL, icon = NULL,
-  map)
+    map)
 }
 \arguments{
   \item{center}{lat/lng pair where map should be centered}
@@ -98,16 +98,16 @@ g1 <- ggroup(cont=w)
 glabel("Click some points, then click button to: ", cont=g1)
 x <- numeric(0); y <- numeric(0)
 b <- gbutton("add polygon", cont=g1, handler=function(h,...) {
-ggooglemaps_polygon(cbind(x, y), stroke=list(color="#FF00FF"), fill=list(color="#00FF00"), map=gm)
+  ggooglemaps_polygon(cbind(x, y), stroke=list(color="#FF00FF"), fill=list(color="#00FF00"), map=gm)
 })
 addHandlerClicked(gm, handler=function(h,...) {
-ggooglemaps_marker(position=c(h$lat, h$lng), title="", map=gm)
-x <<- c(x, h$lat); y <<- c(y, h$lng)
+  ggooglemaps_marker(position=c(h$lat, h$lng), title="", map=gm)
+  x <<- c(x, h$lat); y <<- c(y, h$lng)
 })
 ## How to add a marker with a callback to open an info window
 m <- ggooglemaps_marker(position=central_park, title="click me", map=gm)
 addHandlerClicked(m, handler=function(h,...) {
-ggooglemaps_infowindow(h$obj, content = "Hello world", map=gm)
+  ggooglemaps_infowindow(h$obj, content = "Hello world", map=gm)
 })
 
 
@@ -115,13 +115,13 @@ ggooglemaps_infowindow(h$obj, content = "Hello world", map=gm)
 g1 <- ggroup(cont=w)
 glabel("Change map type", cont=g1)
 gcombobox(c("roadmap", "satellite", "hybrid", "terrain"), cont=g1, handler=function(h,...) {
-gm$set_maptype(svalue(h$obj, index=FALSE))
+  gm$set_maptype(svalue(h$obj, index=FALSE))
 })
 gcheckbox("Traffic overlay", checked=FALSE, width=150, cont=g1, handler=function(h,...) {
-gm$add_trafficlayer(svalue(h$obj))
+  gm$add_trafficlayer(svalue(h$obj))
 })
 gcheckbox("Bicycle overlay", checked=FALSE, width=150, cont=g1, handler=function(h,...) {
-gm$add_bikelayer(svalue(h$obj))
+  gm$add_bikelayer(svalue(h$obj))
 })
 }
 

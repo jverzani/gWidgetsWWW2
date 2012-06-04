@@ -3,8 +3,8 @@
 \title{A paned group container}
 \usage{
   gpanedgroup(horizontal = TRUE, container = NULL, ...,
-  width = NULL, height = 400, ext.args = NULL, collapsible
-  = FALSE, default.size = NULL)
+    width = NULL, height = 400, ext.args = NULL,
+    collapsible = FALSE, default.size = NULL)
 }
 \arguments{
   \item{horizontal}{logical. Side by side (or top/bottom)

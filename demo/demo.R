@@ -22,13 +22,8 @@ sapply(seq_along(fs), function(i) {
   })
 
   gbutton("View example", cont=g1, action=i, handler=function(h,...) {
-      message("load_app in demo")
-    if(grepl("multiple", basefs[h$action])) {
-      brew_template <- system.file("framework/brew/custom.rhtml", package="gWidgetsWWW2")
-      load_app( fs[h$action], gsub("-", "_", basefs[h$action]),  brew_template)
-    } else {
-      load_app(fs[h$action], gsub("-", "_", basefs[h$action]))
-    }
+    message("load_app in demo")
+    load_app(fs[h$action], gsub("-", "_", basefs[h$action]))
   })
 
   glabel(basefs[i], cont=g1)

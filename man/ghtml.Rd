@@ -2,8 +2,8 @@
 \alias{ghtml}
 \title{widget to render HTML text pages}
 \usage{
-  ghtml(x, container = NULL, ..., width = NULL, height =
-  NULL, ext.args = NULL)
+  ghtml(x, container = NULL, ..., width = NULL,
+    height = NULL, ext.args = NULL)
 }
 \arguments{
   \item{x}{an HTML string or a URL.}
@@ -26,6 +26,7 @@
 }
 \examples{
 w <- gwindow()
-h <- ghtml("<b>this is bold</b>", cont=w)
+g <- ggroup(cont=w, horizontal=FALSE)
+h <- ghtml("<b>this is bold</b>", cont=g)
 }
 

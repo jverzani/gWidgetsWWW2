@@ -2,9 +2,9 @@
 \alias{gtext}
 \title{A text area widget}
 \usage{
-  gtext(text = NULL, width = NULL, height = 300, font.attr
-  = NULL, wrap = TRUE, handler = NULL, action = NULL,
-  container = NULL, ..., ext.args = NULL)
+  gtext(text = NULL, width = NULL, height = 300,
+    font.attr = NULL, wrap = TRUE, handler = NULL,
+    action = NULL, container = NULL, ..., ext.args = NULL)
 }
 \arguments{
   \item{text}{initial text}
@@ -59,10 +59,10 @@ sb <- gstatusbar("Powered by gWidgetsWWW and Rook", cont=w)
 g <- ggroup(cont=w, horizontal=FALSE)
 t <- gtext("Some text with \\n new lines", cont=g)
 b <- gbutton("click", cont=g, handler=function(h,...) {
-galert(svalue(b), parent=w)
+  galert(svalue(b), parent=w)
 })
-b <- gbutton("change", cont=g, handler=function(h,...) {
-svalue(t) <= "some new text"
+ b <- gbutton("change", cont=g, handler=function(h,...) {
+   svalue(t) <= "some new text"
 })
 }
 

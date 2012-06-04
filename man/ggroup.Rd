@@ -3,9 +3,9 @@
 \alias{gvbox}
 \title{Group, or box, container}
 \usage{
-  ggroup(horizontal = TRUE, spacing = 2, use.scrollwindow =
-  FALSE, container, ..., width = NULL, height = NULL,
-  ext.args = NULL)
+  ggroup(horizontal = TRUE, spacing = 2,
+    use.scrollwindow = FALSE, container, ..., width = NULL,
+    height = NULL, ext.args = NULL)
 
   gvbox(...)
 }
@@ -57,8 +57,7 @@
 \description{
   Group, or box, container
 
-  Shortcut for vertical box containers. Specific to
-  gWidgetsWWW2.
+  Shortcut for vertical box containers.
 }
 \examples{
 w <- gwindow()

@@ -3,7 +3,7 @@
 \title{widget to display svg files}
 \usage{
   gsvg(f, width = 480, height = 400, container = NULL, ...,
-  ext.args = NULL)
+    ext.args = NULL)
 }
 \arguments{
   \item{f}{filename. Usually produced by
@@ -56,11 +56,11 @@ i <- gsvg(f, container=g, width=480, height=480)
 
 
 b <- gbutton("click", cont=g, handler=function(h,...) {
-f <- get_tempfile(ext=".svg")
-svg(f)
-hist(rnorm(100))
-dev.off()
-svalue(i) <- f
+  f <- get_tempfile(ext=".svg")
+  svg(f)
+  hist(rnorm(100))
+  dev.off()
+  svalue(i) <- f
 })
 }
 }

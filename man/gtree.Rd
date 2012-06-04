@@ -2,9 +2,10 @@
 \alias{gtree}
 \title{gtree widget}
 \usage{
-  gtree(offspring = NULL, offspring.data = NULL, multiple =
-  FALSE, handler = NULL, action = NULL, container = NULL,
-  ..., width = NULL, height = NULL, ext.args = NULL)
+  gtree(offspring = NULL, offspring.data = NULL,
+    multiple = FALSE, handler = NULL, action = NULL,
+    container = NULL, ..., width = NULL, height = NULL,
+    ext.args = NULL)
 }
 \arguments{
   \item{offspring}{function with signature (path, data).
@@ -73,11 +74,11 @@
 # galton watson
 \dontrun{
 offspring <- function(path, ...) {
-x <- rbinom(2, 1, p=1/2)
-icons <- c("dismiss","ok")[2-x]
-nms <- c("branch","leaf")[x+1]
-ttip <- paste("This is a ", nms)
-data.frame(id=letters[1:2], hasoffspring=as.logical(x), icons=icons, value=nms, qtip=ttip, stringsAsFactors=FALSE)
+  x <- rbinom(2, 1, p=1/2)
+  icons <- c("dismiss","ok")[2-x]
+  nms <- c("branch","leaf")[x+1]
+  ttip <- paste("This is a ", nms)
+  data.frame(id=letters[1:2], hasoffspring=as.logical(x), icons=icons, value=nms, qtip=ttip, stringsAsFactors=FALSE)
 }
 w <- gwindow("Galton Watson tree")
 g <- ggroup(cont=w, horizontal=FALSE)

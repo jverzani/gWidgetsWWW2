@@ -2,8 +2,8 @@
 \alias{addHandlerIdle}
 \title{Assign handler to be called repeatedly after some interval}
 \usage{
-  addHandlerIdle(x, interval = 1000, handler, action =
-  NULL)
+  addHandlerIdle(x, interval = 1000, handler,
+    action = NULL)
 }
 \arguments{
   \item{x}{the object}

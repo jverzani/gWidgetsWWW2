@@ -52,6 +52,8 @@ NULL
 ##' @return a \code{GBorderLayout} reference class object
 ##' @seealso \code{\link{gpanedgroup}} is a two-panel border layout
 ##' with just an "east" or "south" satellite panel configured.
+##' @note \code{gpanedgroup} does not sit nicely within a
+##' \code{gnotebook} container, avoid trying this.
 ##' @author john verzani
 ##' @export
 ##' @examples

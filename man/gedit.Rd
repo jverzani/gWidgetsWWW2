@@ -4,9 +4,9 @@
 \title{gedit widget}
 \usage{
   gedit(text = "", width = 25, coerce.with = NULL,
-  initial.msg = "", handler = NULL, action = NULL,
-  container = NULL, ..., ext.args = NULL, validate.type =
-  NULL, validate.regexp = NULL)
+    initial.msg = "", handler = NULL, action = NULL,
+    container = NULL, ..., ext.args = NULL,
+    validate.type = NULL, validate.regexp = NULL)
 }
 \arguments{
   \item{text}{initial text}
@@ -16,7 +16,7 @@
 
   \item{coerce.with}{Function to call for coercion from
   text. If no coercion be careful when using the values, as
-  the user can potentiall type in malicious things.}
+  the user can potentialy type in malicious things.}
 
   \item{initial.msg}{initial message to user, in greyed out
   text}
@@ -83,7 +83,7 @@
 }
 \examples{
 w <- gwindow()
-sb <- gstatusbar("Powered by gWidgetsWWW and Rook", cont=w)
+sb <- gstatusbar("Powered by gWidgetsWWW2 and Rook", cont=w)
 g <- ggroup(cont=w, horizontal=FALSE)
 e <- gedit("initial text", cont=g)
 addHandlerChanged(e, handler=function(h,...) {

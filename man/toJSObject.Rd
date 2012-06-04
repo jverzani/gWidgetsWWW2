@@ -18,10 +18,10 @@
 }
 \examples{
 arg_list <- list(
-tooltip = "some tooltip",
-width = 200,
-height = "auto",
-id = String("noquote")
+  tooltip = "some tooltip",
+  width = 200,
+  height = "auto",
+  id = String("noquote")
 )
 toJSObject(arg_list)
 }

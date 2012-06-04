@@ -2,9 +2,10 @@
 \alias{ggooglemaps_polygon}
 \title{Draw a polygon on the map}
 \usage{
-  ggooglemaps_polygon(path, stroke = list(color =
-  "#0000FF", opacity = 1, weight = 2), fill = list(color =
-  "#FF0000", opacity = 0.25), map, ...)
+  ggooglemaps_polygon(path,
+    stroke = list(color = "#0000FF", opacity = 1, weight = 2),
+    fill = list(color = "#FF0000", opacity = 0.25), map,
+    ...)
 }
 \arguments{
   \item{path}{path of polygon as matrix or data frame of

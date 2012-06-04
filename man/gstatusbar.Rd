@@ -2,8 +2,8 @@
 \alias{gstatusbar}
 \title{Status bar for gwindow instances}
 \usage{
-  gstatusbar(text = "", container = NULL, ..., ext.args =
-  NULL)
+  gstatusbar(text = "", container = NULL, ...,
+    ext.args = NULL)
 }
 \arguments{
   \item{text}{text for label}

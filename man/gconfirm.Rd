@@ -2,8 +2,8 @@
 \alias{gconfirm}
 \title{Confirmation dialog}
 \usage{
-  gconfirm(message, title = "Confirm", icon = NULL, parent
-  = NULL, handler = NULL, action = NULL, ...)
+  gconfirm(message, title = "Confirm", icon = NULL,
+    parent = NULL, handler = NULL, action = NULL, ...)
 }
 \arguments{
   \item{message}{message}

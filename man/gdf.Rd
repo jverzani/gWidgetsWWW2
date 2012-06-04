@@ -3,8 +3,8 @@
 \title{A widget for editing a data frame}
 \usage{
   gdf(items = NULL, handler = NULL, action = NULL,
-  container = NULL, ..., width = 300, height = 200,
-  ext.args = NULL, name = deparse(substitute(items)))
+    container = NULL, ..., width = 300, height = 200,
+    ext.args = NULL, name = deparse(substitute(items)))
 }
 \arguments{
   \item{items}{data frame to be edited}

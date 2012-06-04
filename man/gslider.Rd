@@ -4,9 +4,9 @@
 \title{slider widget}
 \usage{
   gslider(from = 0, to = 100, by = 1, value = from,
-  horizontal = TRUE, handler = NULL, action = NULL,
-  container = NULL, ..., width = NULL, height = NULL,
-  ext.args = NULL, tpl = "{0}")
+    horizontal = TRUE, handler = NULL, action = NULL,
+    container = NULL, ..., width = NULL, height = NULL,
+    ext.args = NULL, tpl = "{0}")
 }
 \arguments{
   \item{from}{starting point. Unlike other implementations
@@ -80,7 +80,7 @@ w <- gwindow()
 sb <- gstatusbar("Powered by gWidgetsWWW and Rook", cont=w)
 sl <- gslider(from=0, to=100, by=1, value=50, cont=w, tpl="{0}percent")
 addHandlerChanged(sl, handler=function(h,...) {
-galert(paste("You selected", svalue(h$obj)), parent=w)
+ galert(paste("You selected", svalue(h$obj)), parent=w)
 })
 }
 

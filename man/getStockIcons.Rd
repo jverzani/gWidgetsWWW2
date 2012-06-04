@@ -1,6 +1,9 @@
 \name{getStockIcons}
 \alias{getStockIcons}
 \title{Return stock icons}
+\usage{
+  getStockIcons()
+}
 \value{
   a list of icons. Unlike other gWidgets implementations.
   Each component is alist with css name and url, as both
