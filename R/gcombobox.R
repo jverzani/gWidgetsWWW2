@@ -31,11 +31,15 @@ NULL
 ##' event, which is to track "user-initiated change is detected in the
 ##' value of the field." This does not always fire on selection by an
 ##' item. To force that, use the \code{add_handler_select} method.
-##' @param items a vector of items to choose from. Coerced to
-##' character class. Use \code{coerce.with} to get a numeric value,
-##' say. (Not supported, but should also allow: Or a data frame with 1 column
-##' (items), two columns (items, icons), or three columns (items,
-##' icons, tooltip))
+##' @param items a vector or data frame of items to choose
+##' from. Coerced to character class. Use \code{coerce.with} to get a
+##' numeric value, say. If a data frame then one can add an icon,
+##' tooltip, and possibly extra information: with 1 column (items),
+##' two columns (items, icons), or three columns (items, icons,
+##' tooltip)). If 4 or more, then extra columns can be incorporated by
+##' specifying a template. The icon is a url, not a stock name. For
+##' stock icons, convert with \code{getStockIconByName} with
+##' \code{css=FALSE} specified.
 ##' @param selected initially selected item, by index. Use \code{0L} for none.
 ##' @param editable logical. Does combobox allow editing. A bug (or
 ##' package writer's limiations) in extjs do not allow one to set the
@@ -48,7 +52,10 @@ NULL
 ##' presented. (This is also the default behaviour, but if the object
 ##' is not editable, only valid values are stored.)
 ##' @param initial.msg If \code{selected=0}, then one can assign an initial message here
-##' @param tpl a template for the item (Not working! Dang....)
+##' @param tpl a template for the item. This is an HTML snippet, where
+##' the column names, when wrapped in braces, will be substituted for
+##' the values. The first three columns have their names normalized to
+##' \code{name}, \code{icon}, \code{tooltip}.
 ##' @return an ExtWidget instance
 ##' @note The \code{[<-} method is note working. The \code{tpl}
 ##' argument is not working as we'd like.
@@ -65,6 +72,26 @@ NULL
 ##' gcombobox(state.name, cont=g, selected=0, initial.msg="Choose a state...")
 ##' ## autocomplete
 ##'  cb <- gcombobox(state.name, cont=g, autocomplete=TRUE)
+##' ## template
+##' w <- gwindow()
+##' g <- gvbox(container=w)
+##' d <- data.frame(name=c("Alabama", "Alaska","Arizona"),
+##'                 icon=c("http://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Flag_of_Alabama.svg/22px-Flag_of_Alabama.svg.png",
+##'                   "http://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Flag_of_Alaska.svg/22px-Flag_of_Alaska.svg.png",
+##'                   "http://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Flag_of_Arizona.svg/22px-Flag_of_Arizona.svg.png"),
+##'                 tooltip=c("Audemus jura nostra defendere",
+##'                   "North to the future",
+##'                   "Ditat Deus"
+##'                   ),                  
+##'                 extra=c(
+##'                   "Montgomery",
+##'                   "Juneau",
+##'                   "Phoenix"),
+##'                 stringsAsFactors=FALSE)
+cb <- gcombobox(d,
+                tpl="<img src=\"{icon}\"></img><span data-qtip=\"{tooltip}\"> {name}, Capital is <em>{extra}</em></span>",
+                cont=g)
+
 gcombobox <- function(items, selected=1, editable=FALSE, coerce.with=NULL,
            handler = NULL, action = NULL, container=NULL,...,
                       width=NULL,
@@ -123,56 +150,22 @@ GCombobox <- setRefClass("GCombobox",
                                         transport_signal=if(editable) c("change","beforeselect") else "beforeselect"
                                         )
                              
+
                              if(is.null(tpl))
                                tpl <- .make_tpl(items)
-
+                             tpl <- sprintf("Ext.create('Ext.XTemplate','<tpl for=\".\"><div class=\"x-boundlist-item\">%s</div></tpl>')", tpl)
+                             
                              arg_list <- list(store=String(store$get_id()),
                                               displayField="name",
-                                              valueField="row_id",
-                                              valueNotFoundText="NA",
-
-                                              
+                                              tpl=String(tpl),
                                               forceSelection=!editable,
                                               typeAhead=TRUE,
-                                              ## triggerAction="query",
-                                              ## mode="local", ##  queryMode? would like "remote" for larger stores, but whatevs for now
-                                              loadingText=gettext("Loading..."),
-                                              ## selectOnFocus=TRUE,
-                                              ## lastQuery='',
-                                              ## Want to use templates here, but can't get to work
-                                              ## instead use valueField and displayField defaults
-                                              #displayTpl=tpl,
-#                                              listConfig=list(
-#                                                getInnerTpl=String("function() {retur#n '<div data-qtip=\"{name}.\">{name} ({row_id})</div>';}")
-#                                                ),
-                                              ##
                                               width=width,
                                               height=height,
                                               fieldLabel=list(...)$label
                                               )
-
-
-                              ## ## hard code store data here.
-                             ## ## See http://skirtlesden.com/articles/extjs-comboboxes-part-1 for some commentary on this
-
-                             if(is.data.frame(items))
-                               items <- items[,1]
-                             data_objects <- sprintf("[%s]",
-                                                     paste(shQuote(items, type="cmd"),
-                                                           collapse=","))
                              
-                              arg_list <- list(store=String(data_objects),
-#                                               displayField="name",
-#                                               valueField="row_id",
-#                                               valueNotFoundText="NA",
-                                               forceSelection=!editable,
-                                               typeAhead=TRUE,
-                                               ## triggerAction="query", confusing, filters drop down list
-                                               width=width,
-                                               height=height,
-                                               fieldLabel=list(...)$label
-                                               )
-
+                             
                              
                              if(autocomplete) {
                                arg_list[['hideTrigger']] <- TRUE
@@ -240,30 +233,26 @@ GCombobox <- setRefClass("GCombobox",
                            len=function(...) base::length(get_items()),
                            .normalize=function(items) {
                              "put on standard names to match template"
-                             nms <- c("name", "icon", "tooltip")
                              if(!is.data.frame(items))
                                items <- data.frame(items, stringsAsFactors=FALSE)
-                             names(items) <- nms[1:ncol(items)]
-                             items[[1]] <- as.character(items[[1]])
+                             items[[1]] <- as.character(items[[1]]) # name is character
+                             ## standardize first three names
+                             nms <- c("name", "icon", "tooltip")
+                             nc <- ncol(items)
+                             mnc <- min(3, nc)
+                             names(items)[1:mnc] <- nms[1:mnc]
+
+                             
                              items
                            },
-                           ## XXX This isn't working. Fix it later
                            .make_tpl=function(items) {
-                             "Make template to match standard names"
-                             just_name <- "<tpl for '.'><div class='x-combo-list-item'>{id} == {name}</div></tpl>"
-#                             just_name <- "<h3>{name}</h3>"
-#                             paste('<tpl for="."><div class="search-item">',
-#                                                '<h3><span>{name}</span></h3>',
-#                                                '</div></tpl>',
-#                                                sep="")
-                             name_icon <- just_name
-                             name_icon_tooltip <- name_icon # XXX fix
+                             "Make template to match standard names: name, icon, tooltip"
                              if(ncol(items) ==1)
-                               just_name
+                               '{name}'
                              else if(ncol(items) ==2)
-                               name_icon
+                               '<img src="{icon}"></img>{name}'
                              else
-                               name_icon_tooltip
+                               '<img src="{icon}"></img><span data-qtip="{tooltip}">{name}</span>'
                            },
                            ## hide trigger, if want to be like gedit
                            hide_trigger = function(value) {
