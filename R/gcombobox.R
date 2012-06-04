@@ -88,10 +88,9 @@ NULL
 ##'                   "Juneau",
 ##'                   "Phoenix"),
 ##'                 stringsAsFactors=FALSE)
-cb <- gcombobox(d,
-                tpl="<img src=\"{icon}\"></img><span data-qtip=\"{tooltip}\"> {name}, Capital is <em>{extra}</em></span>",
-                cont=g)
-
+##' cb <- gcombobox(d,
+##'                 tpl="<img src=\"{icon}\"></img><span data-qtip=\"{tooltip}\"> {name}, Capital is <em>{extra}</em></span>",
+##'                 cont=g)
 gcombobox <- function(items, selected=1, editable=FALSE, coerce.with=NULL,
            handler = NULL, action = NULL, container=NULL,...,
                       width=NULL,
