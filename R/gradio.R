@@ -46,15 +46,16 @@ gradio <- function(items,
   rb$init(items,
              selected, horizontal,
              handler, action, container, ...,
-             width=width, height=width, ext.args=ext.args, columns=columns)
+             width=width, height=height, ext.args=ext.args, columns=columns)
 }
 
 ## Base class for gradio
-## @note TODO No way to change number of radio buttons via [<- ir get/set_items, as of now
+## @note TODO No way to change number of radio buttons via [<- or get/set_items, as of now
 GRadio <- setRefClass("GRadio",
                        contains="GWidget",
                        fields=list(
-                         items="ANY"
+                         items="ANY",
+                         horizontal="logical"
                          ),
                        methods=list(
                          init = function(items,
@@ -63,18 +64,19 @@ GRadio <- setRefClass("GRadio",
                            width=NULL, height=NULL, ext.args=NULL, columns=NULL) {
                            
                            items <<- items
-
+                           horizontal <<- horizontal
+                           
                            constructor <<- "Ext.form.RadioGroup"
                            transport_signal <<- "change"
                            change_signal <<- "change"
-                           
+
                            arg_list <- list(items=String(items_as_array()),
                                             width = width,
                                             height = height,
-                                            autoHeight=TRUE,
-                                            autoWidth=TRUE,
-                                            columns=columns, vertical=!horizontal,
-                                            fieldLabel=list(...)$label                                            )
+                                            vertical=!horizontal,
+                                            columns=columns,
+                                            fieldLabel=list(...)$label
+                                            )
                            
                            add_args(arg_list, ext.args)
 
@@ -135,14 +137,20 @@ GRadio <- setRefClass("GRadio",
                            value <<- ind
                          },
                          ## helper function
+                       
+                           
                          items_as_array = function() {
                            "Return items as array"
                            makeRadio <- function(label, i,  name) {
                              ## inputValue is 1-based index
                              sprintf("new Ext.form.Radio({boxLabel:'%s', inputValue: %s, name:'%s'})", label, i, name)
                            }
+                           makeRadio <- function(label, i, name) {
+                             sprintf("{boxLabel:'%s', inputValue: %s, name:'%s', flex:1}",
+                                     label, i, name)
+                           }
                            buttons <- mapply(makeRadio, items, seq_along(items), rep(.self$get_id(), len=length(items)))
-
+                           
                            out <- paste("[",
                                         paste(buttons, collapse=","),
                                         "]", sep="")
