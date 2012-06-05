@@ -20,10 +20,7 @@ NULL
 ##' combobox implementation
 ##'
 ##' The \code{svalue<-} method is used to specify value by name or by
-##' index.  (THIS IS BROKEN, LIKELY A BUG IN EXTJS CODE, BUT [<- DOES
-##' NOT WORK The \code{[<-} method can be used to update the data to
-##' select from.)
-##'
+##' index.  
 ##' 
 ##' The default change handler differs depending whether the field is
 ##' editable. If not, then the handler is called before the selection
@@ -42,7 +39,7 @@ NULL
 ##' \code{css=FALSE} specified.
 ##' @param selected initially selected item, by index. Use \code{0L} for none.
 ##' @param editable logical. Does combobox allow editing. A bug (or
-##' package writer's limiations) in extjs do not allow one to set the
+##' package writer's limitations) in extjs do not allow one to set the
 ##' value if it is a potential index (when \code{items} is
 ##' integer). Go figure. Use 4.0, not 5 if you want numeric values ...
 ##' @param coerce.with Function. If given, called on value before returning
@@ -145,11 +142,11 @@ GCombobox <- setRefClass("GCombobox",
                              
                              initFields(
                                         constructor="Ext.form.field.ComboBox",
-                                        change_signal=ifelse(editable, "change", "beforeselect"),
-                                        transport_signal=if(editable) c("change","beforeselect") else "beforeselect"
+                                        change_signal=ifelse(editable, "change", "select"),
+                                        transport_signal=if(editable) c("change","select") else "select"
                                         )
                              
-
+                             ## cf., http://skirtlesden.com/articles/extjs-comboboxes-part-1
                              if(is.null(tpl))
                                tpl <- .make_tpl(items)
                              tpl <- sprintf("Ext.create('Ext.XTemplate','<tpl for=\".\"><div class=\"x-boundlist-item\">%s</div></tpl>')", tpl)
@@ -157,7 +154,13 @@ GCombobox <- setRefClass("GCombobox",
                              arg_list <- list(store=String(store$get_id()),
                                               displayField="name",
                                               tpl=String(tpl),
+                                              triggerAction='query',
+                                              queryMode='local',
+                                              minChars=1,
+                                              editable=TRUE,
+                                              #selectOnFocus=TRUE,
                                               forceSelection=!editable,
+                                              growToLongestValue=TRUE,
                                               typeAhead=TRUE,
                                               width=width,
                                               height=height,
@@ -179,9 +182,11 @@ GCombobox <- setRefClass("GCombobox",
                              setup(container, handler, action, ext.args, ...)
                              
                              ## load data
-                             .self$store$load_data()
+                             block_handlers()
+                             .self$store$load_data(sprintf("%s.focus(true)", get_id()))
 
                              set_index(selected)
+                             unblock_handlers()
                              ## set value -- should be set_value, but isn't dispatching to right one
                              ## if(!is.na(selected)) {
                              ##   value <<- selected
@@ -227,7 +232,13 @@ GCombobox <- setRefClass("GCombobox",
                              "Set store items"
                              items <- .normalize(items)
                              store$set_data(items, ...)
-                             store$load_data()
+                             store$load_data(sprintf("%s.focus(true)", get_id()))
+                           },
+                           set_focus=function(value) {
+                             if(as.logical(value)) {
+                               call_Ext("focus", TRUE)
+
+                             }
                            },
                            len=function(...) base::length(get_items()),
                            .normalize=function(items) {
