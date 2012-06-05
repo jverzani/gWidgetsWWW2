@@ -2,12 +2,13 @@
 \alias{gformlayout}
 \title{A form layout container}
 \usage{
-  gformlayout(align = c("default", "left", "center", "top"),
+  gformlayout(align = c("default", "left", "center", "right", "top"),
     spacing = 5, container = NULL, ..., width = NULL,
     height = NULL, ext.args = NULL)
 }
 \arguments{
-  \item{align}{alignment of form}
+  \item{align}{alignment of labels, from \code{c("default",
+  "left", "center", "right", "top")}.}
 
   \item{spacing}{spacing between columns}
 

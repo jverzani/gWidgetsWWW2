@@ -1,0 +1,21 @@
+                                                                     
+                                                                     
+                                             
+citHeader("To cite gWidgetsWWW2 in publications use:")
+
+citEntry(entry = "Article",
+  title        = "{gWidgetsWWW}: Creating Interactive Web Pages within {R}",
+  author       = personList(as.person("John Verzani")),
+  journal      = "Journal of Statistical Software",
+  year         = "2012",
+  volume       = "49",
+  number       = "10",
+  pages        = "1--12",
+  url          = "http://www.jstatsoft.org/v49/i10/",
+
+  textVersion  =
+  paste("John Verzani (2012).",
+        "gWidgetsWWW: Creating Interactive Web Pages within R.",
+        "Journal of Statistical Software, 49(10), 1-12.",
+        "URL http://www.jstatsoft.org/v49/i10/.")
+)

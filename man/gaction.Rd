@@ -2,8 +2,8 @@
 \alias{gaction}
 \title{gaction implementation}
 \usage{
-  gaction(label, tooltip = label, icon = NULL, handler,
-    parent, ...)
+  gaction(label, tooltip = label, icon = NULL,
+    key.accel = NULL, handler, parent, ...)
 }
 \arguments{
   \item{label}{Text for action}
@@ -11,6 +11,11 @@
   \item{tooltip}{tooltip. Ignored for this toolkit}
 
   \item{icon}{action icon class}
+
+  \item{key.accel}{keyboard accelerator. Single key, e.g.
+  "X", "LEFT" (arrow), "PAGE_UP", "Ctrl-n", "Alt-X". Use
+  "Shift" to force that. List of key events is given here:
+  \code{http://docs.sencha.com/ext-js/4-1/#!/api/Ext.EventObject}.}
 
   \item{handler}{function called when action is invoked}
 
@@ -30,6 +35,10 @@
   can adjust if objects proxying the action are visible.
   The \code{set_icon} reference class method can be used to
   set the icon (no S3 method)
+}
+\details{
+  See the method \code{add_keybinding} to add a simple
+  keybinding to initiate this action.
 }
 \examples{
 w <- gwindow()

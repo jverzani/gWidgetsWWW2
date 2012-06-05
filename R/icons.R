@@ -66,7 +66,7 @@ isIcon <- function(x) is(x,"Icon")
 ##'
 ##' @export
 make_stock_icons <- function() {
-  fs <- list.files(system.file("base/images", package="gWidgetsWWW2"), full=TRUE)
+  fs <- list.files(system.file("base/images", package="gWidgetsWWW2"), full.names=TRUE)
   bs <- basename(fs)
   bs_noexts <- sapply(fs, .our_basename)
   if(!is.null(getOption("gWidgetsWWW2:FastRWeb")))

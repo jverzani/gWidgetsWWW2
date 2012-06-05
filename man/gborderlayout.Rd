@@ -75,6 +75,10 @@ surround a "center" panel.}
   class method \code{set_panel_size} with arguments
   \code{where} and a numeric \code{dimension}.
 }
+\note{
+  \code{gpanedgroup} does not sit nicely within a
+  \code{gnotebook} container, avoid trying this.
+}
 \examples{
 w <- gwindow("border layout")
 #

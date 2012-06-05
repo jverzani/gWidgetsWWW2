@@ -34,8 +34,8 @@ list_objects <- function() {
 detailOn <- function(x, varname, cont, width, height,...) UseMethod("detailOn")
 detailOn.default <- function(x, varname, cont, width, height,...) {
   out <- capture.output(x)
-  if(length(out) > 10)
-    out <- c(head(out, n=10), "....")
+  if(length(out) > 20)
+    out <- c(head(out, n=20), "....")
   t <- gtext(paste(out, collapse="\\n"), cont=cont, expand=TRUE)
   size(t) <- c(width, height)
 }

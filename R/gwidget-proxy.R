@@ -730,10 +730,10 @@ GWidgetArrayStore <- setRefClass("GWidgetArrayStore",
                                             model_id(), proxy$get_fields())
                              add_js_queue(cmd)
                            },
-                           load_data=function() {
+                           load_data=function(callback="function(){}") {
                              if(paging)
-                               cmd <- sprintf("%s.load({params:{start:0, limit: %s, session_id:session_id, id:'%s'}, add:false, callback:function() {}});",
-                                              get_id(), page_size, proxy$get_id())
+                               cmd <- sprintf("%s.load({params:{start:0, limit: %s, session_id:session_id, id:'%s'}, add:false, callback:%s});",
+                                              get_id(), page_size, proxy$get_id(),callback)
                              else
                                cmd <- sprintf("%s.load({params:{session_id:session_id, id:'%s'}, add:false, callback:function() {}});",
                                               get_id(), proxy$get_id())

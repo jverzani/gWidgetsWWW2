@@ -109,9 +109,7 @@ var map = new Ext.util.KeyMap(document, {
     handler: function() {callRhandler('{{id}}', 'action', null)},
     shift: {{shift}},
     control: {{control}},
-    alt: {{alt}},
-    scope: this,
-
+    alt: {{alt}}
 });
 "
                            add_js_queue(whisker.render(tpl,

@@ -28,7 +28,7 @@ NULL
 ##' call an Ext constructor. The options passed to the Ext constructor
 ##' may be added to or overridden by use of this argument. Values are
 ##' passed in as named list components and with values converted into JavaScript
-##' objects by \code{\link{asJSObject}}.
+##' objects by \code{asJSObject}.
 ##' @param expand Logical or numeric. Does the child component expand
 ##' to fill the allotted space? If so a \code{flex} value can be
 ##' specified (as a positive integer) that gives weights to all

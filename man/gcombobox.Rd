@@ -16,17 +16,22 @@
     initial.msg = "", tpl = NULL)
 }
 \arguments{
-  \item{items}{a vector of items to choose from. Coerced to
-  character class. Use \code{coerce.with} to get a numeric
-  value, say. (Not supported, but should also allow: Or a
-  data frame with 1 column (items), two columns (items,
-  icons), or three columns (items, icons, tooltip))}
+  \item{items}{a vector or data frame of items to choose
+  from. Coerced to character class. Use \code{coerce.with}
+  to get a numeric value, say. If a data frame then one can
+  add an icon, tooltip, and possibly extra information:
+  with 1 column (items), two columns (items, icons), or
+  three columns (items, icons, tooltip)). If 4 or more,
+  then extra columns can be incorporated by specifying a
+  template. The icon is a url, not a stock name. For stock
+  icons, convert with \code{getStockIconByName} with
+  \code{css=FALSE} specified.}
 
   \item{selected}{initially selected item, by index. Use
   \code{0L} for none.}
 
   \item{editable}{logical. Does combobox allow editing. A
-  bug (or package writer's limiations) in extjs do not
+  bug (or package writer's limitations) in extjs do not
   allow one to set the value if it is a potential index
   (when \code{items} is integer). Go figure. Use 4.0, not 5
   if you want numeric values ...}
@@ -43,8 +48,11 @@
   \item{initial.msg}{If \code{selected=0}, then one can
   assign an initial message here}
 
-  \item{tpl}{a template for the item (Not working!
-  Dang....)}
+  \item{tpl}{a template for the item. This is an HTML
+  snippet, where the column names, when wrapped in braces,
+  will be substituted for the values. The first three
+  columns have their names normalized to \code{name},
+  \code{icon}, \code{tooltip}.}
 
   \item{handler}{optional means (to
   \code{\link{addHandlerChanged}}) to specify a handler for
@@ -88,9 +96,7 @@
 }
 \description{
   The \code{svalue<-} method is used to specify value by
-  name or by index.  (THIS IS BROKEN, LIKELY A BUG IN EXTJS
-  CODE, BUT [<- DOES NOT WORK The \code{[<-} method can be
-  used to update the data to select from.)
+  name or by index.
 
   The name gdroplist is an alternative (not encouraged) for
   gcomobbox
@@ -121,5 +127,24 @@ galert(paste("You selected ", svalue(h$obj), sep=""), parent=w)
 gcombobox(state.name, cont=g, selected=0, initial.msg="Choose a state...")
 ## autocomplete
  cb <- gcombobox(state.name, cont=g, autocomplete=TRUE)
+## template
+w <- gwindow()
+g <- gvbox(container=w)
+d <- data.frame(name=c("Alabama", "Alaska","Arizona"),
+                icon=c("http://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Flag_of_Alabama.svg/22px-Flag_of_Alabama.svg.png",
+                  "http://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Flag_of_Alaska.svg/22px-Flag_of_Alaska.svg.png",
+                  "http://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Flag_of_Arizona.svg/22px-Flag_of_Arizona.svg.png"),
+                tooltip=c("Audemus jura nostra defendere",
+                  "North to the future",
+                  "Ditat Deus"
+                  ),
+                extra=c(
+                  "Montgomery",
+                  "Juneau",
+                  "Phoenix"),
+                stringsAsFactors=FALSE)
+cb <- gcombobox(d,
+                tpl="<img src=\\"{icon}\\"></img><span data-qtip=\\"{tooltip}\\"> {name}, Capital is <em>{extra}</em></span>",
+                cont=g)
 }
 
