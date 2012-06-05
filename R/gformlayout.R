@@ -27,6 +27,7 @@ NULL
 ##' @param spacing spacing between columns
 ##' @param container parent container
 ##' @param ... passed to \code{add} method of parent container.
+##' @inheritParams gwidget
 ##' @export
 ##' @examples
 ##' \dontrun{
@@ -93,6 +94,15 @@ GFormLayout <- setRefClass("GFormLayout",
                                ## are deailing with Array
                                vals <- lapply(.self$children$l, svalue)
                                nms <- sapply(.self$children$l, function(i) {
+                                 i$args$args$l$fieldLabel
+                               })
+                               names(vals) <- nms
+                               vals
+                             },
+                             get_items=function( ...) {
+                               "Return widgets iwth names"
+                               vals <- .self$children$l
+                               nms <- sapply(vals, function(i) {
                                  i$args$args$l$fieldLabel
                                })
                                names(vals) <- nms
