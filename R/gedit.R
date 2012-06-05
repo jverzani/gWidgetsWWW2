@@ -98,7 +98,8 @@ GEdit <- setRefClass("GEdit",
                                     value=text,
                                     coerce_with=coerce.with,
                                     constructor="Ext.form.field.Text",
-                                    transport_signal=ifelse(is_running_local(),"keyup", "blur"),
+                                    #transport_signal=ifelse(is_running_local(), "keyup", "blur"),
+                                    transport_signal="blur",
                                     change_signal="blur"
                                     )
 
