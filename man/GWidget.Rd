@@ -42,7 +42,7 @@
   the Ext constructor may be added to or overridden by use
   of this argument. Values are passed in as named list
   components and with values converted into JavaScript
-  objects by \code{\link{asJSObject}}.}
+  objects by \code{asJSObject}.}
 
   \item{expand}{Logical or numeric. Does the child
   component expand to fill the allotted space? If so a

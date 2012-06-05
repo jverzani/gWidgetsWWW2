@@ -54,7 +54,7 @@ children through a trigger icon.}
   the Ext constructor may be added to or overridden by use
   of this argument. Values are passed in as named list
   components and with values converted into JavaScript
-  objects by \code{\link{asJSObject}}.}
+  objects by \code{asJSObject}.}
 }
 \description{
   Use \code{svalue<-} to adjust the title. The

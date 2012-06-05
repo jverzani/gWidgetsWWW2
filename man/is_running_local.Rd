@@ -1,0 +1,13 @@
+\name{is_running_local}
+\alias{is_running_local}
+\title{Is the process running locally?}
+\usage{
+  is_running_local()
+}
+\value{
+  logical value, \code{TRUE} if local, \code{FALSE} if not.
+}
+\description{
+  Is the process running locally?
+}
+

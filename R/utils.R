@@ -427,6 +427,13 @@ get_tempfile_url <- function(f) {
 
 DEBUG <- function(...) print(list(...))
 
+##' Is the process running locally?
+##'
+##' @export
+##' @return logical value, \code{TRUE} if local, \code{FALSE} if not.
+is_running_local <- function() {
+  is.null(getOption("gWidgetsWWW2:FastRWeb"))
+}
 
 ##' Make a template for the rapache configuration files
 ##'

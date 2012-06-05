@@ -15,9 +15,6 @@
   \code{GWidget} is the base class for widget objects. See
   \code{GContainer} for the base class for container
   objects. Both derive from the \code{GComponent} class.
-
-
-  The package is described in "gWidgetsWWW: Creating Interactive Web Pages within R", Journal of Statistical Software, 49(10), 1-12 (http://www.jstatsoft.org/v49/i10/). .
 }
 \details{
   Installation:

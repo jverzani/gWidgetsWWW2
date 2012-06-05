@@ -46,7 +46,7 @@ surround a "center" panel.}
   the Ext constructor may be added to or overridden by use
   of this argument. Values are passed in as named list
   components and with values converted into JavaScript
-  objects by \code{\link{asJSObject}}.}
+  objects by \code{asJSObject}.}
 }
 \value{
   a \code{GBorderLayout} reference class object

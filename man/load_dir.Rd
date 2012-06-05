@@ -13,6 +13,9 @@
   (fullscreen), has one value, or has \code{index.rhtml} or
   we take first alphabetically; 4) authenticator (XXX to be
   determined, for now calls \code{make_session_manager})}
+
+  \item{...}{passed to \code{load_dir} reference class
+  method of \code{R_http} instance.}
 }
 \value{
   creates the app
