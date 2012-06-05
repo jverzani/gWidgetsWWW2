@@ -119,7 +119,7 @@ SessionManagerFile <- setRefClass("SessionManagerFile",
                                     get_session_by_id=function(id) {
                                       if(!id_exists(id))
                                         return(NULL)
-                                      
+                                      on.exit(unlock_file(id))
                                       if(!is_locked(id)) {
                                         lock_file(id)
                                         e <- try(readRDS(make_file(id)), silent=TRUE)
@@ -130,7 +130,7 @@ SessionManagerFile <- setRefClass("SessionManagerFile",
                                         return(e)
                                       }
                                       ## else we work
-                                      ctr <- 0; MAX_CT <- 10000 # how high should this be?
+                                      ctr <- 0; MAX_CT <- 1000 # how high should this be?
                                    while(is_locked(id) && ctr < MAX_CT) {
                                      Sys.sleep(0.1)
                                      ctr <- ctr + 1
@@ -153,8 +153,8 @@ SessionManagerFile <- setRefClass("SessionManagerFile",
                                    saveRDS(e, make_file(id))
                                  },
                                  clear_session=function(id) {
+                                   on.exit(unlock_file(id))
                                    unlink(make_file(id))
-                                   unlock_file(id)
                                  }
                                  ))
 

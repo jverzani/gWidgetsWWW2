@@ -332,6 +332,9 @@ GWidgetsAppAjax <- setRefClass("GWidgetsAppAjax",
                                  ## Here we modify session environment
                                  l <- read_rook_input(req)
                                  e <- get_session(l$session_id)
+                                 ## close the session on exit
+                                 on.exit(store_session(l$session_id, e))
+
                                  toplevel <- get_toplevel(e=e)
 
                                  if(grepl("runTransport$", req$path_info())) {
@@ -362,8 +365,7 @@ GWidgetsAppAjax <- setRefClass("GWidgetsAppAjax",
                                    run_rpc(req, toplevel)
                                    out <- ""
                                  }
-                                 ## close the session
-                                 store_session(l$session_id, e)
+                               
                                }
                                ## need to populate result
                                res <- Response$new(status=200L,
