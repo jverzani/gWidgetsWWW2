@@ -192,6 +192,29 @@ tag.GComponent <- function(x, key) x$get_attr(key)
   x
 }
 
+
+##' Set focus onto object. 
+##'
+##' For some widgets, this sets user focus (e.g. gedit gets focus for
+##' typing). 
+##' @param value logical. Set focus state.
+##' @export
+##' @usage focus(obj) <- value
+##' @rdname focus
+"focus<-" <- function(obj, value) UseMethod("focus<-")
+
+##' Basic S3 method for focus
+##'
+##' @export
+##' @rdname focus
+##' @method focus<- default
+##' @S3method focus<- default
+"focus<-.default" <- function(obj, value) {
+  obj$set_focus(as.logical(value))
+  obj
+}
+
+
 ##' Set a tooltip for the widget
 ##'
 ##' @param value character tooltip value
@@ -420,7 +443,7 @@ addSpring.default <- function(x) {}
 ##' @S3method addSpring GGroup
 addSpring.GGroup <- function(x) {
   ## just expand an empty label
-  glabel(" ", cont=x, expand=TRUE)
+  glabel(" ", container=x, expand=TRUE)
 }
 
 ##################################################
