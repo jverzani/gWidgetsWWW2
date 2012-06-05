@@ -67,7 +67,8 @@ GText <- setRefClass("GText",
 
                          value <<- paste(getWithDefault(text, ""), collapse="\n")
                          constructor <<- "Ext.form.TextArea"
-                         transport_signal <<- "change"
+                         ##transport_signal <<- "change"
+                         transport_signal <<- "blur"
                          
                          arg_list <- list(value=escapeSingleQuote(.self$value),
                                           width=width,
