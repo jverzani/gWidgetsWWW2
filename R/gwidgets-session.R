@@ -130,13 +130,13 @@ SessionManagerFile <- setRefClass("SessionManagerFile",
                                         return(e)
                                       }
                                       ## else we work
-                                      ctr <- 0; MAX_CT <- 1000 # how high should this be?
+                                      ctr <- 0; MAX_CT <- 10000 # how high should this be?
                                    while(is_locked(id) && ctr < MAX_CT) {
                                      Sys.sleep(0.1)
                                      ctr <- ctr + 1
                                    }
                                       if(ctr >= MAX_CT) {
-                                     logger("*** Failed to get lock after ***", ctr)
+                                     message("*** Failed to get lock after ***", ctr)
                                      NULL
                                    } else {
                                      lock_file(id)
