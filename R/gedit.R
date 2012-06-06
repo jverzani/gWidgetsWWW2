@@ -98,10 +98,11 @@ GEdit <- setRefClass("GEdit",
                                     value=text,
                                     coerce_with=coerce.with,
                                     constructor="Ext.form.field.Text",
-                                    #transport_signal=ifelse(is_running_local(), "keyup", "blur"),
-                                    transport_signal="blur",
+                                    transport_signal="change",
                                     change_signal="blur"
                                     )
+                         ## would like to slow down number of transport calls. Some cobo of blur and <enter>?
+                         ##transport_signal=ifelse(is_running_local(), "keyup", "blur"),
 
                          
                          
@@ -159,9 +160,11 @@ function(value) {
                        },
                        param_defn=function(signal) {
                          if(signal == change_signal) {
-                           "var param = {value: Ext.htmlEncode(this.getValue())};"
+                           sprintf("var param = {value: Ext.htmlEncode(%s.getValue())};", get_id())
                          } else if(signal == "keyup") {
                            "var param = {key: e.getKey()};"
+                         } else if(signal == "change") {
+                           "var param = {value: newValue};"
                          } else {
                            "var param = null;"
                          }
