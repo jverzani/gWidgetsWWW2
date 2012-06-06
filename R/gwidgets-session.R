@@ -123,7 +123,7 @@ SessionManagerFile <- setRefClass("SessionManagerFile",
                                       if(!is_locked(id)) {
                                         lock_file(id)
                                         e <- try(readRDS(make_file(id)), silent=TRUE)
-                                        if(!inherits(out, "try-error")) {
+                                        if(!inherits(e, "try-error")) {
                                           pkgs <- e$.sessionInfo
                                           sapply(names(pkgs), require, character.only=TRUE)
                                         }
@@ -131,26 +131,26 @@ SessionManagerFile <- setRefClass("SessionManagerFile",
                                       }
                                       ## else we work
                                       ctr <- 0; MAX_CT <- 10000 # how high should this be?
-                                   while(is_locked(id) && ctr < MAX_CT) {
-                                     Sys.sleep(0.1)
-                                     ctr <- ctr + 1
-                                   }
+                                      while(is_locked(id) && ctr < MAX_CT) {
+                                        Sys.sleep(0.1)
+                                        ctr <- ctr + 1
+                                      }
                                       if(ctr >= MAX_CT) {
-                                     message("*** Failed to get lock after ***", ctr)
-                                     NULL
-                                   } else {
-                                     lock_file(id)
-                                     e <- readRDS(make_file(id))
-                                     ## read in packages. Idea from sessionTools of Matthew D. Furia <matt.furia@sagebase.org> 
-                                     pkgs <- e$.sessionInfo
-                                     sapply(names(pkgs), require, character.only=TRUE)
-                                     e
-                                   }
-                                 },
+                                        message("*** Failed to get lock after ***", ctr)
+                                        NULL
+                                      } else {
+                                        lock_file(id)
+                                        e <- readRDS(make_file(id))
+                                        ## read in packages. Idea from sessionTools of Matthew D. Furia <matt.furia@sagebase.org> 
+                                        pkgs <- e$.sessionInfo
+                                        sapply(names(pkgs), require, character.only=TRUE)
+                                        e
+                                      }
+                                    },
                                  store_session=function(id, e) {
                                    on.exit(unlock_file(id))
                                    e$.sessionInfo <- pkg_info()
-                                   saveRDS(e, make_file(id))
+                                   saveRDS(e, make_file(id), compress=FALSE)
                                  },
                                  clear_session=function(id) {
                                    on.exit(unlock_file(id))
