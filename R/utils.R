@@ -112,7 +112,7 @@ toJSObject <- function(x) {
     } else if(is.list(val)) {
       out[i] <- toJSObject(val)
     } else {
-      print(list("toJSObject", length1=coerceToJSString(val)))
+      ## print(list("toJSObject", length1=coerceToJSString(val)))
       out[i] <- coerceToJSString(val)
     }
   }
