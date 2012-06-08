@@ -29,6 +29,9 @@ NULL
 
 GWidgetsAppBase <- setRefClass("GWidgetsAppBase",
                                contains="Middleware",
+                               fields=list(
+                                 session_manager="ANY"
+                                 ),
                                methods=list(
                                  get_session = function(sessionID) {
                                    "Return session enviroment from id"
@@ -92,14 +95,7 @@ GWidgetsApp <- setRefClass("GWidgetsApp",
                            fields=list(
                              "url"="character",
                              "gw_script"="character",
-                             "app_name"="character",
-                             session_manager="ANY",
-                             ##
-                             ## authenticator="ANY",
-                             ##
-                             login_cookie="character",
-                             login_cookie_expiry="numeric",
-                             cookie_salt="character"
+                             "app_name"="character"
                              ),
                            methods=list(
                              initialize=function(url="", app_name="", script="",
@@ -110,12 +106,8 @@ GWidgetsApp <- setRefClass("GWidgetsApp",
                                           url=paste("^", url, sep=""),
                                           app_name=app_name,
                                           gw_script=script,
-                                          session_manager=session_manager,
+                                          session_manager=session_manager
                                           ##
-                                          ### authenticator=authenticator,
-                                          login_cookie=character(0),
-                                          login_cookie_expiry=1,
-                                          cookie_salt="replace me"
                                           )
                                           
                                
@@ -139,31 +131,27 @@ GWidgetsApp <- setRefClass("GWidgetsApp",
                                
                                req_input <-  read_rook_input(req)
                                session_id <- req_input$session_id
-                               
+
                                out <- try(create_GUI(session_id, req), silent=TRUE)
 
-
-                               
                                if(inherits(out, "try-error")) {
                                  status <- 400L
                                } 
 
-                               toplevel <- get_toplevel(session_id)
-
+                               e <- get_session(session_id)
+                               on.exit(store_session(session_id,e))
+                               toplevel <- get_toplevel(session_id, e)
+                               
                                ## write response
                                res$body <- paste(out, collapse="\n")
                                res <- Response$new(status=status,
                                                    headers=headers,
                                                    body=paste(out, collapse="\n")
                                                    )
-                               ## write cookies
-                               if(length(login_cookie))
-                                 res$set_cookie("gWidgetsWWW2Login", login_cookie)
 
                                e_cookies <- toplevel$cookies
-                               sapply(ls(e_cookies), function(i) res$set_cookie(i, e_cookies[[i]]))
+#                               sapply(ls(e_cookies), function(i) res$set_cookie(i, e_cookies[[i]]))
                                toplevel$cookies <- new.env()
-
                                res$write("")
                                res$finish()
                              },
@@ -178,7 +166,7 @@ GWidgetsApp <- setRefClass("GWidgetsApp",
 
                                e <- session_manager$get_session_by_id(session_id)
 
-                               
+
                                if(is.null(e)) {
                                  e <- new.env()
 
@@ -194,30 +182,19 @@ GWidgetsApp <- setRefClass("GWidgetsApp",
                                  toplevel <- get_toplevel(e=e)
                                }
 
-                               ## clean up login form if there
-                               cmd <- "
-var tmp = Ext.getDom('gWidgetsLoginForm');
-if(tmp) { document.body.removeChild(tmp)}
-"
-                               toplevel$js_queue_push(cmd)
-                               
-                               ## ## really should check if authenticator is there
-                               ## if(!is.null(authenticator)) {
-                               ##   out <- do_authentification(req, session_id)
-                               ##   if(!is.null(out)) {
-                               ##     toplevel$js_queue_push(out)
-                               ##     out <- toplevel$js_queue$flush()
-                               ##     store_session(session_id, e)
-                               ##     return(out)
-                               ##   }
-                               ## }
-
-                               
                                the_script <- script()
                                
                                if(file.exists(the_script)) {
-                                 attach(e) # attach/detach allows one to find toplevel
-                                 out <- try(sys.source(the_script, envir=e), silent=TRUE)
+
+                                 ## We use attach/detach here. This
+                                 ## allows us to find the toplevel
+                                 ## instance later. Likely there is a
+                                 ## better way to read in the the
+                                 ## script and store the results in an
+                                 ## environment that can be
+                                 ## serialized.
+                                 attach(e) 
+                                 out <- try(sys.source(the_script, envir=e, keep.source=FALSE), silent=TRUE)
                                  detach(e)
 
                                  
@@ -239,52 +216,9 @@ Ext.EventManager.on(window, 'beforeunload', function(e) {close_session('{{sessio
                                  x <- sprintf("File '%s' does not exist", the_script)
                                  stop(x)
                                }
-
                                store_session(session_id, e)
                                return(x)
                              }
-##                              do_authentification=function(req, session_id) {
-##                                "Take care of authentification issues"
-##                                ## create authentification instance
-##                                if(!is(authenticator, "Authenticator")) {
-##                                  authenticator <<- Authenticator$new(app_name)
-##                                }
-                               
-##                                if(!(authenticator$is_valid_cookie(req$cookies()) ||
-##                                     is_valid_cookie(req$cookies()))) {
-##                                  formVals <- req$env[['rook.input']]
-## #                                 formVals <- read_rook_input(req)
-##                                  user <- getWithDefault(formVals$user_name, "")
-##                                  pwd <- getWithDefault(formVals$password, "")
-
-                                 
-##                                  if(!authenticator$is_valid_user(user, pwd )) {
-##                                    out <- authenticator$create_login(session_id)
-##                                    return(out)
-##                                  } else {
-##                                    login_cookie <<- create_login_cookie(user)
-##                                    return(NULL)
-##                                  }
-##                                } else {
-##                                  return(NULL)
-##                                }                               
-##                              },
-##                              ##
-##                              create_login_cookie=function(user) {
-##                                l <- list("user"=user,
-##                                          time=as.numeric(julian(Sys.time())),
-##                                          value=digest(paste(user, cookie_salt))
-##                                          )
-##                                ## use JSON to serialize a list to a character
-##                                toJSON(l)
-##                              },
-##                              is_valid_cookie=function(cookie) {
-##                                "is the gWidgetsWWW2 cookie valid?"
-##                                l <- fromJSON(cookie$gWidgetsWWW2Login)
-##                                ifelse(digest(paste(l$user, cookie_salt)) == l$value &&
-##                                       as.numeric(julian(Sys.time())) - l$time < login_cookie_expiry,
-##                                       TRUE, FALSE)
-##                              }
                              ))
 
 
@@ -293,9 +227,6 @@ Ext.EventManager.on(window, 'beforeunload', function(e) {close_session('{{sessio
 ## handle AJAX calls back into the game
 GWidgetsAppAjax <- setRefClass("GWidgetsAppAjax",
                             contains="GWidgetsAppBase",
-                            fields=list(
-                              session_manager="ANY"
-                              ),
                             methods=list(
                               initialize=function(session_manager=make_session_manager(), ...) {
                                 initFields(
@@ -318,11 +249,12 @@ GWidgetsAppAjax <- setRefClass("GWidgetsAppAjax",
                                ## Here we dispatch on the path_info
                                ## value. Depending on the type we
                                ## might return JSON or javascript so
-                               ## we may modify the headers
-
-
+                               ## we may modify the headers value that
+                               ## was just set.
+                               
                                if(grepl("newSessionId$", req$path_info())) {
-                                 ## Create a new session and get the ID. Returns as JSON
+                                 ## Create a new session and get the ID.
+                                 ## Returns as JSON
                                  headers <- list('Content-Type'='application/json')
                                  out <- toJSON(list(id=session_manager$get_id()))
                                } else if(grepl("closeSession$", req$path_info())) {
@@ -330,6 +262,8 @@ GWidgetsAppAjax <- setRefClass("GWidgetsAppAjax",
                                  out <- ""
                                } else {
                                  ## Here we modify session environment
+                                 ## we need to get then store. (Get locks, store
+                                 ## unlocks)
                                  l <- read_rook_input(req)
                                  e <- get_session(l$session_id)
                                  ## close the session on exit
@@ -340,7 +274,6 @@ GWidgetsAppAjax <- setRefClass("GWidgetsAppAjax",
                                  if(grepl("runTransport$", req$path_info())) {
                                    ## run the transport
                                    out <- run_transport(req, toplevel)
-                                   
                                  } else if(grepl("runHandler$", req$path_info())) {
                                    ## handler, return javascript queue
                                    out <- run_handler(req, e_cookies, toplevel)
@@ -350,7 +283,7 @@ GWidgetsAppAjax <- setRefClass("GWidgetsAppAjax",
                                      headers <- list('Content-Type'='application/json')
                                    out <- run_proxy(req, toplevel) # run_proxy return JSON
                                  } else if(grepl("fileUploadProxy", req$path_info())) {
-                                   headers <- list('Content-Type'='text/html')                                 
+                                   headers <- list('Content-Type'='text/html')
                                    out <- run_upload(req, toplevel)
                                    out <- toJSON(out)
                                  } else if(grepl("runHtmlProxy$", req$path_info())) {
@@ -365,26 +298,22 @@ GWidgetsAppAjax <- setRefClass("GWidgetsAppAjax",
                                    run_rpc(req, toplevel)
                                    out <- ""
                                  }
-                               
                                }
+
+                               
                                ## need to populate result
                                res <- Response$new(status=200L,
                                                    headers=headers,
                                                    body=paste(out, collapse="\n")
                                                    )
+
+                               
                                ## if e_cookies do something
-                               sapply(ls(e_cookies), function(i) {res$set_cookie(i, e_cookies[[i]])})
+#                               sapply(ls(e_cookies), function(i) {res$set_cookie(i, e_cookies[[i]])})
                                
                                res$write("")
                                res$finish()
                              },
-                             get_session = function(sessionID) {
-                               "Return session enviroment from id"
-                               e <- session_manager$get_session_by_id(sessionID)
-                               return(e)
-                             },
-                             
-                             
                              ## The run functions (transport, handler, proxy
                              ## These use GET, not POST, although the latter would
                              ## be appropriate for some.
@@ -394,7 +323,6 @@ GWidgetsAppAjax <- setRefClass("GWidgetsAppAjax",
                                l <- read_rook_input(req)                               
                                toplevel$call_transport(l$id, l$param)
                                out <- toplevel$js_queue$flush()
-
                                return(out)
                              },
 
@@ -452,7 +380,7 @@ GWidgetsAppAjax <- setRefClass("GWidgetsAppAjax",
                                  ## in arguments. Here we check if the toplevel found above
                                  ## is NULL, and if so we work a bit.
 
-                                 ## do we have what we need?
+                                 ## do we have what we need? not if tiplevel is NULL
                                  if(is.null(toplevel)) {
                                    tmp <- req$GET()
                                    e <- get_session(tmp$session_id)
