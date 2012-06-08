@@ -98,6 +98,7 @@ GEdit <- setRefClass("GEdit",
                                     value=text,
                                     coerce_with=coerce.with,
                                     constructor="Ext.form.field.Text",
+#                                    transport_signal=if(is_running_local()) "change" else "blur",
                                     transport_signal="change",
                                     change_signal="blur"
                                     )
@@ -148,6 +149,10 @@ function(value) {
                          add_args(arg_list)
 
                          setup(container, handler, action, ext.args, ...)
+
+                         ## also transport of enter key
+                         
+                         
                        },
                        transport_fun = function() {
                          "var param = {value: w.getValue()}"
