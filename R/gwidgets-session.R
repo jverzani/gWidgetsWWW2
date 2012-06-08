@@ -119,7 +119,7 @@ SessionManagerFile <- setRefClass("SessionManagerFile",
                                     get_session_by_id=function(id) {
                                       if(!id_exists(id))
                                         return(NULL)
-                                      on.exit(unlock_file(id))
+
                                       if(!is_locked(id)) {
                                         lock_file(id)
                                         e <- try(readRDS(make_file(id)), silent=TRUE)
@@ -140,6 +140,7 @@ SessionManagerFile <- setRefClass("SessionManagerFile",
                                         NULL
                                       } else {
                                         lock_file(id)
+                                        message("Lock found on ", ctr, "try")
                                         e <- readRDS(make_file(id))
                                         ## read in packages. Idea from sessionTools of Matthew D. Furia <matt.furia@sagebase.org> 
                                         pkgs <- e$.sessionInfo
