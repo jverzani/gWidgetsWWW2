@@ -112,7 +112,7 @@ GGoogleMaps <- setRefClass("GGoogleMaps",
                                                   lat=center[1],
                                                   lng=center[2]
                                                   ),
-                                                gmapType=map_type,
+                                                gmapType=map_type[maptype],
                                                 zoomLevel=zoom,
                                                 width=width,
                                                 height=height
