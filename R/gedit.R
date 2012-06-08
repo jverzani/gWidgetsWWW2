@@ -98,14 +98,12 @@ GEdit <- setRefClass("GEdit",
                                     value=text,
                                     coerce_with=coerce.with,
                                     constructor="Ext.form.field.Text",
-                                    transport_signal=ifelse(is_running_local(), "change","blur"),
+                                    transport_signal=ifelse(is_running_local(), "change","blur")
                                     ### transport_signal="change",
-                                    change_signal="blur"
+                                    ###change_signal="blur"
                                     )
                          ## would like to slow down number of transport calls. Some cobo of blur and <enter>?
                          ##transport_signal=ifelse(is_running_local(), "keyup", "blur"),
-
-                         
                          
                          ## constructor arguments
                          arg_list <- list(value = text,
@@ -150,7 +148,12 @@ function(value) {
 
                          setup(container, handler, action, ext.args, ...)
 
-                         ## also transport of enter key
+                         ## transport on Enter too
+                         add_handler_enter(function(h,...) {
+                           message("set value from enter: ", h$value)
+                           svalue(h$obj) <- h$value
+                         })
+                         
                          
                          
                        },
@@ -159,12 +162,14 @@ function(value) {
                        },
                        process_transport=function(value, ...) {
                          ### XXX should decode url encode here
+                         message("Transport process", value)
+                         
                          if(!is.null(value))
                            value <<- utils:::URLdecode(value)
 
                        },
                        param_defn=function(signal) {
-                         if(signal == change_signal) {
+                         if(signal == "blur") { ##change_signal) {
                            sprintf("var param = {value: Ext.htmlEncode(%s.getValue())};", get_id())
                          } else if(signal == "keyup") {
                            "var param = {key: e.getKey()};"
@@ -177,7 +182,16 @@ function(value) {
                        before_handler=function(signal, params) {
                          if(signal == "keyup") {
                            ## how to process?
+                         } else if(signal == "blur") {
+                           message("blur", params$value)
+                           set_value(value)
+                         } else if(signal == "enterkey") {
+                           set_value(params$value)
                          }
+                         
+                       },
+                       add_handler_changed=function(handler, action=NULL, ...) {
+                         add_handler("blur",  handler, action, ...)
                        },
                        add_handler_keystroke=function(handler, action=NULL, ...) {
                          "Keystroke is only normalized charCode. Not a letter!"
@@ -190,8 +204,9 @@ function(value) {
                          add_observer(o, signal)
                          tpl <- "
 {{id}}.on('specialkey', function(w, e, opts) {
+  alert(e.getKey() == e.enter);
   if(e.getKey() == e.ENTER) {
-    callRhandler('{{id}}', '{{signal}}', null);
+    callRhandler('{{id}}', '{{signal}}', {value: Ext.htmlEncode(w.getValue())});
   }
 });
 "
