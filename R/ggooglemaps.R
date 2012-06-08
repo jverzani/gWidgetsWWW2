@@ -106,13 +106,17 @@ GGoogleMaps <- setRefClass("GGoogleMaps",
                                              "satellite"="G_SATELLITE_MAP",
                                              "hybrid"="G_HYBRID_MAP",
                                              "terrain"="G_PHYSICAL_MAP")
-                                             
+
+                               gmapType <- map_type[maptype]
+
+                               print(list("googlemaps", maptype=maptype, gmapType=gmapType))
+                               
                                arg_list <- list(
                                                 setCenter=list(
                                                   lat=center[1],
                                                   lng=center[2]
                                                   ),
-                                                gmapType=map_type[maptype],
+                                                #gmapType=gmapType,
                                                 zoomLevel=zoom,
                                                 width=width,
                                                 height=height
