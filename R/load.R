@@ -103,7 +103,7 @@ R_http <- setRefClass("R_http",
                                                     }
                                                     invisible(gwapp)
                                                   },
-                                                  load_dir=function(
+                                                  load_dirapp=function(
                                                     dir_name, ...) {
                                                     "
 ##' Load an app in a directory
@@ -216,7 +216,20 @@ load_app <- function(script_name,
 ##' \code{R_http} instance.
 ##' @export
 ##' @return creates the app
-load_dir <- function(dir_name, ...) {
+load_dirapp <- function(dir_name, ...) {
   r_httpd <- R_http$get_instance()
   r_httpd$load_dir(dir_name, ...)
+}
+
+
+##' Load all apps in the directory specified
+##'
+##' Loads all files with "r" or "R" extension in the specified directory
+##' @para dir_name directory name
+load_dir <- function(dir_name, session_manager=make_session_manager()) {
+
+  f <- list.files(dir_name, full.names=TRUE)
+  f <- Filter(function(x) grepl("[rR]$", x), f)
+  sapply(f, load_app, session_manager=session_manager, open_page=FALSE, simplify=FALSE)
+
 }
