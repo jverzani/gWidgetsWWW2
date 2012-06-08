@@ -204,7 +204,8 @@ function(value) {
                          add_observer(o, signal)
                          tpl <- "
 {{id}}.on('specialkey', function(w, e, opts) {
-  alert(e.getKey() == e.enter);
+  alert(e.getKey());
+  alert(e.ENTER);
   if(e.getKey() == e.ENTER) {
     callRhandler('{{id}}', '{{signal}}', {value: Ext.htmlEncode(w.getValue())});
   }
