@@ -98,8 +98,8 @@ GEdit <- setRefClass("GEdit",
                                     value=text,
                                     coerce_with=coerce.with,
                                     constructor="Ext.form.field.Text",
-#                                    transport_signal=if(is_running_local()) "change" else "blur",
-                                    transport_signal="change",
+                                    transport_signal=ifelse(is_running_local(), "change","blur"),
+                                    ### transport_signal="change",
                                     change_signal="blur"
                                     )
                          ## would like to slow down number of transport calls. Some cobo of blur and <enter>?
