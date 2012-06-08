@@ -1,13 +1,12 @@
 TODO
 ----
 
-PASS * gformlayout-- simplify forms; pass for now
 
+* e_cookies?
 
 * gdf expand=TRUE, not same as gtable. Odd
 
 * gcheckboxgroup + use.table
-
 
 * in ex-gcanvas-motion - error o eventX eventY. Chrome warning
 
@@ -18,6 +17,11 @@ PASS * gformlayout-- simplify forms; pass for now
 * why so slow? (Reference class methods?)
 
 * Can use template for FastRWeb/load_AJAX.R, but don't
+
+DONE
+----
+
+* <del> gformlayout-- simplify forms; pass for now</del>
 
 * <del>gmarkdown (markdown package -> ghtml)</del>
 
