@@ -112,6 +112,7 @@ toJSObject <- function(x) {
     } else if(is.list(val)) {
       out[i] <- toJSObject(val)
     } else {
+      print(list("toJSObject", length1=coerceToJSString(val)))
       out[i] <- coerceToJSString(val)
     }
   }
@@ -426,7 +427,8 @@ get_tempfile_url <- function(f) {
 }
 
 DEBUG <- function(...) print(list(...))
-
+logger <- function(..., fname="/tmp/log.txt") cat(..., "\n", file=fname, append=TRUE)
+  
 ##' Is the process running locally?
 ##'
 ##' @export
