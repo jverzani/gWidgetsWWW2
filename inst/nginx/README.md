@@ -1,19 +1,30 @@
-Using nginx and Rook to serve web pages
+Using a reverse proxy (nginx or apache) and Rook to serve web pages
 =======================================
 
-The `nginx` web server can be used as a proxy to route requests to an internally running `R` process running `Rook`.
+The `apache` and `nginx` web servers can be used as a proxy to route
+requests to an internally running `R` process running `Rook`.
+
+This is an alternative to using FastRWeb. For this solution, sessions are kept in memory so the response is much faster. Only relatively simple scripts -- which do not make numerous AJAX calls back into the server -- will work under FastRWeb. (A limitation of gWidgetsWWW2, not RServe and FastRWeb.)
 
 Setup
 -----
 
-* The file `Rook.sh` is a modification of one written by Jeffrey Horner. It allows one to start an `R` process with `Rook` listening on a specified port. The script is meant to be modified by the user, so that any exposed applications are loaded.
-Unless needed, one should only start with one port and specify `multiple_instances <- FALSE`. This will give the speediest response.
+* The file `Rook.sh` is a modification of one written by Jeffrey
+  Horner. It allows one to start an `R` process with `Rook` listening
+  on a specified port. The script is meant to be modified by the user,
+  so that any exposed applications are loaded. 
 
-* The `nginx` server then is used to proxy external requests to the internal `Rook` server. Suppose you started the `Rook` server on port 9000. Then one would configure `nginx` to server pages as follows. The `server` configuration of `nginx.conf` can have this added to it:
+* The `nginx` server can be used to proxy external requests to the
+  internal `Rook` server. Suppose you started the `Rook` server on
+  port 9000. Then one would configure `nginx` to server pages as
+  follows. The `server` configuration of `nginx.conf` can have this
+  added to it:
     
+```
     location /custom { 
       proxy_pass http://localhost:9000/custom; 
     }
+```
 
 The  urls of the form `http://ip.address/custom/someApp` are sent through to the `Rook` process running on port 9000.
 
@@ -22,8 +33,9 @@ The  urls of the form `http://ip.address/custom/someApp` are sent through to the
 Using apache to do the same
 ---------------------------
 
-Apache can be used to do the same. Here are some sample directives:
+Apache can be used to do the same. 
     
+```
     ProxyPass  /custom http://127.0.0.1:9000/custom
     ProxyPassReverse /custom http://127.0.0.1:9000/custom
     ProxyPreserveHost On
@@ -36,5 +48,5 @@ Apache can be used to do the same. Here are some sample directives:
      </Location>
     </IfModule>
     
-
+```
 
