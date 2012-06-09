@@ -141,7 +141,8 @@ SessionManagerFile <- setRefClass("SessionManagerFile",
                                       } else {
                                         lock_file(id)
                                         e <- readRDS(make_file(id))
-                                        ## read in packages. Idea from sessionTools of Matthew D. Furia <matt.furia@sagebase.org> 
+                                        ## read in packages.
+                                        ## Idea from sessionTools of Matthew D. Furia <matt.furia@sagebase.org> 
                                         pkgs <- e$.sessionInfo
                                         sapply(names(pkgs), require, character.only=TRUE)
                                         e
@@ -153,6 +154,7 @@ SessionManagerFile <- setRefClass("SessionManagerFile",
                                    saveRDS(e, make_file(id), compress=FALSE)
                                  },
                                  clear_session=function(id) {
+                                   message("clear session ", id)
                                    on.exit(unlock_file(id))
                                    unlink(make_file(id))
                                  }
