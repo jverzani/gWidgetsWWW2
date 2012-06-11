@@ -3,8 +3,8 @@
 \title{A form layout container}
 \usage{
   gformlayout(align = c("default", "left", "center", "right", "top"),
-    spacing = 5, container = NULL, ..., width = NULL,
-    height = NULL, ext.args = NULL)
+    spacing = 5, container = NULL, ..., label.width = 100,
+    width = NULL, height = NULL, ext.args = NULL)
 }
 \arguments{
   \item{align}{alignment of labels, from \code{c("default",
@@ -16,6 +16,8 @@
 
   \item{...}{passed to \code{add} method of parent
   container.}
+
+  \item{label.width}{width reserved for labels}
 
   \item{width}{width in pixels of component. Sizing in
   \pkg{gWidgetsWWW2} is sometimes necessary as the
