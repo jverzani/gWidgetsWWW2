@@ -53,7 +53,8 @@ GPanedGroup <- setRefClass("GPanedGroup",
                              horizontal="logical"
                              ),
                            method=list(
-                             init=function(horizontal, container, ..., width=NULL, height=NULL, ext.args=NULL,
+                             init=function(horizontal, container, ...,
+                               width=NULL, height=NULL, ext.args=NULL,
                                collapsible=FALSE, default.size=NULL
                                ) {
                                child_ct <<- 0
@@ -125,4 +126,5 @@ GPanedGroup <- setRefClass("GPanedGroup",
                                "Set sash position, if possible"
                                cat("XXX not implemented")
                              }
+                             
                              ))
