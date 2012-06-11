@@ -220,11 +220,11 @@ GCombobox <- setRefClass("GCombobox",
                            process_transport = function(...) {
                              value <<- ..1
                            },
-                           get_items = function(...) {
+                           get_items = function(i,...) {
                              "Get items from store as vector, not data frame"
                              items <- store$get_data(...)
                              if(is.data.frame(items))
-                               items[,1, drop=TRUE]
+                               items[i,1, drop=TRUE]
                              else
                                items
                            },
