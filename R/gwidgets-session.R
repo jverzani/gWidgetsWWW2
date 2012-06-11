@@ -50,6 +50,7 @@ SessionManager <- setRefClass("SessionManager",
                                 },
                                 clear_session = function(id) {
                                   "clean up session, called when page is closed"
+                                  message("clear session ", id)
                                   
                                   sessions[[id]] <<- NULL
                                 },
@@ -154,7 +155,6 @@ SessionManagerFile <- setRefClass("SessionManagerFile",
                                    saveRDS(e, make_file(id), compress=FALSE)
                                  },
                                  clear_session=function(id) {
-                                   message("clear session ", id)
                                    on.exit(unlock_file(id))
                                    unlink(make_file(id))
                                  }
