@@ -218,7 +218,7 @@ load_app <- function(script_name,
 ##' @return creates the app
 load_dirapp <- function(dir_name, ...) {
   r_httpd <- R_http$get_instance()
-  r_httpd$load_dir(dir_name, ...)
+  r_httpd$load_dirapp(dir_name, ...)
 }
 
 
