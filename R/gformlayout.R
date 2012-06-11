@@ -27,6 +27,7 @@ NULL
 ##' @param spacing spacing between columns
 ##' @param container parent container
 ##' @param ... passed to \code{add} method of parent container.
+##' @param label.width width reserved for labels
 ##' @inheritParams gwidget
 ##' @export
 ##' @examples
@@ -48,9 +49,11 @@ gformlayout <- function(
                         align=c("default", "left", "center", "right", "top"),
                         spacing=5,
                         container = NULL, ...,
+                        label.width=100,
                         width=NULL, height=NULL, ext.args=NULL){
  g <- GFormLayout$new(container, ...)
  g$init(align=align, spacing=spacing, container=container, ...,
+        label.width=label.width,
         width=width, height=height, ext.args=ext.args)
  g
 }
@@ -67,6 +70,7 @@ GFormLayout <- setRefClass("GFormLayout",
                                spacing=2, 
                                container,
                                ...,
+                               label.width=100L,
                                width =NULL,
                                height=NULL,
                                ext.args = NULL
@@ -80,7 +84,11 @@ GFormLayout <- setRefClass("GFormLayout",
                                                   "left"="left",
                                                   "center"="center",
                                                   "right"="right",
-                                                  "top"="top")[match.arg(align)]
+                                                  "top"="top")[match.arg(align)],
+                                                defaults=list(
+                                                  labelWidth=label.width
+                                                  )
+
                                                 )
                                add_args(arg_list, ext.args)
                                
