@@ -154,9 +154,8 @@ function(value) {
                            svalue(h$obj) <- h$value
                          })
                          
-                         
-                         
                        },
+
                        transport_fun = function() {
                          "var param = {value: w.getValue()}"
                        },
@@ -168,6 +167,7 @@ function(value) {
                            value <<- utils:::URLdecode(value)
 
                        },
+
                        param_defn=function(signal) {
                          if(signal == "blur") { ##change_signal) {
                            sprintf("var param = {value: Ext.htmlEncode(%s.getValue())};", get_id())
@@ -179,17 +179,17 @@ function(value) {
                            "var param = null;"
                          }
                        },
-                       before_handler=function(signal, params) {
+                       before_handler=function(signal, value) {
                          if(signal == "keyup") {
                            ## how to process?
                          } else if(signal == "blur") {
-                           message("blur", params$value)
                            set_value(value)
                          } else if(signal == "enterkey") {
-                           set_value(params$value)
+                           set_value(value)
                          }
                          
                        },
+                       ## handlers
                        add_handler_changed=function(handler, action=NULL, ...) {
                          add_handler("blur",  handler, action, ...)
                        },
@@ -200,12 +200,10 @@ function(value) {
                        add_handler_enter=function(handler, action=NULL, ...) {
                          "add handler key for enter event. No addHandlerEnter method, call this directly"
                          signal <- "enterkey"
-                         o <- observer(.self, handler, action) # in gWidgets2 but not now
+                         o <- observer(.self, handler, action)
                          add_observer(o, signal)
                          tpl <- "
 {{id}}.on('specialkey', function(w, e, opts) {
-  alert(e.getKey());
-  alert(e.ENTER);
   if(e.getKey() == e.ENTER) {
     callRhandler('{{id}}', '{{signal}}', {value: Ext.htmlEncode(w.getValue())});
   }
