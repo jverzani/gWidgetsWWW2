@@ -111,6 +111,7 @@ GText <- setRefClass("GText",
 ##' @param text initial text.
 ##' @inheritParams gwidget
 ##' @return a GCodeMirror reference class
+##' @export
 ##' @author john verzani
 gcodemirror <- function(text="", container=NULL, ..., width=NULL, height=NULL, ext.args=list()) {
   obj <- GCodeMirror$new(container)
