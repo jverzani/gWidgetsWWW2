@@ -47,17 +47,16 @@ color: #777;
 /* hacked into by JV, apologies */
 
 html {
-  font-size: 125%;
+  font-size: 100%;
   -webkit-text-size-adjust: 125%;
       -ms-text-size-adjust: 125%;
 }
 
-/* was 13px and 18px for font-size, line-height */
 body {
   margin: 0;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 18px;
-  line-height: 24px;
+  font-size: 13px;
+  line-height: 18px;
   color: #333333;
   background-color: #ffffff;
 }

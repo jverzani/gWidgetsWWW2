@@ -225,7 +225,10 @@ load_dirapp <- function(dir_name, ...) {
 ##' Load all apps in the directory specified
 ##'
 ##' Loads all files with "r" or "R" extension in the specified directory
-##' @para dir_name directory name
+##' @param dir_name directory name
+##' @param session_manager session manager
+##' @export
+##' @return list of return values from \code{load_app}
 load_dir <- function(dir_name, session_manager=make_session_manager()) {
 
   f <- list.files(dir_name, full.names=TRUE)

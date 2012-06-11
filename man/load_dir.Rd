@@ -5,6 +5,14 @@
   load_dir(dir_name,
     session_manager = make_session_manager())
 }
+\arguments{
+  \item{dir_name}{directory name}
+
+  \item{session_manager}{session manager}
+}
+\value{
+  list of return values from \code{load_app}
+}
 \description{
   Loads all files with "r" or "R" extension in the
   specified directory
