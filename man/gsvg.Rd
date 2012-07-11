@@ -30,10 +30,11 @@
   \pkg{RSVGTipsDevice}. The basic usage is like
   \code{gimage}, where a file that is stored in a place the
   web browser can serve is used as the file specified to
-  the device. The convenience method \code{get_tempfile}
-  (and function) is used to create such a file. Use the
-  \code{.svg} extension. The widget size is specified in
-  pixels, but the svg device driver is in inches.
+  the device. The convenience method
+  \code{get_tempfile}(and function) is used to create such
+  a file. Use the \code{.svg} extension. The widget size is
+  specified in pixels, but the svg device driver is in
+  inches.
 }
 \note{
   The package has similar widgets: \code{\link{gimage}} and

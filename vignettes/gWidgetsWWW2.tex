@@ -96,7 +96,7 @@ The primary contribution of the package is
 \item a means to create \javascript{}
 \item a means to create the \javascript{} to produce the controls and
 widgets to create the interactive GUI
-\items a means to callback into the \R{} session in response to events
+\item a means to callback into the \R{} session in response to events
 and return \javascript{} to manipulate the state of the page
 \item a means to easily incorporate this into a web page.  These web
   pages are not centered around displaying content, but rather for
@@ -513,7 +513,7 @@ so. One specifies a string of \javascript{} to passback, for example:
 > w$add_js_queue("alert('hello world');")
 \end{Sinput}
 \begin{Soutput}
-[1] "52"
+[1] "55"
 \end{Soutput}
 \end{Schunk}
 
@@ -598,7 +598,7 @@ At this point the package can be intergrated in with
 
 The web pages may be viewed through a web stack of apache (or any
 other web server with cgi-bin capabilies), \pkg{FastRWeb} (to provide
-the cgi-bin script to interface}, and \pkg{Rserve}.
+the cgi-bin script to interface), and \pkg{Rserve}.
 
 Installation details are in the \code{FastRWeb} directory of the package.
 

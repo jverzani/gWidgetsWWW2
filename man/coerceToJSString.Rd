@@ -10,17 +10,17 @@
 \usage{
   coerceToJSString(x)
 
-  \method{"coerceToJSString"}{default} (x)
+  \method{coerceToJSString}{default}(x)
 
-  \method{"coerceToJSString"}{character} (x)
+  \method{coerceToJSString}{character}(x)
 
-  \method{"coerceToJSString"}{factor} (x)
+  \method{coerceToJSString}{factor}(x)
 
-  \method{"coerceToJSString"}{logical} (x)
+  \method{coerceToJSString}{logical}(x)
 
-  \method{"coerceToJSString"}{String} (x)
+  \method{coerceToJSString}{String}(x)
 
-  \method{"coerceToJSString"}{list} (x)
+  \method{coerceToJSString}{list}(x)
 }
 \arguments{
   \item{x}{object to coerce}

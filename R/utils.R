@@ -48,43 +48,43 @@ String_render <- function(tpl, l) {
 coerceToJSString <- function(x) UseMethod("coerceToJSString")
 
 ##' S3 method for coerceToString
-##' @method "coerceToJSString" default
-##' @S3method "coerceToJSString" default
+##' @method coerceToJSString default
+##' @S3method coerceToJSString default
 ##' @rdname coerceToJSString
 coerceToJSString.default <- function(x) x # no quote
 
 ##' S3 method for coerceToString
 ##' 
-##' @method "coerceToJSString" character
-##' @S3method "coerceToJSString" character
+##' @method coerceToJSString character
+##' @S3method coerceToJSString character
 ##' @rdname coerceToJSString
 coerceToJSString.character <- function(x) sprintf("'%s'", escapeSingleQuote(x))
 
 ##' S3 method for coerceToString
 ##'
-##' @method "coerceToJSString" factor
-##' @S3method "coerceToJSString" factor
+##' @method coerceToJSString factor
+##' @S3method coerceToJSString factor
 ##' @rdname coerceToJSString
 coerceToJSString.factor <- function(x) coerceToJSString(as.character(x))
 
 ##' S3 method for coerceToString
 ##' 
-##' @method "coerceToJSString" logical
-##' @S3method "coerceToJSString" logical
+##' @method coerceToJSString logical
+##' @S3method coerceToJSString logical
 ##' @rdname coerceToJSString
 coerceToJSString.logical <- function(x) tolower(as.character(x))
 
 ##' S3 method for coerceToString
 ##' 
-##' @method "coerceToJSString" String
-##' @S3method "coerceToJSString" String
+##' @method coerceToJSString String
+##' @S3method coerceToJSString String
 ##' @rdname coerceToJSString
 coerceToJSString.String <- function(x) x # to avoid quoting
 
 ##' S3 method for coerceToString
 ##' 
-##' @method "coerceToJSString" list
-##' @S3method "coerceToJSString" list
+##' @method coerceToJSString list
+##' @S3method coerceToJSString list
 ##' @rdname coerceToJSString
 coerceToJSString.list <- function(x) toJSObject(x)
 
@@ -147,15 +147,15 @@ toJSArray <- function(x, doBrackets=TRUE) UseMethod("toJSArray")
 
 ##' ToJSArray method
 ##' 
-##' @method "toJSArray" default
-##' @S3method "toJSArray" default
+##' @method toJSArray default
+##' @S3method toJSArray default
 ##' @rdname toJSArray
 toJSArray.default <- function(x, doBrackets=TRUE) stop("no default method")
 
 ##' ToJSArray method
 ##' 
-##' @method "toJSArray" numeric
-##' @S3method "toJSArray" numeric
+##' @method toJSArray numeric
+##' @S3method toJSArray numeric
 ##' @rdname toJSArray
 toJSArray.numeric <- function(x, doBrackets=TRUE) {
   if(!length(x)) return(emptyJSArray(doBrackets))
@@ -169,8 +169,8 @@ toJSArray.numeric <- function(x, doBrackets=TRUE) {
 
 ##' ToJSArray method
 ##'  
-##' @method "toJSArray" String
-##' @S3method "toJSArray" String
+##' @method toJSArray String
+##' @S3method toJSArray String
 ##' @rdname toJSArray
 toJSArray.String <- function(x, doBrackets=TRUE) {
   if(!length(x)) return(emptyJSArray(doBrackets))  
@@ -182,8 +182,8 @@ toJSArray.String <- function(x, doBrackets=TRUE) {
 
 ##' ToJSArray method
 ##' 
-##' @method "toJSArray" logical
-##' @S3method "toJSArray" logical
+##' @method toJSArray logical
+##' @S3method toJSArray logical
 ##' @rdname toJSArray
 toJSArray.logical <- function(x,doBrackets=TRUE) {
   if(!length(x)) return(emptyJSArray(doBrackets))
@@ -194,8 +194,8 @@ toJSArray.logical <- function(x,doBrackets=TRUE) {
 
 ##' ToJSArray method
 ##' 
-##' @method "toJSArray" character
-##' @S3method "toJSArray" character
+##' @method toJSArray character
+##' @S3method toJSArray character
 ##' @rdname toJSArray
 toJSArray.character <- function(x, doBrackets=TRUE) {
   if(!length(x)) return(emptyJSArray(doBrackets))  
@@ -205,15 +205,15 @@ toJSArray.character <- function(x, doBrackets=TRUE) {
 
 ##' ToJSArray method
 ##' 
-##' @method "toJSArray" factor
-##' @S3method "toJSArray" factor
+##' @method toJSArray factor
+##' @S3method toJSArray factor
 ##' @rdname toJSArray
 toJSArray.factor <- toJSArray.character
 
 ##' ToJSArray method
 ##' 
-##' @method "toJSArray" Date
-##' @S3method "toJSArray" Date
+##' @method toJSArray Date
+##' @S3method toJSArray Date
 ##' @rdname toJSArray
 toJSArray.Date <- function(x, doBrackets=TRUE) {
   ## SHould make format an option. Here it needs to match \code{column_xtype.Date}.
@@ -222,8 +222,8 @@ toJSArray.Date <- function(x, doBrackets=TRUE) {
 
 ##' ToJSArray method
 ##' 
-##' @method "toJSArray" matrix
-##' @S3method "toJSArray" matrix
+##' @method toJSArray matrix
+##' @S3method toJSArray matrix
 ##' @rdname toJSArray
 toJSArray.matrix <- function(x, doBrackets=TRUE) {
   out <- paste(apply(x,1,toJSArray), collapse=",")
@@ -234,8 +234,8 @@ toJSArray.matrix <- function(x, doBrackets=TRUE) {
 
 ##' ToJSArray method  
 ##' 
-##' @method "toJSArray" list
-##' @S3method "toJSArray" list
+##' @method toJSArray list
+##' @S3method toJSArray list
 ##' @rdname toJSArray
 toJSArray.list <- function(x, doBrackets=TRUE) {
   sapply(x, function(i) toJSArray(i,doBrackets))
@@ -244,8 +244,8 @@ toJSArray.list <- function(x, doBrackets=TRUE) {
 ## This needs work
 ##' ToJSArray method
 ##' 
-##' @method "toJSArray" data.frame
-##' @S3method "toJSArray" data.frame
+##' @method toJSArray data.frame
+##' @S3method toJSArray data.frame
 ##' @rdname toJSArray
 toJSArray.data.frame <- function(x,doBrackets=TRUE) {
   if(nrow(x) == 0) {

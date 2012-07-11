@@ -3,9 +3,9 @@
 \alias{size<-.GComponent}
 \title{Set size property, if implemented}
 \usage{
-  size(x, ..., value) <- value
+  size(x, ...) <- value
 
-  \method{"size"}{GComponent} (x, ..., value) <- value
+  \method{size}{GComponent}(x, ...) <- value
 }
 \arguments{
   \item{x}{widget}

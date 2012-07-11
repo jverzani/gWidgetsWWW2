@@ -3,9 +3,9 @@
 \alias{enabled<-.GComponent}
 \title{Set if widget is enabled}
 \usage{
-  enabled(x, value) <- value
+  enabled(x) <- value
 
-  \method{"enabled"}{GComponent} (x, value) <- value
+  \method{enabled}{GComponent}(x) <- value
 }
 \arguments{
   \item{x}{widget}

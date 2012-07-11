@@ -2,7 +2,7 @@
 \alias{[<-.GComponent}
 \title{assignment method for "["}
 \usage{
-  \method{"["}{GComponent} (x, i, j, ..., value) <- value
+  \method{[}{GComponent}(x, i, j, ...) <- value
 }
 \arguments{
   \item{x}{objecct}

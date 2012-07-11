@@ -1,11 +1,22 @@
 \name{svalue}
 \alias{svalue}
+\alias{svalue.GComponent}
 \title{Return main value associated with a widget}
 \usage{
   svalue(x, index = NULL, drop = NULL, ...)
+
+  \method{svalue}{GComponent}(x, index = NULL, drop = NULL,
+    ...)
 }
 \arguments{
   \item{x}{the widget}
+
+  \item{index}{if specified as \code{TRUE} calls
+  \code{get_index}, else}
+
+  \item{drop}{passed along, in many cases used like
+  \code{drop} call for \code{[}. \code{get_value} reference
+  methods.}
 
   \item{...}{passed to \code{get_value} or \code{get_index}
   method. May include arguments \code{index} or
@@ -13,5 +24,7 @@
 }
 \description{
   Return main value associated with a widget
+
+  svalue method
 }
 

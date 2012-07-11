@@ -3,9 +3,9 @@
 \alias{font<-.GComponent}
 \title{Set font properties, if implemented}
 \usage{
-  font(x, value) <- value
+  font(x) <- value
 
-  \method{"font"}{GComponent} (x, value) <- value
+  \method{font}{GComponent}(x) <- value
 }
 \arguments{
   \item{x}{widget}

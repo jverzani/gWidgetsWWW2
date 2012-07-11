@@ -44,8 +44,8 @@ enabled.GComponent <- function(x) x$enabled()
 "enabled<-" <- function(x, value) UseMethod("enabled<-")
 
 ##' assignment method for enabled
-##' @method "enabled<-" GComponent
-##' @S3method "enabled<-" GComponent
+##' @method enabled<- GComponent
+##' @S3method enabled<- GComponent
 ##' @rdname enabled_assign
 "enabled<-.GComponent" <- function(x, value) {
   x$set_enabled(value)
@@ -62,8 +62,8 @@ enabled.GComponent <- function(x) x$enabled()
 "font<-" <- function(x, value) UseMethod("font<-")
 
 ##' assignment method for font
-##' @method "font<-" GComponent
-##' @S3method "font<-" GComponent
+##' @method font<- GComponent
+##' @S3method font<- GComponent
 ##' @rdname font_assign
 "font<-.GComponent" <- function(x, value) {
   x$set_font(value)
@@ -81,8 +81,8 @@ enabled.GComponent <- function(x) x$enabled()
 "size<-" <- function(x, ..., value) UseMethod("size<-")
 
 ##' assignment method for size
-##' @method "size<-" GComponent
-##' @S3method "size<-" GComponent
+##' @method size<- GComponent
+##' @S3method size<- GComponent
 ##' @rdname size_assign
 "size<-.GComponent" <- function(x, ..., value) {
   x$set_size(value, ...)
@@ -114,8 +114,8 @@ tag.GComponent <- function(x, key) x$get_attr(key)
 "tag<-" <- function(x, key, value) UseMethod("tag<-")
 
 ##' assignment method for tag
-##' @method "tag<-" GComponent
-##' @S3method "tag<-" GComponent
+##' @method tag<- GComponent
+##' @S3method tag<- GComponent
 ##' @rdname tag_assign
 "tag<-.GComponent" <- function(x, key, value) x$set_attr(key, value)
 
@@ -127,8 +127,10 @@ tag.GComponent <- function(x, key) x$get_attr(key)
 "visible" <- function(x) UseMethod("visible")
 
 ##' getters method for visible
-##' @method "visible" GComponent
-##' @S3method "visible" GComponent
+##'
+##' @rdname visible
+##' @method visible GComponent
+##' @S3method visible GComponent
 "visible.GComponent" <- function(x) {
   x$get_visible()
 }
@@ -142,8 +144,9 @@ tag.GComponent <- function(x, key) x$get_attr(key)
 "visible<-" <- function(x, value) UseMethod("visible<-")
 
 ##' assignment method for visible
-##' @method "visible<-" GComponent
-##' @S3method "visible<-" GComponent
+##'
+##' @method visible<- GComponent
+##' @S3method visible<- GComponent
 ##' @rdname visible_assign
 "visible<-.GComponent" <- function(x,  value) {
   x$set_visible(value)
@@ -154,14 +157,17 @@ tag.GComponent <- function(x, key) x$get_attr(key)
 ##' Return main value associated with a widget
 ##'
 ##' @param x the widget
+##' @param index if specified as \code{TRUE} calls \code{get_index}, else
+##' @param drop passed along, in many cases used like \code{drop} call for \code{[}.
+##' \code{get_value} reference methods.
 ##' @param ... passed to \code{get_value} or \code{get_index}
 ##' method. May include arguments \code{index} or \code{drop}
 ##' @export
 "svalue" <- function(x, index=NULL, drop=NULL,...) UseMethod("svalue")
 
 ##' svalue method
-##' @param x the widget
-##' @param ... passed to \code{get_value} method. May include arguments \code{index} or \code{drop}
+##' 
+##' @rdname svalue
 ##' @method svalue GComponent
 ##' @S3method svalue GComponent
 "svalue.GComponent" <- function(x, index=NULL, drop=NULL, ...) {
@@ -174,15 +180,17 @@ tag.GComponent <- function(x, key) x$get_attr(key)
 ##' Set main value associated with a widget
 ##'
 ##' @param x object
+##' @param index if non-NULL and \code{TRUE} call \code{set_index}
+##' else call \code{set_value} reference class method.
 ##' @param ... passed to \code{set_value} method. May include arguments for \code{index}
 ##' @param value value to set
 ##' @export 
 ##' @rdname svalue_assign
-"svalue<-" <- function(x, ..., value) UseMethod("svalue<-")
+"svalue<-" <- function(x, index=NULL, ..., value) UseMethod("svalue<-")
 
 ##' assignment method for svalue
-##' @method "svalue<-" GComponent
-##' @S3method "svalue<-" GComponent
+##' @method svalue<- GComponent
+##' @S3method svalue<- GComponent
 ##' @rdname svalue_assign
 "svalue<-.GComponent" <- function(x, index=NULL, ..., value) {
   if(!is.null(index) && index)
@@ -196,12 +204,12 @@ tag.GComponent <- function(x, key) x$get_attr(key)
 ##' Set focus onto object. 
 ##'
 ##' For some widgets, this sets user focus (e.g. gedit gets focus for
-##' typing). 
+##' typing).
+##' @param x object
 ##' @param value logical. Set focus state.
 ##' @export
-##' @usage focus(obj) <- value
 ##' @rdname focus
-"focus<-" <- function(obj, value) UseMethod("focus<-")
+"focus<-" <- function(x, value) UseMethod("focus<-")
 
 ##' Basic S3 method for focus
 ##'
@@ -209,19 +217,19 @@ tag.GComponent <- function(x, key) x$get_attr(key)
 ##' @rdname focus
 ##' @method focus<- default
 ##' @S3method focus<- default
-"focus<-.default" <- function(obj, value) {
-  obj$set_focus(as.logical(value))
-  obj
+"focus<-.default" <- function(x, value) {
+  x$set_focus(as.logical(value))
+  x
 }
 
 
 ##' Set a tooltip for the widget
 ##'
+##' @param x object
 ##' @param value character tooltip value
 ##' @export
-##' @usage tooltip(obj) <- value
 ##' @rdname tooltip
-"tooltip<-" <- function(obj, value) UseMethod("tooltip<-")
+"tooltip<-" <- function(x, value) UseMethod("tooltip<-")
 
 ##' Basic S3 method for tooltip<-
 ##'
@@ -229,9 +237,9 @@ tag.GComponent <- function(x, key) x$get_attr(key)
 ##' @rdname tooltip
 ##' @method tooltip<- default
 ##' @S3method tooltip<- default
-"tooltip<-.default" <- function(obj, value) {
-  obj$set_tooltip(paste(value, collapse="\n"))
-  obj
+"tooltip<-.default" <- function(x, value) {
+  x$set_tooltip(paste(value, collapse="\n"))
+  x
 }
 
 ##' Toggle editability of the object, if supported
@@ -245,8 +253,8 @@ tag.GComponent <- function(x, key) x$get_attr(key)
 
 ##' assignment method for editable
 ##' 
-##' @method "editable<-" GComponent
-##' @S3method "editable<-" GComponent
+##' @method editable<- GComponent
+##' @S3method editable<- GComponent
 ##' @rdname editable_assign
 "editable<-.GComponent" <- function(x,  ..., value) {
   x$set_editable(value, ...)
@@ -261,8 +269,8 @@ tag.GComponent <- function(x, key) x$get_attr(key)
 ##' @param j column index
 ##' @param ... passed to \code{get_items}
 ##' @param drop passed to \code{get_items}
-##' @method "[" GComponent
-##' @S3method "[" GComponent
+##' @method [ GComponent
+##' @S3method [ GComponent
 ##' @rdname bracket
 "[.GComponent" <- function(x, i, j, ..., drop=TRUE) {
   x$get_items(i, j, ...)
@@ -274,8 +282,8 @@ tag.GComponent <- function(x, key) x$get_attr(key)
 ##' @param j column
 ##' @param ... passed to \code{set_items}
 ##' @param value passed to \code{set_items}
-##' @method "[<-" GComponent
-##' @S3method "[<-" GComponent
+##' @method [<- GComponent
+##' @S3method [<- GComponent
 ##' @rdname bracket_assign
 "[<-.GComponent" <- function(x, i, j, ..., value) {
   if(missing(i) && missing(j))
@@ -291,15 +299,15 @@ tag.GComponent <- function(x, key) x$get_attr(key)
 
 ##' method for names
 ##' @param x object 
-##' @method "names" GComponent
-##' @S3method "names" GComponent
+##' @method names GComponent
+##' @S3method names GComponent
 names.GComponent <- function(x) x$get_names()
 
 ##' assignment method for names
 ##' @param x object
 ##' @param value new names
-##' @method "names<-" GComponent
-##' @S3method "names<-" GComponent
+##' @method names<- GComponent
+##' @S3method names<- GComponent
 ##' @aliases namesGComponent
 ##' @rdname names_assign
 "names<-.GComponent" <- function(x, value) {
@@ -343,7 +351,7 @@ update.GComponent <- function(object, ...) object$update(...)
 ##' Insert text into \code{gtext}
 ##'
 ##' Used to insert text into \code{gtext} insances
-##' @param obj object
+##' @param x object
 ##' @param value text value
 ##' @param where where to insert \code{c("end", "beginning", "at.cursor")}
 ##' @param font.attr ignored. Font attribute for new text
@@ -351,11 +359,11 @@ update.GComponent <- function(object, ...) object$update(...)
 ##' @param ... ignored
 ##' @return no useful return value
 ##' @export
-insert <- function (obj, value, where = "end", 
+insert <- function (x, value, where = "end", 
                     font.attr = NULL, do.newline = TRUE, ...)  UseMethod("insert")
 
 ##' method for insert
-##' @param obj object
+##' @param x object
 ##' @param value value to insert
 ##' @param where to insert
 ##' @param font.attr ignored
@@ -363,9 +371,9 @@ insert <- function (obj, value, where = "end",
 ##' @param ... ignored 
 ##' @method insert GComponent
 ##' @S3method insert GComponent
-insert.GComponent <- function (obj, value, where = "end", 
+insert.GComponent <- function (x, value, where = "end", 
                               font.attr = NULL, do.newline = TRUE, ...)  {
-  obj$insert(value, where=match.arg(where,c("end", "beginning", "at.cursor")), do.newline=do.newline)
+  x$insert(value, where=match.arg(where,c("end", "beginning", "at.cursor")), do.newline=do.newline)
 }
 
 ##################################################

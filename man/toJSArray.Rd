@@ -14,25 +14,25 @@
 \usage{
   toJSArray(x, doBrackets = TRUE)
 
-  \method{"toJSArray"}{default} (x, doBrackets = TRUE)
+  \method{toJSArray}{default}(x, doBrackets = TRUE)
 
-  \method{"toJSArray"}{numeric} (x, doBrackets = TRUE)
+  \method{toJSArray}{numeric}(x, doBrackets = TRUE)
 
-  \method{"toJSArray"}{String} (x, doBrackets = TRUE)
+  \method{toJSArray}{String}(x, doBrackets = TRUE)
 
-  \method{"toJSArray"}{logical} (x, doBrackets = TRUE)
+  \method{toJSArray}{logical}(x, doBrackets = TRUE)
 
-  \method{"toJSArray"}{character} (x, doBrackets = TRUE)
+  \method{toJSArray}{character}(x, doBrackets = TRUE)
 
-  \method{"toJSArray"}{factor} (x, doBrackets = TRUE)
+  \method{toJSArray}{factor}(x, doBrackets = TRUE)
 
-  \method{"toJSArray"}{Date} (x, doBrackets = TRUE)
+  \method{toJSArray}{Date}(x, doBrackets = TRUE)
 
-  \method{"toJSArray"}{matrix} (x, doBrackets = TRUE)
+  \method{toJSArray}{matrix}(x, doBrackets = TRUE)
 
-  \method{"toJSArray"}{list} (x, doBrackets = TRUE)
+  \method{toJSArray}{list}(x, doBrackets = TRUE)
 
-  \method{"toJSArray"}{data.frame} (x, doBrackets = TRUE)
+  \method{toJSArray}{data.frame}(x, doBrackets = TRUE)
 }
 \arguments{
   \item{x}{R object to make into an array}

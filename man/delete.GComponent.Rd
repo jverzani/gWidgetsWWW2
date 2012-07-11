@@ -2,7 +2,7 @@
 \alias{delete.GComponent}
 \title{delete method}
 \usage{
-  \method{delete}{GComponent} (x, child, ...)
+  \method{delete}{GComponent}(x, child, ...)
 }
 \arguments{
   \item{x}{object}

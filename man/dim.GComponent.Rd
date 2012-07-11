@@ -2,7 +2,7 @@
 \alias{dim.GComponent}
 \title{dim method for GComponent's}
 \usage{
-  \method{dim}{GComponent} (x, ...)
+  \method{dim}{GComponent}(x, ...)
 }
 \arguments{
   \item{x}{object}

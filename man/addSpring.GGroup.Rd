@@ -2,7 +2,7 @@
 \alias{addSpring.GGroup}
 \title{Method for addSpring}
 \usage{
-  \method{addSpring}{GGroup} (x)
+  \method{addSpring}{GGroup}(x)
 }
 \arguments{
   \item{x}{a box container (e.g., \code{ggroup})}

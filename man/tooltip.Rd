@@ -3,11 +3,13 @@
 \alias{tooltip<-.default}
 \title{Set a tooltip for the widget}
 \usage{
-  tooltip(obj) <- value
+  tooltip(x) <- value
 
-  \method{tooltip}{default} (obj, value) <- value
+  \method{tooltip}{default}(x) <- value
 }
 \arguments{
+  \item{x}{object}
+
   \item{value}{character tooltip value}
 }
 \description{

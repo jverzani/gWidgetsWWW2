@@ -2,11 +2,11 @@
 \alias{insert}
 \title{Insert text into \code{gtext}}
 \usage{
-  insert(obj, value, where = "end", font.attr = NULL,
+  insert(x, value, where = "end", font.attr = NULL,
     do.newline = TRUE, ...)
 }
 \arguments{
-  \item{obj}{object}
+  \item{x}{object}
 
   \item{value}{text value}
 

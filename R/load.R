@@ -171,7 +171,8 @@ r_httpd <- R_http$get_instance()
 ##' To embed an app within a web page, use an \code{iframe} tag.
 ##'
 ##' @param script_name path to gWidgetssWWW2 script
-##' @param app_name base name for script, unique per project
+##' @param app_name base name for script, unique per project. Derived
+##' from script name if not specified.
 ##' @param show.log If TRUE, logged information is written to the console
 ##' @param port Initial port for Rhttpd server, provided it hasn't already started.
 ##' @param session_manager an instance of \code{make_session_manager}
@@ -185,7 +186,7 @@ r_httpd <- R_http$get_instance()
 ##' gw_script <-  system.file("examples/hello-world.R", package="gWidgetsWWW2")
 ##' if(interactive()) load_app(gw_script, "HelloApp")
 load_app <- function(script_name,
-                     app_name=gsub("\\..*", "", basename(script_name)),
+                     app_name=NULL,
                      port=9000L,
                      session_manager=make_session_manager(),
                      open_page=TRUE,
@@ -193,6 +194,9 @@ load_app <- function(script_name,
                      ...
                          ) {
 
+  if(is.null(app_name))
+    app_name <- gsub("\\..*", "", basename(script_name))
+  
   r_httpd <- R_http$get_instance()
   r_httpd$start(port)                   # if not started
   r_httpd$load_gw(session_manager)

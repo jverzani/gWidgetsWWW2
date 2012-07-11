@@ -86,7 +86,7 @@ This package leverages a popular javascript library (ext from
 the javascript interactivity. \R{} is used for the ``server-side''
 programming.  For serving local scripts \R's internal web server is used,
 through the \pkg{Rook} package of Jeffrey Horner. For serving pages to
-the greater wide world web, one can proxy the \pkg{Rook} server or
+the greater wide world web, one can reverse proxy the \pkg{Rook} server or
 integrate the framework within Simon Urbanek's \pkg{FastRWeb} cgi-bin
 interface to his \pkg{Rserve} package.
 
@@ -95,13 +95,11 @@ The primary contribution of the package is
 \item a means to create \javascript{}
 \item a means to create the \javascript{} to produce the controls and
 widgets to create the interactive GUI
-\items a means to callback into the \R{} session in response to events
+\item a means to callback into the \R{} session in response to events
 and return \javascript{} to manipulate the state of the page
 \item a means to easily incorporate this into a web page.  These web
   pages are not centered around displaying content, but rather for
-  creating interactive controls. However, if desired, the package can
-  be used to integrate in with an existing web page, such as those
-  provided through \pkg{brew} templates.
+  creating interactive controls.
 \end{enumerate}
 
 
@@ -142,7 +140,7 @@ The easiest way to see this webpage is to run the script through a
 specific URL which is created when the \code{load\_app} command is
 executed. For example, if the script above is stored as
 \code{hello.R}, then this call will open the page and load the url
-\url{http://127.0.01:PORT/custom/HelloApp/indexgw.rhtml}:
+\url{http://127.0.01:PORT/custom/HelloApp}:
 
 <<eval=FALSE>>=
 load_app("hello.R", app_name="HelloApp")
@@ -172,17 +170,18 @@ package is not a dependency and should not be loaded, as this package
 is a stand alone implementation.) There are numerous package-specific
 features beyond the basic \pkg{gWidgets} API. Mostly these are
 implemented as reference-class methods and are documented with the
-contstructors.
+constructors.
 
 The documentation provides a few basic uses, more complicated examples
 are provided through the \code{demo}.
 
 \section{Top level windows}
 
-Web GUIs with \pkg{gWidgetsWWW2} are different than desktop GUIs. Not
-only are they slower, as they have lag time between the GUI and the
-server, there can only be one top-level window. This is a
-\code{gwindow} instance called without a \code{parent} argument.
+Web GUIs with \pkg{gWidgetsWWW2} are different than desktop GUIs with
+\pkg{gWidgets}. Not only are they slower, as they have lag time
+between the GUI and the server, there can only be one top-level
+window. This is a \code{gwindow} instance called without a
+\code{parent} argument.
   
 Other \code{gwindow} instances are either a) subwindows (appearing as
 a separate window) if the argument \code{renderTo} is not specified of
@@ -190,19 +189,19 @@ b) rendered to the DOM element with id specified by
 \code{renderTo}.~\footnote{The latter allows \pkg{gWidgetsWWW2} to
   integrate with other web pages. Within a page, leave a \code{div}
   tag with an id \code{some\_id}, say, and then pass the argument
-  \code{renderTo="some\_id"} to the constructor. The
-  \code{ex-multiple} example demonstrates.  }
+  \code{renderTo="some\_id"} to the constructor.  }
 
 Common to all windows (and child widgets) is a single instance of the
 \code{GWidgetsTopLevel} class. In order to share this, each widget
-constructor requires a specification of the widget heirarchy through a
+constructor requires a specification of the widget hierarchy through a
 parent container (with the \code{container}) or if the widget is not
-in the heirarchy, a \code{parent} argument. This toplevel instance is
-stores references to each created object, process the outgoing
+in the hierarchy, a \code{parent} argument. This toplevel instance 
+stores references to each created object, processes the outgoing
 \javascript{} queue, and is used to route incoming callback requests. The
-callbacks are all evaluated within an enviroment that is also stored
+callbacks are all evaluated within an environment that is also stored
 within the toplevel object.  As the toplevel instance is created each
-time a page is loaded, this evaluation environment is not persistent.
+time a page is loaded, this evaluation environment is not persistent
+across each page load, but is persistent while a page is active. 
 
 
 
@@ -214,9 +213,9 @@ The \pkg{gWidgetsWWW2} package implements the basic widgets of the
 \pkg{gWidgets} API:
 \begin{itemize}
 \item the top-level container \code{gwindow} and subwindows
-also constructed through \code{gwindow} (use a parent argument);
+also constructed through \code{gwindow} (using the \code{parent} argument);
 \item the box containers\code{ggroup}, \code{gframe} and \code{gexpandgroup};
-\item tabular layout container \code{glayout};
+\item the tabular layout container \code{glayout};
 \item the notebook container \code{gnotebook};
 \item the split-window container \code{gpanedgroup}.
 \end{itemize}
@@ -234,7 +233,10 @@ provides some other containers:
   areas to place components: a ``center'', and 4 satellites: north,
   south, east and west. As with \code{gexpandgroup}, a user can resize
   the space allocated to each area.
-\item[gpanel] The gpanel widget is a container for other \javascript{}
+\item[gformlayout] for laying out form controls with labels in a
+  table. Simply pass in the label through a \code{label} argument of
+  the control's constructor.  
+\item[gpanel] The \code{gpanel} widget is a container for other \javascript{}
   libraries. Basically it creates a \code{DIV} tag, which can be
   overwritten by external \javascript{} calls. An example shows how the
   \code{d3} \javascript{} libraries
@@ -243,21 +245,25 @@ provides some other containers:
 
 %% dynamic
 As with \pkg{gWidgets}, child components can be added and deleted from
-parent containers dynamically. The \code{gexpandgroup} widget can be
-used to hide or disclose parts of GUI.
+parent containers dynamically (except for \code{glayout}). The
+\code{gexpandgroup} widget can be used to hide or disclose parts of
+GUI, as can \code{gpanedgroup} and \code{gborderlayout}.
 
 %% box containers
 The size of containers in \pkg{gWidgetsWWW2} is different from other
 \pkg{gWidgets} implementations. When used to produce a stand-alone app
 (the basic usage), the top-level window takes up the entire web
-browser screen. Its child component will is allocated this entire
-space. Box containers have the property (similar to \pkg{RGtk2}) that
-child components expand to fill the space orthogonal to the direction
-of packing (vertical boxes and child components that take up the
-maximum horizontal space). Thus in the simple ``hello world'' example,
-the horizontal box container fills the entire page, and the button
+browser screen. Its child component  is allocated this entire
+space. 
+
+Box containers have the property (similar to \pkg{RGtk2}) that child
+components expand to fill the space orthogonal to the direction of
+packing (vertical boxes and child components that take up the maximum
+horizontal space). Thus in the simple ``hello world'' example, the
+horizontal box container fills the entire page, and the button
 stretches vertically to fill that space -- a really tall button. A
-common idiom then is to use nested containers with different packing directions:
+common idiom then is to use nested containers with different packing
+directions:
 <<>>=
 w <- gwindow("simple GUI with one button", visible=FALSE)
 g <- ggroup(cont = w, horizontal=FALSE, use.scrollwindow=TRUE)
@@ -267,8 +273,10 @@ b <- gbutton("click me", cont = button_group, handler = function(h,...) {
 })
 @ 
 %%
-The \code{use.scrollwindow=TRUE} call will allow the GUI to be larger
-than the allocated screen space, often a useful thing.
+The \code{use.scrollwindow=TRUE} argument will allow the GUI controls
+to consume a space larger than the allocated screen space, often a
+useful thing, though users may be confused if important controls are
+displayed off screen.
 
 
 Containers also have the odd property, that they may have no
@@ -287,14 +295,15 @@ allowed space, as in \code{100\%}.
 The standard widgets of \pkg{gWidgets} are implemented:
 \begin{itemize}
 \item Buttons and labels with \code{gbutton} and \code{glabel};
-\item The widgets to select from a vector of values:
-  \code{gcheckbox}, \code{gcheckboxgroup}, \code{gradio}, \code{gcombobox};
-\item The widgets to select from a range of values: \code{gslider} and \code{gspinbutton};
-\item The text widgets \code{gedit}, for single-line edit boxes and
+\item The widgets to select from a vector of values: \code{gcheckbox},
+  \code{gcheckboxgroup}, \code{gradio}, \code{gcombobox};
+\item The widgets to select from a range of values: \code{gslider} and
+  \code{gspinbutton};
+\item The text widgets \code{gedit}, for single-line edit boxes, and
   \code{gtext}, for multi-line text areas;
 \item The table selection widget \code{gtable};
-\item The tree widget \code{gtree}
 \item The data frame editor \code{gdf};
+\item The tree widget \code{gtree}
 \item Images can be viewed through \code{gimage} -- the image is a url
 \item menu bars but not toolbars with \code{gmenu} and statusbars
   (\code{gstatusbar});
@@ -303,9 +312,9 @@ The standard widgets of \pkg{gWidgets} are implemented:
 
 
 The basic dialogs are implemented (except \code{gbasicdialog}, though
-there is a workaround for that functionality). These
-include \code{galert}, \code{gmessage}, \code{ginput}, and
-\code{gcalendar}.  All require a \code{parent} argument.
+there is a workaround for that functionality). These include
+\code{galert}, \code{gmessage}, \code{ginput}, and \code{gcalendar}.
+All require a \code{parent} argument.
 
 
 No attempt has been made to include the compound widgets of \pkg{gWidgets}:
@@ -313,7 +322,8 @@ No attempt has been made to include the compound widgets of \pkg{gWidgets}:
 \code{ggraphicsnotebook}.
 
 The \code{ghelp} constructor is not provided. The \pkg{helpr} package
-is very useful for that.
+is very useful for attractively displaying web pages within a web
+browser.
 
 In addition to the above, the package has other widgets. In addition
 to the different widgets for graphics described below, there is:
@@ -339,11 +349,12 @@ These include:
   widget. This device writes out \javascript{} commands and uses an
   underlying canvas object on the web page. This requires an HTML5
   compliant browser. There is some support for mouse events. As well,
-  the \code{gcanvas} widget itself, can be used independent of the
-  \code{canvas} device.
+  the \code{gcanvas} widget itself can be used independent of the
+  \code{canvas} device. A handful of reference class methods are
+  available, as illustrated in the example.
 \item The \code{gsvg} widget can be used to display svg graphics, as
   produced by the \code{svg} driver or the \pkg{RSVGTipsDevice}
-  driver.
+  driver. 
 \item The \code{gimage} widget can be used to display graphics
   produced by the \code{png} driver, among others.
 \end{itemize}
@@ -371,7 +382,8 @@ The \code{gsvg} widget is similar, though one uses a file that can be
 served as a url, so replace \code{tempfile} with the package-provided
 \code{get\_tempfile}, as with \code{get\_tempfile(ext='.svg')}. The
 advantage of \code{svg} graphics is they scale to fill the space of
-their container, unlike the canvas object.
+their container, unlike the canvas object. There are browser
+variations with SVG graphics.
 
 
 The \code{gcanvas} device allows access to HTML5's underlying canvas
@@ -513,16 +525,17 @@ Finding bugs can be tedious, as they can appear in different places:
 \item[R issues] Issues with R code can be detected b trying to run the
   script at the R console (\code{source}, say). One can also run the
   script locally, and see if any errors are logged at the console.
-\item[\javascript{} issuse] These are more subtle. Most browsers have
+\item[\javascript{} issues] These are more subtle. Most browsers have
   some \javascript{} debugging tools built in, or easily added (e.g.,
   firebug for Mozilla). The debugger for Chrome allows one to see what
   is requested and what the response is. 
 \end{description}
-It is important to realize that just looking at the source will not
-help. The source for a script loaded with \code{load\_app} simply
-loads some external packages and then issues a call to populate the
-page. This call does not appear in the page source, but rather is a
-response to an AJAX request. The \javascript{} debugger can show you this.
+It is important to realize that just looking at the \proglang{HTML}
+source will not help. The source for a script loaded with
+\code{load\_app} simply loads some external packages and then issues a
+call to get a page id and in turn a call to load the page. This call
+does not appear in the page source, but rather is a response to an
+AJAX request. The \javascript{} debugger can show you this response.
 
 
 
@@ -540,7 +553,7 @@ used to turn a script into a web page.
 \label{sec:serving-pages}
 
 
-At this point the package can be intergrated in with
+At this point the package can be integrated in with
 \pkg{nginx}, say, to serve pages to the public, or with the
 \pkg{FastRWeb} package to serve pages from an \pkg{Rserve} package.
 
@@ -548,13 +561,17 @@ At this point the package can be intergrated in with
 \label{sec:using-pkgfastrweb}
 
 The web pages may be viewed through a web stack of apache (or any
-other web server with cgi-bin capabilies), \pkg{FastRWeb} (to provide
-the cgi-bin script to interface}, and \pkg{Rserve}.
+other web server with cgi-bin capabilities), \pkg{FastRWeb} (to provide
+the cgi-bin script to interface), and \pkg{Rserve}.
 
 Installation details are in the \code{FastRWeb} directory of the package.
 
-The responsiveness is just okay, but likely can be sped up if the
-session management can be.
+The responsiveness is just okay (and that may be generous). The issue
+is each AJAX request (of which there may be many in a complicated GUI)
+requires a call to get the session stored for the page. These sessions
+are serialized between uses, rather than kept in memory as with
+Rook. The serialization can take over 500ms, whereas the processing of
+the call may take 20ms or less.
 
 
 \subsubsection{Using \pkg{nginx} or \pkg{apache} as a proxy for \pkg{Rook}}
@@ -567,7 +584,7 @@ server or \pkg{apache} to a proxy requests to the underlying
   \textbf{No claim is made that this is industrial grade}. For that,
   use a real web-development stack. This should be able to handle
   moderate usage, though there are many areas where scaling will just
-  plain fail.
+  plain fail. 
 \end{quotation}
 
 

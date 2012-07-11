@@ -2,15 +2,15 @@
 \alias{load_app}
 \title{Load a web app defined by a gWidgetsWWW2 script}
 \usage{
-  load_app(script_name,
-    app_name = gsub("\\..*", "", basename(script_name)),
-    port = 9000L, session_manager = make_session_manager(),
+  load_app(script_name, app_name = NULL, port = 9000L,
+    session_manager = make_session_manager(),
     open_page = TRUE, show.log = FALSE, ...)
 }
 \arguments{
   \item{script_name}{path to gWidgetssWWW2 script}
 
-  \item{app_name}{base name for script, unique per project}
+  \item{app_name}{base name for script, unique per project.
+  Derived from script name if not specified.}
 
   \item{show.log}{If TRUE, logged information is written to
   the console}

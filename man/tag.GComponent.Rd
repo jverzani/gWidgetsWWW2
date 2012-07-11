@@ -2,7 +2,7 @@
 \alias{tag.GComponent}
 \title{method for tag}
 \usage{
-  \method{tag}{GComponent} (x, key)
+  \method{tag}{GComponent}(x, key)
 }
 \arguments{
   \item{x}{the object}

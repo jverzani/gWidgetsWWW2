@@ -2,7 +2,7 @@
 \alias{update.GComponent}
 \title{method for update}
 \usage{
-  \method{update}{GComponent} (object, ...)
+  \method{update}{GComponent}(object, ...)
 }
 \arguments{
   \item{object}{object}

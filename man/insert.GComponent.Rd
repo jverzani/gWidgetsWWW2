@@ -2,11 +2,11 @@
 \alias{insert.GComponent}
 \title{method for insert}
 \usage{
-  \method{insert}{GComponent} (obj, value, where = "end",
+  \method{insert}{GComponent}(x, value, where = "end",
     font.attr = NULL, do.newline = TRUE, ...)
 }
 \arguments{
-  \item{obj}{object}
+  \item{x}{object}
 
   \item{value}{value to insert}
 

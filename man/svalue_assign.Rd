@@ -3,13 +3,17 @@
 \alias{svalue<-.GComponent}
 \title{Set main value associated with a widget}
 \usage{
-  svalue(x, ..., value) <- value
+  svalue(x, index = NULL, ...) <- value
 
-  \method{"svalue"}{GComponent} (x, index = NULL, ...,
-    value) <- value
+  \method{svalue}{GComponent}(x, index = NULL, ...) <-
+    value
 }
 \arguments{
   \item{x}{object}
+
+  \item{index}{if non-NULL and \code{TRUE} call
+  \code{set_index} else call \code{set_value} reference
+  class method.}
 
   \item{...}{passed to \code{set_value} method. May include
   arguments for \code{index}}

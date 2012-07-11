@@ -3,11 +3,13 @@
 \alias{focus<-.default}
 \title{Set focus onto object.}
 \usage{
-  focus(obj) <- value
+  focus(x) <- value
 
-  \method{focus}{default} (obj, value) <- value
+  \method{focus}{default}(x) <- value
 }
 \arguments{
+  \item{x}{object}
+
   \item{value}{logical. Set focus state.}
 }
 \description{

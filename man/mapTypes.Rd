@@ -11,19 +11,19 @@
 \usage{
   mapTypes(x)
 
-  \method{"mapTypes"}{default} (x)
+  \method{mapTypes}{default}(x)
 
-  \method{"mapTypes"}{String} (x)
+  \method{mapTypes}{String}(x)
 
-  \method{"mapTypes"}{integer} (x)
+  \method{mapTypes}{integer}(x)
 
-  \method{"mapTypes"}{numeric} (x)
+  \method{mapTypes}{numeric}(x)
 
-  \method{"mapTypes"}{logical} (x)
+  \method{mapTypes}{logical}(x)
 
-  \method{"mapTypes"}{factor} (x)
+  \method{mapTypes}{factor}(x)
 
-  \method{"mapTypes"}{date} (x)
+  \method{mapTypes}{date}(x)
 }
 \arguments{
   \item{x}{object}
