@@ -304,22 +304,41 @@ GWidgetArrayProxy <- setRefClass("GWidgetArrayProxy",
                                get_json_data=function(...) {
                                  "Return JSON array [[],[],] ... *or* handle post data!"
 
+                                 
                                  params <- list(...)
                                  
                                  df <- cbind("row_id"=seq_len(nrow(.self$value)),
                                              .self$value)
                                  df <- df[..visible, ,drop=FALSE]
 
+
                                  ## do we have paging type request? We do if params$start is not null
+
+                                 
                                  if(!is.null(params$start)) {
                                    start <- as.numeric(params$start) + 1
                                    limit <- as.numeric(params$limit)
                                    m <- nrow(df)
-                                   
+
+                                   ind <- seq_len(m)
                                    if(m > 0 && m >= start) {
                                      ind <- seq(start, min(m, start+limit))
-                                     df <- df[ind,,drop=FALSE]
                                    }
+                                   ## Now we may be sorting, in which case we
+                                   ## use apply the indices to the ordered values
+                                   if(!is.null(params$sort)) {
+                                     ## make a list
+                                     sort_info <- as.list(unlist(fromJSON(params$sort)))
+                                     direction <- c(ASC=FALSE, DESC=TRUE)
+
+                                     
+                                     ind <- order(df[, sort_info$property],
+                                                  decreasing=direction[sort_info$direction])[ind]
+
+                                   }  
+
+                                   df <- df[ind,,drop=FALSE]
+                                   
                                  }
 ### XXX work with params
                                  ## gsub("\\n", "",sprintf("[%s]",paste(apply(df, 1, toJSON),collapse=",")))
@@ -558,51 +577,51 @@ mapTypes <- function(x) UseMethod("mapTypes")
 
 ##' mapTypes method
 ##' 
-##' @method "mapTypes" default
-##' @S3method "mapTypes" default
+##' @method mapTypes default
+##' @S3method mapTypes default
 ##' @rdname mapTypes
 mapTypes.default <- function(x) list()
 
 
 ##' mapTypes method
 ##' 
-##' @method "mapTypes" String
-##' @S3method "mapTypes" String
+##' @method mapTypes String
+##' @S3method mapTypes String
 ##' @rdname mapTypes
 mapTypes.String <- function(x) list(type="string")
 
 ##' mapTypes method
 ##' 
-##' @method "mapTypes" integer
-##' @S3method "mapTypes" integer
+##' @method mapTypes integer
+##' @S3method mapTypes integer
 ##' @rdname mapTypes
 mapTypes.integer <- function(x) list(type="int")
 
 ##' mapTypes method
 ##' 
-##' @method "mapTypes" numeric
-##' @S3method "mapTypes" numeric
+##' @method mapTypes numeric
+##' @S3method mapTypes numeric
 ##' @rdname mapTypes
 mapTypes.numeric <- function(x) list(type="numeric")
 
 ##' mapTypes method
 ##' 
-##' @method "mapTypes" logical
-##' @S3method "mapTypes" logical
+##' @method mapTypes logical
+##' @S3method mapTypes logical
 ##' @rdname mapTypes
 mapTypes.logical <- function(x) list(type='bool')
 
 ##' mapTypes method
 ##' 
-##' @method "mapTypes" factor
-##' @S3method "mapTypes" factor
+##' @method mapTypes factor
+##' @S3method mapTypes factor
 ##' @rdname mapTypes
 mapTypes.factor <- function(x) list()
 
 ##' mapTypes method
 ##' 
-##' @method "mapTypes" date
-##' @S3method "mapTypes" date
+##' @method mapTypes date
+##' @S3method mapTypes date
 ##' @rdname mapTypes
 mapTypes.date <- function(x) list()
 
@@ -706,6 +725,7 @@ GWidgetArrayStore <- setRefClass("GWidgetArrayStore",
                                               ,model=String(model_id())
 ##                                              ,buffered=TRUE
                                               ,autoSync=TRUE
+                                              ,remoteSort=TRUE
                                            )
 
                              
