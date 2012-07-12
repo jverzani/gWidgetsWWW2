@@ -331,9 +331,12 @@ GWidgetArrayProxy <- setRefClass("GWidgetArrayProxy",
                                      sort_info <- as.list(unlist(fromJSON(params$sort)))
                                      direction <- c(ASC=FALSE, DESC=TRUE)
 
-                                     
-                                     ind <- order(df[, sort_info$property],
-                                                  decreasing=direction[sort_info$direction])[ind]
+                                     x <- df[, sort_info$property]
+                                     ordered <- order(x,
+                                                      decreasing=if(sort_info$direction == "ASC") FALSE else TRUE
+                                                      )
+
+                                     ind <- ordered[ind]
 
                                    }  
 
