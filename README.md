@@ -2,7 +2,12 @@ Port of gWidgets to the web
 ---------------------------
 
 This package implements the `gWidgets` API for web
-programming. Primarily, the package turns the gWidgets commands into
+programming. Deployment is through `Rook`, best suited for local use
+or limited internet usage. For wider deployment, there is
+`gWidgetsWWW2.rapache` which runs under Jeffrey Horner's rapache
+module for the apache webserver.
+
+ Primarily, the package turns the gWidgets commands into
 `JavaScript` commands. The `ExtJS` javascript libraries (www.sencha.com)
 are used for this, as they provide an excellent programming
 environment for `JavaScript`. Of course, the `R` user need not know any
@@ -54,7 +59,7 @@ package of H. Wickham is installed:
 
 ```
     library(devtools)
-    install_github("gWidgetsWWWW2", "jverzani")
+    install_github("gWidgetsWWW2", "jverzani")
 ```    
 
 Otherwise, a) install git, b) clone the project c) use +R CMD
@@ -92,21 +97,3 @@ canvas object in the web page:
 
 The `addHandlerClicked` method can be used to add a callback to the
 click event, allowing interactivity ala the `location` function.
-
-Deploying pages to the internet
-===============================
-
-Deploying pages to the internet can be done in a few manners:
-
-* with `FastRWeb` one can use `R` through `Rserve`
-
-* with `Rook` one can listen to an external IP
-
-* with `nginx` (a web server) one can proxy external requests to a local `Rook` application
-
-* Currently, the package is not integrated in with `rapache`.
-
-Of these, the `FastRWeb` solution is suggested. Details for the
-necessary setup are in the `FastRWeb` subdirectory of the package's
-`inst/` directory.
-

@@ -71,3 +71,4 @@ GLabel <- setRefClass("GLabel",
                           parent$do_layout()
                         }
                         ))
+

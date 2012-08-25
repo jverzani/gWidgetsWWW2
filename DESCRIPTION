@@ -6,11 +6,11 @@ Title: Toolkit implementation of the gWidgets API for use
 Author: John Verzani
 Description: Port of the gWidgets API to program dynamic
     websites with R code. This package uses Rook to enable
-    use under R's local web server (or through RApache to
-    publicly serve the pages powered by R in the future).
-    The Ext JavaScript libararies (www.extjs.com) are used
+    use under R's local web server (see gWidgetsWWW2.rapache
+    to publicly serve the pages powered by R).
+    The Ext JavaScript libararies (www.sencha.com) are used
     to create and manipulate the widgets dynamically.
-Version: 0.3-0
+Version: 0.4-0
 URL: https://github.com/jverzani/gWidgetsWWW2
 Depends:
     R (>= 2.13.0),

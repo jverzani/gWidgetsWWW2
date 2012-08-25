@@ -1,6 +1,7 @@
 TODO
 ----
 
+* trim down for use with rook only
 
 * e_cookies?
 

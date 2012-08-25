@@ -1,3 +1,14 @@
+THIS IS DEPRECATED
+==================
+
+See `gWidgetsWWW2.rapache` for deploying `gWidgetsWWW2` apps through the internet using rapache.
+
+
+THIS IS DEPRECATED
+==================
+
+
+
 Integrating gWidgetsWWW2 with FastRWeb and Rserve
 =================================================
 

@@ -1,5 +1,9 @@
 ## authenticate framework
 
+## This is deprecated. No authentification through Rook. In general, use
+## web servers authentification, this was not going anywhere.
+
+
 ##' Base class for providing authentification
 ##'
 ##' The \code{\link{load_app}} call allows one to specify a subclass

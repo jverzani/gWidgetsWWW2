@@ -150,3 +150,6 @@ addStockIcons <- function(iconNames, iconFiles, ..., parent) {
                  ourQuote(paste(css_txt, collapse=" ")))
   parent$add_js_queue(cmd)
 }
+
+
+

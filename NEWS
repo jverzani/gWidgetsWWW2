@@ -5,6 +5,15 @@ NEWS for gWidgetsWWW2
 Changes for 0.3
 -------------------
 
+* make extjs load through a cdn. No longer include code
+
+* add in comments about gWidgetsWWW2.rapache, deprecate other deployments
+  of gWidgetsWWW2 beyond Rook.
+
+Changes for 0.3
+-------------------
+
+
 * now use Ext-4.1-beta-2. 
 
 * We use Ext-4.1-beta so that certain layouts work. A **major
