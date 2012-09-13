@@ -122,7 +122,6 @@ GCheckboxGroup <- setRefClass("GCheckboxGroup",
                          },
                          set_index=function(value, ...) {
                            value <<- value
-                           message("cb set index to ", value)
                            l <- list()
                            l[[get_id()]] <- String(toJSArray(value))
                            call_Ext("setValue", l)
