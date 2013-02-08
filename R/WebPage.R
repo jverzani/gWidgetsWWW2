@@ -142,12 +142,12 @@ WebPage <- setRefClass("WebPage",
 ## <link rel='stylesheet' type='text/css' href='/custom/gWidgetsWWW2/javascript/ext/resources/css/ext-all-gray.css' />
                          
                        load_css=function() {
+
+## <link rel='stylesheet' type='text/css' href='/custom/gWidgetsWWW2/css/bootstrap/bootstrap.css'>
+## <link rel='stylesheet' type='text/css' href='/custom/gWidgetsWWW2/css/gWidgetsWWW2.css'    />
                          "
 <link rel='stylesheet' type='text/css' href='https://extjs.cachefly.net/ext-4.1.0-gpl/resources/css/ext-all.css'>
-
 <link rel='stylesheet' type='text/css' href='/custom/gWidgetsWWW2/css/gWidgetsWWW2.css'    />
-
-
 <link rel='stylesheet' type='text/css' href='/custom/gWidgetsWWW2/javascript/CodeMirror/codemirror.css'  />
 "
                        },

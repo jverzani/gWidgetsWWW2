@@ -267,7 +267,7 @@ E.g. var param = {value: this.getText()}"
                              ## param ? Ext.JSON.encode(param) : null
                              f <- function(t_signal) {
                                if(t_signal == "") return()
-                               cmd <- sprintf("%s.on('%s', function(%s) {%s; transportFun('%s', param)}, null, {delay:100, buffer:100, single:false});",
+                               cmd <- sprintf("%s.on('%s', function(%s) {%s; transportFun('%s', param)}, null, {delay:10, buffer:100, single:false});",
                                               get_id(),
                                               t_signal,
                                               getWithDefault(.ext_callback_arguments[[t_signal]], ""),
@@ -347,7 +347,7 @@ E.g. var param = {value: this.getText()}"
                              
                              
                              ## create JS handler code
-                             cmd <- sprintf("%s.on('%s', function(%s) {%s; callRhandler('%s', '%s', param)}, null, {delay:100, buffer:100, single:false});",
+                             cmd <- sprintf("%s.on('%s', function(%s) {%s; callRhandler('%s', '%s', param)}, null, {delay:10, buffer:100, single:false});",
                                             get_id(),
                                             signal,
                                             cb_args(signal),
