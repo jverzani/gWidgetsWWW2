@@ -17,12 +17,11 @@ Depends:
     methods,
     Rook,
     RJSONIO,
-    canvas,
     memoise,
     whisker,
     digest
 Suggests:
-    markdown
+    markdown, canvas
 LazyLoad: yes
 Collate:
     'gwidgets-package.R'
