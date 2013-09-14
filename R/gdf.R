@@ -188,7 +188,7 @@ function() {
                        ## edited row. Clearly not desirable. This hits
                        ## the server one more time than is needed
                        cmd <- paste(sprintf("%s.on('edit', function(e, obj) {",roweditor_id()),
-                                    sprintf("callRhandler('%s', 'edit');", get_id()),
+                                    sprintf("callRhandler('%s', 'edit', null);", get_id()),
                                     sprintf("%s.doRefresh();", paging_id()),
                                     sprintf("});"),
                                     sep="")
@@ -222,9 +222,9 @@ function() {
                      },
                      hide_title=function(value) {
                        
-                     },
-                     ## bypass, connected to "edit" signal above
-                     add_R_callback=function(...) {}
+                     }#,
+#                     ## bypass, connected to "edit" signal above
+#                     add_R_callback=function(...) {}
                     
                        
                      ))
