@@ -192,7 +192,7 @@ function() {
                                     sprintf("%s.doRefresh();", paging_id()),
                                     sprintf("});"),
                                     sep="")
-#                       add_js_queue(cmd)
+##                       add_js_queue(cmd)
                        
                        ## handler
 

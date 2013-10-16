@@ -109,6 +109,7 @@ NULL
 ##' })
 gcanvas <- function(f=NULL, width=480, height=400,
                     container = NULL,...) {
+  message("gcanvas is deprecated -- the canvas package is no longer on CRAN")
   cnv <- GCanvas$new(container, ...)
   cnv$init(f,  width, height, container, ...)
   return(cnv)
