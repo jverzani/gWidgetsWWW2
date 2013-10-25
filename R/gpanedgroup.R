@@ -21,9 +21,10 @@ NULL
 ##' This container has two children and a vertical/horizontal sash to
 ##' allocate space between them. Simply use as a parent container
 ##' twice. Unlike other gWidgets implementations, \code{svalue<-} is not implemented.
+##' If in horizontal mode, the second widget added will be to the left.
 ##' @param horizontal logical. Side by side (or top/bottom) layout
 ##' @inheritParams gwidget
-##' @param collapsible logical. If TRUE, one child wil have a button so that it can be collapsed
+##' @param collapsible logical. If TRUE, one child will have a button so that it can be collapsed
 ##' @param default.size Integer pixel size of right or bottom
 ##' container when drawn. Defaults to half of height or width, or 200
 ##' if those are NULL. There is no \code{svalue<-} method to adjust the size
@@ -64,7 +65,7 @@ GPanedGroup <- setRefClass("GPanedGroup",
                                constructor <<- "Ext.Panel"
                                width_or_height <- ifelse(horizontal, "width", "height")
                                and_the_opposite <- ifelse(!horizontal, "width", "height")
-                               east_or_south <- ifelse(horizontal, "east", "south")
+                               west_or_south <- ifelse(horizontal, "west", "south")
 
 
                                default.size <- getWithDefault(default.size,
@@ -74,11 +75,11 @@ GPanedGroup <- setRefClass("GPanedGroup",
 
                                ## This needs to be tidied up XXX
                                items <- paste("[{",
-                                              sprintf("region:'%s',", east_or_south),
+                                              sprintf("region:'%s',", west_or_south),
                                               sprintf("%s:%s,", width_or_height, default.size),
                                               if(!is.null(get(and_the_opposite)))
                                                 sprintf("%s:%s,", and_the_opposite, get(and_the_opposite)),
-                                              sprintf("id:'%s_%s',", get_id(), east_or_south),
+                                              sprintf("id:'%s_%s',", get_id(), west_or_south),
                                               sprintf("collapsible: %s,", coerceToJSString(collapsible)),
                                               "split: true,",
                                               "layout: 'fit'",
@@ -108,7 +109,7 @@ GPanedGroup <- setRefClass("GPanedGroup",
                                  if(child_ct == 0)
                                    where <- "center"
                                  else if(child_ct == 1)
-                                   where <- ifelse(horizontal, "east", "south")
+                                   where <- ifelse(horizontal, "west", "south")
                                  else
                                    return()
                                }
