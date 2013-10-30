@@ -5,8 +5,8 @@
 \usage{
   svalue(x, index = NULL, drop = NULL, ...)
 
-  \method{svalue}{GComponent}(x, index = NULL, drop = NULL,
-    ...)
+  \method{svalue}{GComponent} (x, index = NULL,
+    drop = NULL, ...)
 }
 \arguments{
   \item{x}{the widget}

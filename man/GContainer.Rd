@@ -1,6 +1,9 @@
 \name{GContainer}
 \alias{GContainer}
 \title{Base reference class for container objects.}
+\usage{
+  GContainer(...)
+}
 \description{
   Container objects are those that hold other components
   and may be passed to constructors through their

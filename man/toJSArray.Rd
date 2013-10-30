@@ -1,38 +1,38 @@
 \name{toJSArray}
 \alias{toJSArray}
+\alias{toJSArray.Date}
+\alias{toJSArray.String}
 \alias{toJSArray.character}
 \alias{toJSArray.data.frame}
-\alias{toJSArray.Date}
 \alias{toJSArray.default}
 \alias{toJSArray.factor}
 \alias{toJSArray.list}
 \alias{toJSArray.logical}
 \alias{toJSArray.matrix}
 \alias{toJSArray.numeric}
-\alias{toJSArray.String}
 \title{Make a JS array from an R object}
 \usage{
   toJSArray(x, doBrackets = TRUE)
 
-  \method{toJSArray}{default}(x, doBrackets = TRUE)
+  \method{toJSArray}{default} (x, doBrackets = TRUE)
 
-  \method{toJSArray}{numeric}(x, doBrackets = TRUE)
+  \method{toJSArray}{numeric} (x, doBrackets = TRUE)
 
-  \method{toJSArray}{String}(x, doBrackets = TRUE)
+  \method{toJSArray}{String} (x, doBrackets = TRUE)
 
-  \method{toJSArray}{logical}(x, doBrackets = TRUE)
+  \method{toJSArray}{logical} (x, doBrackets = TRUE)
 
-  \method{toJSArray}{character}(x, doBrackets = TRUE)
+  \method{toJSArray}{character} (x, doBrackets = TRUE)
 
-  \method{toJSArray}{factor}(x, doBrackets = TRUE)
+  \method{toJSArray}{factor} (x, doBrackets = TRUE)
 
-  \method{toJSArray}{Date}(x, doBrackets = TRUE)
+  \method{toJSArray}{Date} (x, doBrackets = TRUE)
 
-  \method{toJSArray}{matrix}(x, doBrackets = TRUE)
+  \method{toJSArray}{matrix} (x, doBrackets = TRUE)
 
-  \method{toJSArray}{list}(x, doBrackets = TRUE)
+  \method{toJSArray}{list} (x, doBrackets = TRUE)
 
-  \method{toJSArray}{data.frame}(x, doBrackets = TRUE)
+  \method{toJSArray}{data.frame} (x, doBrackets = TRUE)
 }
 \arguments{
   \item{x}{R object to make into an array}

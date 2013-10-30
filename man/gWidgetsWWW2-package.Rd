@@ -4,6 +4,11 @@
 \alias{GWidget}
 \alias{gWidgetsWWW2-package}
 \title{An implementation of the gWidgets API for web programming}
+\usage{
+  GComponent(...)
+
+  GWidget(...)
+}
 \description{
   This package uses the \pkg{Rook} package of Jeffrey
   Horner to allow R programmers to easily create

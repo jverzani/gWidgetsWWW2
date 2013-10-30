@@ -58,7 +58,6 @@ NULL
 ##'   svalue(i) <- f
 ##' })
 ##' }
-##' @note The package has similar widgets: \code{\link{gimage}} and \code{\link{gcanvas}}.
 gsvg <- function(f, width=480, height=400,
                  container = NULL,..., ext.args=NULL) {
 

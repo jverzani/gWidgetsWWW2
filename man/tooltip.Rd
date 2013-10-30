@@ -3,9 +3,9 @@
 \alias{tooltip<-.default}
 \title{Set a tooltip for the widget}
 \usage{
-  tooltip(x) <- value
+  tooltip(x, value) <- value
 
-  \method{tooltip}{default}(x) <- value
+  \method{tooltip}{default} (x, value) <- value
 }
 \arguments{
   \item{x}{object}

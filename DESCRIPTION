@@ -21,7 +21,7 @@ Depends:
     whisker,
     digest
 Suggests:
-    markdown, canvas
+    markdown
 LazyLoad: yes
 Collate:
     'gwidgets-package.R'
@@ -55,7 +55,6 @@ Collate:
     'gborderlayout.R'
     'gstackwidget.R'
     'gcalendar.R'
-    'gcanvas.R'
     'gcheckboxgroup.R'
     'gedit.R'
     'gpanel.R'

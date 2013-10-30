@@ -2,7 +2,7 @@
 \alias{[.GComponent}
 \title{Method for [}
 \usage{
-  \method{[}{GComponent}(x, i, j, ..., drop = TRUE)
+  \method{[}{GComponent} (x, i, j, ..., drop = TRUE)
 }
 \arguments{
   \item{x}{object}

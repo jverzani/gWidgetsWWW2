@@ -59,7 +59,7 @@
   (if more than 1 is present). The hidden argument
   \code{do_add_remove_buttons} can be set to \code{FALSE}
   to prevent this option. For large data sets, paging is
-  used. the hidden argument \code{page_size}(with default
+  used. the hidden argument \code{page_size} (with default
   of 200) can be set to adjust the size of each page.
 }
 \author{

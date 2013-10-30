@@ -3,7 +3,7 @@
 \alias{namesGComponent}
 \title{assignment method for names}
 \usage{
-  \method{names}{GComponent}(x) <- value
+  \method{names}{GComponent} (x, value) <- value
 }
 \arguments{
   \item{x}{object}

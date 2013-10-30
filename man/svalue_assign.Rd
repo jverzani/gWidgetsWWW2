@@ -3,10 +3,10 @@
 \alias{svalue<-.GComponent}
 \title{Set main value associated with a widget}
 \usage{
-  svalue(x, index = NULL, ...) <- value
+  svalue(x, index = NULL, ..., value) <- value
 
-  \method{svalue}{GComponent}(x, index = NULL, ...) <-
-    value
+  \method{svalue}{GComponent} (x, index = NULL, ..., value)
+    <- value
 }
 \arguments{
   \item{x}{object}

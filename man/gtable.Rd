@@ -1,6 +1,6 @@
 \name{gtable}
-\alias{gtable}
 \alias{GTable}
+\alias{gtable}
 \title{A table widget}
 \usage{
   gtable(items, multiple = FALSE, chosencol = 1,
@@ -10,6 +10,8 @@
     width = NULL, height = NULL, ext.args = NULL,
     paging = FALSE,
     col.widths = rep(20, ncol(as.data.frame(items))))
+
+  GTable(...)
 }
 \arguments{
   \item{items}{data frame of items to display}

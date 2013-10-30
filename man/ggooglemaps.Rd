@@ -1,16 +1,20 @@
 \name{ggooglemaps}
-\alias{ggooglemaps}
 \alias{GGoogleMaps}
-\alias{ggooglemaps_marker}
 \alias{GGoogleMapsMarker}
+\alias{ggooglemaps}
+\alias{ggooglemaps_marker}
 \title{Google maps widget}
 \usage{
   ggooglemaps(center = c(45, 45), zoom = 13,
     maptype = "roadmap", container, ..., width = NULL,
     height = 400, ext.args = NULL)
 
+  GGoogleMaps(...)
+
   ggooglemaps_marker(position, title = NULL, icon = NULL,
     map)
+
+  GGoogleMapsMarker(...)
 }
 \arguments{
   \item{center}{lat/lng pair where map should be centered}

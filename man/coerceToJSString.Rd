@@ -1,26 +1,26 @@
 \name{coerceToJSString}
 \alias{coerceToJSString}
+\alias{coerceToJSString.String}
 \alias{coerceToJSString.character}
 \alias{coerceToJSString.default}
 \alias{coerceToJSString.factor}
 \alias{coerceToJSString.list}
 \alias{coerceToJSString.logical}
-\alias{coerceToJSString.String}
 \title{Coerce an object to a string}
 \usage{
   coerceToJSString(x)
 
-  \method{coerceToJSString}{default}(x)
+  \method{coerceToJSString}{default} (x)
 
-  \method{coerceToJSString}{character}(x)
+  \method{coerceToJSString}{character} (x)
 
-  \method{coerceToJSString}{factor}(x)
+  \method{coerceToJSString}{factor} (x)
 
-  \method{coerceToJSString}{logical}(x)
+  \method{coerceToJSString}{logical} (x)
 
-  \method{coerceToJSString}{String}(x)
+  \method{coerceToJSString}{String} (x)
 
-  \method{coerceToJSString}{list}(x)
+  \method{coerceToJSString}{list} (x)
 }
 \arguments{
   \item{x}{object to coerce}

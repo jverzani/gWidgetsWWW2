@@ -1,6 +1,9 @@
 \name{gstatusbar-class}
 \alias{gstatusbar-class}
 \title{\code{GStatusbar}  class for gstatusbar}
+\usage{
+  GStatusbar(...)
+}
 \description{
   The convenience reference class method \code{clear} will
   clear the text. This is basically the same as

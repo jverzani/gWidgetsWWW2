@@ -3,9 +3,9 @@
 \alias{tag<-.GComponent}
 \title{Set a persistent attirbute for an object}
 \usage{
-  tag(x, key) <- value
+  tag(x, key, value) <- value
 
-  \method{tag}{GComponent}(x, key) <- value
+  \method{tag}{GComponent} (x, key, value) <- value
 }
 \arguments{
   \item{x}{object}

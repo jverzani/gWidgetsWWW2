@@ -1,6 +1,9 @@
 \name{JsonRPCServer-class}
 \alias{JsonRPCServer-class}
 \title{A Rook app to be a JSON RPC server}
+\usage{
+  JsonRPCServer(...)
+}
 \description{
   This app allows the browser to call back into R by
   specifying an object name, its method name and some

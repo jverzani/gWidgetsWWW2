@@ -1,6 +1,9 @@
 \name{JsonRPCObject-class}
 \alias{JsonRPCObject-class}
 \title{Base class to subclass to make a JsonRPCObject.}
+\usage{
+  JsonRPCObject(...)
+}
 \description{
   A JsonRPCObject can expose methods that may be called by
   name by a client. See the function \code{json_rpc} for

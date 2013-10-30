@@ -1,12 +1,14 @@
 \name{gslider}
-\alias{gslider}
 \alias{GSlider}
+\alias{gslider}
 \title{slider widget}
 \usage{
   gslider(from = 0, to = 100, by = 1, value = from,
     horizontal = TRUE, handler = NULL, action = NULL,
     container = NULL, ..., width = NULL, height = NULL,
     ext.args = NULL, tpl = "{0}")
+
+  GSlider(...)
 }
 \arguments{
   \item{from}{starting point. Unlike other implementations

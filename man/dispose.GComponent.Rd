@@ -2,7 +2,7 @@
 \alias{dispose.GComponent}
 \title{Method for dispose}
 \usage{
-  \method{dispose}{GComponent}(x, ...)
+  \method{dispose}{GComponent} (x, ...)
 }
 \arguments{
   \item{x}{object}

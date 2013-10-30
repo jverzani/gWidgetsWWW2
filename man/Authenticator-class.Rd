@@ -1,6 +1,9 @@
 \name{Authenticator-class}
 \alias{Authenticator-class}
 \title{Base class for providing authentification}
+\usage{
+  Authenticator(...)
+}
 \description{
   The \code{\link{load_app}} call allows one to specify a
   subclass of \code{Authenticator} to perform

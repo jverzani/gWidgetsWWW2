@@ -5,7 +5,7 @@
 \usage{
   visible(x)
 
-  \method{visible}{GComponent}(x)
+  \method{visible}{GComponent} (x)
 }
 \arguments{
   \item{x}{object Calls objects \code{set_visible} method}

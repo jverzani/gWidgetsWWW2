@@ -345,13 +345,6 @@ variety of non-interactive devices and an accompanying widget.
 
 These include:
 \begin{itemize}
-\item the \pkg{canvas} device along with the \code{gcanvas}
-  widget. This device writes out \javascript{} commands and uses an
-  underlying canvas object on the web page. This requires an HTML5
-  compliant browser. There is some support for mouse events. As well,
-  the \code{gcanvas} widget itself can be used independent of the
-  \code{canvas} device. A handful of reference class methods are
-  available, as illustrated in the example.
 \item The \code{gsvg} widget can be used to display svg graphics, as
   produced by the \code{svg} driver or the \pkg{RSVGTipsDevice}
   driver. 
@@ -363,42 +356,26 @@ Both the last two require both a file and a url, the file to write to,
 the url to use by the browser. If the file is created by
 \code{get\_tempfile} the details are implemented by the widget.
 
-The \code{canvas} device is used like a non-interactive device (open
-the device, create the graphic, call \code{dev.off()}). For example,
-<<Canvas-usage>>=
-w <- gwindow("Display a graphic with canvas")
-width <- height <- 400
-## make graphic
-f <- tempfile()
-canvas(f, width=width, height=height)
-hist(rnorm(100))
-dev.off()
-## display graphic
-g <- ggroup(cont = w, horizontal=FALSE)
-gcanvas(f, width=width, height=height, container=g)
-@ 
-%%
-The \code{gsvg} widget is similar, though one uses a file that can be
-served as a url, so replace \code{tempfile} with the package-provided
-\code{get\_tempfile}, as with \code{get\_tempfile(ext='.svg')}. The
-advantage of \code{svg} graphics is they scale to fill the space of
-their container, unlike the canvas object. There are browser
-variations with SVG graphics.
+The \code{gsvg} widget is used like a non-interactive device (open the
+device, create the graphic, call \code{dev.off()}) though one uses a
+file that can be served as a url, so replace \code{tempfile} with the
+package-provided \code{get\_tempfile}, as with
+\code{get\_tempfile(ext='.svg')}.  There are browser variations with SVG graphics.
 
 
-The \code{gcanvas} device allows access to HTML5's underlying canvas
-tag methods, allowing one to manipulate objects in the widget.  The
-widget itself can responds to mouse clicks through a handler specified
-with \code{addHandlerClicked}. The ``h'' argument is a list with
-additional components \code{x} and \code{y} (containing the ndc
-coordinates of the point with $(0,0)$ being the lower left corner) and
-\code{X} and \code{Y} (containing the pixel coordinates of the click,
-with $(0,0)$ being the upper left corner. The \code{x} and \code{y}
-values can be converted into \code{user} coordinates through
-\code{grconvertXY}, but there is a catch -- the device needs to be
-reopened with the same dimensions, as that information is lost when
-the device is closed. See the example \code{ex-gcanvas} for an
-illustration.
+%% The \code{gcanvas} device allows access to HTML5's underlying canvas
+%% tag methods, allowing one to manipulate objects in the widget.  The
+%% widget itself can responds to mouse clicks through a handler specified
+%% with \code{addHandlerClicked}. The ``h'' argument is a list with
+%% additional components \code{x} and \code{y} (containing the ndc
+%% coordinates of the point with $(0,0)$ being the lower left corner) and
+%% \code{X} and \code{Y} (containing the pixel coordinates of the click,
+%% with $(0,0)$ being the upper left corner. The \code{x} and \code{y}
+%% values can be converted into \code{user} coordinates through
+%% \code{grconvertXY}, but there is a catch -- the device needs to be
+%% reopened with the same dimensions, as that information is lost when
+%% the device is closed. See the example \code{ex-gcanvas} for an
+%% illustration.
 
 
 \subsection{ggooglemaps}

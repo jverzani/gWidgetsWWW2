@@ -2,7 +2,7 @@
 \alias{add.GComponent}
 \title{method for add}
 \usage{
-  \method{add}{GComponent}(x, child, ...)
+  \method{add}{GComponent} (x, child, ...)
 }
 \arguments{
   \item{x}{object}

@@ -1,6 +1,9 @@
 \name{Array-class}
 \alias{Array-class}
 \title{An array class.}
+\usage{
+  Array(...)
+}
 \description{
   Like a list, but has some methods. Completely superflous,
   but makes copying some code algorithms easier. We

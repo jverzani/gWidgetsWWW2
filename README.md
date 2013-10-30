@@ -70,30 +70,5 @@ Graphics
 --------
 
 There is no interactive graphic device, though one can use several
-non-interactive graphics devices, in particular: `canvas`, through the
-`gcanvas` widget; `png`, through the `gimage` widget; and `RSVGTipsDevice`,
-through the `gsvg` widget. The basic use is all similar. Here is an
-example for the canvas device, which writes `JavaScript` to an HTML5
-canvas object in the web page:
-
-```
-    require(canvas) 
-    w <- gwindow("Test")
-    gstatusbar("Powered by gWidgetsWWW2 and Rook", cont=w)
-    g <- ggroup(cont=w, horizontal=FALSE, height=500, width=500)
-    make_plot <- function() {
-      f <- tempfile()
-      canvas(f, width=400, height=400)
-      hist(rnorm(100))
-      dev.off()
-      f
-    }
-    #
-    cnv <- gcanvas(make_plot(), width=400, height=400, cont=g)
-    btn <- gbutton("new graph", cont=g, handler=function(h,...) {
-      svalue(cnv) <- make_plot()
-    })
-```
-
-The `addHandlerClicked` method can be used to add a callback to the
-click event, allowing interactivity ala the `location` function.
+non-interactive graphics devices, in particular: `png`, through the `gimage` widget; and `RSVGTipsDevice`,
+through the `gsvg` widget. The basic use is all similar.o

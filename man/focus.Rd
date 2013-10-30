@@ -3,9 +3,9 @@
 \alias{focus<-.default}
 \title{Set focus onto object.}
 \usage{
-  focus(x) <- value
+  focus(x, value) <- value
 
-  \method{focus}{default}(x) <- value
+  \method{focus}{default} (x, value) <- value
 }
 \arguments{
   \item{x}{object}

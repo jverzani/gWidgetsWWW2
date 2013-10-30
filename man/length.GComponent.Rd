@@ -2,7 +2,7 @@
 \alias{length.GComponent}
 \title{length method for GComponent's}
 \usage{
-  \method{length}{GComponent}(x, ...)
+  \method{length}{GComponent} (x, ...)
 }
 \arguments{
   \item{x}{object}

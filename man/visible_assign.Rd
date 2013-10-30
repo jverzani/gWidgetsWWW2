@@ -3,9 +3,9 @@
 \alias{visible<-.GComponent}
 \title{Primarily used to set if widget is shown, but also has other meanings}
 \usage{
-  visible(x) <- value
+  visible(x, value) <- value
 
-  \method{visible}{GComponent}(x) <- value
+  \method{visible}{GComponent} (x, value) <- value
 }
 \arguments{
   \item{x}{object Calls objects \code{set_visible} method}

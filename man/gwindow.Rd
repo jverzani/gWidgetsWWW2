@@ -1,11 +1,13 @@
 \name{gwindow}
-\alias{gwindow}
 \alias{GWindow}
+\alias{gwindow}
 \title{Main window constructor}
 \usage{
   gwindow(title = "", parent = NULL, handler = NULL,
     action = NULL, ..., renderTo = NULL, width = NULL,
     height = NULL, ext.args = NULL)
+
+  GWindow(...)
 }
 \arguments{
   \item{title}{Window title}

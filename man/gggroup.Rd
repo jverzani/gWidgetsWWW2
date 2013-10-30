@@ -1,6 +1,9 @@
 \name{GGroup}
 \alias{GGroup}
 \title{\code{GGroup} is the base class for ggroup and all box containers/}
+\usage{
+  GGroup(...)
+}
 \description{
   Box containers pack in child objects in a left to right
   manner (horizontal) or top to bottom (horizonta=FALSE).

@@ -1,6 +1,9 @@
 \name{GWidgetsTopLevel-class}
 \alias{GWidgetsTopLevel-class}
 \title{A toplevel object for a gWidgetsWWW2 app stores page-specific values}
+\usage{
+  GWidgetsTopLevel(...)
+}
 \description{
   The toplevel object for gWidgetsWWW2 apps stores page
   specific information. As there can potentially be several

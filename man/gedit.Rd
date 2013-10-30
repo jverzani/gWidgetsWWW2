@@ -1,12 +1,14 @@
 \name{gedit}
-\alias{gedit}
 \alias{GEdit}
+\alias{gedit}
 \title{gedit widget}
 \usage{
   gedit(text = "", width = 25, coerce.with = NULL,
     initial.msg = "", handler = NULL, action = NULL,
     container = NULL, ..., ext.args = NULL,
     validate.type = NULL, validate.regexp = NULL)
+
+  GEdit(...)
 }
 \arguments{
   \item{text}{initial text}

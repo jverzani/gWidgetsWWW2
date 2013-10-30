@@ -2,7 +2,7 @@
 \alias{insert.GComponent}
 \title{method for insert}
 \usage{
-  \method{insert}{GComponent}(x, value, where = "end",
+  \method{insert}{GComponent} (x, value, where = "end",
     font.attr = NULL, do.newline = TRUE, ...)
 }
 \arguments{
