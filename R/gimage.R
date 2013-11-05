@@ -25,7 +25,7 @@ NULL
 ##' @param filename A url or file from \code{get_tempfile}.
 ##' @param dirname ignored.
 ##' @param size A vector passed to \code{width} and \code{height} arguments.
-##' Can also be set by the \code{size} method later.
+##' Can also be set by the \code{size<-} method later.
 ##' @inheritParams gwidget
 ##' @return an GImage reference object
 ##' @export
