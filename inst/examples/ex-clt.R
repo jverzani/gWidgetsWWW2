@@ -1,6 +1,7 @@
 ## Example of a CLT demonstration.
+require(RSVGTipsDevice)
 
-f <- get_tempfile()                         # gcanvas uses file, not url
+f <- get_tempfile(ext = ".svg")
 
 makePlot <- function(h,...) {
   n <- min(as.numeric(svalue(sampleSize)), 500)
@@ -9,13 +10,12 @@ makePlot <- function(h,...) {
   cmd$n <- n * m
   x <- matrix(do.call(cmd$cmd, cmd[-(1:2)]), nrow=n)
   xbars <- apply(x, 2, function(x) mean(x))
-  canvas(f, width=width, height=height, bg="#ffffff")
+  svg(f)
   plot(density(xbars), main=sprintf("Population: %s, n: %s", svalue(population), svalue(sampleSize)))
   rug(xbars)
   dev.off()
   svalue(p) <- f
 }
-
 
 ## Begin layout
 w <- gwindow("CLT example")
@@ -26,9 +26,10 @@ bl <- gborderlayout(cont=w, horizontal=FALSE)
 
 l <- glabel("Distribution of xbar, the sample mean.", cont = bl, where="north")
 
-## main widget is canvas
-width <- height <- 400                  # canvas size
-p <- gcanvas(width=width, height=height, cont = bl, where="center")
+## Main widget is gsvg
+width <- 480
+height <- 400
+p <- gsvg(f, width=width, height=height, cont = bl, where="center")
 fg <- ggroup(horizontal=FALSE, cont=bl, where="west")
 bl$set_panel_size("west", 300)
 
@@ -79,9 +80,4 @@ Click the <b>plot</b> button to update the plot.
   visible(w1) <- TRUE
 })
 
-
-
 makePlot(1)
-
-
-
