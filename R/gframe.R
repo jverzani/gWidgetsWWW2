@@ -46,7 +46,6 @@ gframe <- function(text = "", pos = 0, horizontal=TRUE, spacing=2,
          width=width,
          height=height, 
          ext.args = ext.args)
-         )
   f$set_value(text)
   f
 }
