@@ -25,6 +25,7 @@ NULL
 ##' @param filename A url or file from \code{get_tempfile}.
 ##' @param dirname ignored.
 ##' @param size A vector passed to \code{width} and \code{height} arguments.
+##' Can also be set by the \code{size<-} method later.
 ##' @inheritParams gwidget
 ##' @return an GImage reference object
 ##' @export
@@ -38,8 +39,7 @@ NULL
 ##' hist(rnorm(100))
 ##' dev.off()
 ##' 
-##' i <- gimage(f, container=g)
-##' size(i) <- c(400, 400)
+##' i <- gimage(f, container=g, size = c(400, 400))
 ##' b <- gbutton("click", cont=g, handler=function(h,...) {
 ##'   f <- get_tempfile(ext=".png") 
 ##'   png(f)
