@@ -29,7 +29,7 @@ NULL
 ##' @return an GImage reference object
 ##' @export
 ##' @examples
-##' w <- gwindow("hello", renderTo="replaceme")
+##' w <- gwindow("hello")
 ##' sb <- gstatusbar("Powered by gWidgetsWWW and Rook", cont=w)
 ##' g <- ggroup(cont=w, horizontal=FALSE)
 ##' 
@@ -39,6 +39,7 @@ NULL
 ##' dev.off()
 ##' 
 ##' i <- gimage(f, container=g)
+##' size(i) <- c(400, 400)
 ##' b <- gbutton("click", cont=g, handler=function(h,...) {
 ##'   f <- get_tempfile(ext=".png") 
 ##'   png(f)

@@ -83,6 +83,7 @@ GStatusbar <- setRefClass("GStatusbar",
                               add_js_queue(cmd)
                               value <<- value
                             },
+                            get_value = function(...) value,
                             clear = function() {
                               set_value("")
                             },

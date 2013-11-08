@@ -65,7 +65,6 @@ expect_equal(svalue(f), "label")
 expgp <- gexpandgroup("expandgroup", cont=g, visible=TRUE)
 glabel("in expandgroup", cont=expgp)
 
-expect_equal(svalue(expgp), "expandgroup")
 visible(expgp) <- FALSE
 expect_equal(visible(expgp), FALSE)
 

@@ -10,13 +10,13 @@ cat("<i>this is in a file</i>", file=f)
 h3 <- ghtml(f, cont=g, width=300)
 
 ## test
-expect_that(svalue(h1), "no markup")
-expect_that(svalue(h3), f)
+expect_equal(svalue(h1), "no markup")
+expect_equal(svalue(h3), "<i>this is in a file</i>")
 
 svalue(h2) <- "new text"
-expect_that(svalue(h2), "new text")
+expect_equal(svalue(h2), "new text")
 
 cat("<i>replace file text</i>", file=f)
 svalue(h3) <- f
-expect_that(svalue(h3), f)
+expect_equal(svalue(h3), "<i>replace file text</i>")
 

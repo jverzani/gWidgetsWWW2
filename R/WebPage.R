@@ -136,19 +136,12 @@ WebPage <- setRefClass("WebPage",
   <div id='load_app'></div>
 "
                                  },
-
-## <link rel='stylesheet' type='text/css' href='/custom/gWidgetsWWW2/javascript/ext/resources/css/ext-sandbox.css' />
-
-## <link rel='stylesheet' type='text/css' href='/custom/gWidgetsWWW2/javascript/ext/resources/css/ext-all-gray.css' />
                          
                        load_css=function() {
-
-## <link rel='stylesheet' type='text/css' href='/custom/gWidgetsWWW2/css/bootstrap/bootstrap.css'>
-## <link rel='stylesheet' type='text/css' href='/custom/gWidgetsWWW2/css/gWidgetsWWW2.css'    />
                          "
-<link rel='stylesheet' type='text/css' href='http://cdn.sencha.com/ext-4.1.0-gpl/resources/css/ext-all.css'>
-<link rel='stylesheet' type='text/css' href='/custom/gWidgetsWWW2/css/gWidgetsWWW2.css'    />
+<link rel='stylesheet' type='text/css' href='/custom/gWidgetsWWW2/javascript/ext-4-2.1/resources/css/ext-all.css' />
 <link rel='stylesheet' type='text/css' href='/custom/gWidgetsWWW2/javascript/CodeMirror/codemirror.css'  />
+<link rel='stylesheet' type='text/css' href='/custom/gWidgetsWWW2/css/gWidgetsWWW2.css'    />
 "
                        },
                        make_icons=function() {
