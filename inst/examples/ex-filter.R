@@ -1,6 +1,6 @@
 ## exampe of graph, data viewer, filter
 require(MASS)
-require(canvas)
+require(RSVGTipsDevice)
 
 d <- Cars93[c(1,2, 5, 8, 19, 21, 25, 10)]
 d.shown <- d
@@ -20,8 +20,11 @@ bl <- gborderlayout(cont=w)
 
 
 ## set up canvas
-f <- tempfile()
-cnv <- gcanvas(f, width=cwidth, height=cheight, cont=bl, where="center")
+f <- get_tempfile(ext=".svg")
+svg(f)
+hist(rnorm(100))
+dev.off()
+cnv <- gsvg(f, width=cwidth, height=cheight, cont=bl, where="center")
 
 ## table widget
 tbl <- gtable(d, multiple=TRUE, expand=TRUE,  cont=bl, where="east")
@@ -52,29 +55,29 @@ sapply(filter_widgets, function(i) size(i) <-  list(width=200))
 
 ## Actions.
 
- make_plot <- function(...) {
-   ## get values
-   l <- setNames(lapply(filter_widgets, svalue), c("theLength", "theWeight", "theDriveTrain"))
-
-   ind <- with(d,Length <= l$theLength &
-                 Weight <= l$theWeight &
-                 DriveTrain %in% l$theDriveTrain
-                 )
-   d.cur <<- d[ind,]
-
-   ## update table
+make_plot <- function(...) {
+  ## get values
+  l <- setNames(lapply(filter_widgets, svalue), c("theLength", "theWeight", "theDriveTrain"))
+  
+  ind <- with(d,Length <= l$theLength &
+              Weight <= l$theWeight &
+              DriveTrain %in% l$theDriveTrain
+              )
+  d.cur <<- d[ind,]
+  
+  ## update table
    svalue(tbl, index=TRUE) <- which(ind)
 
    ## update plot
-   canvas(f, width=cwidth, height=cheight)
-   if(any(ind)) {
-     plot(MPG.highway ~ Price, data=d[ind,])
-   } else {
-     plot(MPG.highway ~ Price, data=d, type="n")
-   }
-   dev.off()
-   svalue(cnv) <- f
- }
+   svg(f, width=cwidth, height=cheight)
+  if(any(ind)) {
+    plot(MPG.highway ~ Price, data=d[ind,])
+  } else {
+    plot(MPG.highway ~ Price, data=d, type="n")
+  }
+  dev.off()
+  svalue(cnv) <- f
+}
 
 
 sapply(filter_widgets, addHandlerChanged, handler=make_plot)

@@ -1,4 +1,5 @@
 ## tkdensity demo
+require(RSVGTipsDevice)
 
 w <- gwindow("tkdensity-type example")
 gstatusbar("Powered by gWidgetsWWW and Rook", cont=w)
@@ -7,9 +8,9 @@ bl <- gborderlayout(cont=w)
 ghtml("A web app similar to that of the tkdensity demo", cont=bl, where="north")
 
 width <- 500; height <- 400;
-plotFile <- get_tempfile()
+plotFile <- get_tempfile(ext=".svg")
 
-cnv <- gcanvas(plotFile, width=width, height=height, cont=bl, where="center")
+cnv <- gsvg(plotFile, width=width, height=height, cont=bl, where="center")
 
 fg <- ggroup(cont=bl, horizontal=FALSE, where="west", use.scrollwindow=TRUE)
 bl$set_panel_size("west", 200)
@@ -47,7 +48,7 @@ sapply(fs, function(i) size(i) <- list(width=200))
 
 
 make_plot <- function(...) {
-  canvas(plotFile, width=width, height=height)
+  svg(plotFile, width=width, height=height)
 
   ## get values
   n <- svalue(fs$n)
