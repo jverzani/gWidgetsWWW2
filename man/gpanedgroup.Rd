@@ -10,8 +10,8 @@
   \item{horizontal}{logical. Side by side (or top/bottom)
   layout}
 
-  \item{collapsible}{logical. If TRUE, one child wil have a
-  button so that it can be collapsed}
+  \item{collapsible}{logical. If TRUE, one child will have
+  a button so that it can be collapsed}
 
   \item{default.size}{Integer pixel size of right or bottom
   container when drawn. Defaults to half of height or
@@ -52,7 +52,9 @@
   This container has two children and a vertical/horizontal
   sash to allocate space between them. Simply use as a
   parent container twice. Unlike other gWidgets
-  implementations, \code{svalue<-} is not implemented.
+  implementations, \code{svalue<-} is not implemented. If
+  in horizontal mode, the second widget added will be to
+  the left.
 }
 \examples{
 w <- gwindow()

@@ -15,6 +15,10 @@
 
 ##' @import methods 
 ##' @import Rook
+##' @import RJSONIO
+##' @import digest
+##' @import memoise
+##' @import whisker
 NULL
 
 ##' An implementation of the gWidgets API for web programming

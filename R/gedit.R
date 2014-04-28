@@ -163,9 +163,9 @@ function(value) {
                          ### XXX should decode url encode here
                          message("Transport process", value)
                          
-                         if(!is.null(value))
-                           value <<- utils:::URLdecode(value)
-
+#                         if(!is.null(value))
+#                           value <<- utils:::URLdecode(value)
+                         value <<- value
                        },
 
                        param_defn=function(signal) {

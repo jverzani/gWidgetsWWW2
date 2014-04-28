@@ -12,7 +12,8 @@
   \item{dirname}{ignored.}
 
   \item{size}{A vector passed to \code{width} and
-  \code{height} arguments.}
+  \code{height} arguments. Can also be set by the
+  \code{size<-} method later.}
 
   \item{handler}{optional means (to
   \code{\link{addHandlerChanged}}) to specify a handler for
@@ -66,7 +67,7 @@
   \code{get_tempfile_url}
 }
 \examples{
-w <- gwindow("hello", renderTo="replaceme")
+w <- gwindow("hello")
 sb <- gstatusbar("Powered by gWidgetsWWW and Rook", cont=w)
 g <- ggroup(cont=w, horizontal=FALSE)
 
@@ -75,7 +76,7 @@ png(f)
 hist(rnorm(100))
 dev.off()
 
-i <- gimage(f, container=g)
+i <- gimage(f, container=g, size = c(400, 400))
 b <- gbutton("click", cont=g, handler=function(h,...) {
   f <- get_tempfile(ext=".png")
   png(f)
