@@ -51,7 +51,7 @@
 }
 \examples{
 ## open an app that takes the entire page
-gw_script <-  system.file("examples/hello-world.R", package="gWidgetsWWW2")
+gw_script <-  system.file("examples/ex-hello-world.R", package="gWidgetsWWW2")
 if(interactive()) load_app(gw_script, "HelloApp")
 }
 
