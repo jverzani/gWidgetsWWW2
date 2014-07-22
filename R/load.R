@@ -183,7 +183,7 @@ r_httpd <- R_http$get_instance()
 ##' @export
 ##' @examples
 ##' ## open an app that takes the entire page
-##' gw_script <-  system.file("examples/hello-world.R", package="gWidgetsWWW2")
+##' gw_script <-  system.file("examples/ex-hello-world.R", package="gWidgetsWWW2")
 ##' if(interactive()) load_app(gw_script, "HelloApp")
 load_app <- function(script_name,
                      app_name=NULL,
@@ -194,6 +194,9 @@ load_app <- function(script_name,
                      ...
                          ) {
 
+    if (!file.exists(script_name))
+        stop(sprintf("Script %s does not exist", script_name))
+    
   if(is.null(app_name))
     app_name <- gsub("\\..*", "", basename(script_name))
   
