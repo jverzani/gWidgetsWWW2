@@ -108,7 +108,7 @@ GEdit <- setRefClass("GEdit",
                          ## constructor arguments
                          arg_list <- list(value = text,
                                           enableKeyEvents=TRUE,
-                                          width = ifelse(is.character(width), width, sprintf("%spx", 8*width)),
+                                          width = 8 * width,
                                           fieldLabel=list(...)$label
                                           )
                          ## empty text
