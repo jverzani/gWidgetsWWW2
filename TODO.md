@@ -1,7 +1,11 @@
 TODO
 ----
 
-* trim down for use with rook only
+* extjs 5.0?
+
+* use cdn for extjs
+
+* trim down for use with rook only. (Deprecate FastRWeb, ...)	
 
 * e_cookies?
 
