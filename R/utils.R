@@ -271,7 +271,7 @@ toJSArray.data.frame <- function(x,doBrackets=TRUE) {
 }
 
 
-escape_html <- function(string) Rook:::Utils$escape_html(string)
+escape_html <- function(string) Rook::Utils$escape_html(string)
 unescape_html <- function(string) {
   if (is.null(string)) base::stop("Need a character vector argument")
   string <- gsub('&amp;','&',string)
