@@ -45,7 +45,7 @@ NULL
 ##' 2) configure nginx by adding this to /etc/nginx/sites-enabled/default (in the servef bit)
 ##' 
 ##' location /custom {
-##' proxy_pass http://localhost:9000/custom;
+##' proxy_pass http://localhost:19000/custom;
 ##' }
 ##' 
 ##' * run scripts under rapache

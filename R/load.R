@@ -26,25 +26,27 @@ R_http <- setRefClass("R_http",
                                                                )
                                                     callSuper(...)
                                                   },
-                                                  start=function(port=9000, ...) {
+                                                  start=function(...) {
                                                     if(started)
                                                       return()
-                                                    cur_port <- tools:::httpdPort
+                                                    env = environment(tools::startDynamicHelp)
+                                                    cur_port <- get("httpdPort", env)
+                                                    ## cur_port <- tools:::httpdPort
                                                     if(cur_port > 0) {
                                                       if(cur_port != port) {
                                                         message(sprintf("Web server already started on port %s", cur_port))
-                                                        assign("port", tools:::httpdPort, .self)
+                                                        assign("port", cur_port, .self)
                                                       }
                                                       started <<- TRUE
                                                     } else {
-                                                      ## pass in listen="external.ip"
-                                                      message(sprintf("Starting server on port %s", port))
-                                                      out <- try(R$start(port=port, ...), silent=TRUE)
-                                                      if(inherits(out, "try-error")) {
-                                                        message("can't open port", out)
-                                                      }
-                                                      assign("port", port, .self)
-                                                      started <<- TRUE
+                                                        ## pass in listen="external.ip"
+                                                        ## message(sprintf("Starting server on port %s", port))
+                                                        ## options(help.ports=port) ## port is failing!!!
+                                                        out <- R$start(...)
+
+                                                        env = environment(tools::startDynamicHelp)
+                                                        assign("port", get("httpdPort", env), .self)
+                                                        started <<- TRUE
                                                     }
                                                   },
                                                   load_gw=function(session_manager=make_session_manager()) {
@@ -131,7 +133,7 @@ R_http <- setRefClass("R_http",
                                                     
 
                                                     ## How to do make_session
-                                                    ## how to do Authenticator
+                                                    ## how to do Authentification?
                                                     setwd(dir_name)
                                                     
                                                     
@@ -187,7 +189,7 @@ r_httpd <- R_http$get_instance()
 ##' if(interactive()) load_app(gw_script, "HelloApp")
 load_app <- function(script_name,
                      app_name=NULL,
-                     port=9000L,
+                     port=NULL,
                      session_manager=make_session_manager(),
                      open_page=TRUE,
                      show.log=FALSE,
@@ -199,14 +201,16 @@ load_app <- function(script_name,
     
   if(is.null(app_name))
     app_name <- gsub("\\..*", "", basename(script_name))
-  
-  r_httpd <- R_http$get_instance()
-  r_httpd$start(port)                   # if not started
-  r_httpd$load_gw(session_manager)
-  ## now load app
-  r_httpd$load_app(script_name, app_name, session_manager, open_page,  show.log,
-                   ##authenticator,
-                   ...)
+
+    if (!is.null(port))
+        options(help.ports=port)
+    r_httpd <- R_http$get_instance()
+    r_httpd$start()                   # if not started
+    r_httpd$load_gw(session_manager)
+    ## now load app
+    r_httpd$load_app(script_name, app_name, session_manager, open_page,  show.log,
+                     ##authenticator,
+                     ...)
 }
 
 ##' Load an app in a directory

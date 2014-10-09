@@ -27,7 +27,9 @@ NA
 ##' @examples
 ##' w <- gwindow()
 ##' sb <- gstatusbar("Powered by gWidgetsWWW and Rook", cont=w)
-##' cb <- gcheckbox("Check me?", cont=w, handler=function(h,...) if(svalue(h$obj)) galert("checked", parent=w))
+##' cb <- gcheckbox("Check me?", cont=w, handler=function(h,...) {
+##'   if(svalue(h$obj)) galert("checked", parent=w)
+##' })
 gcheckbox = function(text="", checked = FALSE, use.togglebutton=FALSE,
   handler = NULL, action = NULL,  container = NULL,...,
   width=NULL, height=NULL, ext.args=NULL) {

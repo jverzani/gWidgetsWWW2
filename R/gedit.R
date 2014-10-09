@@ -160,8 +160,8 @@ function(value) {
                          "var param = {value: w.getValue()}"
                        },
                        process_transport=function(value, ...) {
-                         ### XXX should decode url encode here
-                         message("Transport process", value)
+                           ## XXX should decode url encode here
+                           ## message("Transport process", value)
                          
 #                         if(!is.null(value))
 #                           value <<- utils:::URLdecode(value)

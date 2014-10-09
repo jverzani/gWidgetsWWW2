@@ -72,10 +72,12 @@ NULL
 ##' ## template
 ##' w <- gwindow()
 ##' g <- gvbox(container=w)
+##' tmp <- "http://upload.wikimedia.org/wikipedia/commons/thumb/"
+##' icons = paste(tmp, c("5/5c/Flag_of_Alabama.svg/22px-Flag_of_Alabama.svg.png",
+##'                      "e/e6/Flag_of_Alaska.svg/22px-Flag_of_Alaska.svg.png",
+##'                      "9/9d/Flag_of_Arizona.svg/22px-Flag_of_Arizona.svg.png"), sep="")
 ##' d <- data.frame(name=c("Alabama", "Alaska","Arizona"),
-##'                 icon=c("http://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Flag_of_Alabama.svg/22px-Flag_of_Alabama.svg.png",
-##'                   "http://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Flag_of_Alaska.svg/22px-Flag_of_Alaska.svg.png",
-##'                   "http://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Flag_of_Arizona.svg/22px-Flag_of_Arizona.svg.png"),
+##'                 icon=icons,
 ##'                 tooltip=c("Audemus jura nostra defendere",
 ##'                   "North to the future",
 ##'                   "Ditat Deus"
@@ -86,7 +88,8 @@ NULL
 ##'                   "Phoenix"),
 ##'                 stringsAsFactors=FALSE)
 ##' cb <- gcombobox(d,
-##'                 tpl="<img src=\"{icon}\"></img><span data-qtip=\"{tooltip}\"> {name}, Capital is <em>{extra}</em></span>",
+##'                 tpl="<img src=\"{icon}\"></img><span data-qtip=\"{tooltip}\"> {name},
+##'                       Capital is <em>{extra}</em></span>",
 ##'                 cont=g)
 gcombobox <- function(items, selected=1, editable=FALSE, coerce.with=NULL,
            handler = NULL, action = NULL, container=NULL,...,

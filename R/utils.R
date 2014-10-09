@@ -17,6 +17,24 @@
 ##' @include gwidgets-session.R
 NULL
 
+##' download extjs files and unzips into location to be found
+##'
+##' Useful if installing from a package which doesn't bundle. The
+##' extjs files are quite large (nearly 70Mb download), so rather than
+##' bundle in an R package, one can download as needed.
+##' @return Nothing. Installs files if successful
+##' @export
+download_extjs <- function() {
+    to <- paste(system.file("base", "javascript", package="gWidgetsWWW2"), "ext-4-2.1", sep=.Platform$file.sep)
+
+    if (!file.exists(to)) {
+        f <- "cdn.sencha.com/ext/gpl/ext-4.2.1-gpl.zip"
+        tmp <- tempfile(fileext=".zip")
+        download.file(f, tmp)
+        unzip(tmp, exdir=to, junkpaths=TRUE)
+    }
+}
+
 
 ##' String class -- does not get escaped in object literals
 ##'

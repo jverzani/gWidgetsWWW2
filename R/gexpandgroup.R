@@ -25,7 +25,12 @@ NA
 ##' @param text label text
 ##' @param handler  Called when expanded or closed
 ##' @param action passed to handler
-##' @inheritParams ggroup
+##' @param horizontal Boolean. Set to \code{TRUE} to pack children horizontally.
+##' @param spacing Integer. Between child spacing.
+##' @param use.scrollwindow Boolean. Set to \code{TRUE} to add a
+##' scrollwindow to manage space given to child widgets. Containers
+##' with scrollwindows often have their size fixed.
+##' @inheritParams gwidget
 ##' @seealso \code{\link{ggroup}}, \code{\link{gframe}}
 ##' @export
 ##' @examples

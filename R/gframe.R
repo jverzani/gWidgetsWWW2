@@ -22,7 +22,12 @@ NULL
 ##' Use \code{svalue<-} to adjust the title
 ##' @param text label text
 ##' @param pos position of label. Ignored?
-##' @inheritParams ggroup
+##' @param horizontal Boolean. Set to \code{TRUE} to pack children horizontally.
+##' @param spacing Integer. Between child spacing.
+##' @param use.scrollwindow Boolean. Set to \code{TRUE} to add a
+##' scrollwindow to manage space given to child widgets. Containers
+##' with scrollwindows often have their size fixed.
+##' @inheritParams gwidget
 ##' @return an \code{GContainer} object
 ##' @seealso \code{\link{ggroup}}
 ##' @export

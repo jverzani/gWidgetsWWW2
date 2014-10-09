@@ -17,7 +17,6 @@
 ##' @include utils.R
 ##' @include gwidgets-toplevel.R
 ##' @include gwidgets-session.R
-##' @include Authenticator.R
 NULL
 
 
@@ -25,6 +24,8 @@ NULL
 ## Base class for a gWidgetsApp.
 ## Used as a router for ajax requests coming back from a page
 ## We basically queue up javascript commands (gwidgets-toplevel)
+
+appenv <- new.env()
 
 
 GWidgetsAppBase <- setRefClass("GWidgetsAppBase",
@@ -67,7 +68,7 @@ GWidgetsAppBase <- setRefClass("GWidgetsAppBase",
                                      
                                    } else if(req$post()) {
                                      ## we handle post data ourselves -- if we can
-                                     if(grepl("^multipart/.*boundary", .req$env$CONTENT_TYPE)) {
+                                     if(grepl("^multipart/.*boundary", appenv$.req$env$CONTENT_TYPE)) {
                                        l <- req$POST()
                                      } else {
                                        raw_input <- req$env[['rook.input']]$read()
@@ -126,8 +127,8 @@ GWidgetsApp <- setRefClass("GWidgetsApp",
                                                    status=status,
                                                    headers=headers
                                                    )
-                               assign(".req", req, .GlobalEnv)
-                               assign("app", .self, .GlobalEnv)
+                               assign(".req", req, appenv) 
+                               assign("app", .self, appenv)
                                
                                req_input <-  read_rook_input(req)
                                session_id <- req_input$session_id
@@ -176,8 +177,6 @@ GWidgetsApp <- setRefClass("GWidgetsApp",
                                  assign(".gWidgets_toplevel", toplevel, env=e)
                                  lockBinding(".gWidgets_toplevel", env=e)
                                  
-                                 ## debug
-                                 assign(".toplevel", toplevel, .GlobalEnv)
                                } else {
                                  toplevel <- get_toplevel(e=e)
                                }
@@ -193,9 +192,9 @@ GWidgetsApp <- setRefClass("GWidgetsApp",
                                  ## script and store the results in an
                                  ## environment that can be
                                  ## serialized.
-                                 attach(e) 
-                                 out <- try(sys.source(the_script, envir=e, keep.source=FALSE), silent=TRUE)
-                                 detach(e)
+                                   attach(e)
+                                   out <- try(sys.source(the_script, envir=e, keep.source=FALSE), silent=TRUE)           #                                   detach(e)
+                                   
 
                                  
                                  if(inherits(out, "try-error")) {
@@ -241,7 +240,7 @@ GWidgetsAppAjax <- setRefClass("GWidgetsAppAjax",
                                ## Main router function. Here we dispatch based on path_info to
                                ## the appropirate method
                                req <- Request$new(env)
-                               assign(".req", req, .GlobalEnv)
+                               assign(".req", req, appenv) 
 
                                e_cookies <- new.env()
                                headers <- list('Content-Type'='application/javascript')

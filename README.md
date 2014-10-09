@@ -14,6 +14,12 @@ environment for `JavaScript`. Of course, the `R` user need not know any
 `JavaScript`, or even any web technologies -- not even HTML. Basically,
 most simple gWidgets scripts will just work.
 
+If installed from github, the extjs files will be downloaded. If
+installed as a R package, the commmand `download_extjs` must be issued
+to download the extjs files (67Mb) and isntall them within the package
+directory.
+
+
 Example
 -------
 
@@ -71,4 +77,4 @@ Graphics
 
 There is no interactive graphic device, though one can use several
 non-interactive graphics devices, in particular: `png`, through the `gimage` widget; and `RSVGTipsDevice`,
-through the `gsvg` widget. The basic use is all similar.o
+through the `gsvg` widget. The basic use for each is similar.

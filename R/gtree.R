@@ -48,11 +48,13 @@ NULL
 ##'   icons <- c("dismiss","ok")[2-x]
 ##'   nms <- c("branch","leaf")[x+1]
 ##'   ttip <- paste("This is a ", nms)
-##'   data.frame(id=letters[1:2], hasoffspring=as.logical(x), icons=icons, value=nms, qtip=ttip, stringsAsFactors=FALSE)
+##'   data.frame(id=letters[1:2], hasoffspring=as.logical(x), icons=icons,
+##'               value=nms, qtip=ttip, stringsAsFactors=FALSE)
 ##' }
 ##' w <- gwindow("Galton Watson tree")
 ##' g <- ggroup(cont=w, horizontal=FALSE)
-##' ghtml("A node in a Galton-Watson tree has 0 or 2 offspring.<br /> In this case each has equal chance.", cont=g)
+##' ghtml("A node in a Galton-Watson tree has 0 or 2 offspring.<br />
+##'        In this case each has equal chance.", cont=g)
 ##' gseparator(cont=g)
 ##' tr <- gtree(offspring=offspring,  cont=g)
 ##' size(tr) <- c(300,300)

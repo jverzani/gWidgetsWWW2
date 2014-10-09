@@ -158,16 +158,6 @@ WebPage <- setRefClass("WebPage",
 "
                        },
                        load_AJAX=function() {
-                         ## "/custom                        "
-                         ## x <- system.file('framework', 'brew', 'load_AJAX.rhtml', package='gWidgetsWWW2')
-
-                         ## paste("<script type='text/javascript'>",
-                         ##       sprintf("var MyApp = '%s';", app_name),
-                         ##       "var app_url = '/custom/' + MyApp + '/gwapp/';",
-                         ##       "var app_url = '/custom/app_' + MyApp + '/';",
-                         ##       paste(readLines(x), collapse="\n"),
-                         ##       "</script>",
-                         ##       sep="\n")
 
                          x <- system.file('framework', 'templates', 'default_ajax.js', package='gWidgetsWWW2')
                          sprintf("<script type='text/javascript'>%s</script>",
@@ -198,9 +188,6 @@ $(document).ready(function() {
                                                    app_name)))
                        },
                        load_gw_js=function() {
-                         x <- system.file("framework", "brew", "load_js.rhtml", package="gWidgetsWWW2")
-                         paste(readLines(x), collapse="\n")
-
                          x <- system.file("framework", "templates", "load_js.html", package="gWidgetsWWW2")
                          whisker.render(paste(readLines(x), collapse="\n"),
                                                 list(base_url="/custom"))
