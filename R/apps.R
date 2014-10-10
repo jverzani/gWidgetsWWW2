@@ -13,13 +13,6 @@
 ##      You should have received a copy of the GNU General Public License
 ##      along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
-## Some "apps"
-
-
-##'  @include gwidget.R
-NULL
-  
 ##' Browse a data frame in the global environment using gtable
 ##'
 ##' @param d data frame
@@ -44,4 +37,3 @@ browse_df <- function(d, width=800, height=500, paging=nrow(d) > 200, ...) {
   cat(x, file=f, append=FALSE)
   load_app(f, app_name="browse_df")
 }
- 
