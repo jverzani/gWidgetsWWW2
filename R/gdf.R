@@ -217,7 +217,7 @@ function() {
                        })
                      },
                      set_title=function(value) {
-                      "Refrence method to set title naming data frame"
+                      "Reference method to set title naming data frame"
                       call_Ext("setTitle", value)
                      },
                      hide_title=function(value) {
