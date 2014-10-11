@@ -1,7 +1,7 @@
 ##' @include gcomponent.R
 NULL
 
-##' Stub for roxygen2 documentation of common arguments for gWidgets contructors
+##' Stub for roxygen2 documentation of common arguments for gWidgets constructors
 ##' 
 ##' @param handler optional means (to \code{\link{addHandlerChanged}})
 ##' to specify a handler for the default signal. A handler is a

@@ -24,6 +24,7 @@ Suggests:
     markdown
 LazyLoad: yes
 Collate:
+    'Authenticator.R'
     'gwidgets-package.R'
     'array.R'
     'gwidgets-toplevel.R'
@@ -31,6 +32,7 @@ Collate:
     'utils.R'
     'BasicInterface.R'
     'WebPage.R'
+    'apps.R'
     'ext-misc.R'
     'gcomponent.R'
     'gwidget.R'
@@ -73,4 +75,5 @@ Collate:
     'gwidgets-app.R'
     'gwidgets-methods.R'
     'gwindow.R'
+    'json-rpc.R'
     'load.R'

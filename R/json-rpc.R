@@ -155,9 +155,12 @@ JsonRPCServer <- setRefClass("JsonRPCServer",
 ##'                                  ## should do file locking though!
 ##'                                  ## f <- "/tmp/ctr.txt"
 ##'                                  ## if(file.exists(f)) {
-##'                                  ##   ctr <- read.table(f, colClasses=c("character", "integer"), header=TRUE)
+##'                                  ##   ctr <- read.table(f, 
+##'                                  ##                     colClasses=c("character", "integer"),
+##'                                  ##                     header=TRUE)
 ##'                                  ## } else {
-##'                                  ##   ctr <- data.frame(page=character(0), count=integer(0), stringsAsFactors=FALSE)
+##'                                  ##   ctr <- data.frame(page=character(0), count=integer(0), 
+##'                                  ##                     stringsAsFactors=FALSE)
 ##'                                  ## }
 ##'                                  ## if(!is.na(ind <- match(page,ctr[,1]))) {
 ##'                                  ##   count <- ctr[ind,2] + 1
