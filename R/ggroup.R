@@ -109,7 +109,10 @@ gvbox <- function(...) {
 ##' rather the 'align' property is a property of the parent container
 ##' (the box). We set it to 'stretch'. This gives similar behaviour as
 ##' RGtk2, where child components always stretch to fill the direction
-##' orthogonal to the packing direction.
+##' orthogonal to the packing direction. (This can lead to undesirable
+##' layouts. To override, pass in something like
+##' \code{ext.args=list(layout=list(type="hbox",align="top"))}, say.)
+##' 
 ##'
 ##' This can lead to large box containers, when a box container is
 ##' also a child of a parent box container. The size of the child box
@@ -181,7 +184,6 @@ GGroup <- setRefClass("GGroup",
                            if(horizontal)
                              arg_list[['layout']] <- list(type="hbox", align="stretch") # was 'top'
                            else
-
                              arg_list[['layout']] <- list(type="vbox", align="stretch") # was 'left'
                            
 

@@ -192,7 +192,7 @@ GWidgetsApp <- setRefClass("GWidgetsApp",
                                  ## script and store the results in an
                                  ## environment that can be
                                  ## serialized.
-                                   attach(e)
+                                   attach(e, warn.conflicts=FALSE)
                                    out <- try(sys.source(the_script, envir=e, keep.source=FALSE), silent=TRUE)           #                                   detach(e)
                                    
 

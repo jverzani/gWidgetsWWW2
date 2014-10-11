@@ -8,7 +8,8 @@ fs <- list.files(system.file("examples", package="gWidgetsWWW2"), full=TRUE)
 basefs <- gsub("\\.R$", "", basename(fs))
 
 sapply(seq_along(fs), function(i) {
-  g1 <- ggroup(cont=g)
+    ## work around stretching
+  g1 <- ggroup(cont=g, ext.args=list(layout=list(type="hbox", align="top")))
 
   gbutton("Source", cont=g1, action=i, handler=function(h,...) {
     w1 <- gwindow(sprintf("Source of %s", basefs[i]), width=650, height=400, parent=w)

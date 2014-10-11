@@ -50,7 +50,7 @@ SessionManager <- setRefClass("SessionManager",
                                 },
                                 clear_session = function(id) {
                                   "clean up session, called when page is closed"
-                                  message("clear session ", id)
+##                                  message("clear session ", id)
                                   
                                   sessions[[id]] <<- NULL
                                 },

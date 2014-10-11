@@ -90,7 +90,7 @@ R_http <- setRefClass("R_http",
                                                   
                                                     R$add(RhttpdApp$new(webpage, name=app_name))
                                                     
-                                                    message(list("*** making app ***", app_name))
+                                                    ## message(list("*** making app ***", app_name))
                                                     
                                                     ## Make the app
                                                     gwapp <- gWidgetsWWW2:::GWidgetsApp$new(url="/",
@@ -100,7 +100,7 @@ R_http <- setRefClass("R_http",
                                                     R$add(RhttpdApp$new(gwapp, name=sprintf("app_%s", app_name)))
                                                     
                                                     if(open_page) {
-                                                      message("load page, port:", port, "app name: ", app_name)
+##                                                      message("load page, port:", port, "app name: ", app_name)
                                                       browseURL(sprintf("http://127.0.0.1:%s/custom/%s", port, app_name))
                                                     }
                                                     invisible(gwapp)

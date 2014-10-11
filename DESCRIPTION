@@ -24,7 +24,6 @@ Suggests:
     markdown
 LazyLoad: yes
 Collate:
-    'Authenticator.R'
     'gwidgets-package.R'
     'array.R'
     'gwidgets-toplevel.R'
