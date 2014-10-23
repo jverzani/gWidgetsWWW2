@@ -79,7 +79,7 @@ vignettes: vignettes/gWidgetsWWW2.pdf
 r-forge:
 	git archive master > $(HOME)/gWidgetsWWW2.tar;\
 	cd $(RFDIR) && rm -r `ls` && tar -xf $(HOME)/gWidgetsWWW2.tar;\
-	svn add --force .; cd $(RFSVN) && svn commit -m 'sync with git'
+	svn add --force .; svn rm --force `svn status | grep "\!" | cut -d " " -f 8`; cd $(RFSVN) && svn commit -m 'sync with https://github.com/jverzani/gWidgetsWWW2'
 
 clean: 
 	$(RM) -r $(PKGNAME).Rcheck/
