@@ -1,16 +1,38 @@
 Package: gWidgetsWWW2
-Maintainer: John Verzani <jverzani@gmail.com>
 License: GPL (>= 3)
 Title: Toolkit implementation of the gWidgets API for use
     with web pages
-Author: John Verzani
+Authors@R: c(person("John", "Verzani", role = c("aut", "cre", "cph"),
+                    email = "jverzani@gmail.com"),
+             person("Sencha, Inc", role = "cph", comment = "Ext JS 4-2.1, http://www.sencha.com"),
+             person("Twitter, Inc", role = "cph", 
+                    comment = c("Bootstrap v2.0.3 under Apache License 2.0", 
+                                "used in inst/base/css/gWidgetsWWW2.css")),
+             person("jQuery Foundation and other contributors", role = "cph", 
+                    comment = c("inst/base/javascript/jquery-1.7.1.min.js",
+                                "jQuery 1.7.1 under MIT license, https://jquery.org")),
+             person("Frederick", "Shea", role = "cph", 
+                    comment = c("inst/base/javascript/GMapPanel3.js",
+                                "from https://github.com/VinylFox/ExtJS.ux.GMapPanel")),
+             person(c("Adrian", "E."), "Feiguin", role = "cph", 
+                    comment = c("Presumed author of icons from the scigraphica project",
+                                "http://sourceforge.net/projects/scigraphica, GPL-2.0")),
+             person("The GNOME project", role = "cph", 
+                     comment = "Icons from Dropline Nuovo! personalisation scheme"),
+             person("Marijn Haverbeke and others", role = "cph", 
+                    comment = c("Code editor under MIT license", 
+                                "https://github.com/codemirror/codemirror")),
+             person("Nick", "Woike", role = "cph", 
+                    comment = "CodeEditorField, MIT license, https://github.com/nwoike/Diddle"),
+             person("Johannes", "Ranke", role = "ctb", comment = "Some fixes and a bit of cleaning")
+           )
 Description: Port of the gWidgets API to program dynamic
     websites with R code. This package uses Rook to enable
     use under R's local web server (see gWidgetsWWW2.rapache
     to publicly serve the pages powered by R).
     The Ext JavaScript libararies (www.sencha.com) are used
     to create and manipulate the widgets dynamically.
-Version: 0.4-2
+Version: 0.4-3
 URL: https://github.com/jverzani/gWidgetsWWW2
 Depends:
     R (>= 2.13.0),
