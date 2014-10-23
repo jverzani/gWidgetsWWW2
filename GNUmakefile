@@ -10,7 +10,7 @@ TGZVNR  := ../$(PKGSRC)_$(PKGVERS)-vignettes-not-rebuilt.tar.gz
 # containing the first instance of R on the PATH.
 RBIN ?= $(shell dirname "`which R`")
 
-# Specify static documentation directories for subversion on r-forge
+# Specify directories for subversion repository on r-forge
 RFSVN ?= $(HOME)/svn/gwidgets
 RFDIR ?= $(RFSVN)/pkg/gWidgetsWWW2
 
