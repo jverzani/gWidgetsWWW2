@@ -1,6 +1,84 @@
-Google maps from:
+## Google maps from:
+
 https://raw.github.com/VinylFox/ExtJS.ux.GMapPanel/master/src/GMapPanel3.js
 
-CodeMirror from codemirror.net
+[License status is unclear:
 
-ext from sencha.com
+ 
+/**
+ * @author Shea Frederick - http://www.vinylfox.com
+ * @class Ext.ux.panel.GMapPanel
+ * @extends Ext.Panel ...
+
+
+**/
+
+Any request for removal of the GMapPanel code by the copyright owner will be respected.
+
+## CodeMirror from codemirror.net
+
+Copyright (C) 2014 by Marijn Haverbeke <marijnh@gmail.com> and others
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+
+## Extjs from http://www.sencha.com/products/extjs/
+
+OPEN SOURCE LICENSE
+
+Sencha is an avid supporter of open source software. Our open source
+license is the appropriate option if you are creating an open source
+application under a license compatible with the GNU GPL license
+v3. Although the GPLv3 has many terms, the most important is that you
+must provide the source code of your application to your users so they
+can be free to modify your application for their own needs.
+
+
+This does not include all files included with extjs, though those it
+does include are not modified. This modification is covered under http://www.gnu.org/copyleft/gpl.html where 4 criteria must be met:
+
+a) The work must carry prominent notices stating that you modified it, and giving a relevant date.
+
+This is covered here and the date is in the DESCRIPTION file
+
+b) The work must carry prominent notices stating that it is released
+under this License and any conditions added under section 7. This
+requirement modifies the requirement in section 4 to “keep intact all
+notices”.
+
+The license.txt file contains the original license for the source.
+
+c) You must license the entire work, as a whole, under this License to
+anyone who comes into possession of a copy. This License will
+therefore apply, along with any applicable section 7 additional terms,
+to the whole of the work, and all its parts, regardless of how they
+are packaged. This License gives no permission to license the work in
+any other way, but it does not invalidate such permission if you have
+separately received it.
+
+
+This derived work is released under the GPLv3 license.
+
+
+d) If the work has interactive user interfaces, each must display
+Appropriate Legal Notices; however, if the Program has interactive
+interfaces that do not display Appropriate Legal Notices, your work
+need not make them do so.
+
+Not applicable.
