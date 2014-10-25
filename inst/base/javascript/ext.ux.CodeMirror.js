@@ -1,5 +1,4 @@
 // From https://github.com/ykey/Diddle/blob/master/app/lib/CodeEditorField.js
-// See that license
 Ext.define('Ext.ux.CodeMirror', {
 	extend: 'Ext.form.field.TextArea',
 	alias: 'widget.codeeditorfield',
