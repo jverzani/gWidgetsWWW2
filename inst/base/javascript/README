@@ -95,7 +95,7 @@ must provide the source code of your application to your users so they
 can be free to modify your application for their own needs.
 
 
-This does not include all files included with extjs, though those it
+This derived work (gWidgetsWWW2) does not include all files included with extjs, though those it
 does include are not modified. This modification is covered under http://www.gnu.org/copyleft/gpl.html where 4 criteria must be met:
 
 a) The work must carry prominent notices stating that you modified it, and giving a relevant date.
