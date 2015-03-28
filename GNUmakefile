@@ -76,6 +76,10 @@ vignettes/gWidgetsWWW2.pdf: vignettes/gWidgetsWWW2.Rnw
 
 vignettes: vignettes/gWidgetsWWW2.pdf
 
+roxygen: 
+	@echo "Roxygenizing package..."
+	"$(RBIN)/Rscript" -e 'library(devtools); document(".")' 2>&1 | tee roxygen.log
+
 r-forge:
 	git archive master > $(HOME)/gWidgetsWWW2.tar;\
 	cd $(RFDIR) && rm -r `ls` && tar -xf $(HOME)/gWidgetsWWW2.tar;\
