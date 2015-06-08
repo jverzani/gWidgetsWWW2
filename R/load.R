@@ -27,29 +27,36 @@ R_http <- setRefClass("R_http",
                                                     callSuper(...)
                                                   },
                                                   start=function(...) {
-                                                    if(started)
-                                                      return()
-                                                    env = environment(tools::startDynamicHelp)
-                                                    cur_port <- get("httpdPort", env)
-                                                    ## cur_port <- tools:::httpdPort
-                                                    if(cur_port > 0) {
-                                                      if(cur_port != port) {
-                                                        message(sprintf("Web server already started on port %s", cur_port))
-                                                        assign("port", cur_port, .self)
-                                                      }
+                                                      if(started)
+                                                          return()
+                                                      cur_port <- tools::startDynamicHelp(start=TRUE)
+                                                      assign("port", cur_port, .self)
                                                       started <<- TRUE
-                                                    } else {
-                                                        ## pass in listen="external.ip"
-                                                        ## message(sprintf("Starting server on port %s", port))
-                                                        ## options(help.ports=port) ## port is failing!!!
-                                                        out <- R$start(...)
+                                                      return()
 
-                                                        env = environment(tools::startDynamicHelp)
-                                                        assign("port", get("httpdPort", env), .self)
-                                                        started <<- TRUE
-                                                    }
+                                                      ## this isn't working anymore?
+                                                      env = environment(tools::startDynamicHelp)
+                                                      cur_port <- get("httpdPort", env)
+                                                      cur_port <- tools:::httpdPort
+                                                      if(cur_port > 0) {
+                                                          if(cur_port != port) {
+                                                              message(sprintf("Web server already started on port %s", cur_port))
+                                                              
+                                                              assign("port", cur_port, .self)
+                                                          }
+                                                          started <<- TRUE
+                                                      } else {
+                                                          ## pass in listen="external.ip"
+                                                          ## message(sprintf("Starting server on port %s", port))
+                                                          ## options(help.ports=port) ## port is failing!!!
+                                                          out <- R$start(...)
+                                                          
+                                                          env = environment(tools::startDynamicHelp)
+                                                          assign("port", get("httpdPort", env), .self)
+                                                          started <<- TRUE
+                                                      }
                                                   },
-                                                  load_gw=function(session_manager=make_session_manager()) {
+                                                    load_gw=function(session_manager=make_session_manager()) {
                                                     if(loaded) return()
                                                      ## gWidgetsWWW, static files
                                                     gWidgetsWWW <- Rook::Static$new(
