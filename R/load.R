@@ -118,8 +118,9 @@ R_http <- setRefClass("R_http",
 ##' Load an app in a directory
 ##'
 ##' @param dirname The directory name (with full path). We make several assuptions:
-##' 1) `dir/*.R` has one answer, or we take `index.R`, or we take first alphabetically;
-##' 2) `app_name` is `basename(dir_name)`;
+##' 1. `dir/*.R` has one answer, or we take `index.R`, or we take first alphabetically;
+##' 2. `app_name` is `basename(dir_name)`;
+##' @note This function sets the working directory to `dir`.
 ##' @export
 ##' @return creates the app
 "
@@ -179,16 +180,17 @@ r_httpd <- R_http$get_instance()
 ##'
 ##' To embed an app within a web page, use an \code{iframe} tag.
 ##'
-##' @param script_name path to gWidgetssWWW2 script
+##' @param script_name path to gWidgetsWWW2 script
 ##' @param app_name base name for script, unique per project. Derived
 ##' from script name if not specified.
-##' @param show.log If TRUE, logged information is written to the console
+##' @param show.log If TRUE, logged information is written to the console.
 ##' @param port Initial port for Rhttpd server, provided it hasn't already started.
 ##' @param session_manager an instance of \code{make_session_manager}
 ##' @param open_page logical. If \code{TRUE} call \code{browseURL} to open the app.
 ##' @param ... Passed to WebPage object. Named arguments
 ##' \code{body} and \code{head} can be used to insert information into
-##' each, such as loading of style sheets etc. through \code{head}. One can also subclass \code{WebPage} and pass this in via \code{webpage}.
+##' each, such as loading of style sheets etc. through \code{head}. One can 
+##' also subclass \code{WebPage} and pass this in via \code{webpage}.
 ##' @export
 ##' @examples
 ##' ## open an app that takes the entire page

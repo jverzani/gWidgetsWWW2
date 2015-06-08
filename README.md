@@ -60,12 +60,16 @@ Read on for notes on deployment beyond the local computer.
 Installation
 ------------
 
-Installing the package from GitHub is made easy if the `devtools`
-package of H. Wickham is installed:
+You can install the package from RForge:
+```
+    install.packages("gWidgetsWWW2", repos = "http://r-forge.r-project.org")
+```    
+
+Alternatively you can install from github, if the `devtools` package of H. Wickham is installed:
 
 ```
     library(devtools)
-    install_github("gWidgetsWWW2", "jverzani")
+    install_github("jverzani/gWidgetsWWW2")
 ```    
 
 Otherwise, a) install git, b) clone the project c) use +R CMD

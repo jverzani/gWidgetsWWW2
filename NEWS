@@ -2,11 +2,49 @@ Dear Emacs, please make this -*-Text-*- mode!
 
 NEWS for gWidgetsWWW2
 
+Changes for 0.4-4
+-------------------
+
+* Sync master branch to r-forge for automatic building of packages for all platforms
+
+
+Changes for 0.4-3
+-------------------
+
+* DESCRIPTION: added copyright and licensing information, added Johannes Ranke as a contributor
+
+* Some fixes in roxygen documentation and addressing R CMD check complaints
+
+
+Changes for 0.4-2
+-------------------
+
+* Comment out the "Transport process" messages to the terminal
+
+* gWidgets-app.R: Use appenv environment instead of .GlobalEnv
+
+* gWidgets-app.R: Don't detach the environment "e" after loading the script
+
+* gWidgets-app.R: Change port number
+
+* Include download_extjs function to make it possible to ship without ExtJS
+
 
 Changes for 0.4-1
 -------------------
 
+* Make R package exclude many unnecessary files from ExtJS by use of .Rbuildignore
 
+
+Changes for 0.4-0
+-------------------
+
+* Remove canvas widget as the R package appears to be unmaintained
+
+* make extjs load through a cdn. No longer include code. Re-add code later to be independent of an active internet connection
+
+* add in comments about gWidgetsWWW2.rapache, deprecate other deployments
+  of gWidgetsWWW2 beyond Rook.
 
 Changes for 0.3
 -------------------
