@@ -28,7 +28,7 @@ The basic "Hello World" app with a window, container, button and
 callback is created in a script `hello.R` and contains:
 
 
-```    
+```{r}
     w <- gwindow("Hello world example")
     g <- ggroup(cont=w, width=300, height=300)
     b <- gbutton("click me", cont=g, handler=function(h,...) {
@@ -38,7 +38,7 @@ callback is created in a script `hello.R` and contains:
     
 This script is turned into a web page through the `load_app` function:
     
-```
+```{r}
     require(gWidgetsWWW2)
     load_app("hello.R", app_name="hello")
 ```    
@@ -61,13 +61,14 @@ Installation
 ------------
 
 You can install the package from RForge:
-```
-    install.packages("gWidgetsWWW2", repos = "http://r-forge.r-project.org")
+
+```{r}
+    install.packages("gWidgetsWWW2", repos = c("http://r-forge.r-project.org", getOption("repos")))
 ```    
 
 Alternatively you can install from github, if the `devtools` package of H. Wickham is installed:
 
-```
+```{r}
     library(devtools)
     install_github("jverzani/gWidgetsWWW2")
 ```    
