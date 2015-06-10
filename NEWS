@@ -2,6 +2,12 @@ Dear Emacs, please make this -*-Text-*- mode!
 
 NEWS for gWidgetsWWW2
 
+Changes for 0.4-5
+-------------------
+
+* Adapt load_app.R to work with R 3.2.0
+
+
 Changes for 0.4-4
 -------------------
 
