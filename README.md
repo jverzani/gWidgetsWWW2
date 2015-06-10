@@ -45,7 +45,7 @@ load_app("hello.R", app_name="hello")
 
 The app is then mapped to the url
 
-  http://127.0.0.1:PORT/custom/hello/indexgw.rhtml
+`http://127.0.0.1:PORT/custom/hello/indexgw.rhtml`
 
 The "PORT" will be that for R's internal help server. The `port`
 argument can pass in a value if that has not yet been started, with a
