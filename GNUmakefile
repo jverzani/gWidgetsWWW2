@@ -80,6 +80,13 @@ roxygen:
 	@echo "Roxygenizing package..."
 	"$(RBIN)/Rscript" -e 'library(devtools); document(".")' 2>&1 | tee roxygen.log
 
+winbuilder: build
+	date
+	@echo "Uploading to R-release on win-builder"
+	curl -T $(TGZ) ftp://anonymous@win-builder.r-project.org/R-release/
+	@echo "Uploading to R-devel on win-builder"
+	curl -T $(TGZ) ftp://anonymous@win-builder.r-project.org/R-devel/
+
 r-forge:
 	git archive master > $(HOME)/gWidgetsWWW2.tar;\
 	cd $(RFDIR) && rm -r `ls` && tar -xf $(HOME)/gWidgetsWWW2.tar;\
