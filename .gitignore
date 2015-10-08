@@ -3,3 +3,6 @@
 .RData
 gWidgetsWWW2.Rproj
 .DS_Store
+gWidgetsWWW2.Rcheck
+gWidgetsWWW2.tar
+gWidgetsWWW2_*.tar.gz

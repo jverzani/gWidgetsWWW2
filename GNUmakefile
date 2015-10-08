@@ -1,8 +1,8 @@
 PKGNAME := $(shell sed -n "s/Package: *\([^ ]*\)/\1/p" DESCRIPTION)
 PKGVERS := $(shell sed -n "s/Version: *\([^ ]*\)/\1/p" DESCRIPTION)
 PKGSRC  := $(shell basename $(PWD))
-TGZ     := ../$(PKGSRC)_$(PKGVERS).tar.gz
-TGZVNR  := ../$(PKGSRC)_$(PKGVERS)-vignettes-not-rebuilt.tar.gz
+TGZ     := $(PKGSRC)_$(PKGVERS).tar.gz
+TGZVNR  := $(PKGSRC)_$(PKGVERS)-vignettes-not-rebuilt.tar.gz
 
 # Specify the directory holding R binaries. To use an alternate R build (say a
 # pre-prelease version) use `make RBIN=/path/to/other/R/` or `export RBIN=...`
@@ -16,7 +16,7 @@ RFDIR ?= $(RFSVN)/pkg/gWidgetsWWW2
 
 pkgfiles = DESCRIPTION \
 	   NAMESPACE \
-           NEWS \
+	   NEWS \
 	   README.md \
 	   TODO.md \
 	   DESCRIPTION \
@@ -40,21 +40,18 @@ pkgfiles = DESCRIPTION \
 	   inst/CITATION \
 	   man/* \
 	   R/* \
-           vignettes/gWidgetsWWW2.pdf
+	   vignettes/gWidgetsWWW2.pdf
 
 $(TGZ): $(pkgfiles)
-	cd ..;\
-		"$(RBIN)/R" CMD build $(PKGSRC)
+	"$(RBIN)/R" CMD build .
 
 $(TGZVNR): $(pkgfiles)
-	cd ..;\
-		"$(RBIN)/R" CMD build $(PKGSRC) --no-build-vignettes;\
-		cd $(PKGSRC);\
+	"$(RBIN)/R" CMD build --no-build-vignettes .
 	mv $(TGZ) $(TGZVNR)
                 
-build: $(TGZ)
+build: roxygen $(TGZ)
 
-build-no-vignettes: $(TGZVNR)
+build-no-vignettes: roxygen $(TGZVNR)
 
 install: build
 	"$(RBIN)/R" CMD INSTALL $(TGZ)
@@ -64,11 +61,11 @@ install-no-vignettes: build-no-vignettes
 
 check: build
 	# Vignettes have been rebuilt by the build target
-	"$(RBIN)/R" CMD check --as-cran --no-build-vignettes $(TGZ)
+	"$(RBIN)/R" CMD check --no-build-vignettes $(TGZ)
 
 check-no-vignettes: build-no-vignettes
 	mv $(TGZVNR) $(TGZ)
-	"$(RBIN)/R" CMD check --as-cran $(TGZ)
+	"$(RBIN)/R" CMD check $(TGZ)
 	mv $(TGZ) $(TGZVNR)
 
 vignettes/gWidgetsWWW2.pdf: vignettes/gWidgetsWWW2.Rnw
@@ -78,7 +75,7 @@ vignettes: vignettes/gWidgetsWWW2.pdf
 
 roxygen: 
 	@echo "Roxygenizing package..."
-	"$(RBIN)/Rscript" -e 'library(devtools); document(".")' 2>&1 | tee roxygen.log
+	"$(RBIN)/Rscript" -e 'roxygen2::roxygenize(".")'
 
 winbuilder: build
 	date
@@ -88,10 +85,9 @@ winbuilder: build
 	curl -T $(TGZ) ftp://anonymous@win-builder.r-project.org/R-devel/
 
 r-forge:
-	git archive master > $(HOME)/gWidgetsWWW2.tar;\
-	cd $(RFDIR) && rm -r `ls` && tar -xf $(HOME)/gWidgetsWWW2.tar;\
+	git archive master > gWidgetsWWW2.tar;\
+	cd $(RFDIR) && rm -r `ls` && tar -xf gWidgetsWWW2.tar;\
 	svn add --force .; svn rm --force `svn status | grep "\!" | cut -d " " -f 8`; cd $(RFSVN) && svn commit -m 'sync with https://github.com/jverzani/gWidgetsWWW2'
 
 clean: 
-	$(RM) -r $(PKGNAME).Rcheck/
 	$(RM) vignettes/*.R

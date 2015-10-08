@@ -12,4 +12,6 @@ inst/base/javascript/ext-4-2.1/packages
 TODO.md
 README.md
 GNUmakefile
-roxygen.log
+gWidgetsWWW2.Rcheck
+.gWidgetsWWW2.tar
+.gWidgetsWWW2_*.tar.gz

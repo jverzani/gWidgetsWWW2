@@ -1,8 +1,6 @@
 TODO
 ----
 
-* trim down for use with rook only
-
 * e_cookies?
 
 * gdf expand=TRUE, not same as gtable. Odd
@@ -13,14 +11,12 @@ TODO
 
 * gfile has bad styling, not sure why the button goes where it does.
 
-* ggooglemmaps no e3 object found. (This is buggy, was fixed, now not ...)
-
-* why so slow? (Reference class methods?)
-
-* Can use template for FastRWeb/load_AJAX.R, but don't
-
 DONE
 ----
+
+* <del>why so slow? (Reference class methods?)
+
+* <del>trim down for use with rook only
 
 * <del> gformlayout-- simplify forms; pass for now</del>
 

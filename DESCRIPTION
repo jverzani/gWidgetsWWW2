@@ -14,11 +14,6 @@ Authors@R: c(
            comment = c("inst/base/javascript/jquery-1.7.1.min.js",
                    "jQuery 1.7.1 under MIT license",
                    "https://jquery.org")),
-    person("Frederick", "Shea", role = "cph",
-           comment = c("inst/base/javascript/GMapPanel3.js",
-                   "https://github.com/VinylFox/ExtJS.ux.GMapPanel",
-                   "Original has MIT License",
-                   "https://code.google.com/p/ext-ux-gmappanel/")),
     person(c("Adrian", "E."), "Feiguin", role = "cph",
            comment = c("Presumed author of icons from scigraphica project",
                    "http://sourceforge.net/projects/scigraphica,",
@@ -32,14 +27,14 @@ Authors@R: c(
            comment = c("CodeEditorField, MIT license,",
                    "https://github.com/nwoike/Diddle")),
     person("Johannes", "Ranke", role = "ctb",
-           comment = "Some fixes and a bit of cleaning"))
+           comment = "Some fixes and a bit of cleaning, port to R6"))
 Description: Port of the gWidgets API to program dynamic
     websites with R code. This package uses Rook to enable
     use under R's local web server (see gWidgetsWWW2.rapache
     to publicly serve the pages powered by R).
     The Ext JavaScript libararies (www.sencha.com) are used
     to create and manipulate the widgets dynamically.
-Version: 0.4-6
+Version: 0.5-1
 URL: https://github.com/jverzani/gWidgetsWWW2
 Depends:
     R (>= 2.13.0),
@@ -48,7 +43,8 @@ Depends:
     RJSONIO,
     memoise,
     whisker,
-    digest
+    digest,
+    R6
 Suggests:
     markdown
 LazyLoad: yes

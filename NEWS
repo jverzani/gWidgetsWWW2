@@ -2,6 +2,11 @@ Dear Emacs, please make this -*-Text-*- mode!
 
 NEWS for gWidgetsWWW2
 
+Changes for 0.5-1
+-------------------
+
+* Replace Reference Classes by R6 classes in the hope to improve speed
+
 Changes for 0.4-5
 -------------------
 
