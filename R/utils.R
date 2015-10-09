@@ -455,23 +455,3 @@ logger <- function(..., fname="/tmp/log.txt") cat(..., "\n", file=fname, append=
 is_running_local <- function() {
   is.null(getOption("gWidgetsWWW2:FastRWeb"))
 }
-
-#' Singleton pattern
-#' @importFrom R6 R6Class
-Singleton <- R6Class("Singleton",
-  public = list(
-    Class = NULL,
-    instance = NULL,
-    initialize = function(...) {
-      "Override this by defining Class"
-    },
-    get_instance = function(...) {
-      "Get a unique instance of the class defined in the initialize method of the subclass"
-      if (is.null(self$instance)) {
-        self$instance <- Class$new(...)
-      } else {
-        self$instance
-      }
-    }
-  )
-)
