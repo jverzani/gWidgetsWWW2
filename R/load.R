@@ -18,9 +18,11 @@
 #' @include gwidgets-app.R
 NULL
 
-# scripts to load apps
-
-#' The help server as an R6 class
+#' The help server as a singleton R6 class
+#' 
+#' The following code creates an instance of the R6 class R_http,
+#' while not giving a name to its generator object, effectively
+#' making the class a singleton within an instance of R.
 #' 
 #' @importFrom Rook Rhttpd RhttpdApp Static
 #' @fields R An Rhttpd object
@@ -42,6 +44,9 @@ R_http <- R6Class("R_http",
         self$port <- tools::startDynamicHelp(start = NA)
         self$started <- TRUE
         return()
+    },
+    get_instance = function() {
+      return(self)
     },
     load_gw = function(session_manager = make_session_manager()) {
       if(self$loaded) return()
@@ -98,7 +103,7 @@ R_http <- R6Class("R_http",
       invisible(gwapp)
     }
   )
-)
+)$new()
 
 #' Load a web app defined by a gWidgetsWWW2 script
 #'
