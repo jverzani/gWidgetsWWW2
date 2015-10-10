@@ -7,7 +7,8 @@ Changes for 0.5-1
 
 * Replace Reference Classes by R6 classes in the hope to improve speed
 
-* Remove ggooglemaps as it was buggy
+* Remove some stuff that seems hard to maintain (could be added again later):
+  ggooglemaps, Apache related things, load_dir and load_dirapp
 
 * Remove examples that are currently not working
 
