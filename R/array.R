@@ -25,7 +25,6 @@ NULL
 #' iteration. As well, there are some lookup methods.
 #' @importFrom R6 R6Class
 #' @docType class
-#' @export Array
 #' @format An \code{\link{R6Class}} generator object
 #' @field l The list where the key value pairs are stored
 #' @field id_ctr An integer counter for getting new names (as character strings)

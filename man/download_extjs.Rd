@@ -10,8 +10,8 @@ download_extjs()
 Nothing. Installs files if successful
 }
 \description{
-Useful if installing from a package which doesn't bundle. The extjs files
-are quite large (nearly 70Mb download), so rather than bundle in an R
-package, one can download as needed.
+Useful if installing from a package which doesn't bundle. The
+extjs files are quite large (nearly 70Mb download), so rather than
+bundle in an R package, one can download as needed.
 }
 

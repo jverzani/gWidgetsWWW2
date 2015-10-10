@@ -49,9 +49,9 @@ $(TGZVNR): $(pkgfiles)
 	"$(RBIN)/R" CMD build --no-build-vignettes .
 	mv $(TGZ) $(TGZVNR)
                 
-build: roxygen $(TGZ)
+build: $(TGZ)
 
-build-no-vignettes: roxygen $(TGZVNR)
+build-no-vignettes: $(TGZVNR)
 
 install: build
 	"$(RBIN)/R" CMD INSTALL $(TGZ)

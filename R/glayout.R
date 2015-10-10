@@ -68,7 +68,7 @@ glayout <- function(homogeneous = FALSE, spacing = 2, # 10 is too big here
 GLayout <- setRefClass("GLayout",
                        contains="GContainer",
                        fields=list(
-                         widgets="Array",
+                         widgets="ANY",
                          container="ANY",
                          dots="list"
                          ),

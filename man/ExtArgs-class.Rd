@@ -4,19 +4,16 @@
 \name{ExtArgs-class}
 \alias{ExtArgs}
 \alias{ExtArgs-class}
-\title{A class to handle map between R and arguments for constructor}
-\format{An \code{\link{R6Class}} generator object}
-\usage{
-ExtArgs
-}
+\title{a class to handle map between R and arguments for constructor}
 \description{
 The ExtArgs are simply an Array instance wrapper with an extend method and
 a conversion method
 }
-\section{Fields}{
+\section{Methods}{
 
 \describe{
-\item{\code{args}}{\code{\link{Array}} of arguments}
+\item{\code{extend(l, overwrite = TRUE)}}{Extend argument list by list l.}
+
+\item{\code{to_js_object()}}{Convert to string of object literal}
 }}
-\keyword{datasets}
 

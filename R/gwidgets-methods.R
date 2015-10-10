@@ -104,7 +104,7 @@ tag <- function(x, key) UseMethod("tag")
 ##' @S3method tag GComponent
 tag.GComponent <- function(x, key) x$get_attr(key)
 
-##' Set a persistent attribute for an object
+##' Set a persistent attirbute for an object
 ##'
 ##' @param x object
 ##' @param key key to store the value

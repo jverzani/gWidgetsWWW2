@@ -7,8 +7,7 @@
 toJSObject(x)
 }
 \arguments{
-\item{x}{a list that will map to an object literal. E.g., list(a=1, b="a")
-goes to {a:1, b:'a'}}
+\item{x}{a list that will map to an object literal. E.g., list(a=1, b="a") goes to {a:1, b:'a'}}
 }
 \value{
 a string with the list formatted as code to produce a JavaScript object
