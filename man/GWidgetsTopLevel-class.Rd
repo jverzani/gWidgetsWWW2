@@ -4,10 +4,14 @@
 \name{GWidgetsTopLevel-class}
 \alias{GWidgetsTopLevel}
 \alias{GWidgetsTopLevel-class}
-\title{A toplevel object for a gWidgetsWWW2 app stores page-specific values}
+\title{A toplevel object for a gWidgetsWWW2 app to store page-specific values}
+\format{An \code{\link{R6Class}} generator object}
+\usage{
+GWidgetsTopLevel
+}
 \description{
 The toplevel object for gWidgetsWWW2 apps stores page specific
-information. As there can potentially be several \code{gwindow}
+information. There can potentially be several \code{gwindow}
 instances on a page (using \code{renderTo}), however all share the
 same toplevel instance. This instance holds a reference to the
 evaluation environment, the request that generates the page, the
@@ -15,31 +19,26 @@ objects populating the page, and a queue for holding JavaScript
 commands (produced by method calls, say).
 }
 \details{
-The sharing of this toplevel object amongs each component is the
+The sharing of this toplevel object among each component is the
 reason why the constructors require a specification of either a
 \code{container} or \code{parent} argument.
 }
-\section{Methods}{
+\section{Fields}{
 
 \describe{
-\item{\code{add_object(obj, id)}}{Add object to objects list}
+\item{\code{The}}{evaluation environment}
 
-\item{\code{call_handler(id, signal, params, e_cookies)}}{lookup widget by id, notify any observer of this signal}
+\item{\code{The}}{request}
 
-\item{\code{call_post_proxy(id, param)}}{Run proxy, return JSON encoded object}
+\item{\code{objects}}{Objects on the page as an \code{\link{Array}} object}
 
-\item{\code{call_proxy(id, param)}}{Run proxy, return JSON encoded object}
+\item{\code{js_queue}}{JavaScript queue to flush as an \code{\link{Array}} object}
 
-\item{\code{call_transport(id, param)}}{Run transport}
+\item{\code{js_queue}}{JavaScript queue to flush as an \code{\link{Array}} object}
 
-\item{\code{call_upload(id, param, post_data)}}{process a file upload, sets value via svalue if file exists}
+\item{\code{cookies}}{An environment holding cookies}
 
-\item{\code{do_layout()}}{Update layout from toplevel}
-
-\item{\code{get_object_by_id(id)}}{Lookup object by its id}
-
-\item{\code{js_queue_flush()}}{Flush JavaScript queue}
-
-\item{\code{js_queue_push(x)}}{push command (string) to queue for JavaScript Commands}
+\item{\code{do_layout_cmd}}{The command used for the layout}
 }}
+\keyword{datasets}
 
