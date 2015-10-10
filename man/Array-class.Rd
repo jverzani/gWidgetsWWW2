@@ -22,8 +22,5 @@ iteration. As well, there are some lookup methods.
 
 \item{\code{id_ctr}}{An integer counter for getting new names (as character strings)}
 }}
-\examples{
-A <- Array$new(a = 2, b = 2)
-}
 \keyword{datasets}
 

@@ -24,11 +24,13 @@ NULL
 #' while not giving a name to its generator object, effectively
 #' making the class a singleton within an instance of R.
 #' 
-#' @importFrom Rook Rhttpd RhttpdApp Static
-#' @fields R An Rhttpd object
-#' @fields port The port of the Dynamic help server
-#' @fields started Is the R_http instance running?
-#' @fields loaded Is the gWidgets infrastructure loaded?
+#' @importFrom R6 R6Class
+#' @docType class
+#' @format An \code{\link{R6Class}} generator object
+#' @field R An Rhttpd object
+#' @field port The port of the Dynamic help server
+#' @field started Is the R_http instance running?
+#' @field loaded Is the gWidgets infrastructure loaded?
 R_http <- R6Class("R_http",
   public = list(
     "R" = NULL,

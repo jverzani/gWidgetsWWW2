@@ -79,7 +79,6 @@ Collate:
     'gexpandgroup.R'
     'gfile.R'
     'gformlayout.R'
-    'ggooglemaps.R'
     'ghtml.R'
     'gimage.R'
     'glabel.R'

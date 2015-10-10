@@ -90,8 +90,7 @@ ExtArgs <- R6Class("ExtArgs",
   public = list(
     "args" = NULL,
     initialize = function(...) {
-      args <- gWidgetsWWW2::Array$new(...)
-         super$initialize()
+      args <- Array$new(...)
     },
     extend = function(l, overwrite=TRUE) {
       "Extend argument list by list l."

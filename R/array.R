@@ -30,8 +30,6 @@ NULL
 #' @field l The list where the key value pairs are stored
 #' @field id_ctr An integer counter for getting new names (as character strings)
 #' @name Array-class
-#' @examples
-#' A <- Array$new(a = 2, b = 2)
 Array <- R6Class("Array",
   public = list(
     l = list(),

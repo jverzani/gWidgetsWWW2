@@ -3,7 +3,7 @@
 \name{tag<-}
 \alias{tag<-}
 \alias{tag<-.GComponent}
-\title{Set a persistent attirbute for an object}
+\title{Set a persistent attribute for an object}
 \usage{
 tag(x, key) <- value
 
@@ -17,7 +17,7 @@ tag(x, key) <- value
 \item{value}{attribute value}
 }
 \description{
-Set a persistent attirbute for an object
+Set a persistent attribute for an object
 
 assignment method for tag
 }
