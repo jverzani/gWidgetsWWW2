@@ -1,4 +1,5 @@
 ##      Copyright (C) 2011  John Verzani
+##      Copyright (C) 2015  Johannes Ranke (port to R6)
 ##  
 ##      This program is free software: you can redistribute it and/or modify
 ##      it under the terms of the GNU General Public License as published by
@@ -71,171 +72,168 @@ gcheckboxgroup = function (items, checked = FALSE, horizontal = FALSE, use.table
 
 ## Base class for checkbox group
 ## @note TODO share code with gradio -- one should be a subclass Gradio - GCheckboxGroup - GCheckbox
-GCheckboxGroup <- setRefClass("GCheckboxGroup",
-                         contains="GWidget",
-                         fields=list(
-                           items="ANY"
-                         ),
-                       methods=list(
-                         init = function(items,
-                           checked = FALSE, horizontal=FALSE, use.table=FALSE,
-                           handler = NULL, action = NULL, container = NULL, ...,
-                           width=NULL, height=NULL, ext.args=NULL, columns=ifelse(!horizontal,1,length(items))) {
-                           
-                           value <<- checked # value is index
-                           items <<- items
-                           
-                           constructor <<- "Ext.form.CheckboxGroup"
-                           transport_signal <<- "change"
-                           change_signal <<- "change"
-                           
-                           arg_list <- list(items=String(items_as_array()),
-                                            width = width,
-                                            height = height,
-                                            columns=columns,
-                                            vertical=!horizontal,
-                                            fieldLabel=list(...)$label
-                                            )
-                           add_args(arg_list)
+GCheckboxGroup <- R6Class("GCheckboxGroup",
+  inherit = GWidget,
+  public = list(
+    items = NULL,
+    init = function(items,
+      checked = FALSE, horizontal=FALSE, use.table=FALSE,
+      handler = NULL, action = NULL, container = NULL, ...,
+      width=NULL, height=NULL, ext.args=NULL, columns=ifelse(!horizontal,1,length(items))) {
+      
+      self$value <- checked # value is index
+      self$items <- items
+      
+      self$constructor <- "Ext.form.CheckboxGroup"
+      self$transport_signal <- "change"
+      self$change_signal <- "change"
+      
+      arg_list <- list(items=String(items_as_array()),
+                       width = width,
+                       height = height,
+                       columns=columns,
+                       vertical=!horizontal,
+                       fieldLabel=list(...)$label
+                       )
+      self$add_args(arg_list)
 
-                           setup(container, handler, action, ext.args, ...)
-                           
-                           set_value(checked)
-                           .self
-                         },
-                         ## main property. We store the index in value, not the label
-                         get_value = function(...) {
-                           "Return label"
-                           items[value]
-                         },
-                         set_value = function(value, ...) {
-                           "Set value. Value may be index, logical, or labels"
-                           if(is.logical(value)) {
-                             val <- rep(value, len=length(items))
-                             set_index(which(val))
-                           } else {
-                             out <- Filter(function(x) !is.na(x), match(value, items))
-                             if(length(out))
-                               set_index(out)
-                           }
-                         },
-                         get_index=function(...) {
-                           value
-                         },
-                         set_index=function(value, ...) {
-                           value <<- value
-                           l <- list()
-                           l[[get_id()]] <- String(toJSArray(value))
-                           call_Ext("setValue", l)
-                         },
-                         get_items = function(i, ...) {
-                           items[i]
-                         },
-                         set_items = function(items, ...) {
-                           "Set items, update GUI"
-                           warning(gettext("No method to set items"))
-                           ## XXX How to update radio buttons?
-                           ## items <<- items
-                           ## XXX update radio buttons??? TODO
-                         },
-                         ## cost-free aliases
-                         get_names=function(...) get_items(...),
-                         set_names = function(...) set_items(...),
-                         ## transport, brings back index as string
-                         transport_fun = function() {
-                           tpl <- "
+      self$setup(container, handler, action, ext.args, ...)
+      
+      self$set_value(checked)
+      self
+    },
+    ## main property. We store the index in value, not the label
+    get_value = function(...) {
+      "Return label"
+      self$items[self$value]
+    },
+    set_value = function(value, ...) {
+      "Set value. Value may be index, logical, or labels"
+      if(is.logical(value)) {
+        val <- rep(value, len=length(self$items))
+        self$set_index(which(val))
+      } else {
+        out <- Filter(function(x) !is.na(x), match(value, self$items))
+        if(length(out))
+          self$set_index(out)
+      }
+    },
+    get_index=function(...) {
+      value
+    },
+    set_index=function(value, ...) {
+      self$value <- value
+      l <- list()
+      l[[self$get_id()]] <- String(toJSArray(value))
+      self$call_Ext("setValue", l)
+    },
+    get_items = function(i, ...) {
+      self$items[i]
+    },
+    set_items = function(items, ...) {
+      "Set items, update GUI"
+      warning(gettext("No method to set items"))
+      ## XXX How to update radio buttons?
+      ## items <<- items
+      ## XXX update radio buttons??? TODO
+    },
+    ## cost-free aliases
+    get_names=function(...) self$get_items(...),
+    set_names = function(...) self$set_items(...),
+    ## transport, brings back index as string
+    transport_fun = function() {
+      tpl <- "
 var x = [];
 Ext.each(this.getChecked(), function(val) {
   x.push(val.inputValue);
 });
 var param = {value: x};
 "
-                           tpl
-                         },
-                         process_transport = function(value) {
-                           ## value is a list
-                           value <<- as.numeric(unlist(value))
-                         },
-                         param_defn=function(signal) {
-                           if(signal == "change") {
-                             transport_fun()
+      tpl
+    },
+    process_transport = function(value) {
+      ## value is a list
+      value <<- as.numeric(unlist(value))
+    },
+    param_defn=function(signal) {
+      if(signal == "change") {
+        transport_fun()
 
-                          } else {
-                             ""
-                           }
-                         },
-                         ##
-                         items_as_array = function() {
-                           "Return items as array"
-                           makeCheck <- function(label, i,  name) {
-                             ## inputValue is 1-based index
-                             ## escape ' in label
+     } else {
+        ""
+      }
+    },
+    ##
+    items_as_array = function() {
+      "Return items as array"
+      makeCheck <- function(label, i,  name) {
+        ## inputValue is 1-based index
+        ## escape ' in label
 
-                             sprintf("new Ext.form.Checkbox({boxLabel:'%s', inputValue: %s, name:'%s'})",
-                                     escapeSingleQuote(label), i, escapeSingleQuote(name))
-                           }
-                           buttons <- mapply(makeCheck, items, seq_along(items), rep(.self$get_id(), len=length(items)))
+        sprintf("new Ext.form.Checkbox({boxLabel:'%s', inputValue: %s, name:'%s'})",
+                escapeSingleQuote(label), i, escapeSingleQuote(name))
+      }
+      buttons <- mapply(makeCheck, self$items, seq_along(self$items), 
+                        rep(self$get_id(), len=length(self$items)))
 
-                           out <- paste("[",
-                                        paste(buttons, collapse=","),
-                                        "]", sep="")
-                           return(out)
-                           
-                         },
-                         add_handler_clicked = function(...) {
-                           "Click here is change -- perhaps through some method call, not just a moust event"
-                           add_handler_changed(...)
-                         }
-                         )
-                       )
+      out <- paste("[",
+                   paste(buttons, collapse=","),
+                   "]", sep="")
+      return(out)
+    },
+    add_handler_clicked = function(...) {
+      "Click here is change -- perhaps through some method call, not just a moust event"
+      self$add_handler_changed(...)
+    }
+  )
+)
                        
                          
 ## Base class for gcheckbox
-GCheckbox <- setRefClass("GCheckbox",
-                         contains="GCheckboxGroup",
-                         method=list(
-                           init=function(text, checked=FALSE,
-                             use.togglebutton=FALSE,
-                             handler=NULL, action=NULL, container=NULL, ...,
-                             width=NULL, height=NULL, ext.args=NULL) {
+GCheckbox <- R6Class("GCheckbox",
+  inherit = GCheckboxGroup,
+  public = list(
+    init=function(text, checked=FALSE,
+                  use.togglebutton=FALSE,
+                  handler=NULL, action=NULL, container=NULL, ...,
+                  width=NULL, height=NULL, ext.args=NULL) {
 
-                             value <<- if(checked) 1 else numeric(0)
-                             items <<- text
-                           
-                             constructor <<- "Ext.form.CheckboxGroup"
-                             transport_signal <<- "change"
-                             change_signal <<- "change"
+      self$value <- if(checked) 1 else numeric(0)
+      self$items <- text
+    
+      self$constructor <- "Ext.form.CheckboxGroup"
+      self$transport_signal <- "change"
+      self$change_signal <- "change"
 
-                             arg_list <- list(items=String(items_as_array()),
-                                              width = width,
-                                              height = height,
-                                              fieldLabel=list(...)$label
-                                              )
-                             add_args(arg_list)
+      arg_list <- list(items=String(items_as_array()),
+                       width = width,
+                       height = height,
+                       fieldLabel=list(...)$label
+                       )
+      self$add_args(arg_list)
 
-                             setup(container, handler, action, ext.args, ...)
-                             
-                             set_value(as.logical(rep(checked, len=length(items))), index=FALSE)
-                             .self
-                             
-                           },
-                           get_value = function(...) {
-                             "Return logical, label via []"
-                             get_index(...)
-                           },
-                           set_value = function(value, ...) {
-                             "Set value. Value is logical TRUE or FALSE"
-                             set_index(value)
-                           },
-                           get_index=function(...) {
-                             return(1 %in% value)
-                           },
-                           set_index=function(value, ...) {
-                             if(as.logical(value)) {
-                               callSuper(value=1)
-                             } else {
-                               callSuper(value=numeric(0))
-                             }
-                           }
-                           ))
-                         
+      self$setup(container, handler, action, ext.args, ...)
+      
+      self$set_value(as.logical(rep(checked, len=length(self$items))), index=FALSE)
+      self
+    },
+    get_value = function(...) {
+      "Return logical, label via []"
+      self$get_index(...)
+    },
+    set_value = function(value, ...) {
+      "Set value. Value is logical TRUE or FALSE"
+      self$set_index(value)
+    },
+    get_index=function(...) {
+      return(1 %in% self$value)
+    },
+    set_index=function(value, ...) {
+      if(as.logical(value)) {
+        super$set_index(value=1)
+      } else {
+        super$set_index(value=numeric(0))
+      }
+    }
+  )
+)

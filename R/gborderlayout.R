@@ -1,4 +1,5 @@
 ##      Copyright (C) 2011  John Verzani
+##      Copyright (C) 2015  Johannes Ranke (port to R6)
 ##  
 ##      This program is free software: you can redistribute it and/or modify
 ##      it under the terms of the GNU General Public License as published by
@@ -110,99 +111,97 @@ gborderlayout <- function(container=NULL, ...,
   obj
 }
 
-GBorderLayout <- setRefClass("GBorderLayout",
-                             contains="GContainer",
-                             methods=list(
-                              init=function(container, ...,
-                                width=NULL, height=NULL,
-                                ext.args=NULL,
-                                title,
-                                collapsible
-                                ) {
+GBorderLayout <- R6Class("GBorderLayout",
+  inherit = GContainer,
+  public = list(
+    init=function(container, ...,
+                  width=NULL, height=NULL,
+                  ext.args=NULL,
+                  title,
+                  collapsible
+                  ) {
 
-                                constructor <<- "Ext.panel.Panel"
-                                arg_list <- list(
-                                                 width=width,
-                                                 height=height,
-                                                 layout="border",
-                                                 items=String(sprintf("[%s]", make_panels(title, collapsible)))
-                                                 )
+      self$constructor <- "Ext.panel.Panel"
+      arg_list <- list(
+                       width=width,
+                       height=height,
+                       layout="border",
+                       items=String(sprintf("[%s]", make_panels(title, collapsible)))
+                       )
 
+      self$args$extend(arg_list, ext.args)
+      self$write_constructor()
+      container$add(self, ...)
                                 
-                                args$extend(arg_list, ext.args)
-                                write_constructor()
-                                container$add(.self, ...)
-                                
-                                if(is.null(width) && is.null(height))
-                                  set_size(c("100%", "100%"))
-
-                              },
-                              region_id=function(where=c("center","north", "south", "east", "west")) {
-                                "Return ID of region"
-                                where <- match.arg(where)
-                                sprintf("%s_%s_region", get_id(), where)
-                              },
-                              make_panels=function(title, collapsible) {
-                                where <- c("center","north", "south", "east", "west")
-                                out <- lapply(where, function(i) {
-                                  lst <- list(region=i,
-                                              xtype="panel",
-                                              layout="fit",
-                                              title=title[[i]],
-                                              collapsible=collapsible[[i]],
-                                              split=TRUE,
-                                              margins="0,5,5,5",
-                                              id=region_id(i)
-                                              )
-                                  toJSObject(lst)
-                                })
-                                paste(out, collapse=",")
-                              },
-                              add=function(child,
-                                where=c("center","north", "south", "east", "west"),
-                                ...
-                                ) {
-                                "add child to specific region, defaulting to center"
-                                child_bookkeeping(child)
+      if(is.null(width) && is.null(height))
+        self$set_size(c("100%", "100%"))
+    },
+    region_id = function(where = c("center","north", "south", "east", "west")) {
+      "Return ID of region"
+      where <- match.arg(where)
+      sprintf("%s_%s_region", self$get_id(), where)
+    },
+    make_panels=function(title, collapsible) {
+      where <- c("center","north", "south", "east", "west")
+      out <- lapply(where, 
+                    function(i) {
+                      lst <- list(region=i,
+                                  xtype="panel",
+                                  layout="fit",
+                                  title=title[[i]],
+                                  collapsible=collapsible[[i]],
+                                  split=TRUE,
+                                  margins="0,5,5,5",
+                                  id=region_id(i)
+                                  )
+                      toJSObject(lst)
+                    })
+      paste(out, collapse=",")
+    },
+    add = function(child,
+                   where=c("center","north", "south", "east", "west"),
+                   ...
+                   ) {
+      "add child to specific region, defaulting to center"
+      self$child_bookkeeping(child)
                                
-                                tpl <- "
+      tpl <- "
 wrc = Ext.getCmp('{{region_id}}');
 wrc.removeAll();
 wrc.add({{child_id}});
 "
-                                cmd <- whisker.render(tpl,
-                                               list(region_id=region_id(where=where),
-                                                    child_id=child$get_id()))
-                                add_js_queue(cmd)
-                              },
+      cmd <- whisker.render(tpl,
+                            list(region_id=region_id(where=where),
+                                 child_id=child$get_id()))
+      self$add_js_queue(cmd)
+    },
+    set_panel_size = function(where=c("center","north", "south", "east", "west"), dimension) {
+      "@param  where which panel (center, north, ...), @param dimension width or height as appropriate"
+      ## XXX What to do with center?
+      where <- match.arg(where)
+      meth <- ifelse(where %in% c("east", "west"), "setWidth", "setHeight")
 
-                              set_panel_size=function(where=c("center","north", "south", "east", "west"), dimension) {
-                                "@param  where which panel (center, north, ...), @param dimension width or height as appropriate"
-                                ## XXX What to do with center?
-                                where <- match.arg(where)
-                                meth <- ifelse(where %in% c("east", "west"), "setWidth", "setHeight")
-
-                                tpl <- "
+      tpl <- "
 wrc = Ext.getCmp('{{region_id}}');
 wrc.{{meth}}({{dimension}});
 "
-                                cmd <- whisker.render(tpl, list(region_id=region_id(where=where),
-                                                                meth=meth,
-                                                                dimension=dimension))
-                                add_js_queue(cmd)
-                              },
-                              set_panel_collapse=function(where=c("center","north", "south", "east", "west"), collapse=TRUE) {
-                                "collapse or expand (collapse=FALSE) collapsible panel"
-                                where <- match.arg(where)
-                                meth <- ifelse(collapse, "collapse", "expand")
+      cmd <- whisker.render(tpl, list(region_id=region_id(where=where),
+                                      meth=meth,
+                                      dimension=dimension))
+      self$add_js_queue(cmd)
+    },
+    set_panel_collapse=function(where=c("center","north", "south", "east", "west"), collapse=TRUE) {
+      "collapse or expand (collapse=FALSE) collapsible panel"
+      where <- match.arg(where)
+      meth <- ifelse(collapse, "collapse", "expand")
                                 
-                                tpl <- "
+      tpl <- "
 wrc = Ext.getCmp('{{region_id}}');
 wrc.{{meth}}();
 "
-                                cmd <- whisker.render(tpl, list(region_id=region_id(where=where),
-                                                                meth=meth))
-                                add_js_queue(cmd)
-
-                              }
-                              ))
+      cmd <- whisker.render(tpl, list(region_id=region_id(where=where),
+            meth=meth))
+      self$add_js_queue(cmd)
+    }
+  )
+)

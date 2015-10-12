@@ -1,34 +1,34 @@
-#      Copyright (C) 2011  John Verzani
-#      Copyright (C) 2015  Johannes Ranke (port to R6)
-#  
-#      This program is free software: you can redistribute it and/or modify
-#      it under the terms of the GNU General Public License as published by
-#      the Free Software Foundation, either version 3 of the License, or
-#      (at your option) any later version.
-#  
-#      This program is distributed in the hope that it will be useful,
-#      but WITHOUT ANY WARRANTY; without even the implied warranty of
-#      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#      GNU General Public License for more details.
-#  
-#      You should have received a copy of the GNU General Public License
-#      along with this program.  If not, see <http://www.gnu.org/licenses/>.
+##      Copyright (C) 2011  John Verzani
+##      Copyright (C) 2015  Johannes Ranke (port to R6)
+##  
+##      This program is free software: you can redistribute it and/or modify
+##      it under the terms of the GNU General Public License as published by
+##      the Free Software Foundation, either version 3 of the License, or
+##      (at your option) any later version.
+##  
+##      This program is distributed in the hope that it will be useful,
+##      but WITHOUT ANY WARRANTY; without even the implied warranty of
+##      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##      GNU General Public License for more details.
+##  
+##      You should have received a copy of the GNU General Public License
+##      along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#' @include gwidgets-package.R
+##' @include gwidgets-package.R
 NULL
 
-#' An array class.
-#'
-#' Like a list, but has some methods. Completely superflous, but
-#' makes copying some code algorithms easier. We implement methods
-#' such as \code{append}, \code{push}, \code{pop} and \code{each} for
-#' iteration. As well, there are some lookup methods.
-#' @importFrom R6 R6Class
-#' @docType class
-#' @format An \code{\link{R6Class}} generator object
-#' @field l The list where the key value pairs are stored
-#' @field id_ctr An integer counter for getting new names (as character strings)
-#' @name Array-class
+##' An array class.
+##'
+##' Like a list, but has some methods. Completely superflous, but
+##' makes copying some code algorithms easier. We implement methods
+##' such as \code{append}, \code{push}, \code{pop} and \code{each} for
+##' iteration. As well, there are some lookup methods.
+##' @importFrom R6 R6Class
+##' @docType class
+##' @format An \code{\link{R6Class}} generator object
+##' @field l The list where the key value pairs are stored
+##' @field id_ctr An integer counter for getting new names (as character strings)
+##' @name Array-class
 Array <- R6Class("Array",
   public = list(
     l = list(),

@@ -42,13 +42,13 @@ SessionManager <- R6Class("SessionManager",
 
       rec <- list(e=e,
                   last.access=Sys.time())
-      self$sessions[[id]] <<- rec
+      self$sessions[[id]] <- rec
     },
     clear_session = function(id) {
       "clean up session, called when page is closed"
       ##  message("clear session ", id)
       
-      self$sessions[[id]] <<- NULL
+      self$sessions[[id]] <- NULL
     },
     is_session_id =  function(id) {
       "Is id a valid sessin id?"

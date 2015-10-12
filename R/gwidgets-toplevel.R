@@ -1,48 +1,48 @@
-#      Copyright (C) 2011  John Verzani
-#      Copyright (C) 2015  Johannes Ranke (port to R6)
-#  
-#      This program is free software: you can redistribute it and/or modify
-#      it under the terms of the GNU General Public License as published by
-#      the Free Software Foundation, either version 3 of the License, or
-#      (at your option) any later version.
-#  
-#      This program is distributed in the hope that it will be useful,
-#      but WITHOUT ANY WARRANTY; without even the implied warranty of
-#      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#      GNU General Public License for more details.
-#  
-#      You should have received a copy of the GNU General Public License
-#      along with this program.  If not, see <http://www.gnu.org/licenses/>.
+##      Copyright (C) 2011  John Verzani
+##      Copyright (C) 2015  Johannes Ranke (port to R6)
+##  
+##      This program is free software: you can redistribute it and/or modify
+##      it under the terms of the GNU General Public License as published by
+##      the Free Software Foundation, either version 3 of the License, or
+##      (at your option) any later version.
+##  
+##      This program is distributed in the hope that it will be useful,
+##      but WITHOUT ANY WARRANTY; without even the implied warranty of
+##      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##      GNU General Public License for more details.
+##  
+##      You should have received a copy of the GNU General Public License
+##      along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#' @include array.R
+##' @include array.R
 NULL
 
-#' A toplevel object for a gWidgetsWWW2 app to store page-specific values
-#'
-#' The toplevel object for gWidgetsWWW2 apps stores page specific
-#' information. There can potentially be several \code{gwindow}
-#' instances on a page (using \code{renderTo}), however all share the
-#' same toplevel instance. This instance holds a reference to the
-#' evaluation environment, the request that generates the page, the
-#' objects populating the page, and a queue for holding JavaScript
-#' commands (produced by method calls, say).
-#'
-#' The sharing of this toplevel object among each component is the
-#' reason why the constructors require a specification of either a
-#' \code{container} or \code{parent} argument.
-#'
-#' @docType class
-#' @export
-#' @format An \code{\link{R6Class}} generator object
-#' @importFrom R6 R6Class
-#' @field The evaluation environment
-#' @field The request
-#' @field objects Objects on the page as an \code{\link{Array}} object
-#' @field js_queue JavaScript queue to flush as an \code{\link{Array}} object
-#' @field js_queue JavaScript queue to flush as an \code{\link{Array}} object
-#' @field cookies An environment holding cookies
-#' @field do_layout_cmd The command used for the layout
-#' @name GWidgetsTopLevel-class
+##' A toplevel object for a gWidgetsWWW2 app to store page-specific values
+##'
+##' The toplevel object for gWidgetsWWW2 apps stores page specific
+##' information. There can potentially be several \code{gwindow}
+##' instances on a page (using \code{renderTo}), however all share the
+##' same toplevel instance. This instance holds a reference to the
+##' evaluation environment, the request that generates the page, the
+##' objects populating the page, and a queue for holding JavaScript
+##' commands (produced by method calls, say).
+##'
+##' The sharing of this toplevel object among each component is the
+##' reason why the constructors require a specification of either a
+##' \code{container} or \code{parent} argument.
+##'
+##' @docType class
+##' @export
+##' @format An \code{\link{R6Class}} generator object
+##' @importFrom R6 R6Class
+##' @field e The evaluation environment
+##' @field request The request
+##' @field objects Objects on the page as an \code{\link{Array}} object
+##' @field js_queue JavaScript queue to flush as an \code{\link{Array}} object
+##' @field js_queue JavaScript queue to flush as an \code{\link{Array}} object
+##' @field cookies An environment holding cookies
+##' @field do_layout_cmd The command used for the layout
+##' @name GWidgetsTopLevel-class
 GWidgetsTopLevel <- R6Class("GWidgetsTopLevel",
   public = list(
     "e" = NULL,

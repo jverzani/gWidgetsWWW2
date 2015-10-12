@@ -1,4 +1,5 @@
 ##      Copyright (C) 2011  John Verzani
+##      Copyright (C) 2015  Johannes Ranke (port to R6)
 ##  
 ##      This program is free software: you can redistribute it and/or modify
 ##      it under the terms of the GNU General Public License as published by
@@ -44,56 +45,53 @@ gcalendar <- function(text = "", format = NULL,
 }
 
 ## Calendar class
-GCalendar <- setRefClass("GCalendar",
-                         contains="GWidget",
-                         fields=list(
-                           date_format="character"
-                           ),
-                         methods=list(
-                           init = function(text, format, handler, action, container,
-                             ...,
-                             width=NULL, height=NULL, ext.args=NULL) {
-                             
-                             date_format <<- getWithDefault(format, "%Y-%m-%d")
-                             ext_format <- gsub("%","", date_format)
+GCalendar <- R6Class("GCalendar",
+  inherit = GWidget,
+  public = list(
+    date_format = NULL,
+    init = function(text, format, handler, action, container,
+      ..., width=NULL, height=NULL, ext.args=NULL) {
+      
+      self$date_format <- getWithDefault(format, "%Y-%m-%d")
 
-                             
-                             ## Ext format has no %
-                             fmt <- if(!is.null(format) && nchar(format) > 0) {
-                               gsub("%","",format)
-                             } else {
-                               NULL
-                             }
-                             constructor <<- "Ext.form.field.Date"
-                             transport_signal <<- "change"
-                             arg_list <- list(editable=TRUE,
-                                              width=width,
-                                              height=height,
-                                              format=ext_format
-                                              )
-                             add_args(arg_list)
+      ## Ext format has no % 
+      ext_format <- gsub("%","", date_format)
+      
+      # JR: fmt is not used, could be removed after testing
+      fmt <- if(!is.null(format) && nchar(format) > 0) {
+        gsub("%","",format)
+      } else {
+        NULL
+      }
+      self$constructor <- "Ext.form.field.Date"
+      self$transport_signal <- "change"
+      arg_list <- list(editable=TRUE,
+                       width=width,
+                       height=height,
+                       format=ext_format
+                       )
+      self$add_args(arg_list)
 
-                             setup(container, handler, action, ext.args, ...)
+      self$setup(container, handler, action, ext.args, ...)
 
-                             if(nchar(text))
-                               set_value(text)
-                             else
-                               set_value(NA)
-                             .self
-                           },
-                           get_value = function(...) {
-                             as.Date(value, date_format)
-                           },
-                           set_value = function(value, ...) {
-                             value <<- value
-                             if(!is.null(date_format) && nchar(date_format))
-                               call_Ext("setValue", as.character(as.Date(value, date_format))) # right format?
-                             else
-                               call_Ext("setValue", value)
-                           },
-                           transport_fun = function() {
-                             "param = {value: newValue}"
-                           }
-                           ))
-
-                             
+      if(nchar(text))
+        self$set_value(text)
+      else
+        self$set_value(NA)
+      self
+    },
+    get_value = function(...) {
+      as.Date(self$value, self$date_format)
+    },
+    set_value = function(value, ...) {
+      self$value <- value
+      if(!is.null(self$date_format) && nchar(self$date_format))
+        self$call_Ext("setValue", as.character(as.Date(value, date_format))) # right format?
+      else
+        self$call_Ext("setValue", value)
+    },
+    transport_fun = function() {
+      "param = {value: newValue}"
+    }
+  )
+)

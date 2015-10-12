@@ -76,16 +76,16 @@ NULL
   valid = "w"
 )
 
-#' A class to handle map between R and arguments for constructor
-#'
-#' The ExtArgs are simply an Array instance wrapper with an extend method and
-#' a conversion method
-#' @importFrom R6 R6Class
-#' @docType class
-#' @field args \code{\link{Array}} of arguments
-#' @export
-#' @format An \code{\link{R6Class}} generator object
-#' @name ExtArgs-class
+##' A class to handle map between R and arguments for constructor
+##'
+##' The ExtArgs are simply an Array instance wrapper with an extend method and
+##' a conversion method
+##' @importFrom R6 R6Class
+##' @docType class
+##' @field args \code{\link{Array}} of arguments
+##' @export
+##' @format An \code{\link{R6Class}} generator object
+##' @name ExtArgs-class
 ExtArgs <- R6Class("ExtArgs",
   public = list(
     "args" = NULL,

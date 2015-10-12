@@ -1,4 +1,5 @@
 ##      Copyright (C) 2011  John Verzani
+##      Copyright (C) 2015  Johannes Ranke (port to R6)
 ##  
 ##      This program is free software: you can redistribute it and/or modify
 ##      it under the terms of the GNU General Public License as published by
@@ -62,68 +63,68 @@ gbutton <- function(text="",
   return(b)
 }
 
-GButton <- setRefClass("GButton",
-                       contains="GWidget",
-                       methods=list(
-                         init = function(
-                           text="",
-                           handler=NULL, action=NULL, container, ...,
-                           width=NULL, height=NULL, ext.args=NULL
-                           ) {
+GButton <- R6Class("GButton",
+  inherit = GWidget,
+  public = list(
+    init = function(
+                    text="",
+                    handler=NULL, action=NULL, container, ...,
+                    width=NULL, height=NULL, ext.args=NULL
+                    ) {
+      self$value = text
+      self$constructor = "Ext.Button"
+      self$change_signal = "click"
 
-                           initFields(value=text,
-                                      constructor="Ext.Button",
-                                      change_signal="click")
-
-                           arg_list <- list(
-                                            width = width,
-                                            height = height
-                                            )
-                           add_args(arg_list)
-                           
-                           setup(container, handler, action, ext.args, ...)
-
-                           set_value(text)
-                         },
-                        
-                         ## main property
-                         get_value = function(...) {
-                           "Return label"
-                           value
-                         },
-                         
-                         set_value = function(text, ...) {
-                           "Set label"
-                           value <<- text
-                           call_Ext("setText", text)
-                           u <- getStockIconByName(text)
-                           call_Ext("setIconCls", getWithDefault(u, ""))
-                         },
-                         
-                         ##
-                         set_icon = function(icon) {
-                           "Set icon"
-                           call_Ext("setIcon", icon)
-                         },
-                         set_tooltip = function(tip) {
-                           call_Ext("setTooltip", tip)
-                         },
-                         add_handler_clicked=function(handler, action=NULL, ...) {
-                           add_handler_changed(handler, action, ...)
-                         }
-                        
-                         )
+      arg_list <- list(
+                       width = width,
+                       height = height
                        )
+
+      self$add_args(arg_list)
+      
+      self$setup(container, handler, action, ext.args, ...)
+
+      self$set_value(text)
+    },
+                        
+    ## main property
+    get_value = function(...) {
+      "Return label"
+      value
+    },
+    
+    set_value = function(text, ...) {
+      "Set label"
+      self$value <- text
+      self$call_Ext("setText", text)
+      u <- getStockIconByName(text)
+      self$call_Ext("setIconCls", getWithDefault(u, ""))
+    },
+    
+    ##
+    set_icon = function(icon) {
+      "Set icon"
+      self$call_Ext("setIcon", icon)
+    },
+    set_tooltip = function(tip) {
+      self$call_Ext("setTooltip", tip)
+    },
+    add_handler_clicked=function(handler, action=NULL, ...) {
+      self$add_handler_changed(handler, action, ...)
+    }
+  )
+)
                        
 
-GButtonWithAction <- setRefClass("GButtonWithAction",
-                                 contains="GButton",
-                                 methods=list(
-                                   init=function(action, container,  ...,  width, height, ext.args) {
-                                     "Initialize widget if it is an action item"
-                                     ## XXX steal ext.args .. from setup
-                                     cmd <- sprintf("var %s = new Ext.Button(%s)", get_id(), action$get_id())
-                                     add_js_queue(cmd)
-                                     container$add(.self, ...)
-                                   }
-                                   ))
+GButtonWithAction <- R6Class("GButtonWithAction",
+  inherit = GButton,
+  public = list(
+    init = function(action, container,  ...,  width, height, ext.args) {
+      "Initialize widget if it is an action item"
+      ## XXX steal ext.args .. from setup
+      cmd <- sprintf("var %s = new Ext.Button(%s)", self$get_id(), action$get_id())
+      self$add_js_queue(cmd)
+      container$add(self, ...)
+    }
+  )
+)

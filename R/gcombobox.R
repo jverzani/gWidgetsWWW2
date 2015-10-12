@@ -1,4 +1,5 @@
 ##      Copyright (C) 2011  John Verzani
+##      Copyright (C) 2015  Johannes Ranke (port to R6)
 ##  
 ##      This program is free software: you can redistribute it and/or modify
 ##      it under the terms of the GNU General Public License as published by
@@ -121,166 +122,160 @@ gdroplist <- gcombobox
 ## Not working: templates; tooltips, icons; 
 
 ##Base class for gcombobox
-GCombobox <- setRefClass("GCombobox",
-                         contains="GWidget",
-                         fields=list(
-                           store="GWidgetArrayStore",
-                           editable="logical"
-                           ) ,
-                         methods=list(
-                           init=function(items, selected=1, editable=FALSE, coerce.with=NULL,
-                             handler = NULL, action = NULL, container=NULL,...,
-                             width=NULL, height=NULL, ext.args=NULL, autocomplete=NULL, initial.msg="", tpl=NULL) {
+GCombobox <- R6Class("GCombobox",
+  inherit = GWidget,
+  public = list(
+    store = NULL,
+    editable = NULL,
+    init=function(items, selected=1, editable=FALSE, coerce.with=NULL,
+                  handler = NULL, action = NULL, container=NULL,...,
+                  width=NULL, height=NULL, ext.args=NULL, 
+                  autocomplete=NULL, initial.msg="", tpl=NULL) {
 
-                             
-                             editable <<- editable
-                             coerce_with <<- coerce.with
+      
+      self$editable <- editable
+      self$coerce_with <- coerce.with
 
-                             if(is.null(tpl)) 
-                               items <- .normalize(items) # give standard names
+      if(is.null(tpl)) 
+        items <- self$.normalize(items) # give standard names
 
+      self$store <- GWidgetArrayStore$new(container, object_data=TRUE)
+      self$store$init(items)
+      
+      self$constructor <- "Ext.form.field.ComboBox"
+      self$change_signal <- ifelse(editable, "change", "select")
+      self$transport_signal = if(editable) c("change","select") else "select"
+      
+      ## cf., http://skirtlesden.com/articles/extjs-comboboxes-part-1
+      if(is.null(tpl))
+        tpl <- .make_tpl(items)
+      tpl <- sprintf("Ext.create('Ext.XTemplate','<tpl for=\".\"><div class=\"x-boundlist-item\">%s</div></tpl>')", tpl)
+      
+      arg_list <- list(store=String(store$get_id()),
+                       displayField="name",
+                       tpl=String(tpl),
+##                       triggerAction='query',
+##                       queryMode='local',
+                       minChars=1,
+                       editable=TRUE,
+                       #selectOnFocus=TRUE,
+                       forceSelection=!editable,
+                       growToLongestValue=TRUE,
+                       typeAhead=TRUE,
+                       width=width,
+                       height=height,
+                       fieldLabel=list(...)$label
+                       )
+      
+      
+      
+      if(autocomplete) {
+        arg_list[['hideTrigger']] <- TRUE
+        arg_list[['editable']] <- TRUE
+        selected <- 0
+      }
+      if(selected == 0)
+        arg_list[['emptyText']] <- initial.msg
+      
+      self$add_args(arg_list)
 
-                             store <<- GWidgetArrayStore$new(container, object_data=TRUE)
-                             store$init(items)
-                             
-                             initFields(
-                                        constructor="Ext.form.field.ComboBox",
-                                        change_signal=ifelse(editable, "change", "select"),
-                                        transport_signal=if(editable) c("change","select") else "select"
-                                        )
-                             
-                             ## cf., http://skirtlesden.com/articles/extjs-comboboxes-part-1
-                             if(is.null(tpl))
-                               tpl <- .make_tpl(items)
-                             tpl <- sprintf("Ext.create('Ext.XTemplate','<tpl for=\".\"><div class=\"x-boundlist-item\">%s</div></tpl>')", tpl)
-                             
-                             arg_list <- list(store=String(store$get_id()),
-                                              displayField="name",
-                                              tpl=String(tpl),
-##                                              triggerAction='query',
-##                                              queryMode='local',
-                                              minChars=1,
-                                              editable=TRUE,
-                                              #selectOnFocus=TRUE,
-                                              forceSelection=!editable,
-                                              growToLongestValue=TRUE,
-                                              typeAhead=TRUE,
-                                              width=width,
-                                              height=height,
-                                              fieldLabel=list(...)$label
-                                              )
-                             
-                             
-                             
-                             if(autocomplete) {
-                               arg_list[['hideTrigger']] <- TRUE
-                               arg_list[['editable']] <- TRUE
-                               selected <- 0
-                             }
-                             if(selected == 0)
-                               arg_list[['emptyText']] <- initial.msg
-                             
-                             add_args(arg_list)
+      self$setup(container, handler, action, ext.args, ...)
+      
+      ## load data
+      self$block_handlers()
+      self$store$load_data(sprintf("%s.focus(true)", self$get_id()))
 
-                             setup(container, handler, action, ext.args, ...)
-                             
-                             ## load data
-                             block_handlers()
-                             .self$store$load_data(sprintf("%s.focus(true)", get_id()))
+      self$set_index(selected)
+      self$unblock_handlers()
+      ## set value -- should be set_value, but isn't dispatching to right one
+      ## if(!is.na(selected)) {
+      ##   value <<- selected
+      ##   call_Ext("setValue", selected)
+      ## } else {
+      ##   value <<- NA
+      ## }
+      
+    },
+    transport_fun = function() {
+      "param = {value:this.getRawValue()};"
+    },
+#     process_transport=function(value, ...) { # JR: Commented out as another version 
+#       super$process_transport(value)         #     is included below
+#     },
+    get_index=function(...) {
+      match(value, self$get_items())
+    },
+    set_value = function(value, ...) {
+      "Set stored value. We store value, not index"
+      self$value <- value
 
-                             set_index(selected)
-                             unblock_handlers()
-                             ## set value -- should be set_value, but isn't dispatching to right one
-                             ## if(!is.na(selected)) {
-                             ##   value <<- selected
-                             ##   call_Ext("setValue", selected)
-                             ## } else {
-                             ##   value <<- NA
-                             ## }
-                             
-                           },
-                           transport_fun = function() {
-                             "param = {value:this.getRawValue()};"
-                           },
-                           process_transport=function(value, ...) {
-                             callSuper(value)
-                           },
-                           get_index=function(...) {
-                             match(value, get_items())
-                           },
-                           set_value = function(value, ...) {
-                             "Set stored value. We store value, not index"
-                             value <<- value
+      if(!is.na(value) && length(value) && nchar(value))
+        self$call_Ext("setValue", value)
+      else
+        self$call_Ext("setValue", "")
+    },
+    set_index=function(value, ...) {
+      self$set_value(get_items()[value],  ...)
+    },
+    process_transport = function(...) {
+      self$value <- ..1
+    },
+    get_items = function(i,...) {
+      "Get items from store as vector, not data frame"
+      items <- self$store$get_data(...)
+      if(is.data.frame(items))
+        items[i, 1, drop=TRUE]
+      else
+        items
+    },
+    set_items = function(items, ...) {
+      "Set store items"
+      items <- self$.normalize(items)
+      self$store$set_data(items, ...)
+      self$store$load_data(sprintf("%s.focus(true)", self$get_id()))
+    },
+    set_focus=function(value) {
+      if(as.logical(value)) {
+        self$call_Ext("focus", TRUE)
+      }
+    },
+    len=function(...) base::length(self$get_items()),
+    .normalize=function(items) {
+      "put on standard names to match template"
+      if(!is.data.frame(items))
+        items <- data.frame(items, stringsAsFactors=FALSE)
+      items[[1]] <- as.character(items[[1]]) # name is character
+      ## standardize first three names
+      nms <- c("name", "icon", "tooltip")
+      nc <- ncol(items)
+      mnc <- min(3, nc)
+      names(items)[1:mnc] <- nms[1:mnc]
+      items
+    },
+    .make_tpl=function(items) {
+      "Make template to match standard names: name, icon, tooltip"
+      if(ncol(items) ==1)
+        '{name}'
+      else if(ncol(items) ==2)
+        '<img src="{icon}"></img>{name}'
+      else
+        '<img src="{icon}"></img><span data-qtip="{tooltip}">{name}</span>'
+    },
+    ## hide trigger, if want to be like gedit
+    hide_trigger = function(value) {
+      "Hide trigger if TRUE, else show"
+      self$call_Ext("setHideTrigger", as.logical(value))
+    },
+    ## Handlers
+    add_handler_blur = function(handler, action=NULL) {
+      self$add_handler("blur", handler, action)
+    },
+    add_handler_select = function(handler, action=NULL) {
+      self$add_handler("beforeselect", handler, action)
+    },
+    add_handler_change = function(handler, action=NULL) {
+      self$add_handler("change", handler, action)
+    }
 
-                             if(!is.na(value) && length(value) && nchar(value))
-                               call_Ext("setValue", value)
-                             else
-                               call_Ext("setValue", "")
-                           },
-                           set_index=function(value, ...) {
-                             set_value(get_items()[value],  ...)
-                           },
-                           process_transport = function(...) {
-                             value <<- ..1
-                           },
-                           get_items = function(i,...) {
-                             "Get items from store as vector, not data frame"
-                             items <- store$get_data(...)
-                             if(is.data.frame(items))
-                               items[i,1, drop=TRUE]
-                             else
-                               items
-                           },
-                           set_items = function(items, ...) {
-                             "Set store items"
-                             items <- .normalize(items)
-                             store$set_data(items, ...)
-                             store$load_data(sprintf("%s.focus(true)", get_id()))
-                           },
-                           set_focus=function(value) {
-                             if(as.logical(value)) {
-                               call_Ext("focus", TRUE)
-
-                             }
-                           },
-                           len=function(...) base::length(get_items()),
-                           .normalize=function(items) {
-                             "put on standard names to match template"
-                             if(!is.data.frame(items))
-                               items <- data.frame(items, stringsAsFactors=FALSE)
-                             items[[1]] <- as.character(items[[1]]) # name is character
-                             ## standardize first three names
-                             nms <- c("name", "icon", "tooltip")
-                             nc <- ncol(items)
-                             mnc <- min(3, nc)
-                             names(items)[1:mnc] <- nms[1:mnc]
-
-                             
-                             items
-                           },
-                           .make_tpl=function(items) {
-                             "Make template to match standard names: name, icon, tooltip"
-                             if(ncol(items) ==1)
-                               '{name}'
-                             else if(ncol(items) ==2)
-                               '<img src="{icon}"></img>{name}'
-                             else
-                               '<img src="{icon}"></img><span data-qtip="{tooltip}">{name}</span>'
-                           },
-                           ## hide trigger, if want to be like gedit
-                           hide_trigger = function(value) {
-                             "Hide trigger if TRUE, else show"
-                             call_Ext("setHideTrigger", as.logical(value))
-                           },
-                           ## Handlers
-                           add_handler_blur = function(handler, action=NULL) {
-                             add_handler("blur", handler, action)
-                           },
-                           add_handler_select = function(handler, action=NULL) {
-                             add_handler("beforeselect", handler, action)
-                           },
-                           add_handler_change = function(handler, action=NULL) {
-                             add_handler("change", handler, action)
-                           }
-
-                           ))
+  )
+)
