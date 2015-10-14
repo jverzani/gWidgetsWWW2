@@ -34,7 +34,7 @@ Description: Port of the gWidgets API to program dynamic
     to publicly serve the pages powered by R).
     The Ext JavaScript libararies (www.sencha.com) are used
     to create and manipulate the widgets dynamically.
-Version: 0.5-1
+Version: 0.5-0000001
 URL: https://github.com/jverzani/gWidgetsWWW2
 Depends:
     R (>= 2.13.0),
@@ -71,30 +71,6 @@ Collate:
     'gcombobox.R'
     'gtable.R'
     'gdf.R'
-    'gdialogs.R'
-    'gwidget-text.R'
-    'gedit.R'
-    'ggroup.R'
-    'gframe.R'
-    'gexpandgroup.R'
-    'gfile.R'
-    'gformlayout.R'
-    'ghtml.R'
-    'gimage.R'
-    'glabel.R'
-    'glayout.R'
-    'gmenu.R'
-    'gnotebook.R'
-    'gpanedgroup.R'
-    'gpanel.R'
-    'gradio.R'
-    'gslider.R'
-    'gspinbutton.R'
-    'gstackwidget.R'
-    'gstatusbar.R'
-    'gsvg.R'
-    'gtext.R'
-    'gtree.R'
     'gwidgets-app.R'
     'gwidgets-methods.R'
     'gwindow.R'

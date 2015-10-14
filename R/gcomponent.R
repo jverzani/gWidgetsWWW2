@@ -131,7 +131,7 @@ GComponent <- R6Class("GComponent",
         if(exists(".gWidgets_toplevel", inherits=TRUE))
            self$toplevel <- get(".gWidgets_toplevel", inherits=TRUE)
         else
-          self$toplevel <- gWidgetsWWW2:::GWidgetsTopLevel$new()
+          self$toplevel <- GWidgetsTopLevel$new()
       } 
 
       ## work on id
@@ -139,7 +139,7 @@ GComponent <- R6Class("GComponent",
       ## javascript variable and key within toplevel hash
       ## to refer to this object
 
-      self$args = gWidgetsWWW2:::ExtArgs$new() # append with add_args method
+      self$args = ExtArgs$new() # append with add_args method
       self$.e = new.env()
       self$id = sprintf("gWidget_ID%s", self$toplevel$get_object_id())
       ##

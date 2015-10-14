@@ -26,9 +26,9 @@ reason why the constructors require a specification of either a
 \section{Fields}{
 
 \describe{
-\item{\code{The}}{evaluation environment}
+\item{\code{e}}{The evaluation environment}
 
-\item{\code{The}}{request}
+\item{\code{request}}{The request}
 
 \item{\code{objects}}{Objects on the page as an \code{\link{Array}} object}
 

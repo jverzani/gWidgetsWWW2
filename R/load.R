@@ -92,10 +92,11 @@ R_http <- R6Class("R_http",
       ## message(list("*** making app ***", app_name))
       
       ## Make the app
-      gwapp <- gWidgetsWWW2:::GWidgetsApp$new(url="/",
-                                              app_name = app_name,
-                                              script = script_name,
-                                              session_manager = session_manager)
+      gwapp <- GWidgetsApp$new(url="/",
+                               app_name = app_name,
+                               script = script_name,
+                               session_manager = session_manager)
+
       self$R$add(RhttpdApp$new(gwapp, name=sprintf("app_%s", app_name)))
       
       if(open_page) {

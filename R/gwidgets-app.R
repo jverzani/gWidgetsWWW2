@@ -27,7 +27,6 @@ NULL
 
 appenv <- new.env()
 
-
 GWidgetsAppBase <- setRefClass("GWidgetsAppBase",
                                contains="Middleware",
                                fields=list(

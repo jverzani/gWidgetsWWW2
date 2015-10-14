@@ -1,4 +1,5 @@
 ##      Copyright (C) 2011  John Verzani
+##      Copyright (C) 2015  Johannes Ranke (port to R6)
 ##  
 ##      This program is free software: you can redistribute it and/or modify
 ##      it under the terms of the GNU General Public License as published by
@@ -44,72 +45,72 @@ NULL
 
 
 ##' interface between R objects and JSON to supply Ext objects with data
-GWidgetProxy <- setRefClass("GWidgetProxy",
-                        contains="GWidget",
-                        fields=list(
-                          value="ANY"
-                          ),
-                        methods=list(
-                          init=function(value, ...) {
-                            
-                            value <<- value
-                            constructor <<- "Ext.data.proxy.Ajax"
-                            arg_list <- merge.list(
-                                                   get_url_list(),
-                                                   list(
-                                                        method="GET",
-                                                        reader="array"
-                                                        ))
-                            add_args(arg_list)
+GWidgetProxy <- R6Class("GWidgetProxy",
+  inherit = GWidget,
+  public = list(
+    value = NULL,
+    init = function(value, ...) {
+      
+      self$value <- value
+      self$constructor <- "Ext.data.proxy.Ajax"
+      arg_list <- merge.list(
+                             self$get_url_list(),
+                             list(
+                                  method="GET",
+                                  reader="array"
+                                 ))
+      self$add_args(arg_list)
 
-                            write_constructor()
-                          },
-                          get_url_list = function() {
-                            "Get url to call back into this proxy object. The values 'proxy_url' and 'session_id' are JS globals in webpage"
-                            list(url=String("proxy_url"),
-                                 params=list(
-                                   session_id=String("session_id")
-                                   )
-                                 )
-                          },
-                          get_json_data=function(...) {
-                            "The params determine what to pass back. "
-                            ## Default is just to return array of objects
-                            if(is.data.frame(value)) {
-                              out <- sapply(seq_len(nrow(value)), function(i) toJSObject(value[i,]))
-                              ret <- sprintf("[%s]", paste(out, collapse=","))
-                            }
+      self$write_constructor()
+    },
+    get_url_list = function() {
+      "Get url to call back into this proxy object. The values 'proxy_url' and 'session_id' are JS globals in webpage"
+      list(url = String("proxy_url"),
+           params = list(
+                         session_id = String("session_id")
+                         ))
+    },
+    get_json_data = function(...) {
+      "The params determine what to pass back. "
+      ## Default is just to return array of objects
+      value <- self$value
+      if(is.data.frame(value)) {
+        out <- sapply(seq_len(nrow(value)), function(i) toJSObject(value[i,]))
+        ret <- sprintf("[%s]", paste(out, collapse=","))
+      }
 
-                            return(ret)
-                          },
-                          get_data=function(...) {
-                            "Return raw data, not JSON encoded"
-                            value
-                          },
-                          set_value = function(value, ...) {
-                            "Set data and call load function"
-                            value <<- value
-                            ## Call load function goes here ...
-                          },
-                          set_data=function(value, ...) {
-                            "Set proxy data"
-                            value <<- value
-                          },
-                          get_fields=function() {
-                           "Return json with fields mapped to names"
-                           ""
-                          }
-                          ))
+      return(ret)
+    },
+    get_data = function(...) {
+      "Return raw data, not JSON encoded"
+      value
+    },
+    set_value = function(value, ...) {
+      "Set data and call load function"
+      self$value <- value
+      ## Call load function goes here ...
+    },
+    set_data=function(value, ...) {
+      "Set proxy data"
+      self$value <- value
+    },
+    get_fields=function() {
+     "Return json with fields mapped to names"
+     ""
+    }
+  )
+)
 
 ##' Proxy for ghtml
-GWidgetHTMLProxy <- setRefClass("GWidgetHTMLProxy",
-                            contains="GWidgetProxy",
-                            methods=list(
-                              get_json_data=function(...) {
-                                "Despite the name, return raw data, not JSON encoded"
-                                value
-                              }
-                              ))
+GWidgetHTMLProxy <- R6Class("GWidgetHTMLProxy",
+  inherit = GWidgetProxy,
+  public = list(
+    get_json_data=function(...) {
+      "Despite the name, return raw data, not JSON encoded"
+      self$value
+    }
+  ) 
+)
 
 
 ## For make_column_model we need to specify various things: renderer,
@@ -188,8 +189,6 @@ column_editor.logical <- function(x, ...) {
   ##                        listClass="x-combo-list-small"
   ##                        )))))
 }
- 
-
 
 ##' Method to create column editor for a table widget
 ##' @param x type of object
@@ -250,324 +249,305 @@ column_xtype.Date <- function(x, ...) {
 
 
 ##' Proxy to return array data (combobox, table, gdf, ...) [[],[],[]]
-GWidgetArrayProxy <- setRefClass("GWidgetArrayProxy",
-                             contains="GWidgetProxy",
-                             fields=list(
-                               col.widths="ANY",
-                               update_url_list = "list",
-                               ..visible="logical"
-                               ),
-                             methods=list(
-                                init=function(value, ...) {
-                                  
-                                  value <<- value
-                                  ..visible <<- rep(TRUE, nrow(value))
-                                  col.widths <<- getFromDots("col.widths", ..., default=NULL)
+GWidgetArrayProxy <- R6Class("GWidgetArrayProxy",
+  inherit = GWidgetProxy,
+  public = list(
+    col.widths = NULL,
+    update_url_list = list(),
+    ..visible = NULL,
+    init=function(value, ...) {
+      
+      self$value <- value
+      self$..visible <- rep(TRUE, nrow(value))
+      self$col.widths <- getFromDots("col.widths", ..., default=NULL)
 
-                                  ## Would like to use Ext.data.proxy.Rest here, but
-                                  ## the PUT requests get blocked by Rook. Not sure why
-                                  ## Using Rest would allow us to handle put/create/delete requests.
-                                  ## CUrrently we can'st do this, so we have no way to delete a record
-                                  ##constructor <<- "Ext.data.proxy.Rest"
-                                  constructor <<- "Ext.data.proxy.Ajax" 
-                                  arg_list <- get_url_list()
-                                  arg_list <- merge.list(arg_list,
-                                                         list(method="GET",
-                                                              reader="array",
-                                                              extraParams=list(
-                                                                session_id=String("session_id"),
-                                                                id=get_id(),
-                                                                total=nrow(value)
-                                                                )
-                                                              ))
-                                  add_args(arg_list)
-                                  add_public_method(c("add_row", "remove_row"))
-                                  write_constructor()
-                                },
-                               get_data=function(drop_visible=TRUE,...) {
-                                 "Return raw data, not JSON encoded"
-                                 DF <- value
-                                 if(drop_visible)
-                                   DF[..visible,, drop=FALSE] ## want a data frame!
-                                 else
-                                   DF
-                               },
-                               set_data = function(value, i, j, ...) {
-                                 if(missing(i) && missing(j))
-                                   value <<- as.data.frame(value, stringsAsFactors=FALSE)
-                                 else
-                                   value[i,] <<- value
-                                 ..visible <<- rep(TRUE, nrow(value))
+      ## Would like to use Ext.data.proxy.Rest here, but
+      ## the PUT requests get blocked by Rook. Not sure why
+      ## Using Rest would allow us to handle put/create/delete requests.
+      ## Currently we can't do this, so we have no way to delete a record
+      ## constructor <<- "Ext.data.proxy.Rest"
+      self$constructor <- "Ext.data.proxy.Ajax" 
+      arg_list <- self$get_url_list()
+      arg_list <- merge.list(arg_list,
+                             list(method="GET",
+                                  reader="array",
+                                  extraParams=list(
+                                    session_id=String("session_id"),
+                                    id=self$get_id(),
+                                    total=nrow(value)
+                                    )
+                                  ))
+      self$add_args(arg_list)
+      self$add_public_method(c("add_row", "remove_row"))
+      self$write_constructor()
+    },
+    get_data=function(drop_visible=TRUE,...) {
+      "Return raw data, not JSON encoded"
+      DF <- self$value
+      if(drop_visible)
+        DF[self$..visible,, drop=FALSE] ## want a data frame!
+      else
+        DF
+    },
+    set_data = function(value, i, j, ...) {
+      if(missing(i) && missing(j))
+        self$value <- as.data.frame(value, stringsAsFactors=FALSE)
+      else
+        self$value[i,] <- value
+      self$..visible <- rep(TRUE, nrow(value))
+    },
+    get_json_data=function(...) {
+      "Return JSON array [[],[],] ... *or* handle post data!"
+      
+      params <- list(...)
+      
+      df <- cbind("row_id"=seq_len(nrow(self$value)),
+                  self$value)
+      df <- df[self$..visible, ,drop=FALSE]
 
-                                 
-                               },
-                               get_json_data=function(...) {
-                                 "Return JSON array [[],[],] ... *or* handle post data!"
+      ## do we have paging type request? We do if params$start is not null
+      
+      if(!is.null(params$start)) {
+        start <- as.numeric(params$start) + 1
+        limit <- as.numeric(params$limit)
+        m <- nrow(df)
 
-                                 
-                                 params <- list(...)
-                                 
-                                 df <- cbind("row_id"=seq_len(nrow(.self$value)),
-                                             .self$value)
-                                 df <- df[..visible, ,drop=FALSE]
+        ind <- seq_len(m)
+        if(m > 0 && m >= start) {
+          ind <- seq(start, min(m, start+limit))
+        }
+        ## Now we may be sorting, in which case we
+        ## apply the indices to the ordered values
+        if(!is.null(params$sort)) {
+          ## make a list
+          sort_info <- as.list(unlist(fromJSON(params$sort)))
+          direction <- c(ASC=FALSE, DESC=TRUE)
 
+          x <- df[, sort_info$property]
+          ordered <- order(x,
+                           decreasing=if(sort_info$direction == "ASC") FALSE else TRUE
+                           )
 
-                                 ## do we have paging type request? We do if params$start is not null
+          ind <- ordered[ind]
+        }  
 
-                                 
-                                 if(!is.null(params$start)) {
-                                   start <- as.numeric(params$start) + 1
-                                   limit <- as.numeric(params$limit)
-                                   m <- nrow(df)
+        df <- df[ind,,drop=FALSE]
+      }
+### 
+      ## gsub("\\n", "",sprintf("[%s]",paste(apply(df, 1, toJSON),collapse=",")))
+      toJSArray(df)
+    },
+    post_json_data=function(param) {
+      "A post request from updating a store"
 
-                                   ind <- seq_len(m)
-                                   if(m > 0 && m >= start) {
-                                     ind <- seq(start, min(m, start+limit))
-                                   }
-                                   ## Now we may be sorting, in which case we
-                                   ## use apply the indices to the ordered values
-                                   if(!is.null(params$sort)) {
-                                     ## make a list
-                                     sort_info <- as.list(unlist(fromJSON(params$sort)))
-                                     direction <- c(ASC=FALSE, DESC=TRUE)
+      l <- param
+      ## in form l$row_id, and rest
 
-                                     x <- df[, sort_info$property]
-                                     ordered <- order(x,
-                                                      decreasing=if(sort_info$direction == "ASC") FALSE else TRUE
-                                                      )
+      ## JV: check where id is! this makes a big deal whether we are
+      ## inserting or replacing data. Nothing else passed in as far as I can tell
+      
+      multi <- is.null(l$row_id)
+      if(multi) {
+        ind <- sapply(l, function(i) {
+          self$value[i$row_id, ] <- lapply(i[-1], function(j) ifelse(is.null(j), NA, j))
+          i$id
+        })
+      } else {
+        ## if id is 0 we are inserting at end
+        ## sychronize with javascript code in gdf
+        if(l$row_id==0) {
+          ind <- nrow(self$value) + 1
+        } else {
+          ind <- l$row_id
+        }
+        l$id <- NULL # don't insert this
+        self$value[ind,] <- lapply(l[-1], function(i) ifelse(is.null(i), NA, i))
+      }
 
-                                     ind <- ordered[ind]
+      ## Return value for record, in case we want to make local changes to push
+      ## back to client
+      vals <- seq_len(nrow(self$value))
+      df <- cbind("row_id"=vals[ind], self$value[ind,])
+      String(toJSArray(df))
+    },
+    add_row=function(row, ...) {
+      self$value <- rbind(self$value, rep(NA, ncol(self$value))) # add new?
+      ##   value[unlist(row),] <<- rep(NA, ncol(value)) # add new?
+      self$..visible[unlist(row)] <- TRUE
+    },
+    remove_row=function(param) {
+      "Remove the row"
+      if(nrow(self$value) > 1) {
+        row <- as.numeric(unlist(param))
+        self$value <- value[-row,, drop=FALSE]
+        self$..visible <- ..visible[-row]
+      } else {
+        ## can't remove last row?
+      }
+    },
+    get_visible=function(...) {
+      self$..visible
+    },
+    set_visible=function(val, ...) {
+      if(length(val) == nrow(self$value))
+        self$..visible <- as.logical(val)
+    },
+    get_fields=function() {
+      "Return fields mapping from name to type"
+      if(nrow(self$value)) {
+        df <- cbind("row_id"=seq_len(nrow(self$value)), self$value)
+        makeFields(df)
+      } else {
+        ""
+      }
+    },
+    
+    make_column_model = function(do.editor=FALSE) {
+      ## return array for columns
+      ## id, header, sortable, renderer, dataIndex, tooltip
+      ##     columns: [
+      ##               {id:'company',header: "Company", sortable: true, dataIndex: 'company'},
+      ##               {header: "Price",  sortable: true, renderer: 'usMoney', dataIndex: 'price'},
+      ##               {header: "Change", sortable: true, renderer: change, dataIndex: 'change'},
+      ##               {header: "% Change", sortable: true, renderer: pctChange, dataIndex: 'pctChange'},
+      ##               {header: "Last Updated", sortable: true, renderer: Ext.util.Format.dateRenderer('m/d/Y'), dataIndex: 'lastChange'}
+      ##               ],
+      
+      items <- self$value
+      n <- ncol(items)
+      
+      ## names
+      colIDs <- names(items)
+      colNames <- colIDs
 
-                                   }  
+      ## adjust IDs
+      colIDs <- gsub("[ \\.\\,] ","_",colIDs)
 
-                                   df <- df[ind,,drop=FALSE]
-                                   
-                                 }
-### XXX work with params
-                                 ## gsub("\\n", "",sprintf("[%s]",paste(apply(df, 1, toJSON),collapse=",")))
-                                 toJSArray(df)
-                               },
-                               post_json_data=function(param) {
-                                 "A post request from updating a store"
+      ## adjust for icons
+      ind <- sapply(items, isIcon)
+      if(any(ind)) {
+        for(i in which(ind)) {
+          ## uggh
+          tmp <- sapply(items[,i], getStockIconByName, css=FALSE)
+          tmp[sapply(tmp, is.null)] <- ""
+          items[i] <- asIcon(unlist(tmp))
+          colNames[i] <- NA
+        }
+        self$value <- items # update                                   
+      }
 
-                                 l <- param
-                                 ## in form l$row_id, and rest
+      sortable <- rep(TRUE, length.out=n)
+      if(is.null(self$col.widths))
+        self$col.widths <- rep(NA, length.out=n)
 
-                                 ## JV: check where id is! this makes a big deal whether we are
-                                 ## inserting or replacing data. Nothing else passed in as far as I can tell
-                                 
-                                 multi <- is.null(l$row_id)
-                                 if(multi) {
-                                   ind <- sapply(l, function(i) {
-                                     value[i$row_id, ] <<- lapply(i[-1], function(j) ifelse(is.null(j), NA, j))
-                                     i$id
-                                   })
-                                 } else {
-                                   ## if id is 0 we are inserting at end
-                                   ## sychronize with javascript code in gdf
-                                   if(l$row_id==0) {
-                                     ind <- nrow(value) + 1
-                                   } else {
-                                     ind <- l$row_id
-                                   }
-                                   l$id <- NULL # don't insert this
-                                   value[ind,] <<- lapply(l[-1], function(i) ifelse(is.null(i), NA, i))
+      res <- sapply(seq_len(n), function(i) {
+        l <- list(#id=colIDs[i],
+                  header=colNames[i],
+#                  sortable=TRUE,
+                  dataIndex = colIDs[i]
+                  )
+        if(i == n)
+          l$flex <- 1
+        else
+          l$width <- col.widths[i] 
+        l <- merge(l, column_xtype(items[,i]))
 
-
-                                 }
-                                 ## Return value for record, incase we want to make local changes to push
-                                 ## back to client
-                                 vals <- seq_len(nrow(value))
-                                 df <- cbind("row_id"=vals[ind], value[ind,])
-                                 String(toJSArray(df))
-                               },
-                               add_row=function(row, ...) {
-                                 value <<- rbind(value, rep(NA, ncol(value))) # add new?
-                                 ##   value[unlist(row),] <<- rep(NA, ncol(value)) # add new?
-                                 ..visible[unlist(row)] <<- TRUE
-                               },
-                               remove_row=function(param) {
-                                 "Remove the row"
-                                 if(nrow(value) > 1) {
-                                   row <- as.numeric(unlist(param))
-                                   value <<- value[-row,, drop=FALSE]
-                                   ..visible <<- ..visible[-row]
-                                 } else {
-                                   ## can't remove last row?
-                                 }
-                               },
-                               get_visible=function(...) {
-                                 ..visible
-                               },
-                               set_visible=function(val,...) {
-                                 if(length(val) == nrow(value))
-                                   ..visible <<- as.logical(val)
-                               },
-                               get_fields=function() {
-                                 "Return fields mapping from name to type"
-                                 if(nrow(value)) {
-                                   df <- cbind("row_id"=seq_len(nrow(value)), value)
-                                   makeFields(df)
-                                 } else {
-                                   ""
-                                 }
-                               },
-                               
-                               make_column_model = function(do.editor=FALSE) {
-                                 ## return array for columns
-                                 ## id, header, sortable, renderer, dataIndex, tooltip
-                                 ##     columns: [
-                                 ##               {id:'company',header: "Company", sortable: true, dataIndex: 'company'},
-                                 ##               {header: "Price",  sortable: true, renderer: 'usMoney', dataIndex: 'price'},
-                                 ##               {header: "Change", sortable: true, renderer: change, dataIndex: 'change'},
-                                 ##               {header: "% Change", sortable: true, renderer: pctChange, dataIndex: 'pctChange'},
-                                 ##               {header: "Last Updated", sortable: true, renderer: Ext.util.Format.dateRenderer('m/d/Y'), dataIndex: 'lastChange'}
-                                 ##               ],
-
-                                
-                                 
-                                 items <- value
-                                 n <- ncol(items)
-                                 
-                                 ## names
-                                 colIDs <- names(items)
-                                 colNames <- colIDs
-
-                                 ## adjust IDs
-                                 colIDs <- gsub("[ \\.\\,] ","_",colIDs)
-
-                                 ## adjust for icons
-                                 ind <- sapply(items, isIcon)
-                                 if(any(ind)) {
-                                   for(i in which(ind)) {
-                                     ## uggh
-                                     tmp <- sapply(items[,i], getStockIconByName, css=FALSE)
-                                     tmp[sapply(tmp, is.null)] <- ""
-                                     items[i] <- asIcon(unlist(tmp))
-                                     colNames[i] <- NA
-                                   }
-                                   value <<- items # update                                   
-                                 }
-
-
-                                 sortable <- rep(TRUE, length.out=n)
-                                 if(is.null(col.widths))
-                                   col.widths <<- rep(NA, length.out=n)
-
-                                 res <- sapply(seq_len(n), function(i) {
-                                   l <- list(#id=colIDs[i],
-                                             header=colNames[i],
-#                                             sortable=TRUE,
-                                             dataIndex = colIDs[i]
-                                             )
-                                   if(i == n)
-                                     l$flex <- 1
-                                   else
-                                     l$width <- col.widths[i] 
-                                   l <- merge(l, column_xtype(items[,i]))
-
-                                   if(do.editor)
-                                     l <- merge(l, column_editor(items[,i]))
-                                   else
-                                     l <- merge(l, column_renderer(items[,i]))
-                                   toJSObject(l)
-                                 })
-                                 
-                                 out <- sprintf('[%s]', paste(res,collapse=","))
-                                 return(out)
-                               }
-                               
-                               ))
-
-
+        if(do.editor)
+          l <- merge(l, column_editor(items[,i]))
+        else
+          l <- merge(l, column_renderer(items[,i]))
+        toJSObject(l)
+      })
+      
+      out <- sprintf('[%s]', paste(res, collapse=","))
+      return(out)
+    }
+  )
+)
 
 ## tree proxy is all we need for gtree
-GWidgetTreeProxy <- setRefClass("GWidgetTreeProxy",
-                            contains="GWidgetArrayProxy",
-                            fields=list(
-                              offspring="function",
-                              offspring.data="ANY"
-                              ),
-                            methods=list(
-                              init=function(offspring, offspring.data=NULL) {
-                                offspring <<- offspring
-                                offspring.data <<- offspring.data
+GWidgetTreeProxy <- R6Class("GWidgetTreeProxy",
+  inherit = GWidgetArrayProxy,
+  public = list(
+    offspring = NULL,
+    offspring.data = NULL,
+    init = function(offspring, offspring.data=NULL) {
+      self$offspring <- offspring
+      self$offspring.data <- offspring.data
 
-                                ## is there a constructor?
-                                constructor <<- "Ext.data.proxy.Ajax" 
-                                arg_list <-  list(url=String("proxy_url"),
-                                                  method="GET",
-                                                  extraParams=list(
-                                                    session_id=String("session_id"),
-                                                    id=get_id()
-                                                    ),
-                                                  reader=list(
-                                                    type="json",
-                                                    root="children"
-                                                    )
-                                                  )
-                                add_args(arg_list)
-                              },
-                              set_data = function(value) {
-                                "Set data into proxy"
-                              },
-                              get_json_data=function(node, sort, ...) {
-                                if(is.null(node)) {
-                                  ## Something wierd here
-                                } else {
-                                  path <- strsplit(node,":")[[1]][-1]
-                                  children <- call_offspring(node, path)
-                                  ## create row by row
-                                  res <- sapply(seq_len(nrow(children)), function(i) toJSObject(children[i,]))
-                                  out <- sprintf("[%s]", paste(res, collapse=","))
-                                }
-                                out
-                              },
-                              call_offspring=function(node, path) {
-                                "Create children from path"
-                                children <- offspring(path, offspring.data)
-                                ## we create data frame with id, offspring, icons, then rest
-                                
-                                ## we expect key, offspring, icons, others. A column named qtip is special
-                                if(ncol(children) == 1)
-                                  children[,2] <- rep(FALSE, nrow(children))
-                                if(ncol(children) == 2)
-                                  children[,3] <- rep("", nrow(children))                         
-                                children[3] <- sapply(children[3], getStockIconByName, css=TRUE)
-                                
-                                ## we make first 3 id, leaf, iconCls and make sure id not otherwised used
-                                names(children)[2:3] <- c("leaf","iconCls") # mean something to extjs
-                                if(names(children)[1] == "row_id") names(children)[1] <- "ID"
-                                names(children)[names(children) == "row_id"] <- sapply(seq_len(sum(names(children)=="row_id")), function(i) sprintf("id_%s",i))
-                                
-                                ids <- sprintf("%s:%s", node, gsub(":","_",children[,1]))
-                                ochildren <- cbind(id=ids, children[2], children[3], children[1], children[-(1:3)])
-                                names(ochildren) <- gsub("\\.", "_",names(ochildren))
-                                ochildren
-                              },
-                              make_columns=function() {
-                                "Make columns specification for tree"
-                                ## called in gtree constructor
-                                df <- call_offspring("",character(0))
-                                df <- df[,-(1:3)] # drop first 3
-                                nms <- names(df)
-                                nms <- setdiff(nms, "qtip")
-                                out <- c(sprintf("{xtype:'treecolumn', flex:2, text:'%s', dataIndex:'%s'}",
-                                                 nms[1], nms[1]),
-                                         sapply(nms[-1], function(nm) {
-                                           sprintf("{dataIndex:'%s', text:'%s', flex:1}", nm, nm)
-                                         }))
-                                String(sprintf("[%s]", paste(out, collapse=",")))
-                              },
-                              make_fields=function() {
-                                ## used to define model
-                                df <- call_offspring("",character(0))
-                                makeFields(df[,-(1:3), drop=FALSE])
-                              }
-                            ))
-
-
-
+      ## is there a constructor?
+      self$constructor <- "Ext.data.proxy.Ajax" 
+      arg_list <-  list(url=String("proxy_url"),
+                        method="GET",
+                        extraParams=list(
+                          session_id=String("session_id"),
+                          id=self$get_id()
+                          ),
+                        reader=list(
+                          type="json",
+                          root="children"
+                          )
+                        )
+      self$add_args(arg_list)
+    },
+    set_data = function(value) {
+      "Set data into proxy"
+    },
+    get_json_data=function(node, sort, ...) {
+      if(is.null(node)) {
+        ## Something wierd here
+      } else {
+        path <- strsplit(node,":")[[1]][-1]
+        children <- self$call_offspring(node, path)
+        ## create row by row
+        res <- sapply(seq_len(nrow(children)), function(i) toJSObject(children[i,]))
+        out <- sprintf("[%s]", paste(res, collapse=","))
+      }
+      out
+    },
+    call_offspring=function(node, path) {
+      "Create children from path"
+      children <- self$offspring(path, offspring.data)
+      ## we create data frame with id, offspring, icons, then rest
+      
+      ## we expect key, offspring, icons, others. A column named qtip is special
+      if(ncol(children) == 1)
+        children[,2] <- rep(FALSE, nrow(children))
+      if(ncol(children) == 2)
+        children[,3] <- rep("", nrow(children))                         
+      children[3] <- sapply(children[3], getStockIconByName, css=TRUE)
+      
+      ## we make first 3 id, leaf, iconCls and make sure id not otherwised used
+      names(children)[2:3] <- c("leaf","iconCls") # mean something to extjs
+      if(names(children)[1] == "row_id") names(children)[1] <- "ID"
+      names(children)[names(children) == "row_id"] <- sapply(seq_len(sum(names(children)=="row_id")), function(i) sprintf("id_%s",i))
+      
+      ids <- sprintf("%s:%s", node, gsub(":","_",children[,1]))
+      ochildren <- cbind(id=ids, children[2], children[3], children[1], children[-(1:3)])
+      names(ochildren) <- gsub("\\.", "_",names(ochildren))
+      ochildren
+    },
+    make_columns=function() {
+      "Make columns specification for tree"
+      ## called in gtree constructor
+      df <- self$call_offspring("",character(0))
+      df <- df[,-(1:3)] # drop first 3
+      nms <- names(df)
+      nms <- setdiff(nms, "qtip")
+      out <- c(sprintf("{xtype:'treecolumn', flex:2, text:'%s', dataIndex:'%s'}",
+                       nms[1], nms[1]),
+               sapply(nms[-1], function(nm) {
+                 sprintf("{dataIndex:'%s', text:'%s', flex:1}", nm, nm)
+               }))
+      String(sprintf("[%s]", paste(out, collapse=",")))
+    },
+    make_fields=function() {
+      ## used to define model
+      df <- call_offspring("",character(0))
+      makeFields(df[,-(1:3), drop=FALSE])
+    }
+  )
+)
 
 
 ## Helper Functions to makeFields.
@@ -663,154 +643,129 @@ makeFields <- function(df) {
 ##
                             
 ##' Basic store, no default proxy so this isn't useful without being subclassed
-GWidgetStore <- setRefClass("GWidgetStore",
-                        contains="GWidget",
-                        fields=list(
-                          proxy="ANY"
-                          ),
-                        methods=list(
-                          init = function(value, ...) {
-                            "Initialize proxy, then set up store"
-                            proxy <<- GWidgetProxy$new(toplevel)
-                            proxy$init(value, ...)
-                            ## ? need to write out store code here...
-
-                            
-                          },
-
-                          get_data = function(...) {
-                            "Get data in store"
-                            proxy$get_data(...)
-                          },
-                          set_data = function(value, ...) {
-                            "Set data for store"
-                            proxy$set_data(value, ...)
-                          },
-                          model_id=function() {
-                            sprintf("%s_model", get_id())
-                          },
-                          write_model=function() {
-                            "Write out model"
-                            cmd <- sprintf("Ext.define('%s',{extend: Ext.data.Model,fields:%s});",
-                                           model_id(), proxy$get_fields())
-                            add_js_queue(cmd)
-                          }
-                          )
-                        )
+GWidgetStore <- R6Class("GWidgetStore",
+  inherit = GWidget,
+  public = list(
+    proxy = NULL,
+    init = function(value, ...) {
+      "Initialize proxy, then set up store"
+      self$proxy <- GWidgetProxy$new(self$toplevel)
+      self$proxy$init(value, ...)
+      ## ? need to write out store code here...
+      
+    },
+    get_data = function(...) {
+      "Get data in store"
+      self$proxy$get_data(...)
+    },
+    set_data = function(value, ...) {
+      "Set data for store"
+      self$proxy$set_data(value, ...)
+    },
+    model_id=function() {
+      sprintf("%s_model", self$get_id())
+    },
+    write_model=function() {
+      "Write out model"
+      cmd <- sprintf("Ext.define('%s',{extend: Ext.data.Model,fields:%s});",
+                     self$model_id(), self$proxy$get_fields())
+      self$add_js_queue(cmd)
+    }
+  )
+)
 
 ##' A store for an array (inbetween widget and proxy)
-GWidgetArrayStore <- setRefClass("GWidgetArrayStore",
-                         contains="GWidgetStore",
-                         fields=list(
-                           page_size = "numeric",
-                           paging = "logical"
-                           ),
-                         methods=list(
-                           init = function(df, paging=FALSE, page.size=200, extra_args=list(),  ...) {
-                             if(missing(df))
-                               df <- data.frame(name=character(0), stringsAsFactors=FALSE)
+GWidgetArrayStore <- R6Class("GWidgetArrayStore",
+  inherit = GWidgetStore,
+  public = list(
+    page_size = NULL,
+    paging = NULL,
+    init = function(df, paging=FALSE, page.size=200, extra_args=list(),  ...) {
+      if(missing(df))
+        df <- data.frame(name=character(0), stringsAsFactors=FALSE)
 
-                             paging <<- as.logical(paging)
-                             page_size <<- as.integer(page.size)
-                             proxy <<- GWidgetArrayProxy$new(toplevel)
-                             col.widths <- getFromDots("col.widths", ..., default=NULL)
-                             proxy$init(df, col.widths)
-                             
+      self$paging <- as.logical(paging)
+      self$page_size <- as.integer(page.size)
+      self$proxy <- GWidgetArrayProxy$new(self$toplevel)
+      col.widths <- getFromDots("col.widths", ..., default=NULL)
+      self$proxy$init(df, col.widths)
+      
+      self$constructor <- "Ext.data.ArrayStore"
+      arg_list <- list(
+                       pageSize=self$page_size,
+                       autoLoad=FALSE,
+                       storeId=self$get_id(),
+                       idIndex= 0,
+                       proxy = String(self$proxy$get_id()),
+                       ##
+                       model=String(self$model_id()),
+##                       ,buffered=TRUE
+                       autoSync=TRUE,
+                       remoteSort=TRUE
+                       )
+      
+      arg_list <- merge(arg_list, extra_args)
+      self$add_args(arg_list)
 
-                             constructor <<- "Ext.data.ArrayStore"
-                             arg_list <- list(
-                                              pageSize=page_size
-                                              ,autoLoad=FALSE
-                                              ,storeId=get_id()
-                                              ,idIndex= 0
-                                              ,proxy = String(.self$proxy$get_id())
-                                              ##
-                                              ,model=String(model_id())
-##                                              ,buffered=TRUE
-                                              ,autoSync=TRUE
-                                              ,remoteSort=TRUE
-                                           )
+      self$write_model()
+      self$write_constructor()
+      
+#      cmd <- paste(sprintf("%s.on('beforeload', function(store, options) {", get_id()),
+#                   sprintf("Ext.apply(options.params, {id:'%s', session_id:session_id});",
+#                           proxy$get_id()),
+#                   "});",
+#                   sep="")
+#      add_js_queue(cmd)
+    },
+    load_data=function(callback="function(){}") {
+      if(paging)
+        cmd <- sprintf("%s.load({params:{start:0, limit: %s, session_id:session_id, id:'%s'}, add:false, callback:%s});",
+                       get_id(), page_size, proxy$get_id(),callback)
+      else
+        cmd <- sprintf("%s.load({params:{session_id:session_id, id:'%s'}, add:false, callback:function() {}});",
+                       get_id(), proxy$get_id())
+      add_js_queue(cmd)
+    },
+    get_visible=function(...) {
+      self$proxy$get_visible(...)
+    },
+    set_visible=function(value, ...) {
+      self$proxy$set_visible(value, ...)
+      self$load_data()
+    }
+  )
+)
 
-                             
-                             
-                             arg_list <- merge(arg_list, extra_args)
-                             add_args(arg_list)
+GWidgetTreeStore <- R6Class("GWidgetTreeStore",
+  inherit = GWidgetStore,
+  public = list(
+    proxy = GWidgetTreeProxy,
+    init=function(container, offspring, offspring.data, multiple) {
+      self$constructor = "Ext.data.TreeStore"
+      self$proxy = GWidgetTreeProxy$new(self$container)
 
-                             write_model()
-                             write_constructor()
+      arg_list <- list(model=String(self$model_id()),
+                       proxy=String(self$proxy$get_id()),
+                       ## root=list(
+                       ##   text="",
+                       ##   id=sprintf("%s_root", get_id()),
+                       ##   expanded=TRUE
+                       ##   ),
+                       folderSort=TRUE)
+      self$add_args(arg_list)
 
-                             
-#                             cmd <- paste(sprintf("%s.on('beforeload', function(store, options) {", get_id()),
-#                                          sprintf("Ext.apply(options.params, {id:'%s', session_id:session_id});",
-#                                                  proxy$get_id()),
-#                                          "});",
-#                                          sep="")
-#                             add_js_queue(cmd)
-                           },
-                           write_model=function() {
-                             "Write out model"
-                             cmd <- sprintf("Ext.define('%s',{extend: Ext.data.Model,fields:%s});",
-                                            model_id(), proxy$get_fields())
-                             add_js_queue(cmd)
-                           },
-                           load_data=function(callback="function(){}") {
-                             if(paging)
-                               cmd <- sprintf("%s.load({params:{start:0, limit: %s, session_id:session_id, id:'%s'}, add:false, callback:%s});",
-                                              get_id(), page_size, proxy$get_id(),callback)
-                             else
-                               cmd <- sprintf("%s.load({params:{session_id:session_id, id:'%s'}, add:false, callback:function() {}});",
-                                              get_id(), proxy$get_id())
-                             add_js_queue(cmd)
-                           },
-                           get_visible=function(...) {
-                             proxy$get_visible(...)
-                           },
-                           set_visible=function(value, ...) {
-                             proxy$set_visible(value, ...)
-                             load_data()
-                           }
-                           )
-                         )
-
-
-
-GWidgetTreeStore <- setRefClass("GWidgetTreeStore",
-                                contains="GWidgetStore",
-                                fields=list(
-                                  proxy="GWidgetTreeProxy"
-                                  ),
-                                methods=list(
-                                  init=function(container, offspring, offspring.data, multiple) {
-                                    initFields(
-                                               constructor="Ext.data.TreeStore",
-                                               proxy=GWidgetTreeProxy$new(container)
-                                               )
-
-
-                                    arg_list <- list(model=String(model_id()),
-                                                     proxy=String(proxy$get_id()),
-                                                     ## root=list(
-                                                     ##   text="",
-                                                     ##   id=sprintf("%s_root", get_id()),
-                                                     ##   expanded=TRUE
-                                                     ##   ),
-                                                     folderSort=TRUE)
-                                    add_args(arg_list)
-
-                                    proxy$init(offspring, offspring.data)
-                                    write_model()
-                                    proxy$write_constructor()
-                                    write_constructor()
-
-                                  },
-                                  write_model=function() {
-                                    cmd <- paste(sprintf("Ext.define('%s',{", model_id()),
-                                                 "extend: 'Ext.data.Model',",
-                                                 sprintf("fields: %s", proxy$make_fields()),
-                                                 "});",
-                                                 sep="")
-                                    add_js_queue(cmd)
-                                  }
-
-                                  ))
-                                    
+      self$proxy$init(offspring, offspring.data)
+      self$write_model()
+      self$proxy$write_constructor()
+      self$write_constructor()
+    },
+    write_model=function() {
+      cmd <- paste(sprintf("Ext.define('%s',{", self$model_id()),
+                   "extend: 'Ext.data.Model',",
+                   sprintf("fields: %s", self$proxy$make_fields()),
+                   "});",
+                   sep="")
+      self$add_js_queue(cmd)
+    }
+  )
+)
