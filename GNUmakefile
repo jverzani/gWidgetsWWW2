@@ -78,7 +78,7 @@ vignettes: vignettes/gWidgetsWWW2.pdf
 
 roxygen: 
 	@echo "Roxygenizing package..."
-	"$(RBIN)/Rscript" -e 'library(devtools); document(".")' 2>&1 | tee roxygen.log
+	"$(RBIN)/Rscript" -e 'library(devtools); document(".")'
 
 winbuilder: build
 	date
