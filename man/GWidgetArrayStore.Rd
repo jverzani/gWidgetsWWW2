@@ -4,7 +4,7 @@
 \name{GWidgetArrayStore}
 \alias{GWidgetArrayStore}
 \title{A store for an array (inbetween widget and proxy)}
-\format{\preformatted{Class 'R6ClassGenerator' <environment: 0x2786b10> 
+\format{\preformatted{Class 'R6ClassGenerator' <environment: 0x35d0d80> 
  - attr(*, "name")= chr "GWidgetArrayStore_generator"
 }}
 \usage{

@@ -4,7 +4,7 @@
 \name{GAction}
 \alias{GAction}
 \title{Class for gaction}
-\format{\preformatted{Class 'R6ClassGenerator' <environment: 0x3967070> 
+\format{\preformatted{Class 'R6ClassGenerator' <environment: 0x27bbd78> 
  - attr(*, "name")= chr "GAction_generator"
 }}
 \usage{

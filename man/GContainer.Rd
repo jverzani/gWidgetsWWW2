@@ -4,7 +4,7 @@
 \name{GContainer}
 \alias{GContainer}
 \title{Base reference class for container objects.}
-\format{\preformatted{Class 'R6ClassGenerator' <environment: 0x22a7878> 
+\format{\preformatted{Class 'R6ClassGenerator' <environment: 0x3408570> 
  - attr(*, "name")= chr "GContainer_generator"
 }}
 \usage{

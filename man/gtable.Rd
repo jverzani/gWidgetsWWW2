@@ -5,7 +5,7 @@
 \alias{GTable}
 \alias{gtable}
 \title{A table widget}
-\format{\preformatted{Class 'R6ClassGenerator' <environment: 0x2694d08> 
+\format{\preformatted{Class 'R6ClassGenerator' <environment: 0x34d7438> 
  - attr(*, "name")= chr "GTable_generator"
 }}
 \usage{

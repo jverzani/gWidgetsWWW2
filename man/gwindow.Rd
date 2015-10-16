@@ -5,7 +5,7 @@
 \alias{GWindow}
 \alias{gwindow}
 \title{Main window constructor}
-\format{\preformatted{Class 'R6ClassGenerator' <environment: 0x3e9bb28> 
+\format{\preformatted{Class 'R6ClassGenerator' <environment: 0x3493b40> 
  - attr(*, "name")= chr "GWindow_generator"
 }}
 \usage{

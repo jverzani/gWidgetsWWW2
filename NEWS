@@ -12,6 +12,11 @@ Changes for 0.5-1
 
 * Remove examples that are currently not working
 
+Changes for 0.4-6
+-------------------
+
+* Make it possible to have less than 5 panels in gborderlayout
+
 Changes for 0.4-5
 -------------------
 

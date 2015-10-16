@@ -4,7 +4,7 @@
 \name{GWidgetArrayProxy}
 \alias{GWidgetArrayProxy}
 \title{Proxy to return array data (combobox, table, gdf, ...) [[],[],[]]}
-\format{\preformatted{Class 'R6ClassGenerator' <environment: 0x2e829c8> 
+\format{\preformatted{Class 'R6ClassGenerator' <environment: 0x3592248> 
  - attr(*, "name")= chr "GWidgetArrayProxy_generator"
 }}
 \usage{

@@ -6,3 +6,5 @@ gWidgetsWWW2.Rproj
 gWidgetsWWW2.Rcheck
 gWidgetsWWW2.tar
 gWidgetsWWW2_*.tar.gz
+test.R
+*.swp

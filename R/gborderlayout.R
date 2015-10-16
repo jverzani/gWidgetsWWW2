@@ -17,11 +17,11 @@
 ##' @include gcontainer.R
 NULL
 
-##' A "border" layout is a 5-panel layout where  satellite panels
+##' A "border" layout is a layout where up to four satellite panels
 ##' surround a "center" panel. 
 ##'
 ##' The \code{gborderlayout} container implements a border layout
-##' where 4 panels surround a main center panel. The panels may be
+##' where up to 4 panels surround a main center panel. The panels may be
 ##' configured with a title (like \code{gframe}) and may be
 ##' collapsible (like \code{gexpandgroup}). Both configurations are
 ##' done at construction time. The panels only hold one child, so one
@@ -46,6 +46,7 @@ NULL
 ##' regions. The default is no title. A title may be added later by
 ##' adding a \code{gframe} instance, but that won't work well with a
 ##' collapsible panel.
+##' @param panels The panels to be set up.
 ##' @param collapsible a list with  named components from
 ##' \code{c("center","north", "south", "east", "west")} allowing one
 ##' to specify through a logical if the panel will be collapsible,
@@ -62,6 +63,7 @@ NULL
 ##' #
 ##' bl <- gborderlayout(cont=w,
 ##'                     title=list(center="State facts (state.x77)", west="Select a state"),
+##'                     panels = c("center", "west"),
 ##'                     collapsible=list(west=TRUE)
 ##'                     )
 ##' #
@@ -95,6 +97,7 @@ gborderlayout <- function(container=NULL, ...,
                           height=NULL,
                           ext.args=NULL,
                           title=list(),
+                          panels = c("center","north", "south", "east", "west"),
                           collapsible=list()
                           ) {
 
@@ -106,6 +109,7 @@ gborderlayout <- function(container=NULL, ...,
            height=height,
            ext.args=ext.args,
            title=title,
+           panels=panels,
            collapsible=collapsible
           )
   obj
@@ -114,10 +118,12 @@ gborderlayout <- function(container=NULL, ...,
 GBorderLayout <- R6Class("GBorderLayout",
   inherit = GContainer,
   public = list(
+    panels = NULL,
     init=function(container, ...,
                   width=NULL, height=NULL,
                   ext.args=NULL,
                   title,
+                  panels,
                   collapsible
                   ) {
 
@@ -126,7 +132,7 @@ GBorderLayout <- R6Class("GBorderLayout",
                        width=width,
                        height=height,
                        layout="border",
-                       items=String(sprintf("[%s]", make_panels(title, collapsible)))
+                       items=String(sprintf("[%s]", make_panels(title, panels, collapsible)))
                        )
 
       self$args$extend(arg_list, ext.args)
@@ -136,14 +142,13 @@ GBorderLayout <- R6Class("GBorderLayout",
       if(is.null(width) && is.null(height))
         self$set_size(c("100%", "100%"))
     },
-    region_id = function(where = c("center","north", "south", "east", "west")) {
+    region_id = function(where) {
       "Return ID of region"
-      where <- match.arg(where)
+      where <- match.arg(where, self$panels)
       sprintf("%s_%s_region", self$get_id(), where)
     },
-    make_panels=function(title, collapsible) {
-      where <- c("center","north", "south", "east", "west")
-      out <- lapply(where, 
+    make_panels=function(title, panels, collapsible) {
+      out <- lapply(panels, 
                     function(i) {
                       lst <- list(region=i,
                                   xtype="panel",
@@ -159,11 +164,12 @@ GBorderLayout <- R6Class("GBorderLayout",
       paste(out, collapse=",")
     },
     add = function(child,
-                   where=c("center","north", "south", "east", "west"),
+                   where,
                    ...
                    ) {
       "add child to specific region, defaulting to center"
       self$child_bookkeeping(child)
+      where = match.arg(where, self$panels)
                                
       tpl <- "
 wrc = Ext.getCmp('{{region_id}}');
@@ -175,10 +181,10 @@ wrc.add({{child_id}});
                                  child_id=child$get_id()))
       self$add_js_queue(cmd)
     },
-    set_panel_size = function(where=c("center","north", "south", "east", "west"), dimension) {
+    set_panel_size = function(where, dimension) {
       "@param  where which panel (center, north, ...), @param dimension width or height as appropriate"
       ## XXX What to do with center?
-      where <- match.arg(where)
+      where <- match.arg(where, self$panels)
       meth <- ifelse(where %in% c("east", "west"), "setWidth", "setHeight")
 
       tpl <- "
@@ -190,9 +196,9 @@ wrc.{{meth}}({{dimension}});
                                       dimension=dimension))
       self$add_js_queue(cmd)
     },
-    set_panel_collapse=function(where=c("center","north", "south", "east", "west"), collapse=TRUE) {
+    set_panel_collapse=function(where, collapse=TRUE) {
       "collapse or expand (collapse=FALSE) collapsible panel"
-      where <- match.arg(where)
+      where <- match.arg(where, self$panels)
       meth <- ifelse(collapse, "collapse", "expand")
                                 
       tpl <- "
