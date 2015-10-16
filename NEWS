@@ -2,6 +2,11 @@ Dear Emacs, please make this -*-Text-*- mode!
 
 NEWS for gWidgetsWWW2
 
+Changes for 0.4-6
+-------------------
+
+* Make it possible to have less than 5 panels in gborderlayout
+
 Changes for 0.4-5
 -------------------
 
