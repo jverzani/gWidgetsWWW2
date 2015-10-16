@@ -3,3 +3,5 @@
 .RData
 gWidgetsWWW2.Rproj
 .DS_Store
+test.R
+*.swp
