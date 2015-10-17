@@ -57,7 +57,7 @@ GContainer <- R6Class("GContainer",
     },
     add_child = function(child,  ...) {
       "Add child to parent, do internal book keeping"
-      child_bookkeeping(child)
+      self$child_bookkeeping(child)
       self$call_Ext("add", String(child$get_id())) # add to GUI
       if(self$auto_layout)
         self$do_layout()

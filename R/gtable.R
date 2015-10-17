@@ -263,7 +263,7 @@ GTable <- R6Class("GTable",
       ## will be swapped out with something big.
       def_page_size <- 200L
       if(is.logical(paging)) {
-        self$paging <- paging;
+        self$paging <- paging
         if(paging) {
           self$page_size <- def_page_size ## override through assignment paging=2000
         } else {
@@ -292,7 +292,7 @@ GTable <- R6Class("GTable",
       self$transport_signal = "selectionchange"
       self$change_signal = "selectionchange"
        
-      self$store$init(items, page.size=page_size)
+      self$store$init(items, page.size = self$page_size)
       self$store$paging <- self$paging
       self$store$page_size <- self$page_size
       
@@ -365,7 +365,7 @@ GTable <- R6Class("GTable",
     },
     param_defn = function(signal) {
       if(signal == self$change_signal) {
-        transport_fun()
+        self$transport_fun()
       } else if(signal == "cellclick" ||
                 signal == "celldblclick") {
         "param={row_index:rec.get('row_id'), column_index:cellIndex + 1};"

@@ -200,9 +200,9 @@ function() {
       ## editing a new row is left repeating the
       ## edited row. Clearly not desirable. This hits
       ## the server one more time than is needed
-      cmd <- paste(sprintf("%s.on('edit', function(e, obj) {",roweditor_id()),
-                   sprintf("callRhandler('%s', 'edit', null);", get_id()),
-                   sprintf("%s.doRefresh();", paging_id()),
+      cmd <- paste(sprintf("%s.on('edit', function(e, obj) {", self$roweditor_id()),
+                   sprintf("callRhandler('%s', 'edit', null);", self$get_id()),
+                   sprintf("%s.doRefresh();", self$paging_id()),
                    sprintf("});"),
                    sep="")
 ##      add_js_queue(cmd)

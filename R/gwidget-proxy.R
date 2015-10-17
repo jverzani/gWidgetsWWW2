@@ -718,13 +718,13 @@ GWidgetArrayStore <- R6Class("GWidgetArrayStore",
 #      add_js_queue(cmd)
     },
     load_data=function(callback="function(){}") {
-      if(paging)
+      if(self$paging)
         cmd <- sprintf("%s.load({params:{start:0, limit: %s, session_id:session_id, id:'%s'}, add:false, callback:%s});",
-                       get_id(), page_size, proxy$get_id(),callback)
+                       self$get_id(), self$page_size, self$proxy$get_id(),callback)
       else
         cmd <- sprintf("%s.load({params:{session_id:session_id, id:'%s'}, add:false, callback:function() {}});",
-                       get_id(), proxy$get_id())
-      add_js_queue(cmd)
+                       self$get_id(), self$proxy$get_id())
+      self$add_js_queue(cmd)
     },
     get_visible=function(...) {
       self$proxy$get_visible(...)

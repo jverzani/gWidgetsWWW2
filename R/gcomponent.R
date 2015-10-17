@@ -502,7 +502,7 @@ $.ajax({{url}}, {
       }
       container$add_dots(self, ...)
       self$write_constructor()
-      container$add(.self, ...)
+      container$add(self, ...)
 
       
       ## if transport & change are identical, we cut down
