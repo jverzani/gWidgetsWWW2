@@ -71,6 +71,7 @@ Collate:
     'gcombobox.R'
     'gtable.R'
     'gdf.R'
+    'glabel.R'
     'gwidgets-app.R'
     'gwidgets-methods.R'
     'gwindow.R'

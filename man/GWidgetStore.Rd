@@ -4,7 +4,7 @@
 \name{GWidgetStore}
 \alias{GWidgetStore}
 \title{Basic store, no default proxy so this isn't useful without being subclassed}
-\format{\preformatted{Class 'R6ClassGenerator' <environment: 0x35bcfa8> 
+\format{\preformatted{Class 'R6ClassGenerator' <environment: 0x3808d08> 
  - attr(*, "name")= chr "GWidgetStore_generator"
 }}
 \usage{

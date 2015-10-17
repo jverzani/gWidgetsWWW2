@@ -4,7 +4,7 @@
 \name{GWidgetProxy}
 \alias{GWidgetProxy}
 \title{interface between R objects and JSON to supply Ext objects with data}
-\format{\preformatted{Class 'R6ClassGenerator' <environment: 0x3567418> 
+\format{\preformatted{Class 'R6ClassGenerator' <environment: 0x1b88fb0> 
  - attr(*, "name")= chr "GWidgetProxy_generator"
 }}
 \usage{

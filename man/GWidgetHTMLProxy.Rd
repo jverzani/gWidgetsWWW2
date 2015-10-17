@@ -4,7 +4,7 @@
 \name{GWidgetHTMLProxy}
 \alias{GWidgetHTMLProxy}
 \title{Proxy for ghtml}
-\format{\preformatted{Class 'R6ClassGenerator' <environment: 0x357a490> 
+\format{\preformatted{Class 'R6ClassGenerator' <environment: 0x36281b0> 
  - attr(*, "name")= chr "GWidgetHTMLProxy_generator"
 }}
 \usage{

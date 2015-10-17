@@ -6,7 +6,7 @@
 \alias{GWidget}
 \alias{gWidgetsWWW2-package}
 \title{Base class for all Ext objects}
-\format{\preformatted{Class 'R6ClassGenerator' <environment: 0x33b73c0> 
+\format{\preformatted{Class 'R6ClassGenerator' <environment: 0x1df9780> 
  - attr(*, "name")= chr "GComponent_generator"
 }}
 \usage{
