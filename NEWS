@@ -7,6 +7,8 @@ Changes for 0.4-6
 
 * Make it possible to have less than 5 panels in gborderlayout
 
+* Do not escape HTML when setting the value for glabel using svalue<-, to make it consistent with its constructor
+
 Changes for 0.4-5
 -------------------
 

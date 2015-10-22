@@ -67,7 +67,7 @@ GLabel <- setRefClass("GLabel",
                         },
                         set_value = function(value, ...) {
                           value <<- value
-                          call_Ext("setText", value)
+                          call_Ext("setText", value, FALSE)
                           parent$do_layout()
                         }
                         ))
