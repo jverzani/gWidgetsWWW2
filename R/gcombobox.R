@@ -112,9 +112,9 @@ gcombobox <- function(items, selected=1, editable=FALSE, coerce.with=NULL,
   return(cb)
 }
 
-##' Alternative name for gcomobox
+##' Alternative name for gcombobox
 ##'
-##' The name gdroplist is an alternative (not encouraged) for gcomobbox
+##' The name gdroplist is an alternative (not encouraged) for gcombobox
 ##' @rdname gcombobox
 gdroplist <- gcombobox
 
