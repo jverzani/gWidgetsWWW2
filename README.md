@@ -17,7 +17,7 @@ most simple gWidgets scripts will just work.
 If installed from github or r-forge, the extjs files will be included. If
 in the future the package will be available on CRAN, likely the commmand
 `download_extjs` will have to be issued to download the extjs files (67Mb) and
-isntall them within the package directory.
+install them within the package directory.
 
 
 Example
