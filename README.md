@@ -14,10 +14,10 @@ environment for `JavaScript`. Of course, the `R` user need not know any
 `JavaScript`, or even any web technologies -- not even HTML. Basically,
 most simple gWidgets scripts will just work.
 
-If installed from github, the extjs files will be downloaded. If
-installed as a R package, the commmand `download_extjs` must be issued
-to download the extjs files (67Mb) and isntall them within the package
-directory.
+If installed from github or r-forge, the extjs files will be included. If
+in the future the package will be available on CRAN, likely the commmand
+`download_extjs` will have to be issued to download the extjs files (67Mb) and
+isntall them within the package directory.
 
 
 Example

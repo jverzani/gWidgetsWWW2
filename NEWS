@@ -2,14 +2,14 @@ Dear Emacs, please make this -*-Text-*- mode!
 
 NEWS for gWidgetsWWW2
 
-Changes for 0.4-6
+Changes for 0.4-7
 -------------------
 
 * Make it possible to have less than 5 panels in gborderlayout
 
 * Do not escape HTML when setting the value for glabel using svalue<-, to make it consistent with its constructor
 
-Changes for 0.4-5
+Changes for 0.4-6
 -------------------
 
 * Adapt load_app.R to work with R 3.2.0

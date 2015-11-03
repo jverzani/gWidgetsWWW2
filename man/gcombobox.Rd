@@ -87,7 +87,7 @@ an ExtWidget instance
 The \code{svalue<-} method is used to specify value by name or by
 index.
 
-The name gdroplist is an alternative (not encouraged) for gcomobbox
+The name gdroplist is an alternative (not encouraged) for gcombobox
 }
 \details{
 The default change handler differs depending whether the field is
