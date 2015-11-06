@@ -1,4 +1,5 @@
 ##      Copyright (C) 2011  John Verzani
+##      Copyright (C) 2015  Johannes Ranke
 ##  
 ##      This program is free software: you can redistribute it and/or modify
 ##      it under the terms of the GNU General Public License as published by
@@ -18,6 +19,8 @@ NULL
 
 ##' Notebook container
 ##'
+##' A handler can be added for the 'tabchange' signal if the notebook should react to changing tabs.
+##'
 ##' @param tab.pos where to place tabs. A value of 1 is the bottom, else the top.
 ##' @param close.buttons Logical. Are there close buttons on the tabs
 ##' @inheritParams gwidget
@@ -31,6 +34,7 @@ NULL
 ##' gbutton("hello", container=nb, label="My label") ## pass in label argument through ... to \code{add}
 ##' gbutton("page 2", container=nb, label="page 2")
 ##' svalue(nb) <- 1
+##' nb$add_handler("tabchange", handler = function(h, ...) { })
 gnotebook <- function(tab.pos = 3, close.buttons = FALSE, container, ...,
                       width=NULL, height=NULL, ext.args=NULL
                       ) {
