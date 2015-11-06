@@ -29,7 +29,7 @@ R_http <- setRefClass("R_http",
                                                   start=function(...) {
                                                       if(started)
                                                           return()
-                                                      cur_port <- tools::startDynamicHelp(start=TRUE)
+                                                      cur_port <- tools::startDynamicHelp(start=NA)
                                                       assign("port", cur_port, .self)
                                                       started <<- TRUE
                                                       return()

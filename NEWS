@@ -2,6 +2,11 @@ Dear Emacs, please make this -*-Text-*- mode!
 
 NEWS for gWidgetsWWW2
 
+Changes for 0.4-8
+-------------------
+
+* Do not crash when the internal help server was already started
+
 Changes for 0.4-7
 -------------------
 
