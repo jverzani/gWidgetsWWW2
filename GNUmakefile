@@ -84,6 +84,9 @@ winbuilder: build
 	@echo "Uploading to R-devel on win-builder"
 	curl -T $(TGZ) ftp://anonymous@win-builder.r-project.org/R-devel/
 
+drat: build
+	"$(RBIN)/Rscript" -e "drat::insertPackage('$(TGZ)', commit = TRUE)"
+
 r-forge:
 	git archive master > gWidgetsWWW2.tar;\
 	cd $(RFDIR) && rm -r `ls` && tar -xf $(PKGDIR)/gWidgetsWWW2.tar;\
