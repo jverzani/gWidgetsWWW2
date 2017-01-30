@@ -56,7 +56,7 @@ build-no-vignettes: $(TGZVNR)
 
 $(WINBIN): build
 	@echo "Building windows binary package..."
-	"$(R_HOME)/bin/R" CMD INSTALL $(TGZ) --build
+	"$(RBIN)/R" CMD INSTALL $(TGZ) --build
 	@echo "DONE."
 
 winbin: $(WINBIN)

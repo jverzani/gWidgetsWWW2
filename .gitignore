@@ -5,6 +5,7 @@ gWidgetsWWW2.Rproj
 gWidgetsWWW2.Rcheck
 gWidgetsWWW2*.tar
 gWidgetsWWW2*.tar.gz
+gWidgetsWWW2*.zip
 .DS_Store
 test.R
 test_app.R

@@ -15,3 +15,4 @@ GNUmakefile
 roxygen.log
 gWidgetsWWW2.*tar\.gz$
 gWidgetsWWW2.*tar$
+gWidgetsWWW2.*zip$
