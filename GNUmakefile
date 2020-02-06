@@ -12,7 +12,7 @@ WINBIN  := $(PKGNAME)_$(PKGVERS).zip
 RBIN ?= $(shell dirname "`which R`")
 
 # Specify directories for subversion repository on r-forge
-RFSVN ?= $(HOME)/svn/gwidgets
+RFSVN ?= $(HOME)/svn/r-forge/gwidgets
 RFDIR ?= $(RFSVN)/pkg/gWidgetsWWW2
 
 pkgfiles = DESCRIPTION \
